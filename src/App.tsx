@@ -1,11 +1,5 @@
-import React from 'react';
-
-function App() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold">Welcome to Roots</h1>
-    </div>
-  )
-}
-
-export default App
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_YWRqdXN0ZWQtbW9uaXRvci0yOS5jbGVyay5hY2NvdW50cy5kZXYk
+VITE_SUPABASE_URL=https://dibpkzebpchkdqujxnwd.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpYnBremVicGNoa2RxdWp4bndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTExMjcsImV4cCI6MjA2NDU4NzEyN30.DJQ3CISQkkLN8OUh3NpW83_NY2PO3_NkfUGHNqKzaAM
+DATABASE_URL=postgresql://postgres:postgres@db.dibpkzebpchkdqujxnwd.supabase.co:5432/postgres
+DIRECT_URL=postgresql://postgres:postgres@db.dibpkzebpchkdqujxnwd.supabase.co:5432/postgres
