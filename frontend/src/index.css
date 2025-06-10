@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 214 89% 52%;
+    --color-primary-foreground: 0 0% 100%;
+    
+    --color-secondary: 199 89% 48%;
+    --color-secondary-foreground: 0 0% 100%;
+    
+    --color-accent: 38 93% 52%;
+    --color-accent-foreground: 0 0% 0%;
+    
+    --color-success: 158 64% 40%;
+    --color-success-foreground: 0 0% 100%;
+    
+    --color-warning: 38 92% 56%;
+    --color-warning-foreground: 0 0% 0%;
+    
+    --color-error: 0 84% 60%;
+    --color-error-foreground: 0 0% 100%;
+    
+    --color-background: 0 0% 100%;
+    --color-foreground: 224 71% 4%;
+    
+    --color-muted: 220 14% 96%;
+    --color-muted-foreground: 220 8% 46%;
+    
+    --color-card: 0 0% 100%;
+    --color-card-foreground: 224 71% 4%;
+    
+    --color-border: 220 13% 91%;
+  }
+
+  .dark {
+    --color-background: 224 71% 4%;
+    --color-foreground: 210 20% 98%;
+    
+    --color-muted: 215 27% 16%;
+    --color-muted-foreground: 217 10% 64%;
+    
+    --color-card: 224 71% 8%;
+    --color-card-foreground: 210 20% 98%;
+    
+    --color-border: 216 34% 17%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
