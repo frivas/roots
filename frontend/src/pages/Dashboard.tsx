@@ -71,8 +71,7 @@ const GridPatternCard = ({
         "bg-[radial-gradient(rgba(0,0,0,0.03)_1px,transparent_1px)]",
       )}>
         <div className={cn(
-          "size-full bg-gradient-to-tr",
-          "from-background/90 via-background/40 to-background/10",
+          "size-full bg-background/95",
         )}>
           <div className="flex flex-col p-4">
             <div className="flex justify-between items-center mb-4">

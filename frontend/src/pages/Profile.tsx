@@ -223,7 +223,7 @@ const Profile = () => {
       <div className="grid gap-6 md:grid-cols-3">
         <motion.div variants={itemVariants} className="md:col-span-1 space-y-6">
           <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-            <CardHeader className="text-center pb-2 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+                            <CardHeader className="text-center pb-2 bg-muted/30">
               <div className="mx-auto rounded-full bg-muted p-6 w-32 h-32 flex items-center justify-center relative group">
                 <UserCircle className="h-24 w-24 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                 <div className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
