@@ -112,9 +112,9 @@ const Dashboard = () => {
         className="flex flex-col gap-2"
         variants={itemVariants}
       >
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">Learning Dashboard</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Welcome to Roots!</h1>
         <p className="text-muted-foreground text-lg">
-          Welcome back! Here's an overview of your educational journey.
+          Here's an overview of your educational journey.
         </p>
       </motion.div>
 
