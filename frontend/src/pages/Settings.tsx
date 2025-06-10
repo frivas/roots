@@ -240,7 +240,7 @@ const Settings = () => {
               className="grid gap-6 md:grid-cols-2"
             >
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <User className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Profile Information</CardTitle>
@@ -318,7 +318,7 @@ const Settings = () => {
               </Card>
               
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Info className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Educational Information</CardTitle>
@@ -369,7 +369,7 @@ const Settings = () => {
               className="grid gap-6 md:grid-cols-2"
             >
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Bell className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Notification Settings</CardTitle>
@@ -440,7 +440,7 @@ const Settings = () => {
               </Card>
               
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <SettingsIcon className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Notification Frequency</CardTitle>
@@ -507,7 +507,7 @@ const Settings = () => {
               className="grid gap-6 md:grid-cols-2"
             >
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/20 dark:to-blue-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Globe className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Language & Region</CardTitle>
@@ -578,7 +578,7 @@ const Settings = () => {
               </Card>
               
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Info className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Learning Preferences</CardTitle>
@@ -643,7 +643,7 @@ const Settings = () => {
               className="grid gap-6 md:grid-cols-2"
             >
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Shield className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">Security Settings</CardTitle>
@@ -704,7 +704,7 @@ const Settings = () => {
               </Card>
               
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                <CardHeader className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20">
+                <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-5 w-5 text-destructive" />
                     <CardTitle className="text-xl">Account Management</CardTitle>

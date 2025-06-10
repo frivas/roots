@@ -1,6 +1,7 @@
 import React from 'react';
 import SimpleHeader from './SimpleHeader';
 import ModernSidebar from './ModernSidebar';
+import Footer from './Footer';
 import { cn } from '../../lib/utils';
 
 interface MainLayoutProps {
@@ -29,12 +30,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         {/* Mobile: account for header height, Desktop: full height */}
         <main className={cn(
           "flex-1 p-6 overflow-auto",
-          "md:h-screen", // Full height on desktop
           "pt-0 md:pt-6", // No top padding on mobile (header handles it)
           className
         )}>
           {children}
         </main>
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

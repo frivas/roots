@@ -4,6 +4,7 @@ import { useUser, UserButton } from '@clerk/clerk-react';
 import { useClerk } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
+import MadridLogo from '../ui/MadridLogo';
 import { 
   Home, 
   BookOpen, 
@@ -59,23 +60,14 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ className }) => {
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
-      {/* Header with Logo */}
+      {/* Header with Madrid Logo */}
       <div className="flex items-center justify-between p-4 border-b border-border">
-        <Link to="/" className="flex items-center min-w-0">
-          <div className="text-primary flex-shrink-0">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
-              <path d="M16.5 9.4 7.55 4.24" />
-              <polyline points="3.29 7 12 12 20.71 7" />
-              <line x1="12" y1="22" x2="12" y2="12" />
-              <circle cx="18.5" cy="15.5" r="2.5" />
-              <path d="M20.27 17.27 22 19" />
-            </svg>
-          </div>
+        <Link to="/" className="flex items-center min-w-0 gap-3">
+          <MadridLogo size={isExpanded ? "md" : "sm"} />
           <AnimatePresence>
             {isExpanded && (
               <motion.span 
-                className="ml-3 text-xl font-bold text-foreground whitespace-nowrap"
+                className="text-xl font-bold text-foreground whitespace-nowrap"
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}

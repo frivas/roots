@@ -19,6 +19,7 @@ const Messages = lazy(() => import('./pages/Messages'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Profile = lazy(() => import('./pages/Profile'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading component
@@ -45,7 +46,7 @@ function App() {
             element={
               <SignedOut>
                 <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-                  <SignIn routing="path\" path="/auth/login\" redirectUrl="/dashboard" />
+                  <SignIn routing="path" path="/auth/login" redirectUrl="/dashboard" />
                 </div>
               </SignedOut>
             }
@@ -56,7 +57,7 @@ function App() {
             element={
               <SignedOut>
                 <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-                  <SignUp routing="path\" path="/auth/register\" redirectUrl="/dashboard" />
+                  <SignUp routing="path" path="/auth/register" redirectUrl="/dashboard" />
                 </div>
               </SignedOut>
             }
@@ -126,6 +127,16 @@ function App() {
                   <Profile />
                 </MainLayout>
               </SignedIn>
+            }
+          />
+
+          {/* Public legal pages */}
+          <Route
+            path="/privacy-policy"
+            element={
+              <MainLayout>
+                <PrivacyPolicy />
+              </MainLayout>
             }
           />
           
