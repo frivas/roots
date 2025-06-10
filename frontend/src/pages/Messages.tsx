@@ -208,27 +208,14 @@ const Messages = () => {
       
       <Card className="flex flex-1 overflow-hidden border-border">
         {/* Sidebar */}
-        <div className="w-56 border-r border-border bg-card">
-          <div className="p-4">
-            <Button 
-              className="w-full justify-start"
-              onClick={() => {
-                setComposeMode(true);
-                setSelectedMessage(null);
-              }}
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Compose
-            </Button>
-          </div>
-          
-          <div className="h-[calc(100%-4rem)] overflow-y-auto">
-            <nav className="px-2 space-y-1">
+        <div className="w-64 min-w-64 max-w-64 border-r border-border bg-card flex-shrink-0">
+          <div className="h-full overflow-y-auto pt-4">
+            <nav className="px-3 space-y-1">
               {folders.map((folder) => (
                 <motion.button
                   key={folder.id}
                   className={cn(
-                    "flex items-center w-full px-3 py-2 text-sm rounded-md transition-colors",
+                    "flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-md transition-colors min-w-0",
                     activeFolder === folder.id
                       ? 'bg-primary text-primary-foreground'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -238,14 +225,14 @@ const Messages = () => {
                     setSelectedMessage(null);
                     setComposeMode(false);
                   }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                 >
-                  <folder.icon className="mr-2 h-4 w-4" />
-                  <span>{folder.name}</span>
+                  <div className="flex items-center min-w-0 flex-1">
+                    <folder.icon className="mr-2 h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{folder.name}</span>
+                  </div>
                   {folder.count > 0 && (
                     <span className={cn(
-                      "ml-auto rounded-full px-2 py-0.5 text-xs",
+                      "ml-2 rounded-full px-2 py-0.5 text-xs font-medium flex-shrink-0",
                       activeFolder === folder.id
                         ? 'bg-primary-foreground text-primary'
                         : 'bg-muted-foreground text-background'
