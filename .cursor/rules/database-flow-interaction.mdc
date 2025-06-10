@@ -1,0 +1,6 @@
+---
+description: Reference this when creating or refactoring anything got to do with database including Supabase, Prisma and calls to fetch information.
+globs: 
+---
+All interactions with the database must go through Prisma. Follow the standard rules here. We will never be installing the Supabase client. We're only operating through Prisma, the ORM to interact with our database.
+
