@@ -31,7 +31,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: '1',
     title: 'System Maintenance',
-    message: 'The platform will be undergoing maintenance tonight from 2:00 AM to 4:00 AM. During this time, all educational services will be temporarily unavailable.',
+    message: 'The platform will be undergoing maintenance tonight from 2:00 AM to 4:00 AM. During this time, all services will be temporarily unavailable.',
     timestamp: '2023-05-15T14:30:00',
     type: 'info',
     read: false,
@@ -315,7 +315,7 @@ const Notifications = () => {
           transition={{ duration: 0.3 }}
           className="text-4xl font-bold tracking-tight text-foreground"
         >
-          <TranslatedText>Educational Notifications</TranslatedText>
+          <TranslatedText>Notifications</TranslatedText>
         </motion.h1>
         <motion.p 
           initial={{ y: -20, opacity: 0 }}
@@ -323,7 +323,7 @@ const Notifications = () => {
           transition={{ duration: 0.3, delay: 0.1 }}
           className="text-muted-foreground text-lg"
         >
-          <TranslatedText>Stay updated with important educational announcements and alerts.</TranslatedText>
+          <TranslatedText>Stay updated with important announcements and alerts.</TranslatedText>
         </motion.p>
       </div>
       

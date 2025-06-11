@@ -13,21 +13,32 @@ interface LingoTranslationContextType {
 const LingoTranslationContext = createContext<LingoTranslationContextType | undefined>(undefined);
 
 export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState('en-US');
+  const [language, setLanguage] = useState<string>(() => {
+    // Initialize with saved language or default to 'en-US'
+    const saved = localStorage.getItem('selectedLanguage');
+    const initialLang = (saved === 'en-US' || saved === 'es-ES') ? saved : 'en-US';
+    console.log(`🚀 Context initializing with language: ${initialLang} (from localStorage: ${saved})`);
+    return initialLang;
+  });
   const [isTranslating, setIsTranslating] = useState(false);
-  const [preloadingComplete, setPreloadingComplete] = useState(true); // Default to true for English
+  const [preloadingComplete, setPreloadingComplete] = useState(() => {
+    // Initialize based on starting language - Spanish needs preloading, English doesn't
+    const saved = localStorage.getItem('selectedLanguage');
+    return saved !== 'es-ES'; // false for Spanish, true for English or default
+  });
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     // Initialize the translation context
     const initializeTranslationContext = async () => {
       try {
-        // Load saved language preference
-        const savedLanguage = localStorage.getItem('selectedLanguage');
-        if (savedLanguage) {
-          setLanguage(savedLanguage);
-        }
+        // Language is already set from localStorage in useState initializer
+        // Just ensure localStorage has the current value
+        localStorage.setItem('selectedLanguage', language);
+        console.log(`🔄 Initialized with language: ${language}`);
         
+        // Small delay to ensure all initialization is complete
+        await new Promise(resolve => setTimeout(resolve, 50));
         setIsInitialized(true);
       } catch (error) {
         console.error('Failed to initialize translation context:', error);
@@ -37,12 +48,18 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
 
     initializeTranslationContext();
 
-    // Listen for language change events from LanguageSwitcher
+    // Listen for language change events from LanguageSwitcher and Settings
     const handleLanguageChange = (event: Event) => {
       const customEvent = event as CustomEvent;
       const newLanguage = customEvent.detail.language;
-      setLanguage(newLanguage);
-      localStorage.setItem('selectedLanguage', newLanguage);
+      
+      if (newLanguage && (newLanguage === 'en-US' || newLanguage === 'es-ES')) {
+        console.log(`🌍 Language change event received: ${newLanguage}`);
+        setLanguage(newLanguage);
+        localStorage.setItem('selectedLanguage', newLanguage);
+      } else {
+        console.warn('Invalid language code received:', newLanguage);
+      }
     };
 
     window.addEventListener('languageChanged', handleLanguageChange);
@@ -102,6 +119,22 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
     }
   };
 
+  // Provide setLanguage function that also dispatches events for consistency
+  const setLanguageWithEvent = (lang: string) => {
+    if (lang && (lang === 'en-US' || lang === 'es-ES')) {
+      console.log(`🌍 Manual language change: ${lang}`);
+      setLanguage(lang);
+      localStorage.setItem('selectedLanguage', lang);
+      
+      // Dispatch event for any components that might be listening
+      window.dispatchEvent(new CustomEvent('languageChanged', {
+        detail: { language: lang }
+      }));
+    } else {
+      console.warn('Invalid language code for setLanguage:', lang);
+    }
+  };
+
   // Don't render children until context is initialized
   if (!isInitialized) {
     return (
@@ -117,7 +150,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
   return (
     <LingoTranslationContext.Provider value={{ 
       language, 
-      setLanguage, 
+      setLanguage: setLanguageWithEvent, 
       isTranslating, 
       translateText,
       preloadingComplete,

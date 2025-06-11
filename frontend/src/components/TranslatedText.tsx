@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+import { getSpanishTranslation } from '../services/SpanishTranslations';
 
 interface TranslatedTextProps {
   children: string;
@@ -17,24 +18,43 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   fallback
 }) => {
   const { language, translateText, isTranslating } = useLingoTranslation();
-  const [translatedText, setTranslatedText] = useState(children);
+  
+  // Initialize with immediate translation if available
+  const [translatedText, setTranslatedText] = useState(() => {
+    if (language === 'en-US') {
+      return children;
+    }
+    
+    // Check for immediate Spanish translation
+    const immediateTranslation = getSpanishTranslation(children);
+    return immediateTranslation !== children ? immediateTranslation : children;
+  });
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const performTranslation = useCallback(async () => {
-    // Always show original text first to prevent blank renders
-    setTranslatedText(children);
     setError(null);
     
     if (language === 'en-US') {
+      setTranslatedText(children);
       return;
     }
 
     // Don't translate empty or very short strings
     if (!children || children.trim().length < 2) {
+      setTranslatedText(children);
       return;
     }
 
+    // First try immediate Spanish dictionary lookup
+    const spanishTranslation = getSpanishTranslation(children);
+    if (spanishTranslation !== children) {
+      setTranslatedText(spanishTranslation);
+      return; // Don't need API call
+    }
+
+    // If no local translation, use API
     setIsLoading(true);
     try {
       const translated = await translateText(children);

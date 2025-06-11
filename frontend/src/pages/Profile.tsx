@@ -239,9 +239,9 @@ const Profile = () => {
       variants={containerVariants}
     >
       <motion.div variants={itemVariants} className="flex flex-col gap-2">
-        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight">Educational Profile</TranslatedText>
+        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight">Profile</TranslatedText>
         <TranslatedText element="p" className="text-muted-foreground text-lg">
-          View and manage your professional educational profile
+          View and manage your professional profile
         </TranslatedText>
       </motion.div>
       

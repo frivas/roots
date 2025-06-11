@@ -199,9 +199,9 @@ const Services = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight text-foreground">Educational Services</TranslatedText>
+        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight text-foreground">Services</TranslatedText>
         <TranslatedText element="p" className="text-muted-foreground text-lg">
-          Access and manage all educational services from one centralized hub.
+          Access and manage all services from one centralized hub.
         </TranslatedText>
       </motion.div>
       
@@ -274,7 +274,7 @@ const Services = () => {
               <Search className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-xl font-medium mb-2">No services found</h3>
               <p className="text-muted-foreground max-w-md">
-                We couldn't find any educational services matching your search criteria. 
+                We couldn't find any services matching your search criteria. 
                 Try adjusting your search or browse all services.
               </p>
               <Button 
