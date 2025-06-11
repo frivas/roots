@@ -39,7 +39,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Inter var', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Arial', 'Helvetica', 'sans-serif'],
+        'arial-black': ['Arial Black', 'Arial', 'sans-serif'],
       },
       container: {
         center: true,
