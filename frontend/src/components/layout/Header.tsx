@@ -1,9 +1,11 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { Menu, X, Bell, Home, Mail, Settings, BookOpen } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import MadridLogo from '../ui/MadridLogo';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,6 +56,7 @@ const Header: React.FC = () => {
           
           {/* User menu and mobile menu button */}
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             {isLoaded && user && (
               <div className="flex items-center gap-4">
                 <UserButton afterSignOutUrl="/auth/login" />

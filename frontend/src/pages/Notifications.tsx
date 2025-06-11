@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import TranslatedText from '../components/TranslatedText';
 import { formatDate, formatTime, cn } from '../lib/utils';
 import { 
   AlertTriangle, 
@@ -174,10 +175,12 @@ const NotificationItem = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base font-semibold">{notification.title}</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                  <TranslatedText>{notification.title}</TranslatedText>
+                </CardTitle>
                 {notification.category && (
                   <span className={`text-xs px-2 py-1 rounded-full border ${categoryColor}`}>
-                    {notification.category}
+                    <TranslatedText>{notification.category}</TranslatedText>
                   </span>
                 )}
               </div>
@@ -204,7 +207,7 @@ const NotificationItem = ({
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <p className="text-sm text-muted-foreground">
-            {notification.message}
+            <TranslatedText>{notification.message}</TranslatedText>
           </p>
         </CardContent>
       </Card>
@@ -229,10 +232,10 @@ const NotificationsList = ({
         <div className="bg-muted/30 p-4 rounded-full mb-4">
           <BellRing className="h-12 w-12 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-1">No notifications</h3>
-        <p className="text-muted-foreground">
-          You're all caught up! Check back later for new updates.
-        </p>
+        <TranslatedText element="h3" className="text-lg font-medium mb-1">No notifications</TranslatedText>
+        <TranslatedText element="p" className="text-muted-foreground">
+          You're all caught up!
+        </TranslatedText>
       </motion.div>
     );
   }
@@ -312,7 +315,7 @@ const Notifications = () => {
           transition={{ duration: 0.3 }}
           className="text-4xl font-bold tracking-tight text-foreground"
         >
-          Educational Notifications
+          <TranslatedText>Educational Notifications</TranslatedText>
         </motion.h1>
         <motion.p 
           initial={{ y: -20, opacity: 0 }}
@@ -320,7 +323,7 @@ const Notifications = () => {
           transition={{ duration: 0.3, delay: 0.1 }}
           className="text-muted-foreground text-lg"
         >
-          Stay updated with important educational announcements and alerts.
+          <TranslatedText>Stay updated with important educational announcements and alerts.</TranslatedText>
         </motion.p>
       </div>
       
@@ -336,7 +339,7 @@ const Notifications = () => {
               )}
               onClick={() => setActiveTab('all')}
             >
-              All
+              <TranslatedText>All</TranslatedText>
               {notifications.length > 0 && (
                 <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground">
                   {notifications.length}
@@ -352,7 +355,7 @@ const Notifications = () => {
               )}
               onClick={() => setActiveTab('unread')}
             >
-              Unread
+              <TranslatedText>Unread</TranslatedText>
               {unreadCount > 0 && (
                 <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-primary text-primary-foreground">
                   {unreadCount}
@@ -368,7 +371,7 @@ const Notifications = () => {
               className="text-sm text-muted-foreground hover:text-foreground"
             >
               <Check className="mr-2 h-4 w-4" />
-              Mark all as read
+              <TranslatedText>Mark all as read</TranslatedText>
             </Button>
           )}
         </div>
@@ -386,7 +389,7 @@ const Notifications = () => {
               className="h-8 text-sm"
             >
               <Filter className="mr-2 h-3.5 w-3.5" />
-              All Categories
+              <TranslatedText>All Categories</TranslatedText>
             </Button>
             
             {categories.map(category => (
@@ -400,7 +403,7 @@ const Notifications = () => {
                     : 'bg-muted text-muted-foreground hover:bg-muted/80 border-border'
                 )}
               >
-                {category}
+                <TranslatedText>{category}</TranslatedText>
               </button>
             ))}
           </motion.div>

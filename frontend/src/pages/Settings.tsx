@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+import TranslatedText from '../components/TranslatedText';
+import { getSpanishTranslation } from '../services/SpanishTranslations';
+import { useAuth } from '../contexts/AuthContext';
+import { useUser } from '@clerk/clerk-react';
 import { 
   Card, 
   CardContent, 
@@ -142,17 +147,61 @@ const TabsContent = ({ value, children, className, activeTab }: TabsContentProps
 };
 
 const Settings = () => {
+  const { language: currentLanguage, setLanguage, translateText } = useLingoTranslation();
+  const { userEmail } = useAuth();
+  const { user } = useUser();
+  
+  // Helper function to get placeholder text based on current language
+  const getPlaceholderText = (text: string) => {
+    return currentLanguage === 'es-ES' ? getSpanishTranslation(text) : text;
+  };
+  
+  // Helper function to get localized example data
+  const getLocalizedExamples = () => {
+    if (currentLanguage === 'es-ES') {
+      return {
+        email: userEmail || 'maria.garcia@ejemplo.es',
+        phone: '+34 666 123 456',
+        timezone: 'UTC+1',
+        dateFormat: 'DD/MM/YYYY'
+      };
+    }
+    return {
+      email: userEmail || 'john.doe@example.com', 
+      phone: '+1 (555) 123-4567',
+      timezone: 'UTC-5',
+      dateFormat: 'MM/DD/YYYY'
+    };
+  };
+  
+  const localizedExamples = getLocalizedExamples();
+  
   const [settings, setSettings] = useState({
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    language: 'English',
+    email: localizedExamples.email,
+    phone: localizedExamples.phone,
+    language: currentLanguage === 'es-ES' ? 'Spanish' : 'English',
+    timezone: localizedExamples.timezone,
+    dateFormat: localizedExamples.dateFormat,
     emailNotifications: true,
     smsNotifications: true,
     pushNotifications: false
   });
+
+  // Sync settings when language changes from context
+  useEffect(() => {
+    const newExamples = getLocalizedExamples();
+    setSettings(prev => ({
+      ...prev,
+      email: newExamples.email,
+      phone: newExamples.phone,
+      timezone: newExamples.timezone,
+      dateFormat: newExamples.dateFormat,
+      language: currentLanguage === 'es-ES' ? 'Spanish' : 'English'
+    }));
+  }, [currentLanguage, userEmail]);
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setSettings(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -207,9 +256,11 @@ const Settings = () => {
         className="flex flex-col gap-2"
         variants={fadeIn}
       >
-        <h1 className="text-4xl font-bold tracking-tight">Educational Settings</h1>
+        <h1 className="text-4xl font-bold tracking-tight">
+          <TranslatedText>Educational Settings</TranslatedText>
+        </h1>
         <p className="text-muted-foreground text-lg">
-          Manage your account settings and learning preferences
+          <TranslatedText>Manage your account settings and learning preferences</TranslatedText>
         </p>
       </motion.div>
       
@@ -218,19 +269,27 @@ const Settings = () => {
           <TabsList className="grid grid-cols-4 mb-8">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Profile</span>
+              <span className="hidden sm:inline">
+                <TranslatedText>Profile</TranslatedText>
+              </span>
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
-              <span className="hidden sm:inline">Notifications</span>
+              <span className="hidden sm:inline">
+                <TranslatedText>Notifications</TranslatedText>
+              </span>
             </TabsTrigger>
             <TabsTrigger value="preferences" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">Preferences</span>
+              <span className="hidden sm:inline">
+                <TranslatedText>Preferences</TranslatedText>
+              </span>
             </TabsTrigger>
             <TabsTrigger value="security" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">Security</span>
+              <span className="hidden sm:inline">
+                <TranslatedText>Security</TranslatedText>
+              </span>
             </TabsTrigger>
           </TabsList>
           
@@ -243,16 +302,20 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <User className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Profile Information</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Profile Information</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Update your basic profile information for the educational platform
+                    <TranslatedText>Update your basic profile information for the educational platform</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
                   <form onSubmit={handleSaveProfile} className="space-y-4">
                     <div className="space-y-2">
-                      <label htmlFor="email" className="block text-sm font-medium text-foreground">Email Address</label>
+                      <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                        <TranslatedText>Email Address</TranslatedText>
+                      </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -265,12 +328,14 @@ const Settings = () => {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Your email is used for educational notifications and account recovery
+                        <TranslatedText>Your email is used for educational notifications and account recovery</TranslatedText>
                       </p>
                     </div>
                     
                     <div className="space-y-2">
-                      <label htmlFor="phone" className="block text-sm font-medium text-foreground">Phone Number</label>
+                      <label htmlFor="phone" className="block text-sm font-medium text-foreground">
+                        <TranslatedText>Phone Number</TranslatedText>
+                      </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -283,15 +348,25 @@ const Settings = () => {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Used for SMS notifications and emergency communications
+                        <TranslatedText>Used for SMS notifications and emergency communications</TranslatedText>
                       </p>
                     </div>
                     
                     <div className="space-y-2">
-                      <label htmlFor="profilePhoto" className="block text-sm font-medium text-foreground">Profile Photo</label>
+                      <label htmlFor="profilePhoto" className="block text-sm font-medium text-foreground">
+                        <TranslatedText>Profile Photo</TranslatedText>
+                      </label>
                       <div className="flex items-center gap-4">
                         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
-                          <User className="h-8 w-8 text-muted-foreground" />
+                          {user?.imageUrl ? (
+                            <img 
+                              src={user.imageUrl} 
+                              alt={user.fullName || 'Profile'} 
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            <User className="h-8 w-8 text-muted-foreground" />
+                          )}
                         </div>
                         <Button
                           type="button"
@@ -300,11 +375,11 @@ const Settings = () => {
                           className="flex items-center gap-2"
                         >
                           <Upload className="h-4 w-4" />
-                          Upload Photo
+                          <TranslatedText>Upload Photo</TranslatedText>
                         </Button>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Recommended size: 400x400px. Max file size: 2MB
+                        <TranslatedText>Recommended size: 400x400px. Max file size: 2MB</TranslatedText>
                       </p>
                     </div>
                   </form>
@@ -312,7 +387,7 @@ const Settings = () => {
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Profile
+                    <TranslatedText>Save Profile</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -321,42 +396,48 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Info className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Educational Information</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Educational Information</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Complete your educational profile with additional details
+                    <TranslatedText>Complete your educational profile with additional details</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="displayName" className="block text-sm font-medium text-foreground">Display Name</label>
+                    <label htmlFor="displayName" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Display Name</TranslatedText>
+                    </label>
                     <Input
                       id="displayName"
                       type="text"
-                      placeholder="How you want to be addressed in class"
+                      placeholder={getPlaceholderText("How you want to be addressed in class")}
                     />
                     <p className="text-xs text-muted-foreground">
-                      This name will be visible to instructors and classmates
+                      <TranslatedText>This name will be visible to instructors and classmates</TranslatedText>
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="bio" className="block text-sm font-medium text-foreground">Bio</label>
+                    <label htmlFor="bio" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Bio</TranslatedText>
+                    </label>
                     <textarea
                       id="bio"
                       rows={3}
                       className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder="Tell us about your educational goals and interests"
+                      placeholder={getPlaceholderText("Tell us about your educational goals and interests")}
                     />
                     <p className="text-xs text-muted-foreground">
-                      A brief description that will appear on your student profile
+                      <TranslatedText>A brief description that will appear on your student profile</TranslatedText>
                     </p>
                   </div>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Information
+                    <TranslatedText>Save Information</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -372,10 +453,12 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Bell className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Notification Settings</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Notification Settings</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Choose how you want to be notified about educational updates
+                    <TranslatedText>Choose how you want to be notified about educational updates</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -384,10 +467,10 @@ const Settings = () => {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <label htmlFor="emailNotifications" className="text-base font-medium">
-                            Email Notifications
+                            <TranslatedText>Email Notifications</TranslatedText>
                           </label>
                           <p className="text-xs text-muted-foreground">
-                            Receive course updates, assignment reminders, and announcements via email
+                            <TranslatedText>Receive course updates, assignment reminders, and announcements via email</TranslatedText>
                           </p>
                         </div>
                         <Switch
@@ -400,10 +483,10 @@ const Settings = () => {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <label htmlFor="smsNotifications" className="text-base font-medium">
-                            SMS Notifications
+                            <TranslatedText>SMS Notifications</TranslatedText>
                           </label>
                           <p className="text-xs text-muted-foreground">
-                            Get urgent alerts and deadline reminders via text message
+                            <TranslatedText>Get urgent alerts and deadline reminders via text message</TranslatedText>
                           </p>
                         </div>
                         <Switch
@@ -416,10 +499,10 @@ const Settings = () => {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <label htmlFor="pushNotifications" className="text-base font-medium">
-                            Push Notifications
+                            <TranslatedText>Push Notifications</TranslatedText>
                           </label>
                           <p className="text-xs text-muted-foreground">
-                            Receive real-time notifications in your browser for live classes and events
+                            <TranslatedText>Receive real-time notifications in your browser for live classes and events</TranslatedText>
                           </p>
                         </div>
                         <Switch
@@ -434,7 +517,7 @@ const Settings = () => {
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Notification Settings
+                    <TranslatedText>Save Notification Settings</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -443,34 +526,50 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <SettingsIcon className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Notification Frequency</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Notification Frequency</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Control how often you receive educational notifications
+                    <TranslatedText>Control how often you receive educational notifications</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="frequency" className="block text-sm font-medium text-foreground">Email Digest Frequency</label>
+                    <label htmlFor="frequency" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Email Digest Frequency</TranslatedText>
+                    </label>
                     <select
                       id="frequency"
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="immediately">Immediately</option>
-                      <option value="daily">Daily Digest</option>
-                      <option value="weekly">Weekly Digest</option>
-                      <option value="never">Never</option>
+                      <option value="immediately">
+                        <TranslatedText>Immediately</TranslatedText>
+                      </option>
+                      <option value="daily">
+                        <TranslatedText>Daily Digest</TranslatedText>
+                      </option>
+                      <option value="weekly">
+                        <TranslatedText>Weekly Digest</TranslatedText>
+                      </option>
+                      <option value="never">
+                        <TranslatedText>Never</TranslatedText>
+                      </option>
                     </select>
                     <p className="text-xs text-muted-foreground">
-                      Choose how frequently you want to receive course and assignment summaries
+                      <TranslatedText>Choose how frequently you want to receive course and assignment summaries</TranslatedText>
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-foreground">Study Hours (No Notifications)</label>
+                    <label className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Study Hours (No Notifications)</TranslatedText>
+                    </label>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="quietStart" className="text-xs text-muted-foreground">From</label>
+                        <label htmlFor="quietStart" className="text-xs text-muted-foreground">
+                          <TranslatedText>From</TranslatedText>
+                        </label>
                         <Input
                           id="quietStart"
                           type="time"
@@ -478,7 +577,9 @@ const Settings = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="quietEnd" className="text-xs text-muted-foreground">To</label>
+                        <label htmlFor="quietEnd" className="text-xs text-muted-foreground">
+                          <TranslatedText>To</TranslatedText>
+                        </label>
                         <Input
                           id="quietEnd"
                           type="time"
@@ -487,14 +588,14 @@ const Settings = () => {
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      No non-urgent notifications will be sent during your focused study hours
+                      <TranslatedText>No non-urgent notifications will be sent during your focused study hours</TranslatedText>
                     </p>
                   </div>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Frequency Settings
+                    <TranslatedText>Save Frequency Settings</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -510,54 +611,101 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Globe className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Language & Region</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Language & Region</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Set your preferred language and regional settings for the educational platform
+                    <TranslatedText>Set your preferred language and regional settings for the educational platform</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="language" className="block text-sm font-medium text-foreground">Language</label>
+                    <label htmlFor="language" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Language</TranslatedText>
+                    </label>
                     <select
                       id="language"
                       name="language"
                       value={settings.language}
-                      onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
+                      onChange={(e) => {
+                        const selectedLanguage = e.target.value;
+                        const languageCode = selectedLanguage === 'Spanish' ? 'es-ES' : 'en-US';
+                        
+                        // Update all language-dependent settings
+                        const newExamples = languageCode === 'es-ES' ? {
+                          email: userEmail || 'maria.garcia@ejemplo.es',
+                          phone: '+34 666 123 456',
+                          timezone: 'UTC+1',
+                          dateFormat: 'DD/MM/YYYY'
+                        } : {
+                          email: userEmail || 'john.doe@example.com', 
+                          phone: '+1 (555) 123-4567',
+                          timezone: 'UTC-5',
+                          dateFormat: 'MM/DD/YYYY'
+                        };
+                        
+                        setSettings(prev => ({ 
+                          ...prev, 
+                          language: selectedLanguage,
+                          email: newExamples.email,
+                          phone: newExamples.phone,
+                          timezone: newExamples.timezone,
+                          dateFormat: newExamples.dateFormat
+                        }));
+                        setLanguage(languageCode);
+                      }}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="English">English</option>
-                      <option value="Spanish">Spanish</option>
-                      <option value="French">French</option>
-                      <option value="German">German</option>
-                      <option value="Chinese">Chinese</option>
+                      <option value="English">English (US)</option>
+                      <option value="Spanish">Spanish (Spain)</option>
                     </select>
                     <p className="text-xs text-muted-foreground">
-                      This will change the language throughout the educational platform
+                      <TranslatedText>This will change the language throughout the educational platform</TranslatedText>
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="timezone" className="block text-sm font-medium text-foreground">Time Zone</label>
+                    <label htmlFor="timezone" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Time Zone</TranslatedText>
+                    </label>
                     <select
                       id="timezone"
+                      name="timezone"
+                      value={settings.timezone}
+                      onChange={handleInputChange}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="UTC-8">Pacific Time (UTC-8)</option>
-                      <option value="UTC-5">Eastern Time (UTC-5)</option>
-                      <option value="UTC+0">Greenwich Mean Time (UTC+0)</option>
-                      <option value="UTC+1">Central European Time (UTC+1)</option>
-                      <option value="UTC+8">China Standard Time (UTC+8)</option>
+                      <option value="UTC-8">
+                        {currentLanguage === 'es-ES' ? getSpanishTranslation("Pacific Time (UTC-8)") : "Pacific Time (UTC-8)"}
+                      </option>
+                      <option value="UTC-5">
+                        {currentLanguage === 'es-ES' ? getSpanishTranslation("Eastern Time (UTC-5)") : "Eastern Time (UTC-5)"}
+                      </option>
+                      <option value="UTC+0">
+                        {currentLanguage === 'es-ES' ? getSpanishTranslation("Greenwich Mean Time (UTC+0)") : "Greenwich Mean Time (UTC+0)"}
+                      </option>
+                      <option value="UTC+1">
+                        {currentLanguage === 'es-ES' ? getSpanishTranslation("Central European Time (UTC+1)") : "Central European Time (UTC+1)"}
+                      </option>
+                      <option value="UTC+8">
+                        {currentLanguage === 'es-ES' ? getSpanishTranslation("China Standard Time (UTC+8)") : "China Standard Time (UTC+8)"}
+                      </option>
                     </select>
                     <p className="text-xs text-muted-foreground">
-                      All class times and deadlines will be displayed in your selected time zone
+                      <TranslatedText>All class times and deadlines will be displayed in your selected time zone</TranslatedText>
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="dateFormat" className="block text-sm font-medium text-foreground">Date Format</label>
+                    <label htmlFor="dateFormat" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Date Format</TranslatedText>
+                    </label>
                     <select
                       id="dateFormat"
+                      name="dateFormat"
+                      value={settings.dateFormat}
+                      onChange={handleInputChange}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <option value="MM/DD/YYYY">MM/DD/YYYY</option>
@@ -565,14 +713,14 @@ const Settings = () => {
                       <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                     </select>
                     <p className="text-xs text-muted-foreground">
-                      Choose how assignment dates and schedules are displayed
+                      <TranslatedText>Choose how assignment dates and schedules are displayed</TranslatedText>
                     </p>
                   </div>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Language Settings
+                    <TranslatedText>Save Language Settings</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -581,20 +729,22 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Info className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Learning Preferences</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Learning Preferences</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Customize your learning experience and content display
+                    <TranslatedText>Customize your learning experience and content display</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label htmlFor="compactMode" className="text-base font-medium">
-                        Compact Mode
+                        <TranslatedText>Compact Mode</TranslatedText>
                       </label>
                       <p className="text-xs text-muted-foreground">
-                        Display more course content with reduced spacing
+                        <TranslatedText>Display more course content with reduced spacing</TranslatedText>
                       </p>
                     </div>
                     <Switch id="compactMode" checked={false} onCheckedChange={() => {}} />
@@ -603,34 +753,42 @@ const Settings = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label htmlFor="reducedMotion" className="text-base font-medium">
-                        Reduced Motion
+                        <TranslatedText>Reduced Motion</TranslatedText>
                       </label>
                       <p className="text-xs text-muted-foreground">
-                        Minimize animations for better focus and accessibility
+                        <TranslatedText>Minimize animations for better focus and accessibility</TranslatedText>
                       </p>
                     </div>
                     <Switch id="reducedMotion" checked={false} onCheckedChange={() => {}} />
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="fontSize" className="block text-sm font-medium text-foreground">Font Size</label>
+                    <label htmlFor="fontSize" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Font Size</TranslatedText>
+                    </label>
                     <select
                       id="fontSize"
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <option value="small">Small</option>
-                      <option value="medium">Medium</option>
-                      <option value="large">Large</option>
+                      <option value="small">
+                        <TranslatedText>Small</TranslatedText>
+                      </option>
+                      <option value="medium">
+                        <TranslatedText>Medium</TranslatedText>
+                      </option>
+                      <option value="large">
+                        <TranslatedText>Large</TranslatedText>
+                      </option>
                     </select>
                     <p className="text-xs text-muted-foreground">
-                      Adjust text size for better readability during study sessions
+                      <TranslatedText>Adjust text size for better readability during study sessions</TranslatedText>
                     </p>
                   </div>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Learning Preferences
+                    <TranslatedText>Save Learning Preferences</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -646,27 +804,31 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <Shield className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-xl">Security Settings</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Security Settings</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Manage your account security and privacy preferences
+                    <TranslatedText>Manage your account security and privacy preferences</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label htmlFor="twoFactor" className="text-base font-medium">
-                        Two-Factor Authentication
+                        <TranslatedText>Two-Factor Authentication</TranslatedText>
                       </label>
                       <p className="text-xs text-muted-foreground">
-                        Add an extra layer of security to protect your educational data
+                        <TranslatedText>Add an extra layer of security to protect your educational data</TranslatedText>
                       </p>
                     </div>
                     <Switch id="twoFactor" checked={false} onCheckedChange={() => {}} />
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="currentPassword" className="block text-sm font-medium text-foreground">Current Password</label>
+                    <label htmlFor="currentPassword" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Current Password</TranslatedText>
+                    </label>
                     <Input
                       id="currentPassword"
                       type="password"
@@ -675,19 +837,23 @@ const Settings = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="newPassword" className="block text-sm font-medium text-foreground">New Password</label>
+                    <label htmlFor="newPassword" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>New Password</TranslatedText>
+                    </label>
                     <Input
                       id="newPassword"
                       type="password"
                       placeholder="••••••••"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Password must be at least 8 characters with a mix of letters, numbers, and symbols
+                      <TranslatedText>Password must be at least 8 characters with a mix of letters, numbers, and symbols</TranslatedText>
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground">Confirm New Password</label>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Confirm New Password</TranslatedText>
+                    </label>
                     <Input
                       id="confirmPassword"
                       type="password"
@@ -698,7 +864,7 @@ const Settings = () => {
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Update Password
+                    <TranslatedText>Update Password</TranslatedText>
                   </Button>
                 </div>
               </Card>
@@ -707,52 +873,60 @@ const Settings = () => {
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-5 w-5 text-destructive" />
-                    <CardTitle className="text-xl">Account Management</CardTitle>
+                    <CardTitle className="text-xl">
+                      <TranslatedText>Account Management</TranslatedText>
+                    </CardTitle>
                   </div>
                   <CardDescription>
-                    Advanced account actions - use with caution
+                    <TranslatedText>Advanced account actions - use with caution</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div className="space-y-2 border-b border-border pb-4">
-                    <h4 className="text-sm font-medium">Reset Learning Preferences</h4>
+                    <h4 className="text-sm font-medium">
+                      <TranslatedText>Reset Learning Preferences</TranslatedText>
+                    </h4>
                     <p className="text-xs text-muted-foreground">
-                      Reset all your learning preferences to default settings. Your courses and progress will remain intact.
+                      <TranslatedText>Reset all your learning preferences to default settings. Your courses and progress will remain intact.</TranslatedText>
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       className="mt-2"
                     >
-                      Reset Preferences
+                      <TranslatedText>Reset Preferences</TranslatedText>
                     </Button>
                   </div>
                   
                   <div className="space-y-2 border-b border-border pb-4">
-                    <h4 className="text-sm font-medium">Download Your Data</h4>
+                    <h4 className="text-sm font-medium">
+                      <TranslatedText>Download Your Data</TranslatedText>
+                    </h4>
                     <p className="text-xs text-muted-foreground">
-                      Get a copy of all your educational data including courses, grades, and progress.
+                      <TranslatedText>Get a copy of all your educational data including courses, grades, and progress.</TranslatedText>
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       className="mt-2"
                     >
-                      Request Data Export
+                      <TranslatedText>Request Data Export</TranslatedText>
                     </Button>
                   </div>
                   
                   <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-destructive">Delete Account</h4>
+                    <h4 className="text-sm font-medium text-destructive">
+                      <TranslatedText>Delete Account</TranslatedText>
+                    </h4>
                     <p className="text-xs text-muted-foreground">
-                      Permanently delete your account and all educational data. This action cannot be reversed.
+                      <TranslatedText>Permanently delete your account and all educational data. This action cannot be reversed.</TranslatedText>
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       className="mt-2 border-destructive text-destructive hover:bg-destructive/10"
                     >
-                      Delete Account
+                      <TranslatedText>Delete Account</TranslatedText>
                     </Button>
                   </div>
                 </CardContent>

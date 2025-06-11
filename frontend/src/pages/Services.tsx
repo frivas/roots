@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import TranslatedText from '../components/TranslatedText';
 import { 
   BookOpen, 
   Bus, 
@@ -59,19 +60,21 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
               <div className="p-2 rounded-md bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
-              <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+              <CardTitle className="text-xl font-semibold">
+                <TranslatedText>{title}</TranslatedText>
+              </CardTitle>
             </div>
             <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground font-normal">
-              {category}
+              <TranslatedText>{category}</TranslatedText>
             </span>
           </div>
           <CardDescription className="text-sm text-muted-foreground">
-            {description}
+            <TranslatedText>{description}</TranslatedText>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Access and manage your {title.toLowerCase()} services with ease.
+            <TranslatedText>Access and manage your</TranslatedText> <TranslatedText>{title.toLowerCase()}</TranslatedText> <TranslatedText>services with ease.</TranslatedText>
           </p>
         </CardContent>
         <CardFooter>
@@ -80,7 +83,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             className="w-full transition-all duration-300"
           >
             <span className="flex items-center gap-2">
-              Access Service
+              <TranslatedText>Access Service</TranslatedText>
               <motion.div
                 animate={{ x: isHovered ? 5 : 0 }}
                 transition={{ duration: 0.2 }}
@@ -196,10 +199,10 @@ const Services = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">Educational Services</h1>
-        <p className="text-muted-foreground text-lg">
+        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight text-foreground">Educational Services</TranslatedText>
+        <TranslatedText element="p" className="text-muted-foreground text-lg">
           Access and manage all educational services from one centralized hub.
-        </p>
+        </TranslatedText>
       </motion.div>
       
       <motion.div 
@@ -232,7 +235,7 @@ const Services = () => {
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 )}
               >
-                {category.label}
+                <TranslatedText>{category.label}</TranslatedText>
               </button>
             ))}
           </div>
