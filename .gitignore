@@ -45,9 +45,14 @@
 # --- Mac OS ---
 **/.DS_Store
 
+# --- Lingo.dev ---
+**/.lingo-cache/
+**/lingo/
+
 # --- Logs ---
 **/logs/
 **/*.log
 **/*.pid
 **/*.seed
 **/*.pid.lock
+i18n.cache

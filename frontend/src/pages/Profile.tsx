@@ -8,7 +8,10 @@ import {
   CardTitle
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import TranslatedText from '../components/TranslatedText';
 import { useAuth } from '../contexts/AuthContext';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+import { useUser } from '@clerk/clerk-react';
 import { 
   Award,
   BookOpen,
@@ -133,14 +136,36 @@ const TabsContent = ({ value, children, className, activeTab }: any) => {
 
 const Profile = () => {
   const { userEmail, userRole } = useAuth();
+  const { language } = useLingoTranslation();
+  const { user } = useUser();
   const [activeTab, setActiveTab] = useState('overview');
   
+  // Helper function to get localized profile data
+  const getLocalizedProfileData = () => {
+    const baseData = {
+      name: user?.fullName || 'John Doe',
+      title: 'Senior English Teacher',
+      email: userEmail || 'john.doe@example.com',
+      phone: '+1 (555) 123-4567',
+    };
+    
+    // Use Spanish examples when in Spanish locale
+    if (language === 'es-ES') {
+      return {
+        ...baseData,
+        name: user?.fullName || (userEmail ? (userEmail.split('@')[0].replace(/\./g, ' ').replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())) : 'María García'),
+        title: 'Profesora Senior de Inglés',
+        email: userEmail || 'maria.garcia@ejemplo.es',
+        phone: '+34 666 123 456',
+      };
+    }
+    
+    return baseData;
+  };
+
   // Normally this would be fetched from an API
   const profileData = {
-    name: 'John Doe',
-    title: 'Senior English Teacher',
-    email: userEmail || 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
+    ...getLocalizedProfileData(),
     location: 'Lincoln High School',
     department: 'Language Arts',
     joinDate: 'September 2018',
@@ -214,18 +239,26 @@ const Profile = () => {
       variants={containerVariants}
     >
       <motion.div variants={itemVariants} className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold tracking-tight">Educational Profile</h1>
-        <p className="text-muted-foreground text-lg">
+        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight">Educational Profile</TranslatedText>
+        <TranslatedText element="p" className="text-muted-foreground text-lg">
           View and manage your professional educational profile
-        </p>
+        </TranslatedText>
       </motion.div>
       
       <div className="grid gap-6 md:grid-cols-3">
         <motion.div variants={itemVariants} className="md:col-span-1 space-y-6">
           <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
                             <CardHeader className="text-center pb-2 bg-muted/30">
-              <div className="mx-auto rounded-full bg-muted p-6 w-32 h-32 flex items-center justify-center relative group">
-                <UserCircle className="h-24 w-24 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+              <div className="mx-auto rounded-full bg-muted w-32 h-32 flex items-center justify-center relative group overflow-hidden">
+                {user?.imageUrl ? (
+                  <img 
+                    src={user.imageUrl} 
+                    alt={user.fullName || 'Profile'} 
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <UserCircle className="h-24 w-24 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                )}
                 <div className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
                   <Button variant="ghost" size="sm" className="text-white hover:text-white">
                     <Edit className="h-5 w-5" />
@@ -233,13 +266,15 @@ const Profile = () => {
                 </div>
               </div>
               <CardTitle className="mt-4 text-2xl">{profileData.name}</CardTitle>
-              <CardDescription className="text-base font-medium text-primary">{profileData.title}</CardDescription>
+              <CardDescription className="text-base font-medium text-primary">
+                <TranslatedText>{profileData.title}</TranslatedText>
+              </CardDescription>
               <div className="flex flex-wrap gap-1 justify-center mt-2">
                 <Badge variant="outline" className="bg-primary/10 hover:bg-primary/20">
-                  {profileData.role}
+                  <TranslatedText>{profileData.role}</TranslatedText>
                 </Badge>
                 <Badge variant="outline" className="bg-primary/10 hover:bg-primary/20">
-                  {profileData.department}
+                  <TranslatedText>{profileData.department}</TranslatedText>
                 </Badge>
               </div>
             </CardHeader>
@@ -258,7 +293,7 @@ const Profile = () => {
               </div>
               <div className="flex items-center text-sm">
                 <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span>Joined {profileData.joinDate}</span>
+                <span><TranslatedText>Joined</TranslatedText> {profileData.joinDate}</span>
               </div>
             </CardContent>
             <div className="flex justify-center pb-6">
@@ -267,7 +302,7 @@ const Profile = () => {
                 className="w-full mx-6"
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit Profile
+                <TranslatedText>Edit Profile</TranslatedText>
               </Button>
             </div>
           </Card>
@@ -277,16 +312,18 @@ const Profile = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center">
                   <GraduationCap className="mr-2 h-5 w-5 text-primary" />
-                  Education & Credentials
+                  <TranslatedText>Education & Credentials</TranslatedText>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {profileData.education.map((edu, index) => (
                   <div key={index} className="space-y-1">
-                    <div className="font-medium">{edu.degree}</div>
+                    <div className="font-medium">
+                      <TranslatedText>{edu.degree}</TranslatedText>
+                    </div>
                     <div className="text-sm text-muted-foreground flex items-center">
                       <School className="mr-1 h-3 w-3" />
-                      {edu.institution}
+                      <TranslatedText>{edu.institution}</TranslatedText>
                     </div>
                     <div className="text-sm text-muted-foreground flex items-center">
                       <Calendar className="mr-1 h-3 w-3" />
@@ -305,9 +342,15 @@ const Profile = () => {
         <motion.div variants={itemVariants} className="md:col-span-2 space-y-6">
           <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 mb-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="achievements">Achievements</TabsTrigger>
-              <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+              <TabsTrigger value="overview">
+                <TranslatedText>Overview</TranslatedText>
+              </TabsTrigger>
+              <TabsTrigger value="achievements">
+                <TranslatedText>Achievements</TranslatedText>
+              </TabsTrigger>
+              <TabsTrigger value="activity">
+                <TranslatedText>Recent Activity</TranslatedText>
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="space-y-6 mt-0">
@@ -315,12 +358,12 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <UserCircle className="mr-2 h-5 w-5 text-primary" />
-                    About Me
+                    <TranslatedText>About Me</TranslatedText>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">
-                    {profileData.bio}
+                    <TranslatedText>{profileData.bio}</TranslatedText>
                   </p>
                 </CardContent>
               </Card>
@@ -329,14 +372,14 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Briefcase className="mr-2 h-5 w-5 text-primary" />
-                    Teaching Specializations
+                    <TranslatedText>Teaching Specializations</TranslatedText>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {profileData.skills.map((skill, index) => (
                       <Badge key={index} variant="secondary" className="px-3 py-1 text-sm">
-                        {skill}
+                        <TranslatedText>{skill}</TranslatedText>
                       </Badge>
                     ))}
                   </div>
@@ -347,14 +390,16 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <CheckCircle2 className="mr-2 h-5 w-5 text-primary" />
-                    Teaching Performance Metrics
+                    <TranslatedText>Teaching Performance Metrics</TranslatedText>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Classes Taught</span>
+                        <span className="text-sm font-medium">
+                          <TranslatedText>Classes Taught</TranslatedText>
+                        </span>
                         <span className="text-sm font-bold">{profileData.stats.classesTaught}</span>
                       </div>
                       <Progress value={Math.min((profileData.stats.classesTaught / 200) * 100, 100)} className="h-2" />
@@ -362,7 +407,9 @@ const Profile = () => {
                     
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Students Mentored</span>
+                        <span className="text-sm font-medium">
+                          <TranslatedText>Students Mentored</TranslatedText>
+                        </span>
                         <span className="text-sm font-bold">{profileData.stats.studentsMentored}</span>
                       </div>
                       <Progress value={Math.min((profileData.stats.studentsMentored / 50) * 100, 100)} className="h-2" />
@@ -370,7 +417,9 @@ const Profile = () => {
                     
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Educational Events Organized</span>
+                        <span className="text-sm font-medium">
+                          <TranslatedText>Educational Events Organized</TranslatedText>
+                        </span>
                         <span className="text-sm font-bold">{profileData.stats.eventsOrganized}</span>
                       </div>
                       <Progress value={Math.min((profileData.stats.eventsOrganized / 20) * 100, 100)} className="h-2" />
@@ -378,7 +427,9 @@ const Profile = () => {
                     
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Student Satisfaction Score</span>
+                        <span className="text-sm font-medium">
+                          <TranslatedText>Student Satisfaction Score</TranslatedText>
+                        </span>
                         <span className="text-sm font-bold">{profileData.stats.studentSatisfaction}%</span>
                       </div>
                       <Progress value={profileData.stats.studentSatisfaction} className="h-2" />
@@ -393,7 +444,7 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Award className="mr-2 h-5 w-5 text-primary" />
-                    Professional Achievements & Recognition
+                    <TranslatedText>Professional Achievements & Recognition</TranslatedText>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -405,13 +456,15 @@ const Profile = () => {
                         </div>
                         <div className="space-y-1 flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">{achievement.title}</h3>
+                            <h3 className="font-semibold">
+                              <TranslatedText>{achievement.title}</TranslatedText>
+                            </h3>
                             <Badge variant="outline" className="text-xs">
                               {achievement.year}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {achievement.description}
+                            <TranslatedText>{achievement.description}</TranslatedText>
                           </p>
                           {index < profileData.achievements.length - 1 && (
                             <Separator className="mt-4" />
@@ -429,7 +482,7 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Clock className="mr-2 h-5 w-5 text-primary" />
-                    Recent Educational Activities
+                    <TranslatedText>Recent Educational Activities</TranslatedText>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -441,10 +494,14 @@ const Profile = () => {
                         </div>
                         <div className="p-4 rounded-lg border border-border bg-card shadow-sm flex-1">
                           <div className="flex items-center justify-between space-x-2 mb-1">
-                            <div className="font-semibold">{activity.title}</div>
+                            <div className="font-semibold">
+                              <TranslatedText>{activity.title}</TranslatedText>
+                            </div>
                             <time className="text-xs text-muted-foreground">{activity.date}</time>
                           </div>
-                          <div className="text-sm text-muted-foreground">{activity.description}</div>
+                          <div className="text-sm text-muted-foreground">
+                            <TranslatedText>{activity.description}</TranslatedText>
+                          </div>
                         </div>
                       </div>
                     ))}

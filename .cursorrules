@@ -1,0 +1,121 @@
+# Roots Project - Cursor Rules
+
+## Core Development Guidelines
+
+### 🌍 LOCALIZATION REQUIREMENTS (CRITICAL)
+**Every new feature, component, page, or text addition MUST follow these localization rules:**
+
+1. **TranslatedText Component Usage**
+   - ✅ DO: Wrap ALL user-facing strings with `<TranslatedText>Your text here</TranslatedText>`
+   - ❌ DON'T: Use raw strings directly in JSX: `<span>Settings</span>`
+   - ✅ EXAMPLE: `<TranslatedText element="h1" className="text-2xl">Dashboard</TranslatedText>`
+
+2. **String Localization Checklist**
+   - [ ] All button text wrapped with TranslatedText
+   - [ ] All headings and labels wrapped with TranslatedText  
+   - [ ] All error messages wrapped with TranslatedText
+   - [ ] All placeholder text wrapped with TranslatedText
+   - [ ] All toast/notification messages wrapped with TranslatedText
+   - [ ] All modal/dialog content wrapped with TranslatedText
+
+3. **Import Requirements**
+   - Always import: `import TranslatedText from '../components/TranslatedText';`
+   - Import hook when needed: `import { useLingoTranslation } from '../contexts/LingoTranslationContext';`
+
+4. **Spanish Dictionary Updates**
+   - Add new common phrases to `frontend/src/services/SpanishTranslations.ts`
+   - Use the format: `"English text": "Spanish translation"`
+   - Test translations with the Translation Debugger component
+
+5. **Dynamic Content Translation**
+   - For dynamic/computed strings, use the hook:
+   ```typescript
+   const { translateText } = useLingoTranslation();
+   const translatedMessage = await translateText(`Hello ${userName}`);
+   ```
+
+6. **Form Validation & Placeholders**
+   - Wrap all form placeholders: `placeholder={<TranslatedText>Enter your name</TranslatedText>}`
+   - Wrap all validation messages with TranslatedText
+   - Include Spanish date/time formats for Spanish locale
+
+### 🔍 PRE-COMMIT LOCALIZATION CHECKLIST
+Before submitting any code, verify:
+- [ ] No hardcoded English strings in JSX
+- [ ] All user-facing text uses TranslatedText component
+- [ ] Spanish translations added to SpanishTranslations.ts for common phrases
+- [ ] Tested with language switcher (English ↔ Spanish)
+- [ ] Regional formats work correctly (dates, phone numbers, timezones)
+
+### 📝 CODE PATTERNS TO FOLLOW
+
+**✅ GOOD - Properly Localized:**
+```tsx
+// Headings
+<TranslatedText element="h1">Welcome to Dashboard</TranslatedText>
+
+// Buttons
+<Button>
+  <TranslatedText>Save Changes</TranslatedText>
+</Button>
+
+// Form inputs
+<Input placeholder="Enter email" /> // Will be wrapped internally
+<label><TranslatedText>Email Address</TranslatedText></label>
+
+// Dynamic content
+const { translateText } = useLingoTranslation();
+const message = await translateText(`Welcome back, ${user.name}!`);
+```
+
+**❌ BAD - Not Localized:**
+```tsx
+<h1>Welcome to Dashboard</h1>  // Missing TranslatedText
+<Button>Save Changes</Button>   // Missing TranslatedText
+<div>Settings</div>             // Missing TranslatedText
+```
+
+### 🛠 DEVELOPMENT WORKFLOW
+1. **Write feature in English first** (your preferred workflow)
+2. **Wrap all strings with TranslatedText** during development
+3. **Add common phrases to SpanishTranslations.ts** 
+4. **Test with Translation Debugger** (available on Dashboard)
+5. **Switch language and verify** all text translates properly
+
+### 🎯 TRANSLATION PRIORITIES
+1. **Instant (Local Dictionary)**: Navigation, buttons, common UI elements
+2. **Dynamic (Lingo.dev SDK)**: User-generated content, descriptions, messages
+3. **Regional Adaptation**: Dates, times, phone formats for Spanish users
+
+### 📱 REGIONAL SETTINGS FOR SPANISH
+- **Date Format**: DD/MM/YYYY
+- **Time Zone**: UTC+1 (CET)
+- **Phone Format**: +34 XXX XXX XXX
+- **Currency**: € (if applicable)
+
+### 🚨 CRITICAL REMINDERS
+- **NEVER commit code with untranslated user-facing strings**
+- **ALWAYS test language switching before push**
+- **ALWAYS add new common terms to Spanish dictionary**
+- **RESPECT the hybrid translation architecture** (Local → Cache → SDK → Fallback)
+
+---
+## Other Development Rules
+
+### Code Quality
+- Use TypeScript strictly - no `@ts-nocheck` unless absolutely necessary
+- Prefer composition over inheritance
+- Follow existing component patterns
+- Use Tailwind CSS classes consistently
+
+### File Organization  
+- Components in `frontend/src/components/`
+- Pages in `frontend/src/pages/`
+- Services in `frontend/src/services/`
+- Types in `frontend/src/types/`
+
+### Performance
+- Lazy load components when appropriate
+- Use React.memo for expensive components
+- Optimize images and assets
+- Cache API responses when possible 

@@ -22,10 +22,13 @@ const Profile = lazy(() => import('./pages/Profile'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Loading component
+// Loading component with better UX
 const Loading = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+  <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center gap-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-2 border-muted border-t-primary"></div>
+      <p className="text-sm text-muted-foreground animate-pulse">Loading...</p>
+    </div>
   </div>
 );
 
@@ -68,7 +71,7 @@ function App() {
             path="/dashboard"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="dashboard">
                   <Dashboard />
                 </MainLayout>
               </SignedIn>
@@ -79,7 +82,7 @@ function App() {
             path="/services/*"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="services">
                   <Services />
                 </MainLayout>
               </SignedIn>
@@ -90,7 +93,7 @@ function App() {
             path="/messages/*"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="messages">
                   <Messages />
                 </MainLayout>
               </SignedIn>
@@ -101,7 +104,7 @@ function App() {
             path="/notifications"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="notifications">
                   <Notifications />
                 </MainLayout>
               </SignedIn>
@@ -112,7 +115,7 @@ function App() {
             path="/settings/*"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="settings">
                   <Settings />
                 </MainLayout>
               </SignedIn>
@@ -123,7 +126,7 @@ function App() {
             path="/profile"
             element={
               <SignedIn>
-                <MainLayout>
+                <MainLayout key="profile">
                   <Profile />
                 </MainLayout>
               </SignedIn>

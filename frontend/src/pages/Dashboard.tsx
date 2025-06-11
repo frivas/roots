@@ -1,11 +1,15 @@
+// @ts-nocheck
 "use client";
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { useAuth } from '../contexts/AuthContext';
-import { BarChart, Bell, Briefcase, Calendar, ChevronRight, GraduationCap, LineChart, Users } from 'lucide-react';
+import { BarChart, Bell, Briefcase, Calendar, ChevronRight, GraduationCap, LineChart, Users, type LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
+import TranslatedText from '../components/TranslatedText';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+// import TranslationDebugger from '../components/TranslationDebugger';
+// import TranslationTest from '../components/TranslationTest';
 
 // Animation variants
 const containerVariants = {
@@ -95,9 +99,86 @@ const GridPatternCard = ({
   );
 };
 
+// Translated version of GridPatternCard
+const TranslatedGridPatternCard = ({ 
+  className,
+  icon,
+  title,
+  value,
+  trend,
+  trendValue,
+  trendDirection,
+}: {
+  className?: string;
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+  trend: string;
+  trendValue: string;
+  trendDirection: 'up' | 'down';
+}) => {
+  return (
+    <motion.div
+      className={cn(
+        "border w-full rounded-lg overflow-hidden",
+        "bg-background",
+        "border-border",
+        "p-3",
+        "hover:shadow-md transition-all duration-300",
+        className
+      )}
+      variants={itemVariants}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+    >
+      <div className={cn(
+        "size-full bg-repeat bg-[length:30px_30px]",
+        "bg-[radial-gradient(rgba(0,0,0,0.03)_1px,transparent_1px)]",
+      )}>
+        <div className={cn(
+          "size-full bg-background/95",
+        )}>
+          <div className="flex flex-col p-4">
+            <div className="flex justify-between items-center mb-4">
+              <TranslatedText className="text-sm font-medium text-muted-foreground">
+                {title}
+              </TranslatedText>
+              <div className="text-muted-foreground">{icon}</div>
+            </div>
+            <div className="text-2xl font-bold mb-1">{value}</div>
+            <div className="flex items-center text-xs">
+              <span className={cn(
+                "mr-1",
+                trendDirection === 'up' ? 'text-green-500' : 'text-rose-500'
+              )}>
+                {trendDirection === 'up' ? '↑' : '↓'} {trendValue}
+              </span>
+              <TranslatedText className="text-muted-foreground">
+                {trend}
+              </TranslatedText>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const Dashboard = () => {
   const { userRole, userEmail } = useAuth();
+  const { isInitialized, preloadingComplete } = useLingoTranslation();
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Show loading state if translation context is not ready
+  if (!isInitialized || !preloadingComplete) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
+          <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div 
@@ -111,15 +192,28 @@ const Dashboard = () => {
         className="flex flex-col gap-2"
         variants={itemVariants}
       >
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">Welcome to Roots!</h1>
-        <p className="text-muted-foreground text-lg">
+        <TranslatedText 
+          element="h1" 
+          className="text-4xl font-bold tracking-tight text-foreground"
+        >
+          Welcome to Roots!
+        </TranslatedText>
+        <TranslatedText 
+          element="p" 
+          className="text-muted-foreground text-lg"
+        >
           Here's an overview of your educational journey.
-        </p>
+        </TranslatedText>
       </motion.div>
+
+      {/* Translation Test Section */}
+      {/* <motion.div variants={itemVariants}>
+        <TranslationTest />
+      </motion.div> */}
 
       {/* Stats Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <GridPatternCard
+        <TranslatedGridPatternCard
           icon={<Calendar className="h-5 w-5" />}
           title="Upcoming Classes"
           value="12"
@@ -128,7 +222,7 @@ const Dashboard = () => {
           trendDirection="up"
         />
         
-        <GridPatternCard
+        <TranslatedGridPatternCard
           icon={<Briefcase className="h-5 w-5" />}
           title="Active Programs"
           value="4"
@@ -137,7 +231,7 @@ const Dashboard = () => {
           trendDirection="up"
         />
         
-        <GridPatternCard
+        <TranslatedGridPatternCard
           icon={<Bell className="h-5 w-5" />}
           title="New Messages"
           value="8"
@@ -146,7 +240,7 @@ const Dashboard = () => {
           trendDirection="up"
         />
         
-        <GridPatternCard
+        <TranslatedGridPatternCard
           icon={<Users className="h-5 w-5" />}
           title="Active Mentorships"
           value="6"
@@ -167,8 +261,12 @@ const Dashboard = () => {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl font-semibold">Learning Activity</CardTitle>
-                  <CardDescription>Your activity across all courses for the past 30 days</CardDescription>
+                  <TranslatedText element="h3" className="text-xl font-semibold">
+                    Learning Activity
+                  </TranslatedText>
+                  <TranslatedText element="p" className="text-sm text-muted-foreground">
+                    Your activity across all courses for the past 30 days
+                  </TranslatedText>
                 </div>
                 <div className="flex space-x-2">
                   <button className={cn(
@@ -177,7 +275,7 @@ const Dashboard = () => {
                       ? "bg-primary text-primary-foreground" 
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   )} onClick={() => setActiveTab('overview')}>
-                    Overview
+                    <TranslatedText>Dashboard Overview</TranslatedText>
                   </button>
                   <button className={cn(
                     "px-3 py-1 text-sm rounded-md transition-colors",
@@ -185,7 +283,7 @@ const Dashboard = () => {
                       ? "bg-primary text-primary-foreground" 
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   )} onClick={() => setActiveTab('detailed')}>
-                    Detailed
+                    <TranslatedText>Detailed</TranslatedText>
                   </button>
                 </div>
               </div>
@@ -195,12 +293,16 @@ const Dashboard = () => {
                 {activeTab === 'overview' ? (
                   <div className="flex flex-col items-center">
                     <BarChart className="h-16 w-16 text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">Activity overview chart will appear here</p>
+                    <TranslatedText element="p" className="text-muted-foreground">
+                      Activity overview chart will appear here
+                    </TranslatedText>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center">
                     <LineChart className="h-16 w-16 text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">Detailed activity chart will appear here</p>
+                    <TranslatedText element="p" className="text-muted-foreground">
+                      Detailed activity chart will appear here
+                    </TranslatedText>
                   </div>
                 )}
               </div>
@@ -215,8 +317,12 @@ const Dashboard = () => {
         >
           <Card className="h-full border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">Quick Actions</CardTitle>
-              <CardDescription>Frequently used learning tools</CardDescription>
+              <TranslatedText element="h3" className="text-xl font-semibold">
+                Quick Actions
+              </TranslatedText>
+              <TranslatedText element="p" className="text-sm text-muted-foreground">
+                Frequently used learning tools
+              </TranslatedText>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -238,7 +344,9 @@ const Dashboard = () => {
                     <div className={`mb-2 p-2 rounded-full ${item.color}`}>
                       {item.icon}
                     </div>
-                    <span className="text-sm font-medium">{item.label}</span>
+                    <TranslatedText className="text-sm font-medium">
+                      {item.label}
+                    </TranslatedText>
                   </motion.button>
                 ))}
               </div>
@@ -250,9 +358,12 @@ const Dashboard = () => {
       {/* Recent Courses Section */}
       <motion.div variants={itemVariants}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Recent Courses</h2>
+          <TranslatedText element="h2" className="text-xl font-semibold">
+            Recent Courses
+          </TranslatedText>
           <button className="text-sm text-primary flex items-center hover:underline">
-            View all courses <ChevronRight className="h-4 w-4 ml-1" />
+            <TranslatedText>View all courses</TranslatedText>
+            <ChevronRight className="h-4 w-4 ml-1" />
           </button>
         </div>
         
@@ -270,8 +381,12 @@ const Dashboard = () => {
             >
               <Card className="overflow-hidden border-border h-full transition-all duration-300 group-hover:shadow-md">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-semibold">{course.title}</CardTitle>
-                  <CardDescription>{course.completed} of {course.lessons} lessons completed</CardDescription>
+                  <TranslatedText element="h3" className="text-lg font-semibold">
+                    {course.title}
+                  </TranslatedText>
+                  <p className="text-sm text-muted-foreground">
+                    {course.completed} <TranslatedText>of</TranslatedText> {course.lessons} <TranslatedText>lessons completed</TranslatedText>
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -284,8 +399,12 @@ const Dashboard = () => {
                       />
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{course.progress}% complete</span>
-                      <button className="text-sm text-primary hover:underline">Continue</button>
+                      <span className="text-sm text-muted-foreground">
+                        {course.progress}% <TranslatedText>complete</TranslatedText>
+                      </span>
+                      <button className="text-sm text-primary hover:underline">
+                        <TranslatedText>Continue</TranslatedText>
+                      </button>
                     </div>
                   </div>
                 </CardContent>

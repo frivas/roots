@@ -2,6 +2,8 @@ import React from 'react';
 import SimpleHeader from './SimpleHeader';
 import ModernSidebar from './ModernSidebar';
 import Footer from './Footer';
+import ErrorBoundary from '../ErrorBoundary';
+import RouteWrapper from '../RouteWrapper';
 import { cn } from '../../lib/utils';
 
 interface MainLayoutProps {
@@ -33,7 +35,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           "pt-0 md:pt-6", // No top padding on mobile (header handles it)
           className
         )}>
-          {children}
+          <ErrorBoundary>
+            <RouteWrapper>
+              {children}
+            </RouteWrapper>
+          </ErrorBoundary>
         </main>
         {/* Footer */}
         <Footer />
