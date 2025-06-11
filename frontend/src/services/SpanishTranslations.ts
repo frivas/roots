@@ -11,7 +11,7 @@ export const spanishTranslations: Record<string, string> = {
   "Profile": "Perfil",
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
-  "Roots": "Roots",
+  "Roots": "Raíces",
 
   // Dashboard - Main
   "Welcome to Roots!": "¡Bienvenidos a Raíces!",
@@ -53,9 +53,8 @@ export const spanishTranslations: Record<string, string> = {
   "complete": "completado",
   "Continue": "Continuar",
 
-  // Settings Page
-  "Educational Settings": "Configuración Educativa",
-  "Manage your account settings and learning preferences": "Gestiona tu configuración de cuenta y preferencias de aprendizaje",
+      // Settings Page
+    "Manage your account settings and learning preferences": "Gestiona tu configuración de cuenta y preferencias de aprendizaje",
 
   // Profile Tab
   "Profile Information": "Información del Perfil",
@@ -151,8 +150,7 @@ export const spanishTranslations: Record<string, string> = {
   "Delete Account": "Eliminar Cuenta",
   "Permanently delete your account and all educational data. This action cannot be reversed.": "Elimina permanentemente tu cuenta y todos los datos educativos. Esta acción no se puede revertir.",
 
-  // Messages Page
-  "Educational Messages": "Mensajes Educativos",
+      // Messages Page
   "All Messages": "Todos los Mensajes",
   "Inbox": "Bandeja de Entrada",
   "Starred": "Destacados",
@@ -196,11 +194,10 @@ export const spanishTranslations: Record<string, string> = {
   "System Maintenance Notice": "Aviso de Mantenimiento del Sistema",
 
   // Services Page
-  "Available Services": "Servicios Disponibles",
-  "Educational Services": "Servicios Educativos",
-  "Support Services": "Servicios de Apoyo",
+      "Available Services": "Servicios Disponibles",
+    "Support Services": "Servicios de Apoyo",
   "Administrative Services": "Servicios Administrativos",
-  "Access and manage all educational services from one centralized hub.": "Accede y gestiona todos los servicios educativos desde un centro unificado.",
+  "Access and manage all services from one centralized hub.": "Accede y gestiona todos los servicios desde un centro unificado.",
   "All Services": "Todos los Servicios",
   "Academic": "Académico",
   "Support": "Apoyo",
@@ -241,9 +238,8 @@ export const spanishTranslations: Record<string, string> = {
   "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.": "La página que buscas podría haber sido eliminada, haber cambiado de nombre o no estar disponible temporalmente.",
   "Return to Dashboard": "Volver al Panel de Control",
 
-  // Profile Page
-  "Educational Profile": "Perfil Educativo",
-  "View and manage your professional educational profile": "Ve y gestiona tu perfil educativo profesional",
+      // Profile Page
+    "View and manage your professional profile": "Ve y gestiona tu perfil profesional",
   "Senior English Teacher": "Profesor Senior de Inglés",
   "Language Arts": "Artes del Lenguaje",
   "teacher": "profesor",
@@ -291,9 +287,8 @@ export const spanishTranslations: Record<string, string> = {
   "Digital Learning Tools Workshop": "Taller de Herramientas de Aprendizaje Digital",
   "Participated in professional development workshop on AI-assisted teaching tools": "Participó en taller de desarrollo profesional sobre herramientas de enseñanza asistidas por IA",
 
-  // Notifications Page
-  "Educational Notifications": "Notificaciones Educativas",
-  "Stay updated with important educational announcements and alerts.": "Mantente actualizado con anuncios y alertas educativas importantes.",
+      // Notifications Page
+    "Stay updated with important announcements and alerts.": "Mantente actualizado con anuncios y alertas importantes.",
   "All": "Todas",
   "All Notifications": "Todas las Notificaciones",
   "Unread": "No leídas",
@@ -302,7 +297,7 @@ export const spanishTranslations: Record<string, string> = {
   "No notifications": "Sin notificaciones",
   "You're all caught up!": "¡Estás al día!",
   "System Maintenance": "Mantenimiento del Sistema",
-  "The platform will be undergoing maintenance tonight from 2:00 AM to 4:00 AM. During this time, all educational services will be temporarily unavailable.": "La plataforma estará en mantenimiento esta noche de 2:00 AM a 4:00 AM. Durante este tiempo, todos los servicios educativos no estarán disponibles temporalmente.",
+  "The platform will be undergoing maintenance tonight from 2:00 AM to 4:00 AM. During this time, all services will be temporarily unavailable.": "La plataforma estará en mantenimiento esta noche de 2:00 AM a 4:00 AM. Durante este tiempo, todos los servicios no estarán disponibles temporalmente.",
   "New Message Received": "Nuevo Mensaje Recibido",
   "You have received a new message from Principal Johnson regarding the upcoming staff meeting and agenda items.": "Has recibido un nuevo mensaje del Director Johnson sobre la próxima reunión de personal y temas de la agenda.",
   "Transportation Alert": "Alerta de Transporte",

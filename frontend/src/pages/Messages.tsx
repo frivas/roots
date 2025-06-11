@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+// import LanguageDebugger from '../components/LanguageDebugger';
 import { formatDate, cn } from '../lib/utils';
 import { 
   Archive, 
@@ -82,6 +84,7 @@ const MOCK_MESSAGES: Message[] = [
 ];
 
 const Messages = () => {
+  const { isInitialized, preloadingComplete } = useLingoTranslation();
   const [activeFolder, setActiveFolder] = useState('inbox');
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [composeMode, setComposeMode] = useState(false);
@@ -90,6 +93,18 @@ const Messages = () => {
   const [messages, setMessages] = useState(MOCK_MESSAGES);
   const composeSubjectRef = useRef<HTMLInputElement>(null);
   
+  // Show loading state if translation context is not ready
+  if (!isInitialized || !preloadingComplete) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
+          <p className="text-sm text-muted-foreground">Loading messages...</p>
+        </div>
+      </div>
+    );
+  }
+
   const folders = [
     { id: 'inbox', name: 'Inbox', icon: Inbox, count: messages.filter(m => !m.read).length },
     { id: 'starred', name: 'Starred', icon: Star, count: messages.filter(m => m.starred).length },
@@ -158,7 +173,7 @@ const Messages = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.3 }}
         >
-          <TranslatedText>Educational Messages</TranslatedText>
+          <TranslatedText>Messages</TranslatedText>
         </motion.h1>
         <div className="flex items-center gap-2">
           {isSearchActive ? (

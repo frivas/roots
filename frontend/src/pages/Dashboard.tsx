@@ -8,6 +8,7 @@ import { BarChart, Bell, Briefcase, Calendar, ChevronRight, GraduationCap, LineC
 import { cn } from '../lib/utils';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+// import LanguageDebugger from '../components/LanguageDebugger';
 // import TranslationDebugger from '../components/TranslationDebugger';
 // import TranslationTest from '../components/TranslationTest';
 
@@ -413,6 +414,12 @@ const Dashboard = () => {
           ))}
         </div>
       </motion.div>
+
+      {/* Include TranslationDebugger for testing */}
+      {/* <TranslationDebugger /> */}
+      
+      {/* Temporary debugging component */}
+      {/* <LanguageDebugger /> */}
     </motion.div>
   );
 };
