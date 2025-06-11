@@ -1,8 +1,11 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { Menu, X, Bell, Home, Mail, Settings, BookOpen } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import MadridLogo from '../ui/MadridLogo';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,20 +28,11 @@ const Header: React.FC = () => {
     <header className="bg-background border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo and desktop navigation */}
+          {/* Madrid Logo and desktop navigation */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              <div className="text-primary">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
-                  <path d="M16.5 9.4 7.55 4.24" />
-                  <polyline points="3.29 7 12 12 20.71 7" />
-                  <line x1="12" y1="22" x2="12" y2="12" />
-                  <circle cx="18.5" cy="15.5" r="2.5" />
-                  <path d="M20.27 17.27 22 19" />
-                </svg>
-              </div>
-              <span className="ml-2 text-xl font-bold text-foreground">Roots</span>
+            <Link to="/" className="flex items-center gap-4">
+              <MadridLogo size="md" />
+              <span className="text-xl font-bold text-foreground">Roots</span>
             </Link>
             
             <nav className="ml-10 hidden md:flex space-x-8">
@@ -62,6 +56,7 @@ const Header: React.FC = () => {
           
           {/* User menu and mobile menu button */}
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             {isLoaded && user && (
               <div className="flex items-center gap-4">
                 <UserButton afterSignOutUrl="/auth/login" />

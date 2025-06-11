@@ -1,0 +1,53 @@
+---
+description: This rule helps refine your commit messages. Lately I’m having this remind me but I’m leveraging the standard commit messages provided by Cursor.
+globs: 
+alwaysApply: false
+---
+---
+description: When committing to git use this message best practice
+globs: 
+---
+## Commit Reminder
+- When you finish applying changes, the last line of the message should say "💾 Don't forget to commit!" 
+
+## Commit Message Best Practice
+- Always prefix Commit Messages in the following way. No exceptions!
+
+"Feature(component): add new component"
+"Fix(api): fix api error"
+"Docs(readme): update readme"
+"Refactor(utils): refactor utils"
+"Style(tailwind): add new tailwind class"
+"Test(unit): add unit test"
+"Chore(deps): update dependencies"
+
+## Conventional Commit Types (full list)
+- **feat**: a new feature is introduced with the changes
+- **fix**: a bug fix has occurred
+- **chore**: maintenance, not src or test files (e.g., deps)
+- **refactor**: refactored code that neither fixes a bug nor adds a feature
+- **docs**: documentation only
+- **style**: formatting, white-space, etc. (no code meaning)
+- **test**: adding or correcting tests
+- **perf**: performance improvements
+- **ci**: continuous integration related
+- **build**: build system or external dependencies
+- **revert**: reverts a previous commit
+
+## Additional Best Practices
+- Use imperative mood in the subject line (e.g., "Add fix for dark mode toggle state").
+- Capitalize the first word, no ending punctuation in the subject.
+- Keep the subject line to 50 characters or less.
+- Be direct: answer what and why in the message.
+- If more detail is needed, add a body (wrap at 72 chars) after a blank line.
+- Use optional footers for breaking changes or references (e.g., JIRA, issues).
+- Types (prefixes) should be all lowercase if following Conventional Commits.
+- Avoid filler words; be concise and clear.
+- Example full message:
+
+  Fix(api): fix foo to enable bar
+
+  This fixes the broken behavior of the component by doing xyz.
+
+  BREAKING CHANGE: Before this fix foo wasn't enabled at all, behavior changes from <old> to <new>
+  Closes D2IQ-12345 

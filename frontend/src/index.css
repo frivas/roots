@@ -4,47 +4,54 @@
 
 @layer base {
   :root {
-    --color-primary: 214 89% 52%;
-    --color-primary-foreground: 0 0% 100%;
+    /* Madrid Branding Colors */
+    --madrid-red: 0 100% 50%;
+    --madrid-black: 0 0% 0%;
+    --madrid-white: 0 0% 100%;
     
-    --color-secondary: 199 89% 48%;
-    --color-secondary-foreground: 0 0% 100%;
+    /* System Colors using Madrid Brand */
+    --color-primary: var(--madrid-red);
+    --color-primary-foreground: var(--madrid-white);
     
-    --color-accent: 38 93% 52%;
-    --color-accent-foreground: 0 0% 0%;
+    --color-secondary: 0 0% 15%;
+    --color-secondary-foreground: var(--madrid-white);
+    
+    --color-accent: var(--madrid-red);
+    --color-accent-foreground: var(--madrid-white);
     
     --color-success: 158 64% 40%;
-    --color-success-foreground: 0 0% 100%;
+    --color-success-foreground: var(--madrid-white);
     
     --color-warning: 38 92% 56%;
-    --color-warning-foreground: 0 0% 0%;
+    --color-warning-foreground: var(--madrid-black);
     
-    --color-error: 0 84% 60%;
-    --color-error-foreground: 0 0% 100%;
+    --color-error: var(--madrid-red);
+    --color-error-foreground: var(--madrid-white);
     
-    --color-background: 0 0% 100%;
-    --color-foreground: 224 71% 4%;
+    --color-background: var(--madrid-white);
+    --color-foreground: var(--madrid-black);
     
-    --color-muted: 220 14% 96%;
-    --color-muted-foreground: 220 8% 46%;
+    --color-muted: 0 0% 96%;
+    --color-muted-foreground: 0 0% 46%;
     
-    --color-card: 0 0% 100%;
-    --color-card-foreground: 224 71% 4%;
+    --color-card: var(--madrid-white);
+    --color-card-foreground: var(--madrid-black);
     
-    --color-border: 220 13% 91%;
+    --color-border: 0 0% 91%;
   }
 
   .dark {
-    --color-background: 224 71% 4%;
-    --color-foreground: 210 20% 98%;
+    /* Dark mode using Madrid branding - minimal dark theme */
+    --color-background: 0 0% 4%;
+    --color-foreground: var(--madrid-white);
     
-    --color-muted: 215 27% 16%;
-    --color-muted-foreground: 217 10% 64%;
+    --color-muted: 0 0% 16%;
+    --color-muted-foreground: 0 0% 64%;
     
-    --color-card: 224 71% 8%;
-    --color-card-foreground: 210 20% 98%;
+    --color-card: 0 0% 8%;
+    --color-card-foreground: var(--madrid-white);
     
-    --color-border: 216 34% 17%;
+    --color-border: 0 0% 17%;
   }
 }
 
@@ -55,7 +62,17 @@
   
   body {
     @apply bg-background text-foreground;
+    font-family: Arial, Helvetica, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+  }
+  
+  .font-bold {
+    font-family: "Arial Black", Arial, sans-serif;
   }
 }
 
