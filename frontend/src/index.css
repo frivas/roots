@@ -184,6 +184,28 @@
   background: #ff0000 !important;
 }
 
+/* Bolt Button Styles */
+#bolt-button {
+  position: absolute;
+  top: 2vw;
+  left: 2vw;
+  width: 6vw;
+  height: 6vw;
+  background-image: url(/images/bolt.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  cursor: pointer;
+  transition: opacity 300ms;
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  #bolt-button {
+    width: 12vw;
+    height: 12vw;
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
