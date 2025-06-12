@@ -86,7 +86,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ className }) => {
                 exit={{ opacity: 0, width: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <TranslatedText>Roots</TranslatedText>
+                <TranslatedText>Raíces</TranslatedText>
               </motion.span>
             )}
           </AnimatePresence>

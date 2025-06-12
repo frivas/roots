@@ -32,7 +32,7 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-4">
               <MadridLogo size="md" />
-              <span className="text-xl font-bold text-foreground">Roots</span>
+              <span className="text-xl font-bold text-foreground">Raíces</span>
             </Link>
             
             <nav className="ml-10 hidden md:flex space-x-8">

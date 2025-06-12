@@ -8,12 +8,12 @@ import { lingoTranslationService } from '../services/LingoTranslationService';
 const TranslationDebugger: React.FC = () => {
   const { language, setLanguage, isTranslating, preloadingComplete } = useLingoTranslation();
   const [stats, setStats] = useState<{ cacheSize: number; localTranslationsCount: number } | null>(null);
-  const [testText, setTestText] = useState('Welcome to Roots!');
+  const [testText, setTestText] = useState('Welcome to Raíces!');
   const [translatedResult, setTranslatedResult] = useState('');
 
   const sampleTexts = [
     'Dashboard',
-    'Welcome to Roots!',
+    'Welcome to Raíces!',
     'Here\'s an overview of your educational journey.',
     'Upcoming Classes',
     'Active Programs',

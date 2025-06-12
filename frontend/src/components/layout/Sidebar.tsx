@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               <path d="M20.27 17.27 22 19" />
             </svg>
           </div>
-          <span className="ml-2 text-xl font-bold text-foreground">Roots</span>
+                      <span className="ml-2 text-xl font-bold text-foreground">Raíces</span>
         </Link>
       </div>
       
