@@ -19,7 +19,16 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
       </div>
 
       {/* Left side - Welcome content */}
-      <div className="hidden lg:flex lg:w-1/2 bg-white flex-col justify-center px-12 py-24">
+      <div className="hidden lg:flex lg:w-1/2 bg-white flex-col justify-center px-12 py-24 relative">
+        {/* Powered by Bolt New - Top Left */}
+        <a 
+          id="bolt-button" 
+          href="https://bolt.new" 
+          target="_blank" 
+          title="Powered By Bolt"
+        >
+        </a>
+
         <div className="max-w-md mx-auto space-y-8">
           {/* Madrid Logo */}
           <div className="flex items-center gap-4">
