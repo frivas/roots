@@ -11,10 +11,10 @@ export const spanishTranslations: Record<string, string> = {
   "Profile": "Perfil",
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
-  "Roots": "Raíces",
+  "Raíces": "Raíces",
 
   // Dashboard - Main
-  "Welcome to Roots!": "¡Bienvenidos a Raíces!",
+  "Welcome to Raíces!": "¡Bienvenidos a Raíces!",
   "Here's an overview of your educational journey.": "Aquí tienes una visión general de tu viaje educativo.",
 
   // Dashboard - Stats Cards  
@@ -183,6 +183,42 @@ export const spanishTranslations: Record<string, string> = {
   "Star messages to see them here": "Marca mensajes con estrella para verlos aquí",
   "Your inbox is empty": "Tu bandeja de entrada está vacía",
   "Principal Johnson": "Director Johnson",
+  
+  // Auth page translations - English to Spanish
+  "Integral System": "Sistema Integral", 
+  "for Educational Management": "de Gestión Educativa",
+  "Madrid Community": "Comunidad de Madrid",
+  "Access your space to manage communication with the school and perform educational procedures electronically.": "Accede a tu espacio para gestionar la comunicación con el centro y realizar trámites educativos por vía electrónica.",
+  "Academic and Administrative Management of Centers": "Gestión Académica y Administrativa de Centros",
+  "Educational Monitoring": "Seguimiento Educativo", 
+  "Virtual Secretary": "Secretaría Virtual",
+  "Educational Platform": "Plataforma Educativa",
+  "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
+  "Privacy Policy": "Política de Privacidad",
+  "Data Protection": "Protección de Datos",
+  
+  // Legacy auth translations (keeping for compatibility)
+  "Bienvenido a la plataforma educativa": "Welcome to the educational platform",
+  "de la Comunidad de Madrid": "of the Madrid Community",
+  "Cursos y programas formativos especializados": "Specialized training courses and programs", 
+  "Seguimiento personalizado de tu progreso": "Personalized progress tracking",
+  "Recursos y materiales de calidad": "Quality resources and materials",
+  "Soporte y acompañamiento continuo": "Continuous support and guidance",
+  
+  // Additional Clerk form translations
+  "Sign in": "Iniciar sesión",
+  "Sign up": "Crear cuenta",
+  "to continue to Raíces": "para ir a Raíces",
+  "to continue to roots": "para ir a Raíces",
+  "Continue with Google": "Continuar con Google",
+  "Email address or username": "Correo electrónico o nombre de usuario",
+  "Password": "Contraseña",
+  "CONTINUE": "CONTINUAR",
+  "No account?": "¿No tienes cuenta?",
+  "Don't have an account?": "¿No tienes una cuenta?",
+  "Already have an account?": "¿Ya tienes una cuenta?",
+  "Forgot password?": "¿Olvidaste tu contraseña?",
+  "or": "o",
   "Transportation Dept": "Dpto. de Transporte",
   "IT Department": "Departamento de TI",
   "Extracurricular Coordinator": "Coordinador Extracurricular",

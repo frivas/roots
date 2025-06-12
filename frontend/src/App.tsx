@@ -12,6 +12,8 @@ import {
 
 // Layouts
 import MainLayout from './components/layout/MainLayout';
+import AuthLayout from './components/layout/AuthLayout';
+import ClerkAuthWrapper from './components/ClerkAuthWrapper';
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -41,7 +43,7 @@ function App() {
           {/* Public routes */}
           <Route
             path="/"
-            element={<Navigate to="/dashboard\" replace />}
+            element={<Navigate to="/dashboard" replace />}
           />
           
           {/* Auth routes */}
@@ -49,9 +51,14 @@ function App() {
             path="/auth/login/*"
             element={
               <SignedOut>
-                <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-                  <SignIn routing="path" path="/auth/login" redirectUrl="/dashboard" />
-                </div>
+                <AuthLayout>
+                  <ClerkAuthWrapper 
+                    type="signIn"
+                    routing="path" 
+                    path="/auth/login" 
+                    redirectUrl="/dashboard"
+                  />
+                </AuthLayout>
               </SignedOut>
             }
           />
@@ -60,9 +67,14 @@ function App() {
             path="/auth/register/*"
             element={
               <SignedOut>
-                <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-                  <SignUp routing="path" path="/auth/register" redirectUrl="/dashboard" />
-                </div>
+                <AuthLayout>
+                  <ClerkAuthWrapper 
+                    type="signUp"
+                    routing="path" 
+                    path="/auth/register" 
+                    redirectUrl="/dashboard"
+                  />
+                </AuthLayout>
               </SignedOut>
             }
           />

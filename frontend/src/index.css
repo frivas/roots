@@ -84,6 +84,106 @@
   animation: slideIn 0.3s ease-in-out;
 }
 
+/* Clerk Auth Madrid Styling */
+.clerk-auth-madrid .cl-formButtonPrimary {
+  background-color: #ff0000 !important;
+  border-color: #ff0000 !important;
+  color: white !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: bold !important;
+}
+
+.clerk-auth-madrid .cl-formButtonPrimary:hover {
+  background-color: #e60000 !important;
+  border-color: #e60000 !important;
+}
+
+.clerk-auth-madrid .cl-socialButtonsBlockButton {
+  border: 1px solid #e5e5e5 !important;
+  color: #333 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.clerk-auth-madrid .cl-socialButtonsBlockButton:hover {
+  background-color: #f8f8f8 !important;
+}
+
+.clerk-auth-madrid .cl-formFieldInput {
+  border: 1px solid #d1d5db !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.clerk-auth-madrid .cl-formFieldInput:focus {
+  border-color: #ff0000 !important;
+  box-shadow: 0 0 0 1px #ff0000 !important;
+}
+
+.clerk-auth-madrid .cl-headerTitle {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: bold !important;
+  color: #000 !important;
+}
+
+.clerk-auth-madrid .cl-headerSubtitle {
+  font-family: Arial, Helvetica, sans-serif !important;
+  color: #666 !important;
+}
+
+.clerk-auth-madrid .cl-footerActionLink {
+  color: #ff0000 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.clerk-auth-madrid .cl-footerActionLink:hover {
+  color: #e60000 !important;
+}
+
+.clerk-auth-madrid .cl-card {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.clerk-auth-madrid .cl-main {
+  font-family: Arial, Helvetica, sans-serif !important;
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+.clerk-auth-madrid .cl-card {
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 auto !important;
+}
+
+.clerk-auth-madrid .cl-rootBox {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* Hide the "Secured by Clerk" branding to center the form properly */
+.clerk-auth-madrid .cl-branded,
+.clerk-auth-madrid .cl-internal-b3fm6y,
+.clerk-auth-madrid [class*="cl-internal"][class*="branded"] {
+  display: none !important;
+}
+
+/* Hide any Clerk branding links */
+.clerk-auth-madrid a[href*="clerk.com"],
+.clerk-auth-madrid .cl-footerPages a[href*="clerk.com"] {
+  display: none !important;
+}
+
+/* Any other Clerk branding elements */
+.clerk-auth-madrid [style*="background-color: rgb(55, 99, 244)"] {
+  background-color: #ff0000 !important;
+}
+
+.clerk-auth-madrid [style*="background: rgb(55, 99, 244)"] {
+  background: #ff0000 !important;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
