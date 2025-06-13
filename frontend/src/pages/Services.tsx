@@ -6,13 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';
-import { 
-  BookOpen, 
-  Bus, 
-  Coffee, 
-  Globe, 
-  Sparkles, 
-  Users, 
+import {
+  BookOpen,
+  Bus,
+  Coffee,
+  Globe,
+  Sparkles,
+  Users,
   Search,
   Bookmark,
   Calendar,
@@ -32,15 +32,17 @@ interface ServiceCardProps {
   href: string;
   category: string;
   index: number;
+  isActive: boolean;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ 
-  icon: Icon, 
-  title, 
-  description, 
-  href, 
+const ServiceCard: React.FC<ServiceCardProps> = ({
+  icon: Icon,
+  title,
+  description,
+  href,
   category,
-  index 
+  index,
+  isActive
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -48,13 +50,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.4, 
+      transition={{
+        duration: 0.4,
         delay: index * 0.1,
         ease: [0.22, 1, 0.36, 1]
       }}
     >
-      <Card 
+      <Card
         className="overflow-hidden h-full transition-all duration-300 border-border/40 bg-card/50 backdrop-blur-sm hover:shadow-md hover:border-border"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -83,18 +85,21 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           </p>
         </CardContent>
         <CardFooter>
-          <Button 
-            variant={isHovered ? "primary" : "outline"} 
+          <Button
+            variant={isHovered && isActive ? "primary" : "outline"}
             className="w-full transition-all duration-300"
+            disabled={!isActive}
           >
             <span className="flex items-center gap-2">
-              <TranslatedText>Access Service</TranslatedText>
-              <motion.div
-                animate={{ x: isHovered ? 5 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <BookmarkIcon className="h-4 w-4" />
-              </motion.div>
+              <TranslatedText>{isActive ? "Access Service" : "Coming Soon"}</TranslatedText>
+              {isActive && (
+                <motion.div
+                  animate={{ x: isHovered ? 5 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <BookmarkIcon className="h-4 w-4" />
+                </motion.div>
+              )}
             </span>
           </Button>
         </CardFooter>
@@ -107,14 +112,14 @@ const Services = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [filteredServices, setFilteredServices] = useState<any[]>([]);
-  
+
   const categories = [
     { id: 'all', label: 'All Services' },
     { id: 'academic', label: 'Academic' },
     { id: 'support', label: 'Support' },
     { id: 'extracurricular', label: 'Extracurricular' }
   ];
-  
+
   const services = [
     {
       icon: BookOpen,
@@ -122,7 +127,8 @@ const Services = () => {
       description: 'Manage morning classroom activities, attendance, and student participation',
       href: '/services/classroom',
       category: 'academic',
-      parentVisible: false // Hidden for demo - teacher/faculty service
+      parentVisible: false, // Hidden for demo - teacher/faculty service
+      isActive: false
     },
     {
       icon: Bus,
@@ -130,7 +136,8 @@ const Services = () => {
       description: 'Track school transportation routes, schedules, and manage student pickup/dropoff',
       href: '/services/transportation',
       category: 'support',
-      parentVisible: false // Hidden for demo - teacher/faculty service
+      parentVisible: false, // Hidden for demo - teacher/faculty service
+      isActive: false
     },
     {
       icon: Coffee,
@@ -138,7 +145,8 @@ const Services = () => {
       description: 'Meal planning, nutrition management, and cafeteria service scheduling',
       href: '/services/cafeteria',
       category: 'support',
-      parentVisible: true // Parent service - meal management for children
+      parentVisible: true, // Parent service - meal management for children
+      isActive: false
     },
     {
       icon: Calendar,
@@ -146,7 +154,8 @@ const Services = () => {
       description: 'Early morning childcare and educational activities before regular school hours',
       href: '/services/morning-classroom',
       category: 'support',
-      parentVisible: true // Parent service - before-school care
+      parentVisible: true, // Parent service - before-school care
+      isActive: false
     },
     {
       icon: Users,
@@ -154,7 +163,8 @@ const Services = () => {
       description: 'Guidance for supporting children\'s academic development and effective communication strategies',
       href: '/services/parent-coaching',
       category: 'academic',
-      parentVisible: true // Parent service - parenting support
+      parentVisible: true, // Parent service - parenting support
+      isActive: false
     },
     {
       icon: GraduationCap,
@@ -162,7 +172,8 @@ const Services = () => {
       description: 'Age-appropriate guidance for understanding academic progress and communication strategies for difficult topics',
       href: '/services/progress-interpretation',
       category: 'academic',
-      parentVisible: true // Parent service - academic progress support
+      parentVisible: true, // Parent service - academic progress support
+      isActive: true
     },
     {
       icon: Users,
@@ -170,7 +181,8 @@ const Services = () => {
       description: 'Stress management, work-life balance coaching, and family relationship support for parents',
       href: '/services/parent-wellness',
       category: 'support',
-      parentVisible: true // Parent service - wellness and family support
+      parentVisible: true, // Parent service - wellness and family support
+      isActive: false
     },
     {
       icon: Sparkles,
@@ -178,7 +190,8 @@ const Services = () => {
       description: 'Register and manage after-school programs, clubs, and special events',
       href: '/services/extracurricular',
       category: 'extracurricular',
-      parentVisible: true // Parent service
+      parentVisible: true, // Parent service
+      isActive: true
     },
     {
       icon: Globe,
@@ -186,7 +199,8 @@ const Services = () => {
       description: 'Language assistance programs and resources for multilingual students',
       href: '/services/language',
       category: 'academic',
-      parentVisible: true // Parent service
+      parentVisible: true, // Parent service
+      isActive: true
     },
     {
       icon: Users,
@@ -194,7 +208,8 @@ const Services = () => {
       description: 'Connect with mentors and manage student-mentor relationships',
       href: '/services/mentorship',
       category: 'academic',
-      parentVisible: true // Parent service
+      parentVisible: true, // Parent service
+      isActive: true
     },
     {
       icon: Calendar,
@@ -202,7 +217,8 @@ const Services = () => {
       description: 'Schedule and organize school events, parent-teacher conferences, and assemblies',
       href: '/services/events',
       category: 'support',
-      parentVisible: false // Hidden for demo - teacher/faculty service
+      parentVisible: false, // Hidden for demo - teacher/faculty service
+      isActive: false
     },
     {
       icon: GraduationCap,
@@ -210,7 +226,8 @@ const Services = () => {
       description: 'Academic guidance, course selection, and college preparation resources',
       href: '/services/counseling',
       category: 'academic',
-      parentVisible: true // Parent service
+      parentVisible: true, // Parent service
+      isActive: false
     },
     {
       icon: School,
@@ -218,31 +235,32 @@ const Services = () => {
       description: 'Plan, schedule, and manage educational field trips and excursions',
       href: '/services/fieldtrips',
       category: 'extracurricular',
-      parentVisible: false // Hidden for demo - teacher/faculty service
+      parentVisible: false, // Hidden for demo - teacher/faculty service
+      isActive: false
     }
   ];
-  
+
   useEffect(() => {
     const filtered = services.filter(service => {
       // Only show parent-visible services for now
       const isParentVisible = service.parentVisible;
-      
-      const matchesSearch = 
+
+      const matchesSearch =
         service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.description.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesCategory = 
+
+      const matchesCategory =
         activeCategory === 'all' || service.category === activeCategory;
-      
+
       return isParentVisible && matchesSearch && matchesCategory;
     });
-    
+
     setFilteredServices(filtered);
   }, [searchQuery, activeCategory]);
 
   return (
     <div className="space-y-8 pb-8">
-      <motion.div 
+      <motion.div
         className="flex flex-col gap-2"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -253,8 +271,8 @@ const Services = () => {
           Access and manage all services from one centralized hub.
         </TranslatedText>
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         className="flex flex-col md:flex-row gap-4 items-start"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -270,7 +288,7 @@ const Services = () => {
             className="w-full pl-9 rounded-md border border-border bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
         </div>
-        
+
         <div className="w-full md:w-2/3">
           <div className="flex flex-wrap gap-2">
             {categories.map(category => (
@@ -290,7 +308,7 @@ const Services = () => {
           </div>
         </div>
       </motion.div>
-      
+
       <AnimatePresence mode="wait">
         <motion.div
           key={activeCategory + filteredServices.length}
@@ -310,11 +328,12 @@ const Services = () => {
                   href={service.href}
                   category={service.category}
                   index={index}
+                  isActive={service.isActive}
                 />
               ))}
             </div>
           ) : (
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center justify-center py-12 text-center"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -323,11 +342,11 @@ const Services = () => {
               <SearchIcon className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-xl font-medium mb-2">No services found</h3>
               <p className="text-muted-foreground max-w-md">
-                We couldn't find any services matching your search criteria. 
+                We couldn't find any services matching your search criteria.
                 Try adjusting your search or browse all services.
               </p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="mt-4"
                 onClick={() => {
                   setSearchQuery('');

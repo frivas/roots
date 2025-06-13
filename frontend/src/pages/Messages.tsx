@@ -1,23 +1,22 @@
-// @ts-nocheck
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
+import { Card } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 // import LanguageDebugger from '../components/LanguageDebugger';
 import { formatDate, cn } from '../lib/utils';
-import { 
-  Archive, 
-  Edit, 
-  Inbox, 
-  Send, 
-  Star, 
+import {
+  Archive,
+  Edit,
+  Inbox,
+  Send,
+  Star,
   StarOff,
-  Trash2, 
-  Reply, 
+  Trash2,
+  Reply,
   MoreHorizontal,
   ChevronLeft,
   Paperclip,
@@ -92,7 +91,13 @@ const Messages = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [messages, setMessages] = useState(MOCK_MESSAGES);
   const composeSubjectRef = useRef<HTMLInputElement>(null);
-  
+
+  useEffect(() => {
+    if (composeMode && composeSubjectRef.current) {
+      composeSubjectRef.current.focus();
+    }
+  }, [composeMode]);
+
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
     return (
@@ -112,7 +117,7 @@ const Messages = () => {
     { id: 'archived', name: 'Archived', icon: Archive, count: 0 },
     { id: 'trash', name: 'Trash', icon: Trash2, count: 0 }
   ];
-  
+
   const filteredMessages = messages.filter(message => {
     // Filter by folder
     if (activeFolder === 'inbox') {
@@ -122,7 +127,7 @@ const Messages = () => {
     } else if (activeFolder !== 'inbox' && activeFolder !== 'starred') {
       return false;
     }
-    
+
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -132,42 +137,36 @@ const Messages = () => {
         message.preview.toLowerCase().includes(query)
       );
     }
-    
+
     return true;
   });
 
   const toggleStarred = (messageId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    setMessages(messages.map(message => 
-      message.id === messageId 
-        ? { ...message, starred: !message.starred } 
+    setMessages(messages.map(message =>
+      message.id === messageId
+        ? { ...message, starred: !message.starred }
         : message
     ));
   };
 
   const markAsRead = (messageId: string) => {
-    setMessages(messages.map(message => 
-      message.id === messageId 
-        ? { ...message, read: true } 
+    setMessages(messages.map(message =>
+      message.id === messageId
+        ? { ...message, read: true }
         : message
     ));
   };
 
-  useEffect(() => {
-    if (composeMode && composeSubjectRef.current) {
-      composeSubjectRef.current.focus();
-    }
-  }, [composeMode]);
-
   return (
-    <motion.div 
-      className="h-[calc(100vh-8rem)] flex flex-col pb-8"
+    <motion.div
+      className="flex flex-col h-full min-h-0 pb-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="flex justify-between items-center mb-4">
-        <motion.h1 
+        <motion.h1
           className="text-4xl font-bold tracking-tight text-foreground"
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -177,7 +176,7 @@ const Messages = () => {
         </motion.h1>
         <div className="flex items-center gap-2">
           {isSearchActive ? (
-            <motion.div 
+            <motion.div
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 250, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
@@ -211,7 +210,7 @@ const Messages = () => {
               <Search className="h-4 w-4" />
             </Button>
           )}
-          <Button 
+          <Button
             onClick={() => {
               setComposeMode(true);
               setSelectedMessage(null);
@@ -222,8 +221,8 @@ const Messages = () => {
           </Button>
         </div>
       </div>
-      
-      <Card className="flex flex-1 overflow-hidden border-border">
+
+      <Card className="flex flex-1 h-full min-h-0 overflow-hidden border-border">
         {/* Sidebar */}
         <div className="w-64 min-w-64 max-w-64 border-r border-border bg-card flex-shrink-0">
           <div className="h-full overflow-y-auto pt-4">
@@ -262,28 +261,28 @@ const Messages = () => {
             </nav>
           </div>
         </div>
-        
+
         {/* Message list */}
         <AnimatePresence mode="wait">
           {!selectedMessage && !composeMode && (
-            <motion.div 
+            <motion.div
               key="message-list"
-              className="flex-1 bg-background"
+              className="flex-1 h-full min-h-0 bg-background"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="h-full overflow-y-auto">
+              <div className="h-full min-h-0 overflow-y-auto">
                 {filteredMessages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full p-8 text-center">
                     <Inbox className="h-12 w-12 text-muted-foreground mb-4" />
                     <TranslatedText element="p" className="text-lg font-medium">No messages found</TranslatedText>
                     <TranslatedText element="p" className="text-muted-foreground mt-1">
-                      {searchQuery 
-                        ? "Try adjusting your search terms" 
-                        : activeFolder === 'starred' 
-                          ? "Star messages to see them here" 
+                      {searchQuery
+                        ? "Try adjusting your search terms"
+                        : activeFolder === 'starred'
+                          ? "Star messages to see them here"
                           : "Your inbox is empty"}
                     </TranslatedText>
                   </div>
@@ -302,7 +301,7 @@ const Messages = () => {
                         transition={{ duration: 0.2, delay: index * 0.05 }}
                       >
                         <div className="flex items-center px-4 py-3">
-                          <button 
+                          <button
                             className="mr-3 text-muted-foreground hover:text-amber-500 transition-colors"
                             onClick={(e) => toggleStarred(message.id, e)}
                           >
@@ -324,7 +323,7 @@ const Messages = () => {
                             <p className={`text-sm ${!message.read ? 'font-medium' : ''}`}>
                               <TranslatedText>{message.subject}</TranslatedText>
                             </p>
-                            <p className="mt-1 text-sm text-muted-foreground truncate">
+                            <p className="mt-1 text-sm text-muted-foreground break-words whitespace-normal">
                               {message.preview}
                             </p>
                           </div>
@@ -339,10 +338,10 @@ const Messages = () => {
               </div>
             </motion.div>
           )}
-          
+
           {/* Message view */}
           {selectedMessage && !composeMode && (
-            <motion.div 
+            <motion.div
               key="message-detail"
               className="flex-1 bg-background"
               initial={{ opacity: 0, x: 20 }}
@@ -353,8 +352,8 @@ const Messages = () => {
               <div className="h-full flex flex-col">
                 <div className="flex items-center justify-between p-4 border-b border-border">
                   <div className="flex items-center">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="mr-2 p-2"
                       onClick={() => setSelectedMessage(null)}
                     >
@@ -363,8 +362,8 @@ const Messages = () => {
                     <h2 className="text-xl font-semibold">{selectedMessage.subject}</h2>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="p-2"
                       onClick={(e) => toggleStarred(selectedMessage.id, e)}
                     >
@@ -379,7 +378,7 @@ const Messages = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
@@ -394,7 +393,7 @@ const Messages = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="prose prose-sm max-w-none">
                     <p className="text-sm leading-relaxed">
                       {selectedMessage.preview}
@@ -441,7 +440,7 @@ const Messages = () => {
                       {selectedMessage.sender.split(' ')[0]}
                     </p>
                   </div>
-                  
+
                   {(selectedMessage.id === '1' || selectedMessage.id === '2') && (
                     <div className="mt-6 p-3 border rounded-md bg-muted/50">
                       <div className="flex items-center">
@@ -456,7 +455,7 @@ const Messages = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="border-t border-border p-4">
                   <div className="flex space-x-2">
                     <Button
@@ -481,10 +480,10 @@ const Messages = () => {
               </div>
             </motion.div>
           )}
-          
+
           {/* Compose mode */}
           {composeMode && (
-            <motion.div 
+            <motion.div
               key="compose"
               className="flex-1 bg-background"
               initial={{ opacity: 0 }}
@@ -498,7 +497,7 @@ const Messages = () => {
                     {selectedMessage ? 'Reply to Message' : 'New Message'}
                   </h2>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto p-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -513,7 +512,7 @@ const Messages = () => {
                         className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <label htmlFor="subject" className="text-sm font-medium text-muted-foreground">
                         Subject:
@@ -527,7 +526,7 @@ const Messages = () => {
                         className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm font-medium text-muted-foreground">
                         Message:
@@ -537,12 +536,12 @@ const Messages = () => {
                         rows={12}
                         placeholder="Write your message here..."
                         className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                        defaultValue={selectedMessage ? 
-                          `\n\n\n\n-------- Original Message --------\nFrom: ${selectedMessage.sender}\nDate: ${formatDate(new Date(selectedMessage.date))}\nSubject: ${selectedMessage.subject}\n\n${selectedMessage.preview}` : 
+                        defaultValue={selectedMessage ?
+                          `\n\n\n\n-------- Original Message --------\nFrom: ${selectedMessage.sender}\nDate: ${formatDate(new Date(selectedMessage.date))}\nSubject: ${selectedMessage.subject}\n\n${selectedMessage.preview}` :
                           ''}
                       />
                     </div>
-                    
+
                     <div className="pt-2">
                       <Button variant="outline" className="text-sm">
                         <Paperclip className="h-4 w-4 mr-2" />
@@ -551,7 +550,7 @@ const Messages = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="border-t border-border p-4 flex justify-between">
                   <Button
                     variant="ghost"

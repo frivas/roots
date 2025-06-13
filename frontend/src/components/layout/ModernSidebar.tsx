@@ -1,237 +1,201 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useUser, UserButton } from '@clerk/clerk-react';
-import { useClerk } from '@clerk/clerk-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
-import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
-import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-import { 
-  Home, 
-  BookOpen, 
-  Mail, 
-  Bell, 
-  Settings, 
-  User, 
+import { getMenuItems, type Role } from '../../config/menuConfig';
+import { useUser, useClerk } from '@clerk/clerk-react';
+import {
   LogOut,
-  ChevronLeft,
-  ChevronRight
+  LucideIcon
 } from 'lucide-react';
+import MadridLogo from '../ui/MadridLogo';
+
+interface MenuItem {
+  name: string;
+  href?: string;
+  icon: LucideIcon;
+  children?: MenuItem[];
+}
 
 interface ModernSidebarProps {
   className?: string;
+  userRoles?: Role[];
 }
 
-const ModernSidebar: React.FC<ModernSidebarProps> = ({ className }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const { signOut } = useClerk();
-  const { isInitialized, preloadingComplete } = useLingoTranslation();
-  
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Services', href: '/services', icon: BookOpen },
-    { name: 'Messages', href: '/messages', icon: Mail },
-    { name: 'Notifications', href: '/notifications', icon: Bell },
-    { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Profile', href: '/profile', icon: User },
-  ];
-  
-  const handleSignOut = () => {
-    signOut();
+
+  const toggleMenu = (menuName: string) => {
+    setExpandedMenu(expandedMenu === menuName ? null : menuName);
   };
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
+  const isMenuActive = (item: MenuItem) => {
+    if (item.href) {
+      return location.pathname === item.href;
+    }
+    if (item.children) {
+      return item.children.some((child) => location.pathname === child.href);
+    }
+    return false;
   };
 
-  // Improved navigation handler to prevent blank pages
-  const handleNavigation = (href: string) => {
-    // Force a small delay to ensure translation context is ready
-    setTimeout(() => {
-      navigate(href);
-    }, 10);
+  const navigation = getMenuItems(userRoles);
+
+  const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
+    const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
+    return <IconElement className={cn("h-6 w-6", className)} />;
   };
+
+  const Link = RouterLink as unknown as React.ComponentType<{
+    to: string;
+    className?: string;
+    children: React.ReactNode;
+  }>;
 
   return (
-    <motion.div 
+    <div
       className={cn(
-        "flex h-screen flex-col bg-card border-r border-border relative z-10",
-        className
+        "relative min-h-screen border-r bg-background transition-all duration-300",
+        isHovered ? "w-72" : "w-16"
       )}
-      animate={{
-        width: isExpanded ? "280px" : "80px"
-      }}
-      transition={{
-        duration: 0.3,
-        ease: "easeInOut"
-      }}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header with Madrid Logo */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <Link to="/" className="flex items-center min-w-0 gap-3">
-          <MadridLogo size={isExpanded ? "md" : "sm"} />
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.span 
-                className="text-xl font-bold text-foreground whitespace-nowrap"
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <TranslatedText>Raíces</TranslatedText>
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </Link>
-        
-        {isExpanded && (
-          <button
-            onClick={toggleSidebar}
-            className="p-1 rounded-md hover:bg-muted transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        )}
-      </div>
-      
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {navigation.map((item) => {
-          const isActive = location.pathname.startsWith(item.href);
-          
-          return (
-            <button
-              key={item.name}
-              onClick={() => handleNavigation(item.href)}
-              className={cn(
-                "flex items-center rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 relative group w-full text-left",
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              title={!isExpanded ? item.name : undefined}
-            >
-              <item.icon className={cn(
-                "flex-shrink-0",
-                isExpanded ? "h-5 w-5" : "h-6 w-6"
-              )} />
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.span 
-                    className="ml-3 whitespace-nowrap"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.15 }}
+      <div className="flex h-full flex-col">
+        <div className={cn(
+          "flex h-16 items-center border-b",
+          isHovered ? "px-6" : "px-3"
+        )}>
+          <Link to="/" className="flex items-center gap-3 font-semibold">
+            <MadridLogo size="sm" variant="positive" />
+            {isHovered && <TranslatedText className="text-lg">Roots</TranslatedText>}
+          </Link>
+        </div>
+        <div className="flex-1 overflow-auto py-4">
+          <nav className={cn(
+            "grid gap-2",
+            isHovered ? "px-4" : "px-2"
+          )}>
+            {navigation.map((item) => (
+              <div key={item.name}>
+                {item.children ? (
+                  <>
+                    <button
+                      onClick={() => toggleMenu(item.name)}
+                      className={cn(
+                        "group flex w-full items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                        isHovered ? "px-4 py-3" : "px-2 py-3",
+                        isMenuActive(item) ? "bg-accent text-accent-foreground" : "transparent"
+                      )}
+                    >
+                      <div className="flex items-center justify-center w-6 min-w-[24px]">
+                        <IconComponent icon={item.icon} />
+                      </div>
+                      {isHovered && (
+                        <span className="flex-1 text-base ml-3">
+                          <TranslatedText>{item.name}</TranslatedText>
+                        </span>
+                      )}
+                    </button>
+                    {isHovered && expandedMenu === item.name && (
+                      <div className="ml-6 mt-2 space-y-2">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.href || '#'}
+                            className={cn(
+                              "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                              location.pathname === child.href ? "bg-accent text-accent-foreground" : "transparent"
+                            )}
+                          >
+                            <div className="flex items-center justify-center w-6 min-w-[24px]">
+                              <IconComponent icon={child.icon} />
+                            </div>
+                            <span className="text-base ml-3">
+                              <TranslatedText>{child.name}</TranslatedText>
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to={item.href || '#'}
+                    className={cn(
+                      "group flex items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                      isHovered ? "px-4 py-3" : "px-2 py-3",
+                      location.pathname === item.href ? "bg-accent text-accent-foreground" : "transparent"
+                    )}
                   >
-                    <TranslatedText fallback={item.name}>{item.name}</TranslatedText>
-                  </motion.span>
+                    <div className="flex items-center justify-center w-6 min-w-[24px]">
+                      <IconComponent icon={item.icon} />
+                    </div>
+                    {isHovered && (
+                      <span className="text-base ml-3">
+                        <TranslatedText>{item.name}</TranslatedText>
+                      </span>
+                    )}
+                  </Link>
                 )}
-              </AnimatePresence>
-              
-              {/* Tooltip for collapsed state */}
-              {!isExpanded && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 border shadow-md">
-                  <TranslatedText fallback={item.name}>{item.name}</TranslatedText>
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        {/* User Profile Section */}
+        <div className={cn(
+          "mt-auto border-t",
+          isHovered ? "p-4" : "p-2"
+        )}>
+          {/* User Info */}
+          {isHovered && user && (
+            <div className="mb-4 flex flex-col items-center justify-center px-4">
+              <div className="flex flex-col items-center gap-2 w-full">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-xl font-semibold text-primary">
+                    {user.firstName?.[0] || user.emailAddresses[0]?.emailAddress[0] || 'U'}
+                  </span>
                 </div>
+                <div className="flex flex-col items-center w-full">
+                  <p className="text-sm font-medium truncate w-full text-center">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate w-full text-center">
+                    {user.emailAddresses[0]?.emailAddress}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Sign Out Button */}
+          <div className="flex flex-col items-center w-full">
+            <button
+              onClick={() => signOut()}
+              className={cn(
+                "flex items-center justify-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 w-full max-w-[180px]",
+                isHovered ? "px-4 py-3 mt-0" : "px-2 py-3 mt-0"
+              )}
+            >
+              <div className="flex items-center justify-center w-6 min-w-[24px]">
+                <IconComponent icon={LogOut} />
+              </div>
+              {isHovered && (
+                <span className="text-base ml-3">
+                  <TranslatedText>Sign Out</TranslatedText>
+                </span>
               )}
             </button>
-          );
-        })}
-      </nav>
-      
-      {/* User Section */}
-      <div className="border-t border-border p-4 space-y-3">
-        {isLoaded && user && (
-          <div className={cn(
-            "flex items-center rounded-lg p-3 hover:bg-muted transition-colors cursor-pointer",
-            !isExpanded && "justify-center"
-          )}>
-            <div className="flex-shrink-0">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8"
-                  }
-                }}
-              />
-            </div>
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div 
-                  className="ml-3 min-w-0 flex-1"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <div className="text-sm font-medium text-foreground truncate">
-                    {user.fullName || user.emailAddresses[0]?.emailAddress}
-                  </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {user.emailAddresses[0]?.emailAddress}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
-        )}
-
-        
-        {/* Sign Out Button */}
-        <motion.button
-          onClick={handleSignOut}
-          className={cn(
-            "flex w-full items-center rounded-lg p-3 text-sm font-medium",
-            "text-muted-foreground hover:bg-muted hover:text-foreground transition-colors",
-            !isExpanded && "justify-center"
-          )}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.span 
-                className="ml-3 whitespace-nowrap"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.15 }}
-              >
-                <TranslatedText fallback="Sign out">Sign out</TranslatedText>
-              </motion.span>
-            )}
-          </AnimatePresence>
-          
-          {/* Tooltip for collapsed state */}
-          {!isExpanded && (
-            <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 border shadow-md">
-              <TranslatedText fallback="Sign out">Sign out</TranslatedText>
-            </div>
-          )}
-        </motion.button>
+        </div>
       </div>
-      
-      {/* Expand button for collapsed state */}
-      {!isExpanded && (
-        <button
-          onClick={toggleSidebar}
-          className="absolute -right-3 top-8 bg-background border border-border rounded-full p-1 shadow-md hover:bg-muted transition-colors z-20"
-        >
-          <ChevronRight className="h-3 w-3" />
-        </button>
-      )}
-    </motion.div>
+    </div>
   );
 };
 
-export default ModernSidebar; 
+export default ModernSidebar;

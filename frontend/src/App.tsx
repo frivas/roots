@@ -2,12 +2,12 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { 
+import {
   SignIn,
   SignUp,
   RedirectToSignIn,
   SignedIn,
-  SignedOut 
+  SignedOut
 } from '@clerk/clerk-react';
 
 // Layouts
@@ -45,106 +45,53 @@ function App() {
             path="/"
             element={<Navigate to="/dashboard" replace />}
           />
-          
+
           {/* Auth routes */}
           <Route
             path="/auth/login/*"
             element={
               <SignedOut>
                 <AuthLayout>
-                  <ClerkAuthWrapper 
+                  <ClerkAuthWrapper
                     type="signIn"
-                    routing="path" 
-                    path="/auth/login" 
+                    routing="path"
+                    path="/auth/login"
                     redirectUrl="/dashboard"
                   />
                 </AuthLayout>
               </SignedOut>
             }
           />
-          
+
           <Route
             path="/auth/register/*"
             element={
               <SignedOut>
                 <AuthLayout>
-                  <ClerkAuthWrapper 
+                  <ClerkAuthWrapper
                     type="signUp"
-                    routing="path" 
-                    path="/auth/register" 
+                    routing="path"
+                    path="/auth/register"
                     redirectUrl="/dashboard"
                   />
                 </AuthLayout>
               </SignedOut>
             }
           />
-          
+
           {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <SignedIn>
-                <MainLayout key="dashboard">
-                  <Dashboard />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
-          
-          <Route
-            path="/services/*"
-            element={
-              <SignedIn>
-                <MainLayout key="services">
-                  <Services />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
-          
-          <Route
-            path="/messages/*"
-            element={
-              <SignedIn>
-                <MainLayout key="messages">
-                  <Messages />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
-          
-          <Route
-            path="/notifications"
-            element={
-              <SignedIn>
-                <MainLayout key="notifications">
-                  <Notifications />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
-          
-          <Route
-            path="/settings/*"
-            element={
-              <SignedIn>
-                <MainLayout key="settings">
-                  <Settings />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
-          
-          <Route
-            path="/profile"
-            element={
-              <SignedIn>
-                <MainLayout key="profile">
-                  <Profile />
-                </MainLayout>
-              </SignedIn>
-            }
-          />
+          <Route element={
+            <SignedIn>
+              <MainLayout />
+            </SignedIn>
+          }>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/services/*" element={<Services />} />
+            <Route path="/messages/*" element={<Messages />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/settings/*" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
 
           {/* Public legal pages */}
           <Route
@@ -155,13 +102,13 @@ function App() {
               </MainLayout>
             }
           />
-          
+
           {/* Catch unauthenticated users */}
           <Route
             path="/signin"
             element={<RedirectToSignIn redirectUrl="/dashboard" />}
           />
-          
+
           {/* 404 route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
