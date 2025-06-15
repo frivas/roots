@@ -68,9 +68,12 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
       <div className="flex h-full flex-col">
         <div className={cn(
           "flex h-16 items-center border-b",
-          isHovered ? "px-6" : "px-3"
+          isHovered ? "px-6" : "px-0 justify-center"
         )}>
-          <Link to="/" className="flex items-center gap-3 font-semibold">
+          <Link to="/" className={cn(
+            "flex items-center gap-3 font-semibold",
+            !isHovered && "justify-center w-full"
+          )}>
             <MadridLogo size="sm" variant="positive" />
             {isHovered && <TranslatedText className="text-lg">Roots</TranslatedText>}
           </Link>
@@ -78,7 +81,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
         <div className="flex-1 overflow-auto py-4">
           <nav className={cn(
             "grid gap-2",
-            isHovered ? "px-4" : "px-2"
+            isHovered ? "px-4" : "px-1"
           )}>
             {navigation.map((item) => (
               <div key={item.name}>
@@ -88,11 +91,14 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
                       onClick={() => toggleMenu(item.name)}
                       className={cn(
                         "group flex w-full items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                        isHovered ? "px-4 py-3" : "px-2 py-3",
+                        isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
                         isMenuActive(item) ? "bg-accent text-accent-foreground" : "transparent"
                       )}
                     >
-                      <div className="flex items-center justify-center w-6 min-w-[24px]">
+                      <div className={cn(
+                        "flex items-center justify-center",
+                        isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                      )}>
                         <IconComponent icon={item.icon} />
                       </div>
                       {isHovered && (
@@ -127,12 +133,15 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
                   <Link
                     to={item.href || '#'}
                     className={cn(
-                      "group flex items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                      isHovered ? "px-4 py-3" : "px-2 py-3",
+                      "group flex w-full items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                      isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
                       location.pathname === item.href ? "bg-accent text-accent-foreground" : "transparent"
                     )}
                   >
-                    <div className="flex items-center justify-center w-6 min-w-[24px]">
+                    <div className={cn(
+                      "flex items-center justify-center",
+                      isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                    )}>
                       <IconComponent icon={item.icon} />
                     </div>
                     {isHovered && (
@@ -178,11 +187,16 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
             <button
               onClick={() => signOut()}
               className={cn(
-                "flex items-center justify-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 w-full max-w-[180px]",
-                isHovered ? "px-4 py-3 mt-0" : "px-2 py-3 mt-0"
+                "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700",
+                isHovered 
+                  ? "px-4 py-3 mt-0 w-full max-w-[180px] justify-center" 
+                  : "px-0 py-3 mt-0 w-full justify-center"
               )}
             >
-              <div className="flex items-center justify-center w-6 min-w-[24px]">
+              <div className={cn(
+                "flex items-center justify-center",
+                isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+              )}>
                 <IconComponent icon={LogOut} />
               </div>
               {isHovered && (
