@@ -42,12 +42,13 @@ const ParentWellnessChat: React.FC = () => {
         </Button>
       </div>
 
-      {/* ElevenLabs Widget - Will appear in bottom-right corner */}
+      {/* ElevenLabs Widget with Language Support */}
       {isElevenLabsLoaded && (
         <div 
           dangerouslySetInnerHTML={{
             __html: `<elevenlabs-convai 
               agent-id="agent_01jxkwsqkxe1nsztm4h461ahw0"
+              override-language="auto"
             ></elevenlabs-convai>`
           }}
         />
