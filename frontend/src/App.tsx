@@ -21,9 +21,18 @@ const Services = lazy(() => import('./pages/Services'));
 const Messages = lazy(() => import('./pages/Messages'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Settings = lazy(() => import('./pages/Settings'));
+const PersonalData = lazy(() => import('./pages/PersonalData'));
+const PasswordChange = lazy(() => import('./pages/PasswordChange'));
 const Profile = lazy(() => import('./pages/Profile'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+
+// Placeholder components for new routes
+const HomePlaceholder = lazy(() => import('./pages/placeholders/HomePlaceholder'));
+const CommunicationsPlaceholder = lazy(() => import('./pages/placeholders/CommunicationsPlaceholder'));
+const SchoolPlaceholder = lazy(() => import('./pages/placeholders/SchoolPlaceholder'));
+const CalendarPlaceholder = lazy(() => import('./pages/placeholders/CalendarPlaceholder'));
+const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlaceholder'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -85,10 +94,37 @@ function App() {
               <MainLayout />
             </SignedIn>
           }>
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Redirect dashboard to home */}
+            <Route path="/dashboard" element={<Navigate to="/home" replace />} />
+            
+            {/* Home section */}
+            <Route path="/home" element={<Dashboard />} />
+            <Route path="/home/*" element={<HomePlaceholder />} />
+            
+            {/* Our School section */}
+            <Route path="/school/*" element={<SchoolPlaceholder />} />
+            <Route path="/school/services" element={<Services />} />
             <Route path="/services/*" element={<Services />} />
-            <Route path="/messages/*" element={<Messages />} />
-            <Route path="/notifications" element={<Notifications />} />
+            
+            {/* Communications section */}
+            <Route path="/communications" element={<CommunicationsPlaceholder />} />
+            <Route path="/communications/messages" element={<Messages />} />
+            <Route path="/communications/messages/*" element={<Messages />} />
+            <Route path="/communications/notifications" element={<Notifications />} />
+            <Route path="/communications/notifications/*" element={<Notifications />} />
+            <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
+            
+            {/* Personal Calendar section */}
+            <Route path="/calendar/*" element={<CalendarPlaceholder />} />
+            
+            {/* My Data section */}
+            <Route path="/data/personal" element={<PersonalData />} />
+            <Route path="/data/password" element={<PasswordChange />} />
+            <Route path="/data/*" element={<MyDataPlaceholder />} />
+            
+            {/* Legacy routes - redirect to new structure */}
+            <Route path="/messages/*" element={<Navigate to="/communications/messages" replace />} />
+            <Route path="/notifications" element={<Navigate to="/communications/notifications" replace />} />
             <Route path="/settings/*" element={<Settings />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
