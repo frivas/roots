@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';
@@ -45,6 +46,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   isActive
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -89,6 +91,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             variant={isHovered && isActive ? "primary" : "outline"}
             className="w-full transition-all duration-300"
             disabled={!isActive}
+            onClick={() => isActive && navigate(href)}
           >
             <span className="flex items-center gap-2">
               <TranslatedText>{isActive ? "Access Service" : "Coming Soon"}</TranslatedText>
@@ -112,6 +115,7 @@ const Services = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [filteredServices, setFilteredServices] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   const categories = [
     { id: 'all', label: 'All Services' },
@@ -182,7 +186,7 @@ const Services = () => {
       href: '/services/parent-wellness',
       category: 'support',
       parentVisible: true, // Parent service - wellness and family support
-      isActive: false
+      isActive: true
     },
     {
       icon: Sparkles,

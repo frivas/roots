@@ -27,6 +27,10 @@ const Profile = lazy(() => import('./pages/Profile'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+// Service Pages
+const ParentWellness = lazy(() => import('./pages/services/ParentWellness'));
+const ParentWellnessChat = lazy(() => import('./pages/services/ParentWellnessChat'));
+
 // Placeholder components for new routes
 const HomePlaceholder = lazy(() => import('./pages/placeholders/HomePlaceholder'));
 const CommunicationsPlaceholder = lazy(() => import('./pages/placeholders/CommunicationsPlaceholder'));
@@ -104,6 +108,11 @@ function App() {
             {/* Our School section */}
             <Route path="/school/*" element={<SchoolPlaceholder />} />
             <Route path="/school/services" element={<Services />} />
+            
+            {/* Services section */}
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/parent-wellness" element={<ParentWellness />} />
+            <Route path="/services/parent-wellness-chat" element={<ParentWellnessChat />} />
             <Route path="/services/*" element={<Services />} />
             
             {/* Communications section */}
