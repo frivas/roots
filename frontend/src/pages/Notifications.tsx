@@ -14,8 +14,12 @@ import {
   Bell, 
   CheckCircle2, 
   Clock, 
-  Filter
+  Filter,
+  Undo2
 } from 'lucide-react';
+
+// Type assertion to fix Lucide React compatibility
+const LucideIcon = (Component: any) => Component as React.ComponentType<any>;
 
 interface Notification {
   id: string;
@@ -103,19 +107,19 @@ const getRelativeTime = (timestamp: string): string => {
 };
 
 const NotificationIcon = ({ type }: { type: string }) => {
-  const iconClasses = "h-5 w-5";
+  const iconClasses = "h-4 w-4";
   
   switch (type) {
     case 'info':
-      return <Info className={`${iconClasses} text-blue-500`} />;
+      return React.createElement(LucideIcon(Info), { className: `${iconClasses} text-blue-500` });
     case 'success':
-      return <CheckCircle2 className={`${iconClasses} text-green-500`} />;
+      return React.createElement(LucideIcon(CheckCircle2), { className: `${iconClasses} text-green-500` });
     case 'warning':
-      return <AlertTriangle className={`${iconClasses} text-yellow-500`} />;
+      return React.createElement(LucideIcon(AlertTriangle), { className: `${iconClasses} text-yellow-500` });
     case 'error':
-      return <AlertTriangle className={`${iconClasses} text-red-500`} />;
+      return React.createElement(LucideIcon(AlertTriangle), { className: `${iconClasses} text-red-500` });
     default:
-      return <Bell className={`${iconClasses} text-muted-foreground`} />;
+      return React.createElement(LucideIcon(Bell), { className: `${iconClasses} text-muted-foreground` });
   }
 };
 
@@ -137,10 +141,16 @@ const getCategoryColor = (category?: string) => {
 const NotificationItem = ({ 
   notification, 
   markAsRead,
+  undoMarkAsRead,
+  showUndo,
+  countdown,
   index
 }: { 
   notification: Notification; 
   markAsRead: (id: string) => void;
+  undoMarkAsRead: (id: string) => void;
+  showUndo: boolean;
+  countdown: number;
   index: number;
 }) => {
   const categoryColor = getCategoryColor(notification.category);
@@ -165,7 +175,7 @@ const NotificationItem = ({
         <CardHeader className="flex flex-row items-start justify-between p-4 pb-2">
           <div className="flex items-start space-x-3">
             <div className={cn(
-              "p-2 rounded-full",
+              "p-1.5 rounded-full",
               notification.type === 'info' ? 'bg-blue-100' : '',
               notification.type === 'success' ? 'bg-green-100' : '',
               notification.type === 'warning' ? 'bg-yellow-100' : '',
@@ -178,30 +188,42 @@ const NotificationItem = ({
                 <CardTitle className="text-base font-semibold">
                   <TranslatedText>{notification.title}</TranslatedText>
                 </CardTitle>
-                {notification.category && (
-                  <span className={`text-xs px-2 py-1 rounded-full border ${categoryColor}`}>
-                    <TranslatedText>{notification.category}</TranslatedText>
-                  </span>
-                )}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                <Clock className="h-3 w-3" />
+                {React.createElement(LucideIcon(Clock), { className: "h-3 w-3" })}
                 <span>{getRelativeTime(notification.timestamp)}</span>
               </div>
             </div>
           </div>
           
-          {!notification.read && (
+          {!notification.read && !showUndo && (
             <Button
               onClick={(e) => {
                 e.stopPropagation();
                 markAsRead(notification.id);
               }}
               variant="ghost"
-              className="h-8 w-8 p-0 rounded-full"
-              title="Mark as read"
+              className="text-sm text-muted-foreground hover:text-foreground"
             >
-              <Check className="h-4 w-4" />
+              {React.createElement(LucideIcon(Check), { className: "mr-2 h-4 w-4" })}
+              <TranslatedText>Mark as read</TranslatedText>
+            </Button>
+          )}
+          
+          {showUndo && (
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                undoMarkAsRead(notification.id);
+              }}
+              variant="ghost"
+              className="text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+            >
+              {React.createElement(LucideIcon(Undo2), { className: "mr-2 h-4 w-4" })}
+              <TranslatedText>Undo</TranslatedText>
+              <span className="ml-1 px-1.5 py-0.5 text-xs bg-orange-100 text-orange-700 rounded-full font-medium">
+                {countdown}
+              </span>
             </Button>
           )}
         </CardHeader>
@@ -217,10 +239,16 @@ const NotificationItem = ({
 
 const NotificationsList = ({ 
   notifications, 
-  markAsRead 
+  markAsRead,
+  undoMarkAsRead,
+  showUndo,
+  undoCountdown
 }: { 
   notifications: Notification[]; 
   markAsRead: (id: string) => void;
+  undoMarkAsRead: (id: string) => void;
+  showUndo: Record<string, boolean>;
+  undoCountdown: Record<string, number>;
 }) => {
   if (notifications.length === 0) {
     return (
@@ -230,7 +258,7 @@ const NotificationsList = ({
         className="flex flex-col items-center justify-center py-12 text-center"
       >
         <div className="bg-muted/30 p-4 rounded-full mb-4">
-          <BellRing className="h-12 w-12 text-muted-foreground" />
+          {React.createElement(LucideIcon(BellRing), { className: "h-12 w-12 text-muted-foreground" })}
         </div>
         <TranslatedText element="h3" className="text-lg font-medium mb-1">No notifications</TranslatedText>
         <TranslatedText element="p" className="text-muted-foreground">
@@ -248,6 +276,9 @@ const NotificationsList = ({
             key={notification.id} 
             notification={notification} 
             markAsRead={markAsRead}
+            undoMarkAsRead={undoMarkAsRead}
+            showUndo={showUndo[notification.id] || false}
+            countdown={undoCountdown[notification.id] || 0}
             index={index}
           />
         ))}
@@ -260,6 +291,9 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const [activeTab, setActiveTab] = useState<string>("all");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [undoTimers, setUndoTimers] = useState<Record<string, NodeJS.Timeout>>({});
+  const [showUndo, setShowUndo] = useState<Record<string, boolean>>({});
+  const [undoCountdown, setUndoCountdown] = useState<Record<string, number>>({});
   
   const unreadCount = notifications.filter(notification => !notification.read).length;
   
@@ -271,6 +305,58 @@ const Notifications = () => {
           : notification
       )
     );
+    
+    // Show undo button and start countdown
+    setShowUndo(prev => ({ ...prev, [id]: true }));
+    setUndoCountdown(prev => ({ ...prev, [id]: 5 }));
+    
+    // Create countdown interval
+    const countdownInterval = setInterval(() => {
+      setUndoCountdown(prev => {
+        const currentCount = prev[id];
+        if (currentCount <= 1) {
+          // Timer reached 0, hide undo button
+          setShowUndo(prevShow => ({ ...prevShow, [id]: false }));
+          clearInterval(countdownInterval);
+          setUndoTimers(prevTimers => {
+            const { [id]: _, ...rest } = prevTimers;
+            return rest;
+          });
+          const { [id]: __, ...rest } = prev;
+          return rest;
+        }
+        return { ...prev, [id]: currentCount - 1 };
+      });
+    }, 1000);
+    
+    setUndoTimers(prev => ({ ...prev, [id]: countdownInterval }));
+  };
+  
+  const undoMarkAsRead = (id: string) => {
+    // Clear the countdown interval
+    if (undoTimers[id]) {
+      clearInterval(undoTimers[id]);
+    }
+    
+    // Mark as unread
+    setNotifications(prev => 
+      prev.map(notification => 
+        notification.id === id 
+          ? { ...notification, read: false } 
+          : notification
+      )
+    );
+    
+    // Hide undo button and clear countdown
+    setShowUndo(prev => ({ ...prev, [id]: false }));
+    setUndoCountdown(prev => {
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
+    setUndoTimers(prev => {
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
   };
   
   const markAllAsRead = () => {
@@ -370,7 +456,7 @@ const Notifications = () => {
               onClick={markAllAsRead}
               className="text-sm text-muted-foreground hover:text-foreground"
             >
-              <Check className="mr-2 h-4 w-4" />
+              {React.createElement(LucideIcon(Check), { className: "mr-2 h-4 w-4" })}
               <TranslatedText>Mark all as read</TranslatedText>
             </Button>
           )}
@@ -388,7 +474,7 @@ const Notifications = () => {
               onClick={() => setActiveCategory(null)}
               className="h-8 text-sm"
             >
-              <Filter className="mr-2 h-3.5 w-3.5" />
+              {React.createElement(LucideIcon(Filter), { className: "mr-2 h-3.5 w-3.5" })}
               <TranslatedText>All Categories</TranslatedText>
             </Button>
             
@@ -412,7 +498,10 @@ const Notifications = () => {
       
       <NotificationsList 
         notifications={filteredNotifications} 
-        markAsRead={markAsRead} 
+        markAsRead={markAsRead}
+        undoMarkAsRead={undoMarkAsRead}
+        showUndo={showUndo}
+        undoCountdown={undoCountdown}
       />
     </motion.div>
   );
