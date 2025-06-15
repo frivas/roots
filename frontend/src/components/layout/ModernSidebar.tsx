@@ -59,83 +59,44 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
   return (
     <div
       className={cn(
-        "relative min-h-screen border-r bg-background transition-all duration-300",
+        "relative h-screen border-r bg-background transition-all duration-300 flex flex-col",
         isHovered ? "w-72" : "w-16"
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex h-full flex-col">
-        <div className={cn(
-          "flex h-16 items-center border-b",
-          isHovered ? "px-6" : "px-0 justify-center"
+      {/* Header Section */}
+      <div className={cn(
+        "flex h-16 items-center border-b flex-shrink-0",
+        isHovered ? "px-6" : "px-0 justify-center"
+      )}>
+        <Link to="/" className={cn(
+          "flex items-center gap-3 font-semibold",
+          !isHovered && "justify-center w-full"
         )}>
-          <Link to="/" className={cn(
-            "flex items-center gap-3 font-semibold",
-            !isHovered && "justify-center w-full"
-          )}>
-            <MadridLogo size="sm" variant="positive" />
-            {isHovered && <TranslatedText className="text-lg">Roots</TranslatedText>}
-          </Link>
-        </div>
-        <div className="flex-1 overflow-auto py-4">
-          <nav className={cn(
-            "grid gap-2",
-            isHovered ? "px-4" : "px-1"
-          )}>
-            {navigation.map((item) => (
-              <div key={item.name}>
-                {item.children ? (
-                  <>
-                    <button
-                      onClick={() => toggleMenu(item.name)}
-                      className={cn(
-                        "group flex w-full items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                        isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
-                        isMenuActive(item) ? "bg-accent text-accent-foreground" : "transparent"
-                      )}
-                    >
-                      <div className={cn(
-                        "flex items-center justify-center",
-                        isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
-                      )}>
-                        <IconComponent icon={item.icon} />
-                      </div>
-                      {isHovered && (
-                        <span className="flex-1 text-base ml-3">
-                          <TranslatedText>{item.name}</TranslatedText>
-                        </span>
-                      )}
-                    </button>
-                    {isHovered && expandedMenu === item.name && (
-                      <div className="ml-6 mt-2 space-y-2">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.name}
-                            to={child.href || '#'}
-                            className={cn(
-                              "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                              location.pathname === child.href ? "bg-accent text-accent-foreground" : "transparent"
-                            )}
-                          >
-                            <div className="flex items-center justify-center w-6 min-w-[24px]">
-                              <IconComponent icon={child.icon} />
-                            </div>
-                            <span className="text-base ml-3">
-                              <TranslatedText>{child.name}</TranslatedText>
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    to={item.href || '#'}
+          <MadridLogo size="sm" variant="positive" />
+          {isHovered && <TranslatedText className="text-lg font-semibold text-foreground">Raíces</TranslatedText>}
+        </Link>
+      </div>
+      
+      {/* Navigation Section - Takes available space */}
+      <div className="flex-1 overflow-auto py-4">
+        <nav className={cn(
+          "grid gap-2",
+          isHovered ? "px-4" : "px-1"
+        )}>
+          {navigation.map((item) => (
+            <div key={item.name}>
+              {item.children ? (
+                <>
+                  <button
+                    onClick={() => toggleMenu(item.name)}
                     className={cn(
-                      "group flex w-full items-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                      "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
                       isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
-                      location.pathname === item.href ? "bg-accent text-accent-foreground" : "transparent"
+                      isMenuActive(item) 
+                        ? "bg-accent text-accent-foreground" 
+                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                     )}
                   >
                     <div className={cn(
@@ -145,67 +106,129 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
                       <IconComponent icon={item.icon} />
                     </div>
                     {isHovered && (
-                      <span className="text-base ml-3">
+                      <span className="text-sm font-medium ml-3">
                         <TranslatedText>{item.name}</TranslatedText>
                       </span>
                     )}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </nav>
-        </div>
+                  </button>
+                  {isHovered && expandedMenu === item.name && (
+                    <div className="ml-6 mt-2 space-y-2 relative">
+                      {/* Connector line from parent to children */}
+                      <div className="absolute left-[-12px] top-0 bottom-0 w-px bg-border"></div>
+                      {item.children.map((child, childIndex) => (
+                        <div key={child.name} className="relative">
+                          {/* Horizontal connector line */}
+                          <div className="absolute left-[-12px] top-1/2 w-3 h-px bg-border"></div>
+                          <Link
+                            to={child.href || '#'}
+                            className={cn(
+                              "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                              location.pathname === child.href 
+                                ? "bg-accent text-accent-foreground" 
+                                : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                            )}
+                          >
+                            <div className="flex items-center justify-center w-6 min-w-[24px]">
+                              <IconComponent icon={child.icon} />
+                            </div>
+                            <span className="text-sm font-medium ml-3">
+                              <TranslatedText>{child.name}</TranslatedText>
+                            </span>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  to={item.href || '#'}
+                  className={cn(
+                    "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
+                    isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
+                    location.pathname === item.href 
+                      ? "bg-accent text-accent-foreground" 
+                      : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                  )}
+                >
+                  <div className={cn(
+                    "flex items-center justify-center",
+                    isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                  )}>
+                    <IconComponent icon={item.icon} />
+                  </div>
+                  {isHovered && (
+                    <span className="text-sm font-medium ml-3">
+                      <TranslatedText>{item.name}</TranslatedText>
+                    </span>
+                  )}
+                </Link>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
 
-        {/* User Profile Section */}
-        <div className={cn(
-          "mt-auto border-t",
-          isHovered ? "p-4" : "p-2"
-        )}>
-          {/* User Info */}
-          {isHovered && user && (
-            <div className="mb-4 flex flex-col items-center justify-center px-4">
-              <div className="flex flex-col items-center gap-2 w-full">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+      {/* User Profile and Sign Out Section - Always at bottom */}
+      <div className={cn(
+        "border-t bg-background flex-shrink-0",
+        isHovered ? "p-4" : "p-2"
+      )}>
+        {/* User Info */}
+        {isHovered && user && (
+          <div className="mb-4 flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center gap-2 w-full">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                {user.imageUrl ? (
+                  <img 
+                    src={user.imageUrl} 
+                    alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                ) : (
                   <span className="text-xl font-semibold text-primary">
                     {user.firstName?.[0] || user.emailAddresses[0]?.emailAddress[0] || 'U'}
                   </span>
-                </div>
-                <div className="flex flex-col items-center w-full">
-                  <p className="text-sm font-medium truncate w-full text-center">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <p className="text-xs text-muted-foreground truncate w-full text-center">
-                    {user.emailAddresses[0]?.emailAddress}
-                  </p>
-                </div>
+                )}
+              </div>
+              <div className="flex flex-col items-center w-full">
+                <p className="text-sm font-medium truncate w-full text-center text-foreground">
+                  {user.firstName && user.lastName 
+                    ? `${user.firstName} ${user.lastName}`
+                    : user.firstName || user.lastName || 'User'
+                  }
+                </p>
+                <p className="text-xs text-muted-foreground truncate w-full text-center">
+                  {user.emailAddresses[0]?.emailAddress}
+                </p>
               </div>
             </div>
-          )}
-
-          {/* Sign Out Button */}
-          <div className="flex flex-col items-center w-full">
-            <button
-              onClick={() => signOut()}
-              className={cn(
-                "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700",
-                isHovered 
-                  ? "px-4 py-3 mt-0 w-full max-w-[180px] justify-center" 
-                  : "px-0 py-3 mt-0 w-full justify-center"
-              )}
-            >
-              <div className={cn(
-                "flex items-center justify-center",
-                isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
-              )}>
-                <IconComponent icon={LogOut} />
-              </div>
-              {isHovered && (
-                <span className="text-base ml-3">
-                  <TranslatedText>Sign Out</TranslatedText>
-                </span>
-              )}
-            </button>
           </div>
+        )}
+
+        {/* Sign Out Button */}
+        <div className="flex justify-center w-full">
+          <button
+            onClick={() => signOut()}
+            className={cn(
+              "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors",
+              isHovered 
+                ? "px-4 py-3 w-full max-w-[180px] justify-center" 
+                : "px-0 py-3 w-full justify-center"
+            )}
+          >
+            <div className={cn(
+              "flex items-center justify-center",
+              isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+            )}>
+              <IconComponent icon={LogOut} />
+            </div>
+            {isHovered && (
+              <span className="text-sm font-medium ml-3">
+                <TranslatedText>Sign Out</TranslatedText>
+              </span>
+            )}
+          </button>
         </div>
       </div>
     </div>
