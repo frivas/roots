@@ -13,7 +13,28 @@ import {
     Users,
     FileText,
     Award,
-    LucideIcon
+    LucideIcon,
+    Clock,
+    UserCheck,
+    FileCheck,
+    History,
+    UserCircle,
+    Building,
+    CalendarDays,
+    Bus,
+    Coffee,
+    Globe,
+    Vote,
+    MessageSquare,
+    Archive,
+    Newspaper,
+    BellRing,
+    Plus,
+    CreditCard,
+    Shield,
+    Phone,
+    Key,
+    CalendarCheck
 } from 'lucide-react';
 
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
@@ -30,41 +51,135 @@ export interface MenuItem {
 // Common menu items visible to all roles
 const commonMenuItems: MenuItem[] = [
     {
-        name: 'Dashboard',
-        href: '/dashboard',
-        icon: Home
+        name: 'Home',
+        icon: Home,
+        children: [
+            {
+                name: 'Tutoring',
+                href: '/home/tutoring',
+                icon: UserCheck
+            },
+            {
+                name: 'Schedule',
+                href: '/home/schedule',
+                icon: Calendar
+            },
+            {
+                name: 'Absences',
+                href: '/home/absences',
+                icon: FileCheck
+            },
+            {
+                name: 'Assessable Activities',
+                href: '/home/activities',
+                icon: Award
+            },
+            {
+                name: 'Academic History',
+                href: '/home/history',
+                icon: History
+            },
+            {
+                name: 'Student Documents',
+                href: '/home/documents',
+                icon: FileText
+            },
+            {
+                name: 'Current Year Grades',
+                href: '/home/grades',
+                icon: Award
+            },
+            {
+                name: 'Student Profile',
+                href: '/home/profile',
+                icon: UserCircle
+            }
+        ]
     },
     {
         name: 'Our School',
         icon: School,
         children: [
             {
+                name: 'School data',
+                href: '/school/data',
+                icon: Building
+            },
+            {
+                name: 'School calendar',
+                href: '/school/calendar',
+                icon: CalendarDays
+            },
+            {
                 name: 'Services',
-                href: '/services',
+                href: '/school/services',
                 icon: BookOpen
+            },
+            {
+                name: 'School elections',
+                href: '/school/elections',
+                icon: Vote
             }
         ]
     },
     {
-        name: 'Messages',
-        href: '/messages',
-        icon: Mail
+        name: 'Communications',
+        icon: MessageSquare,
+        children: [
+            {
+                name: 'Messages',
+                href: '/communications/messages',
+                icon: Mail
+            },
+            {
+                name: 'Bulletin board',
+                href: '/communications/bulletin',
+                icon: Newspaper
+            },
+            {
+                name: 'Notifications',
+                href: '/communications/notifications',
+                icon: Bell
+            }
+        ]
     },
     {
-        name: 'Notifications',
-        href: '/notifications',
-        icon: Bell
+        name: 'Personal Calendar',
+        icon: Calendar,
+        children: [
+            {
+                name: 'Monthly calendar view',
+                href: '/calendar/monthly',
+                icon: CalendarDays
+            },
+            {
+                name: 'Custom events',
+                href: '/calendar/events',
+                icon: CalendarCheck
+            },
+            {
+                name: 'Create event',
+                href: '/calendar/create',
+                icon: Plus
+            }
+        ]
     },
     {
-        name: 'Settings',
-        href: '/settings',
-        icon: Settings
-    },
-    {
-        name: 'Profile',
-        href: '/profile',
-        icon: User
-    },
+        name: 'My Data',
+        icon: User,
+        children: [
+            {
+                name: 'User personal information',
+                href: '/data/personal',
+                icon: CreditCard
+            },
+            {
+                name: 'Password change',
+                href: '/data/password',
+                icon: Key
+            }
+        ]
+    }
 ];
 
 // Role-specific menu items

@@ -4,6 +4,8 @@
 export const spanishTranslations: Record<string, string> = {
   // Navigation & Layout
   "Dashboard": "Panel de Control",
+  "Home": "Seguimiento del Curso",
+  "Our School": "Centro",
   "Services": "Servicios", 
   "Messages": "Mensajes",
   "Notifications": "Notificaciones",
@@ -462,7 +464,122 @@ export const spanishTranslations: Record<string, string> = {
   "Excellent": "Excelente",
   "Good": "Bueno",
   "Fair": "Regular",
-  "Poor": "Deficiente"
+  "Poor": "Deficiente",
+
+  // Core Navigation & UI
+  "Communications": "Comunicaciones",
+  "Personal Calendar": "Calendario Personal",
+  "My Data": "Mis Datos",
+  "Sign Out": "Cerrar Sesión",
+
+  // Home submenu
+  "Tutoring": "Tutoría",
+  "Tutor Information": "Información del Tutor",
+  "Scheduled Visits": "Visitas Programadas",
+  "Absences": "Ausencias",
+  "Consultation": "Consulta",
+  "Communication": "Comunicación",
+  "Student Observations": "Observaciones del Estudiante",
+
+  // Our School submenu
+  "School data": "Datos del Centro",
+  "School calendar": "Calendario Escolar",
+  "Morning classroom": "Aula Matinal",
+  "School transportation": "Transporte Escolar",
+  "Extracurricular activities": "Actividades Extraescolares",
+  "Language support for immigrants": "Apoyo Lingüístico para Inmigrantes",
+  "Mentorship program": "Programa de Mentoría",
+  "School elections": "Elecciones Escolares",
+
+  // Communications submenu
+  "Inbox messages": "Mensajes de Entrada",
+  "Outbox messages": "Mensajes Enviados",
+  "Archived inbox messages": "Mensajes Archivados",
+  "Bulletin board": "Tablón de Anuncios",
+  "View bulletin board": "Ver Tablón de Anuncios",
+  "Articles": "Artículos",
+  "Configurable notification types": "Tipos de Notificación Configurables",
+  "Notification subscriptions": "Suscripciones de Notificación",
+  "Notification method": "Método de Notificación",
+  "User-type-specific management": "Gestión Específica por Tipo de Usuario",
+
+  // Personal Calendar submenu
+  "Monthly calendar view": "Vista de Calendario Mensual",
+  "Create event": "Crear Evento",
+
+  // My Data submenu
+  "User personal information": "Información Personal del Usuario",
+  "Name, ID number, address, city, province": "Nombre, DNI, Dirección, Ciudad, Provincia",
+  "Email for notifications": "Email para Notificaciones",
+  "Two-factor authentication (2FA) setup": "Configuración de Autenticación de Dos Factores (2FA)",
+  "Recovery phone number": "Número de Teléfono de Recuperación",
+  "2FA delivery method (email or phone)": "Método de Entrega 2FA (email o teléfono)",
+  "Password change": "Cambio de Contraseña",
+
+  // My Data section translations
+  "User Information": "Información del Usuario",
+  
+  // Time references
+  "This week": "Esta semana",
+  "Last 30 days": "Últimos 30 días",
+
+  // Additional placeholder translations
+  "Home section - Coming soon": "Sección Inicio - Próximamente",
+  "Page Under Development": "Página en Desarrollo",
+  "This page is currently being developed and will be available soon.": "Esta página está actualmente en desarrollo y estará disponible pronto.",
+  "Current path:": "Path actual:",
+  "Available Home Features (Coming Soon):": "Funciones de Inicio Disponibles (Próximamente):",
+  "Tutoring Information & Scheduled Visits": "Información de Tutorías y Visitas Programadas",
+  "Student Schedule": "Horario del Estudiante",
+  "Absences Management": "Gestión de Ausencias",
+  "Assessable Activities": "Actividades Evaluables",
+  "Academic History": "Historial Académico",
+  "Student Documents": "Documentos del Estudiante",
+  "Current Year Grades": "Calificaciones del Año Actual",
+  "Student Profile": "Perfil del Estudiante",
+
+  // Communications section translations
+  "Communications section - Coming soon": "Sección Comunicaciones - Próximamente",
+  "Available Communications Features:": "Funciones de Comunicaciones Disponibles:",
+  "Messages - Internal messaging system": "Mensajes - Sistema de mensajería interno",
+  "Notifications - System notifications": "Notificaciones - Notificaciones del sistema",
+  "Bulletin Board - School announcements": "Tablón de Anuncios - Anuncios escolares",
+  "Direct Messaging - Teacher-Student communication": "Mensajería Directa - Comunicación Profesor-Estudiante",
+  "Group Communications - Class and group messages": "Comunicaciones Grupales - Mensajes de clase y grupo",
+
+  // School section translations
+  "Our School section - Coming soon": "Sección Nuestro Centro - Próximamente",
+  "Available School Features (Coming Soon):": "Funciones del Centro Disponibles (Próximamente):",
+  "School Data & Information": "Datos e Información del Centro",
+  "Academic Calendar": "Calendario Académico",
+  "School Services - Medical, Psychological, etc.": "Servicios del Centro - Médico, Psicológico, etc.",
+  "Student Elections & Voting": "Elecciones Estudiantiles y Votaciones",
+  "School Board Information": "Información del Consejo Escolar",
+  "Faculty Directory": "Directorio de Profesores",
+
+  // Calendar section translations
+  "Personal Calendar section - Coming soon": "Sección Calendario Personal - Próximamente",
+  "Available Calendar Features (Coming Soon):": "Funciones de Calendario Disponibles (Próximamente):",
+  "Monthly Calendar View": "Vista de Calendario Mensual",
+  "Create Personal Events": "Crear Eventos Personales",
+  "Event Reminders": "Recordatorios de Eventos",
+  "Academic Event Integration": "Integración de Eventos Académicos",
+  "Share Calendar Events": "Compartir Eventos del Calendario",
+
+  // My Data section translations
+  "My Data section - Coming soon": "Sección Mis Datos - Próximamente",
+  "Available Data Features (Coming Soon):": "Funciones de Datos Disponibles (Próximamente):",
+  "User Information Management": "Gestión de Información de Usuario",
+  "Personal Profile Settings": "Configuración de Perfil Personal",
+  "Privacy Settings": "Configuración de Privacidad",
+  "Data Export Options": "Opciones de Exportación de Datos",
+  
+  // Section names for placeholders
+  "Home Section": "Sección Inicio",
+  "Communications Section": "Sección Comunicaciones",
+  "Our School Section": "Sección Nuestro Centro",
+  "Personal Calendar Section": "Sección Calendario Personal",
+  "My Data Section": "Sección Mis Datos"
 };
 
 // Function to get Spanish translation with fallback
