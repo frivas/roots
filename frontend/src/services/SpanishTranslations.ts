@@ -705,7 +705,36 @@ export const spanishTranslations: Record<string, string> = {
   "Communications Section": "Sección Comunicaciones",
   "Our School Section": "Sección Nuestro Centro",
   "Personal Calendar Section": "Sección Calendario Personal",
-  "My Data Section": "Sección Mis Datos"
+  "My Data Section": "Sección Mis Datos",
+
+  // Widget translations
+  "Do you want to talk?": "¿Quieres hablar?",
+  "Start a conversation": "Iniciar una conversación",
+  "New conversation": "Nueva conversación",
+  "End": "Finalizar",
+  "Mute microphone": "Silenciar micrófono",
+  "Change language": "Cambiar idioma",
+  "Collapse": "Colapsar",
+  "Copied!": "¡Copiado!",
+  "Accept": "Aceptar",
+  "Listening": "Escuchando",
+  "Talk to interrupt": "Habla para interrumpir",
+  "Connecting": "Conectando",
+  "Text message input": "Entrada de mensaje de texto",
+  "Or send a message": "O envía un mensaje",
+  "You ended the conversation": "Has terminado la conversación",
+  "The agent ended the conversation": "El agente terminó la conversación",
+  "Conversation ID": "ID de conversación",
+  "An error occurred": "Ocurrió un error",
+  "Copy ID": "Copiar ID",
+
+  // ElevenLabs Widget Translations
+  "Click to talk": "Haz clic para hablar",
+  "Start Call": "Iniciar Llamada",
+  "End Call": "Finalizar Llamada",
+  "Expand": "Expandir",
+  "Listening...": "Escuchando...",
+  "Speaking...": "Hablando..."
 };
 
 // Function to get Spanish translation with fallback
