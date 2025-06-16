@@ -10,7 +10,7 @@ class LingoTranslationService {
     if (!apiKey) {
       throw new Error(' [VITE_GROQ_API_KEY_REMOVED]environment variable is required');
     }
-    
+
     this.engine = new LingoDotDevEngine({
       apiKey: apiKey,
       batchSize: 50,
@@ -32,10 +32,8 @@ class LingoTranslationService {
     // For Spanish, ALWAYS check our local dictionary first
     if (targetLocale === 'es-ES') {
       const localTranslation = getSpanishTranslation(text);
-      if (localTranslation !== text) {
-        console.log(`✅ Using local Spanish translation for: "${text}" -> "${localTranslation}"`);
-        return localTranslation;
-      }
+      //console.log(`✅ Using local Spanish translation for: "${text}" -> "${localTranslation}"`);
+      return localTranslation;
     }
 
     // Check cache next
@@ -66,7 +64,16 @@ class LingoTranslationService {
       return result;
     } catch (error) {
       console.error('Translation failed for:', text, error);
-      return text; // Fallback to original text
+
+      // For Spanish, fallback to local dictionary if Lingo.dev fails
+      if (targetLocale === 'es-ES' && hasSpanishTranslation(text)) {
+        const fallbackTranslation = getSpanishTranslation(text);
+        console.log(`🔄 Fallback to local Spanish translation: "${text}" -> "${fallbackTranslation}"`);
+        return fallbackTranslation;
+      }
+
+      // Ultimate fallback to original text
+      return text;
     }
   }
 
@@ -78,7 +85,7 @@ class LingoTranslationService {
     // For Spanish, try to translate individual properties using our dictionary first
     if (targetLocale === 'es-ES') {
       const translatedObj: Record<string, any> = {};
-      
+
       for (const [key, value] of Object.entries(obj)) {
         if (typeof value === 'string') {
           translatedObj[key] = await this.translateText(value, targetLocale);
@@ -88,13 +95,13 @@ class LingoTranslationService {
           translatedObj[key] = value;
         }
       }
-      
+
       return translatedObj;
     }
 
     try {
       return await this.engine.localizeObject(obj, {
-        sourceLocale: "en-US", 
+        sourceLocale: "en-US",
         targetLocale: targetLocale
       });
     } catch (error) {
@@ -135,7 +142,7 @@ class LingoTranslationService {
   // Preload common translations into cache
   async preloadCommonTranslations(targetLocale: string): Promise<void> {
     if (targetLocale !== 'es-ES') return;
-    
+
     const commonPhrases = [
       "Dashboard", "Settings", "Profile", "Messages", "Notifications",
       "Welcome to Raíces!", "Save", "Cancel", "Edit", "Delete", "Search"
@@ -150,4 +157,4 @@ class LingoTranslationService {
 }
 
 // Export singleton instance
-export const lingoTranslationService = new LingoTranslationService(); 
+export const lingoTranslationService = new LingoTranslationService();

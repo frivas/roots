@@ -38,6 +38,8 @@ const SchoolPlaceholder = lazy(() => import('./pages/placeholders/SchoolPlacehol
 const CalendarPlaceholder = lazy(() => import('./pages/placeholders/CalendarPlaceholder'));
 const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlaceholder'));
 
+import TutorInfo from './pages/TutorInfo';
+
 // Loading component with better UX
 const Loading = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
@@ -100,21 +102,22 @@ function App() {
           }>
             {/* Redirect dashboard to home */}
             <Route path="/dashboard" element={<Navigate to="/home" replace />} />
-            
+
             {/* Home section */}
             <Route path="/home" element={<Dashboard />} />
             <Route path="/home/*" element={<HomePlaceholder />} />
-            
+            <Route path="/home/tutoring" element={<TutorInfo />} />
+
             {/* Our School section */}
             <Route path="/school/*" element={<SchoolPlaceholder />} />
             <Route path="/school/services" element={<Services />} />
-            
+
             {/* Services section */}
             <Route path="/services" element={<Services />} />
             <Route path="/services/parent-wellness" element={<ParentWellness />} />
             <Route path="/services/parent-wellness-chat" element={<ParentWellnessChat />} />
             <Route path="/services/*" element={<Services />} />
-            
+
             {/* Communications section */}
             <Route path="/communications" element={<CommunicationsPlaceholder />} />
             <Route path="/communications/messages" element={<Messages />} />
@@ -122,15 +125,15 @@ function App() {
             <Route path="/communications/notifications" element={<Notifications />} />
             <Route path="/communications/notifications/*" element={<Notifications />} />
             <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
-            
+
             {/* Personal Calendar section */}
             <Route path="/calendar/*" element={<CalendarPlaceholder />} />
-            
+
             {/* My Data section */}
             <Route path="/data/personal" element={<PersonalData />} />
             <Route path="/data/password" element={<PasswordChange />} />
             <Route path="/data/*" element={<MyDataPlaceholder />} />
-            
+
             {/* Legacy routes - redirect to new structure */}
             <Route path="/messages/*" element={<Navigate to="/communications/messages" replace />} />
             <Route path="/notifications" element={<Navigate to="/communications/notifications" replace />} />
