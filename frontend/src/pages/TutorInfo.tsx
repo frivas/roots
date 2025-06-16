@@ -2,8 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import tutorMockData from '../services/TutorMockData';
-import { Calendar, Mail, Phone, School, Edit2 } from 'lucide-react';
-import Button from '../components/ui/Button';
+import { Calendar, Mail, Phone, School } from 'lucide-react';
 
 const TutorInfo: React.FC = () => {
     const tutor = tutorMockData;
@@ -21,13 +20,6 @@ const TutorInfo: React.FC = () => {
                     <h2 className="text-2xl font-bold mb-1">{tutor.name}</h2>
                     <div className="text-primary font-semibold mb-2">
                         <TranslatedText>{tutor.role}</TranslatedText>
-                    </div>
-                    <div className="flex flex-wrap justify-center gap-2 mb-2">
-                        {tutor.tags.map((tag, idx) => (
-                            <span key={idx} className="bg-muted px-2 py-1 rounded text-xs text-muted-foreground border">
-                                <TranslatedText>{tag}</TranslatedText>
-                            </span>
-                        ))}
                     </div>
                     <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground mb-2">
                         <div className="flex items-center gap-2">
@@ -47,10 +39,6 @@ const TutorInfo: React.FC = () => {
                             <TranslatedText>Joined</TranslatedText> <span>{tutor.joinDate}</span>
                         </div>
                     </div>
-                    <Button className="mt-2 w-full" variant="outline">
-                        {<Edit2 className="h-4 w-4 mr-2" /> as any}
-                        <TranslatedText>Edit Profile</TranslatedText>
-                    </Button>
                 </div>
             </Card>
 
@@ -65,6 +53,39 @@ const TutorInfo: React.FC = () => {
                     </CardHeader>
                     <CardContent>
                         <TranslatedText>{tutor.bio}</TranslatedText>
+                    </CardContent>
+                </Card>
+
+                {/* Current Course */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            <TranslatedText>Current Course</TranslatedText>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-2">
+                            <div className="flex justify-between">
+                                <span className="font-medium"><TranslatedText>Course</TranslatedText></span>
+                                <span><TranslatedText>{tutor.currentCourse.course}</TranslatedText></span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-medium"><TranslatedText>Center</TranslatedText></span>
+                                <span><TranslatedText>{tutor.currentCourse.center}</TranslatedText></span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-medium"><TranslatedText>Unit</TranslatedText></span>
+                                <span><TranslatedText>{tutor.currentCourse.unit}</TranslatedText></span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-medium"><TranslatedText>Unit Delegate</TranslatedText></span>
+                                <span><TranslatedText>{tutor.currentCourse.unitDelegate}</TranslatedText></span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-medium"><TranslatedText>Unit Subdelegate</TranslatedText></span>
+                                <span><TranslatedText>{tutor.currentCourse.unitSubdelegate}</TranslatedText></span>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
 
