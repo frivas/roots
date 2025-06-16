@@ -21,8 +21,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Get the user role from public metadata
   const userRole = user?.publicMetadata?.role as string | undefined;
   
+  // Handle authentication state changes
   useEffect(() => {
-    // Redirect to login if not authenticated and not already on the auth pages
+    if (isLoaded && isSignedIn) {
+      // User just logged in - check for auth language preference with a small delay
+      setTimeout(() => {
+        const authLanguage = localStorage.getItem('authSelectedLanguage');
+        if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
+          console.log(`🔐 User authenticated with auth language: ${authLanguage}`);
+          localStorage.setItem('selectedLanguage', authLanguage);
+          localStorage.removeItem('authSelectedLanguage');
+          
+          // Dispatch language change event to update the context
+          window.dispatchEvent(new CustomEvent('languageChanged', {
+            detail: { language: authLanguage }
+          }));
+        }
+      }, 500); // Small delay to ensure auth is fully complete
+    }
+  }, [isLoaded, isSignedIn]);
+
+  // Handle navigation redirects separately to avoid interference
+  useEffect(() => {
     if (isLoaded && !isSignedIn && !window.location.pathname.startsWith('/auth')) {
       navigate('/auth/login');
     }

@@ -38,7 +38,7 @@ const SimpleHeader: React.FC = () => {
           {/* Madrid Logo for mobile */}
           <Link to="/" className="flex items-center gap-3">
             <MadridLogo size="sm" />
-            <span className="text-xl font-bold text-foreground">Roots</span>
+            <span className="text-xl font-bold text-foreground">Raíces</span>
           </Link>
           
           {/* Mobile menu button */}

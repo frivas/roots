@@ -14,17 +14,37 @@ const LingoTranslationContext = createContext<LingoTranslationContextType | unde
 
 export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<string>(() => {
-    // Initialize with saved language or default to 'en-US'
-    const saved = localStorage.getItem('selectedLanguage');
-    const initialLang = (saved === 'en-US' || saved === 'es-ES') ? saved : 'en-US';
-    console.log(`🚀 Context initializing with language: ${initialLang} (from localStorage: ${saved})`);
+    // Prioritize auth language selection, then saved language, then default
+    const authLanguage = localStorage.getItem('authSelectedLanguage');
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    
+    console.log(`🔍 Language initialization - Auth: ${authLanguage}, Saved: ${savedLanguage}`);
+    
+    let initialLang = 'en-US'; // default
+    
+    if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
+      initialLang = authLanguage;
+      console.log(`🚀 Context initializing with AUTH language: ${initialLang}`);
+      // Clear auth language after using it and set it as the user's preference
+      localStorage.removeItem('authSelectedLanguage');
+      localStorage.setItem('selectedLanguage', initialLang);
+    } else if (savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
+      initialLang = savedLanguage;
+      console.log(`🚀 Context initializing with SAVED language: ${initialLang}`);
+    } else {
+      console.log(`🚀 Context initializing with DEFAULT language: ${initialLang}`);
+    }
+    
     return initialLang;
   });
   const [isTranslating, setIsTranslating] = useState(false);
   const [preloadingComplete, setPreloadingComplete] = useState(() => {
     // Initialize based on starting language - Spanish needs preloading, English doesn't
-    const saved = localStorage.getItem('selectedLanguage');
-    return saved !== 'es-ES'; // false for Spanish, true for English or default
+    const authLanguage = localStorage.getItem('authSelectedLanguage');
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    
+    const currentLang = authLanguage || savedLanguage || 'en-US';
+    return currentLang !== 'es-ES'; // false for Spanish, true for English or default
   });
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -32,10 +52,19 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
     // Initialize the translation context
     const initializeTranslationContext = async () => {
       try {
-        // Language is already set from localStorage in useState initializer
-        // Just ensure localStorage has the current value
-        localStorage.setItem('selectedLanguage', language);
-        console.log(`🔄 Initialized with language: ${language}`);
+        // Check for auth language one more time after context initialization
+        const authLanguage = localStorage.getItem('authSelectedLanguage');
+        if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
+          console.log(`🔄 Found auth language during initialization: ${authLanguage}`);
+          setLanguage(authLanguage);
+          localStorage.removeItem('authSelectedLanguage');
+          localStorage.setItem('selectedLanguage', authLanguage);
+        } else {
+          // Language is already set from localStorage in useState initializer
+          // Just ensure localStorage has the current value
+          localStorage.setItem('selectedLanguage', language);
+          console.log(`🔄 Initialized with language: ${language}`);
+        }
         
         // Small delay to ensure all initialization is complete
         await new Promise(resolve => setTimeout(resolve, 50));

@@ -1,237 +1,345 @@
-// @ts-nocheck
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useUser, UserButton } from '@clerk/clerk-react';
-import { useClerk } from '@clerk/clerk-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
-import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
-import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-import { 
-  Home, 
-  BookOpen, 
-  Mail, 
-  Bell, 
-  Settings, 
-  User, 
+import { getMenuItems, type Role } from '../../config/menuConfig';
+import { useUser, useClerk } from '@clerk/clerk-react';
+import {
   LogOut,
-  ChevronLeft,
-  ChevronRight
+  LucideIcon
 } from 'lucide-react';
+import MadridLogo from '../ui/MadridLogo';
+
+interface MenuItem {
+  name: string;
+  href?: string;
+  icon: LucideIcon;
+  children?: MenuItem[];
+}
 
 interface ModernSidebarProps {
   className?: string;
+  userRoles?: Role[];
 }
 
-const ModernSidebar: React.FC<ModernSidebarProps> = ({ className }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
+  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
+  const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const { signOut } = useClerk();
-  const { isInitialized, preloadingComplete } = useLingoTranslation();
-  
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Services', href: '/services', icon: BookOpen },
-    { name: 'Messages', href: '/messages', icon: Mail },
-    { name: 'Notifications', href: '/notifications', icon: Bell },
-    { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Profile', href: '/profile', icon: User },
-  ];
-  
-  const handleSignOut = () => {
-    signOut();
+
+  const navigation = getMenuItems(userRoles);
+
+  // Auto-expand menus that contain the current page (only for specific routes, not root)
+  useEffect(() => {
+    // Don't auto-expand anything on root path or empty paths
+    if (location.pathname === '/' || location.pathname === '') {
+      return;
+    }
+
+    const findMenusToExpand = (items: MenuItem[], path: string): string[] => {
+      const menusToExpand: string[] = [];
+      
+      items.forEach(item => {
+        if (item.children) {
+          // Check if this menu contains the current page
+          const containsCurrentPage = item.children.some(child => {
+            if (child.href === path) return true;
+            if (child.children) {
+              return child.children.some(grandchild => grandchild.href === path);
+            }
+            return false;
+          });
+          
+          if (containsCurrentPage) {
+            menusToExpand.push(item.name);
+            
+            // Also check for nested menus
+            item.children.forEach(child => {
+              if (child.children) {
+                const hasActiveGrandchild = child.children.some(grandchild => grandchild.href === path);
+                if (hasActiveGrandchild) {
+                  menusToExpand.push(child.name);
+                }
+              }
+            });
+          }
+        }
+      });
+      
+      return menusToExpand;
+    };
+
+    // Only auto-expand on route changes, preserve manual toggles
+    const menusToExpand = findMenusToExpand(navigation, location.pathname);
+    if (menusToExpand.length > 0) {
+      setExpandedMenus(prev => {
+        const newSet = new Set(prev);
+        menusToExpand.forEach(menu => newSet.add(menu));
+        return newSet;
+      });
+    }
+  }, [location.pathname]); // Removed navigation dependency to prevent resets
+
+  const toggleMenu = (menuName: string) => {
+    console.log('Toggling menu:', menuName); // Debug log
+    setExpandedMenus(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(menuName)) {
+        newSet.delete(menuName);
+        console.log('Collapsed:', menuName); // Debug log
+      } else {
+        newSet.add(menuName);
+        console.log('Expanded:', menuName); // Debug log
+      }
+      console.log('Current expanded menus:', Array.from(newSet)); // Debug log
+      return newSet;
+    });
   };
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
+  const isMenuActive = (item: MenuItem) => {
+    if (item.href) {
+      return location.pathname === item.href;
+    }
+    if (item.children) {
+      return item.children.some((child) => location.pathname === child.href);
+    }
+    return false;
   };
 
-  // Improved navigation handler to prevent blank pages
-  const handleNavigation = (href: string) => {
-    // Force a small delay to ensure translation context is ready
-    setTimeout(() => {
-      navigate(href);
-    }, 10);
+  const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
+    const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
+    return <IconElement className={cn("h-6 w-6", className)} />;
   };
+
+  const Link = RouterLink as unknown as React.ComponentType<{
+    to: string;
+    className?: string;
+    children: React.ReactNode;
+  }>;
 
   return (
-    <motion.div 
+    <div
       className={cn(
-        "flex h-screen flex-col bg-card border-r border-border relative z-10",
-        className
+        "relative h-screen border-r bg-background transition-all duration-300 flex flex-col",
+        isHovered ? "w-72" : "w-16"
       )}
-      animate={{
-        width: isExpanded ? "280px" : "80px"
-      }}
-      transition={{
-        duration: 0.3,
-        ease: "easeInOut"
-      }}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header with Madrid Logo */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <Link to="/" className="flex items-center min-w-0 gap-3">
-          <MadridLogo size={isExpanded ? "md" : "sm"} />
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.span 
-                className="text-xl font-bold text-foreground whitespace-nowrap"
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <TranslatedText>Roots</TranslatedText>
-              </motion.span>
-            )}
-          </AnimatePresence>
+      {/* Header Section */}
+      <div className={cn(
+        "flex h-16 items-center border-b flex-shrink-0",
+        isHovered ? "px-6" : "px-0 justify-center"
+      )}>
+        <Link to="/" className={cn(
+          "flex items-center gap-3 font-semibold",
+          !isHovered && "justify-center w-full"
+        )}>
+          <MadridLogo size="sm" variant="positive" />
+          {isHovered && <TranslatedText className="text-lg font-semibold text-foreground">Raíces</TranslatedText>}
         </Link>
-        
-        {isExpanded && (
-          <button
-            onClick={toggleSidebar}
-            className="p-1 rounded-md hover:bg-muted transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        )}
       </div>
       
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {navigation.map((item) => {
-          const isActive = location.pathname.startsWith(item.href);
-          
-          return (
-            <button
-              key={item.name}
-              onClick={() => handleNavigation(item.href)}
-              className={cn(
-                "flex items-center rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 relative group w-full text-left",
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              title={!isExpanded ? item.name : undefined}
-            >
-              <item.icon className={cn(
-                "flex-shrink-0",
-                isExpanded ? "h-5 w-5" : "h-6 w-6"
-              )} />
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.span 
-                    className="ml-3 whitespace-nowrap"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.15 }}
+      {/* Navigation Section - Takes available space */}
+      <div className="flex-1 overflow-auto py-4">
+        <nav className={cn(
+          "grid gap-2",
+          isHovered ? "px-4" : "px-1"
+        )}>
+          {navigation.map((item) => (
+            <div key={item.name}>
+              {item.children && !item.href ? (
+                // Item with only children - expandable button
+                <>
+                  <button
+                    onClick={() => toggleMenu(item.name)}
+                    className={cn(
+                      "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
+                      isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
+                      "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                    )}
                   >
-                    <TranslatedText fallback={item.name}>{item.name}</TranslatedText>
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              
-              {/* Tooltip for collapsed state */}
-              {!isExpanded && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 border shadow-md">
-                  <TranslatedText fallback={item.name}>{item.name}</TranslatedText>
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-      
-      {/* User Section */}
-      <div className="border-t border-border p-4 space-y-3">
-        {isLoaded && user && (
-          <div className={cn(
-            "flex items-center rounded-lg p-3 hover:bg-muted transition-colors cursor-pointer",
-            !isExpanded && "justify-center"
-          )}>
-            <div className="flex-shrink-0">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8"
-                  }
-                }}
-              />
-            </div>
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div 
-                  className="ml-3 min-w-0 flex-1"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.15 }}
+                    <div className={cn(
+                      "flex items-center justify-center",
+                      isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                    )}>
+                      <IconComponent icon={item.icon} />
+                    </div>
+                    {isHovered && (
+                      <span className="text-sm font-medium ml-3">
+                        <TranslatedText>{item.name}</TranslatedText>
+                      </span>
+                    )}
+                  </button>
+                  {isHovered && expandedMenus.has(item.name) && (
+                    <div className="ml-6 mt-2 space-y-2 relative">
+                      {/* Connector line from parent to children */}
+                      <div className="absolute left-[-12px] top-0 bottom-0 w-px bg-border"></div>
+                      {item.children.map((child, childIndex) => (
+                        <div key={child.name} className="relative">
+                          {/* Horizontal connector line */}
+                          <div className="absolute left-[-12px] top-1/2 w-3 h-px bg-border"></div>
+                          {child.children && !child.href ? (
+                            // Child with only children - expandable button
+                            <>
+                              <button
+                                onClick={() => toggleMenu(child.name)}
+                                className={cn(
+                                  "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                  "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                )}
+                              >
+                                <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                  <IconComponent icon={child.icon} />
+                                </div>
+                                <span className="text-sm font-medium ml-3">
+                                  <TranslatedText>{child.name}</TranslatedText>
+                                </span>
+                              </button>
+                              {expandedMenus.has(child.name) && (
+                                <div className="ml-6 mt-2 space-y-2">
+                                  {child.children.map((grandchild) => (
+                                    <Link
+                                      key={grandchild.name}
+                                      to={grandchild.href || '#'}
+                                      className={cn(
+                                        "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                        location.pathname === grandchild.href 
+                                          ? "bg-red-500/20 text-red-700 font-semibold" 
+                                          : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                      )}
+                                    >
+                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                        <IconComponent icon={grandchild.icon} />
+                                      </div>
+                                      <span className="text-sm font-medium ml-3">
+                                        <TranslatedText>{grandchild.name}</TranslatedText>
+                                      </span>
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            // Child with href - simple clickable link
+                            <Link
+                              to={child.href || '#'}
+                              className={cn(
+                                "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                location.pathname === child.href 
+                                  ? "bg-red-500/20 text-red-700 font-semibold" 
+                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                              )}
+                            >
+                              <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                <IconComponent icon={child.icon} />
+                              </div>
+                              <span className="text-sm font-medium ml-3">
+                                <TranslatedText>{child.name}</TranslatedText>
+                              </span>
+                            </Link>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                // Item with href - simple clickable link
+                <Link
+                  to={item.href || '#'}
+                  className={cn(
+                    "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
+                    isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
+                    location.pathname === item.href 
+                      ? "bg-red-500/20 text-red-700 font-semibold" 
+                      : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                  )}
                 >
-                  <div className="text-sm font-medium text-foreground truncate">
-                    {user.fullName || user.emailAddresses[0]?.emailAddress}
+                  <div className={cn(
+                    "flex items-center justify-center",
+                    isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                  )}>
+                    <IconComponent icon={item.icon} />
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {user.emailAddresses[0]?.emailAddress}
-                  </div>
-                </motion.div>
+                  {isHovered && (
+                    <span className="text-sm font-medium ml-3">
+                      <TranslatedText>{item.name}</TranslatedText>
+                    </span>
+                  )}
+                </Link>
               )}
-            </AnimatePresence>
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      {/* User Profile and Sign Out Section - Always at bottom */}
+      <div className={cn(
+        "border-t bg-background flex-shrink-0",
+        isHovered ? "p-4" : "p-2"
+      )}>
+        {/* User Info */}
+        {isHovered && user && (
+          <div className="mb-4 flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center gap-2 w-full">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                {user.imageUrl ? (
+                  <img 
+                    src={user.imageUrl} 
+                    alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                ) : (
+                  <span className="text-xl font-semibold text-primary">
+                    {user.firstName?.[0] || user.emailAddresses[0]?.emailAddress[0] || 'U'}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-center w-full">
+                <p className="text-sm font-medium truncate w-full text-center text-foreground">
+                  {user.firstName && user.lastName 
+                    ? `${user.firstName} ${user.lastName}`
+                    : user.firstName || user.lastName || 'User'
+                  }
+                </p>
+                <p className="text-xs text-muted-foreground truncate w-full text-center">
+                  {user.emailAddresses[0]?.emailAddress}
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
-        
         {/* Sign Out Button */}
-        <motion.button
-          onClick={handleSignOut}
-          className={cn(
-            "flex w-full items-center rounded-lg p-3 text-sm font-medium",
-            "text-muted-foreground hover:bg-muted hover:text-foreground transition-colors",
-            !isExpanded && "justify-center"
-          )}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.span 
-                className="ml-3 whitespace-nowrap"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.15 }}
-              >
-                <TranslatedText fallback="Sign out">Sign out</TranslatedText>
-              </motion.span>
+        <div className="flex justify-center w-full">
+          <button
+            onClick={() => signOut()}
+            className={cn(
+              "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors",
+              isHovered 
+                ? "px-4 py-3 w-full max-w-[180px] justify-center" 
+                : "px-0 py-3 w-full justify-center"
             )}
-          </AnimatePresence>
-          
-          {/* Tooltip for collapsed state */}
-          {!isExpanded && (
-            <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 border shadow-md">
-              <TranslatedText fallback="Sign out">Sign out</TranslatedText>
+          >
+            <div className={cn(
+              "flex items-center justify-center",
+              isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+            )}>
+              <IconComponent icon={LogOut} />
             </div>
-          )}
-        </motion.button>
+            {isHovered && (
+              <span className="text-sm font-medium ml-3">
+                <TranslatedText>Sign Out</TranslatedText>
+              </span>
+            )}
+          </button>
+        </div>
       </div>
-      
-      {/* Expand button for collapsed state */}
-      {!isExpanded && (
-        <button
-          onClick={toggleSidebar}
-          className="absolute -right-3 top-8 bg-background border border-border rounded-full p-1 shadow-md hover:bg-muted transition-colors z-20"
-        >
-          <ChevronRight className="h-3 w-3" />
-        </button>
-      )}
-    </motion.div>
+    </div>
   );
 };
 
-export default ModernSidebar; 
+export default ModernSidebar;

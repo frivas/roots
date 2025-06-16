@@ -134,7 +134,7 @@ class LingoTranslationService {
     
     const commonPhrases = [
       "Dashboard", "Settings", "Profile", "Messages", "Notifications",
-      "Welcome to Roots!", "Save", "Cancel", "Edit", "Delete", "Search"
+      "Welcome to Raíces!", "Save", "Cancel", "Edit", "Delete", "Search"
     ];
 
     console.log('🚀 Preloading common translations...');

@@ -197,7 +197,7 @@ const Dashboard = () => {
           element="h1" 
           className="text-4xl font-bold tracking-tight text-foreground"
         >
-          Welcome to Roots!
+                          Welcome to Raíces!
         </TranslatedText>
         <TranslatedText 
           element="p" 
