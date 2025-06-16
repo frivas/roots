@@ -19,7 +19,7 @@ const PrivacyPolicy: React.FC = () => {
           </h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Información sobre el tratamiento de datos personales en el proyecto Roots de la Comunidad de Madrid
+                          Información sobre el tratamiento de datos personales en el proyecto Raíces de la Comunidad de Madrid
         </p>
       </motion.div>
 
@@ -44,7 +44,7 @@ const PrivacyPolicy: React.FC = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p>
-            Los datos personales recogidos a través de la plataforma Roots se utilizarán para las siguientes finalidades:
+                            Los datos personales recogidos a través de la plataforma Raíces se utilizarán para las siguientes finalidades:
           </p>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
             <li>Gestión de servicios educativos y programas de formación</li>

@@ -22,10 +22,10 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   // Initialize with immediate translation if available
   const [translatedText, setTranslatedText] = useState(() => {
     if (language === 'en-US') {
-      return children;
+      return children; // Show English text as-is
     }
     
-    // Check for immediate Spanish translation
+    // For Spanish, check for immediate translation from English to Spanish
     const immediateTranslation = getSpanishTranslation(children);
     return immediateTranslation !== children ? immediateTranslation : children;
   });
@@ -37,7 +37,7 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
     setError(null);
     
     if (language === 'en-US') {
-      setTranslatedText(children);
+      setTranslatedText(children); // Show English text as-is
       return;
     }
 
@@ -47,14 +47,14 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
       return;
     }
 
-    // First try immediate Spanish dictionary lookup
+    // For Spanish, first try immediate English->Spanish dictionary lookup
     const spanishTranslation = getSpanishTranslation(children);
     if (spanishTranslation !== children) {
       setTranslatedText(spanishTranslation);
       return; // Don't need API call
     }
 
-    // If no local translation, use API
+    // If no local translation, use API to translate English->Spanish
     setIsLoading(true);
     try {
       const translated = await translateText(children);
