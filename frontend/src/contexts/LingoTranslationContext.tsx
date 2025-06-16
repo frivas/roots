@@ -190,7 +190,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
   );
 };
 
-export const useLingoTranslation = () => {
+export function useLingoTranslation() {
   const context = useContext(LingoTranslationContext);
   if (context === undefined) {
     throw new Error('useLingoTranslation must be used within a LingoTranslationProvider');
