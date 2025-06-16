@@ -14,7 +14,12 @@ class LingoTranslationService {
     this.engine = new LingoDotDevEngine({
       apiKey: apiKey,
       batchSize: 50,
-      idealBatchItemSize: 1000
+      idealBatchItemSize: 1000,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
     });
   }
 
@@ -24,11 +29,13 @@ class LingoTranslationService {
       return text;
     }
 
-    // For Spanish, check our local dictionary first for instant translations
-    if (targetLocale === 'es-ES' && hasSpanishTranslation(text)) {
+    // For Spanish, ALWAYS check our local dictionary first
+    if (targetLocale === 'es-ES') {
       const localTranslation = getSpanishTranslation(text);
-      console.log(`✅ Using local Spanish translation for: "${text}" -> "${localTranslation}"`);
-      return localTranslation;
+      if (localTranslation !== text) {
+        console.log(`✅ Using local Spanish translation for: "${text}" -> "${localTranslation}"`);
+        return localTranslation;
+      }
     }
 
     // Check cache next
@@ -37,6 +44,12 @@ class LingoTranslationService {
       const cachedTranslation = this.cache.get(cacheKey)!;
       console.log(`🔍 Using cached translation for: "${text}" -> "${cachedTranslation}"`);
       return cachedTranslation;
+    }
+
+    // If we're in development and using localhost, skip API call and return text
+    if (window.location.hostname === 'localhost') {
+      console.log(`🏠 Development mode: skipping API call for: "${text}"`);
+      return text;
     }
 
     try {
@@ -53,16 +66,7 @@ class LingoTranslationService {
       return result;
     } catch (error) {
       console.error('Translation failed for:', text, error);
-      
-      // For Spanish, fallback to local dictionary if Lingo.dev fails
-      if (targetLocale === 'es-ES' && hasSpanishTranslation(text)) {
-        const fallbackTranslation = getSpanishTranslation(text);
-        console.log(`🔄 Fallback to local Spanish translation: "${text}" -> "${fallbackTranslation}"`);
-        return fallbackTranslation;
-      }
-      
-      // Ultimate fallback to original text
-      return text;
+      return text; // Fallback to original text
     }
   }
 
