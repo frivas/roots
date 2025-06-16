@@ -1,0 +1,158 @@
+import React from 'react';
+import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
+import TranslatedText from '../components/TranslatedText';
+import tutorMockData from '../services/TutorMockData';
+import { Calendar, Mail, Phone, School, Edit2 } from 'lucide-react';
+import Button from '../components/ui/Button';
+
+const TutorInfo: React.FC = () => {
+    const tutor = tutorMockData;
+
+    return (
+        <div className="container mx-auto p-6 max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Profile Card */}
+            <Card className="md:col-span-1 flex flex-col items-center p-6">
+                <img
+                    src={tutor.avatar}
+                    alt={tutor.name}
+                    className="w-32 h-32 rounded-full object-cover border-4 border-primary mb-4"
+                />
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-1">{tutor.name}</h2>
+                    <div className="text-primary font-semibold mb-2">
+                        <TranslatedText>{tutor.role}</TranslatedText>
+                    </div>
+                    <div className="flex flex-wrap justify-center gap-2 mb-2">
+                        {tutor.tags.map((tag, idx) => (
+                            <span key={idx} className="bg-muted px-2 py-1 rounded text-xs text-muted-foreground border">
+                                <TranslatedText>{tag}</TranslatedText>
+                            </span>
+                        ))}
+                    </div>
+                    <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground mb-2">
+                        <div className="flex items-center gap-2">
+                            {<Mail className="h-4 w-4" /> as any}
+                            <span>{tutor.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {<Phone className="h-4 w-4" /> as any}
+                            <span>{tutor.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {<School className="h-4 w-4" /> as any}
+                            <span>{tutor.school}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {<Calendar className="h-4 w-4" /> as any}
+                            <TranslatedText>Joined</TranslatedText> <span>{tutor.joinDate}</span>
+                        </div>
+                    </div>
+                    <Button className="mt-2 w-full" variant="outline">
+                        {<Edit2 className="h-4 w-4 mr-2" /> as any}
+                        <TranslatedText>Edit Profile</TranslatedText>
+                    </Button>
+                </div>
+            </Card>
+
+            {/* Main Info */}
+            <div className="md:col-span-2 flex flex-col gap-6">
+                {/* About Me */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            <TranslatedText>About Me</TranslatedText>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <TranslatedText>{tutor.bio}</TranslatedText>
+                    </CardContent>
+                </Card>
+
+                {/* Specializations */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            <TranslatedText>Teaching Specializations</TranslatedText>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-wrap gap-2">
+                            {tutor.specializations.map((spec, idx) => (
+                                <span key={idx} className="bg-muted px-3 py-1 rounded-full text-xs border">
+                                    <TranslatedText>{spec}</TranslatedText>
+                                </span>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Performance Metrics */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            <TranslatedText>Teaching Performance Metrics</TranslatedText>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium">
+                                    <TranslatedText>Classes Taught</TranslatedText>
+                                </span>
+                                <span className="text-sm font-bold">{tutor.stats.classesTaught}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium">
+                                    <TranslatedText>Students Mentored</TranslatedText>
+                                </span>
+                                <span className="text-sm font-bold">{tutor.stats.studentsMentored}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium">
+                                    <TranslatedText>Educational Events Organized</TranslatedText>
+                                </span>
+                                <span className="text-sm font-bold">{tutor.stats.eventsOrganized}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium">
+                                    <TranslatedText>Student Satisfaction Score</TranslatedText>
+                                </span>
+                                <span className="text-sm font-bold">{tutor.stats.studentSatisfaction}%</span>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Education & Credentials */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            <TranslatedText>Education & Credentials</TranslatedText>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {tutor.education.map((edu, idx) => (
+                                <div key={idx} className="space-y-1">
+                                    <div className="font-medium">
+                                        <TranslatedText>{edu.degree}</TranslatedText>
+                                    </div>
+                                    <div className="text-sm text-muted-foreground flex items-center">
+                                        {<School className="mr-1 h-3 w-3" /> as any}
+                                        <TranslatedText>{edu.institution}</TranslatedText>
+                                    </div>
+                                    <div className="text-sm text-muted-foreground flex items-center">
+                                        {<Calendar className="mr-1 h-3 w-3" /> as any}
+                                        {edu.year}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
+export default TutorInfo;

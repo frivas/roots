@@ -6,11 +6,22 @@ export const spanishTranslations: Record<string, string> = {
   "Dashboard": "Panel de Control",
   "Home": "Seguimiento del Curso",
   "Our School": "Centro",
-  "Services": "Servicios", 
+  "Services": "Servicios",
   "Messages": "Mensajes",
   "Notifications": "Notificaciones",
   "Settings": "Configuración",
   "Profile": "Perfil",
+  "History": "Historial",
+  "Documents": "Documentos",
+  "Grades": "Calificaciones",
+  "Activities": "Actividades",
+  "Data": "Datos",
+  "Calendar": "Calendario",
+  "Elections": "Elecciones",
+  "Bulletin": "Tablón de Anuncios",
+  "Monthly": "Mensual",
+  "Custom": "Personalizado",
+  "Create": "Crear Evento",
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
   "Raíces": "Raíces",
@@ -19,13 +30,13 @@ export const spanishTranslations: Record<string, string> = {
   "Welcome to Raíces!": "¡Bienvenidos a Raíces!",
   "Here's an overview of your educational journey.": "Aquí tienes una visión general de tu viaje educativo.",
 
-  // Dashboard - Stats Cards  
+  // Dashboard - Stats Cards
   "Upcoming Classes": "Clases Próximas",
-  "Active Programs": "Programas Activos", 
+  "Active Programs": "Programas Activos",
   "New Messages": "Mensajes Nuevos",
   "Active Mentorships": "Mentorías Activas",
   "from last week": "desde la semana pasada",
-  "same as last month": "igual que el mes pasado", 
+  "same as last month": "igual que el mes pasado",
   "require attention": "requieren atención",
   "since last quarter": "desde el último trimestre",
 
@@ -41,22 +52,22 @@ export const spanishTranslations: Record<string, string> = {
   "Quick Actions": "Acciones Rápidas",
   "Frequently used learning tools": "Herramientas de aprendizaje utilizadas frecuentemente",
   "Schedule Class": "Programar Clase",
-  "Find Mentor": "Buscar Mentor", 
+  "Find Mentor": "Buscar Mentor",
   "My Courses": "Mis Cursos",
 
   // Dashboard - Recent Courses
   "Recent Courses": "Cursos Recientes",
   "View all courses": "Ver todos los cursos",
   "Introduction to Data Science": "Introducción a la Ciencia de Datos",
-  "Advanced Web Development": "Desarrollo Web Avanzado", 
+  "Advanced Web Development": "Desarrollo Web Avanzado",
   "UX Design Fundamentals": "Fundamentos de Diseño UX",
   "lessons completed": "lecciones completadas",
   "of": "de",
   "complete": "completado",
   "Continue": "Continuar",
 
-      // Settings Page
-    "Manage your account settings and learning preferences": "Gestiona tu configuración de cuenta y preferencias de aprendizaje",
+  // Settings Page
+  "Manage your account settings and learning preferences": "Gestiona tu configuración de cuenta y preferencias de aprendizaje",
 
   // Profile Tab
   "Profile Information": "Información del Perfil",
@@ -99,7 +110,7 @@ export const spanishTranslations: Record<string, string> = {
   "Choose how frequently you want to receive course and assignment summaries": "Elige qué tan frecuentemente quieres recibir resúmenes de cursos y tareas",
   "Study Hours (No Notifications)": "Horas de Estudio (Sin Notificaciones)",
   "From": "Desde",
-  "To Time": "Hasta",
+  "To": "Hasta",
   "No non-urgent notifications will be sent during your focused study hours": "No se enviarán notificaciones no urgentes durante tus horas de estudio concentrado",
   "Save Frequency Settings": "Guardar Configuración de Frecuencia",
 
@@ -130,6 +141,7 @@ export const spanishTranslations: Record<string, string> = {
   "Large": "Grande",
   "Adjust text size for better readability during study sessions": "Ajusta el tamaño del texto para mejor legibilidad durante las sesiones de estudio",
   "Save Learning Preferences": "Guardar Preferencias de Aprendizaje",
+  "Manage your personal information and account preferences": "Gestiona tu información personal y preferencias de cuenta",
 
   // Security Tab
   "Security Settings": "Configuración de Seguridad",
@@ -152,7 +164,7 @@ export const spanishTranslations: Record<string, string> = {
   "Delete Account": "Eliminar Cuenta",
   "Permanently delete your account and all educational data. This action cannot be reversed.": "Elimina permanentemente tu cuenta y todos los datos educativos. Esta acción no se puede revertir.",
 
-      // Messages Page
+  // Messages Page
   "All Messages": "Todos los Mensajes",
   "Inbox": "Bandeja de Entrada",
   "Starred": "Destacados",
@@ -179,20 +191,20 @@ export const spanishTranslations: Record<string, string> = {
   "The school management system will be offline for updates this Saturday from 10 PM to 2 AM. During this time, you will not be able to access grades, attendance records, or other administrative functions. Please plan accordingly.": "El sistema de gestión escolar estará fuera de línea para actualizaciones este sábado de 10 PM a 2 AM. Durante este tiempo, no podrá acceder a calificaciones, registros de asistencia u otras funciones administrativas. Por favor planifique en consecuencia.",
   "Summer Program Registration": "Registro de Programa de Verano",
   "Registration for summer programs is now open. Space is limited, so please encourage interested students to sign up early. This year we are offering a variety of academic enrichment, arts, and sports programs to keep students engaged during the summer break.": "La inscripción para programas de verano ya está abierta. El espacio es limitado, así que por favor anime a los estudiantes interesados a inscribirse temprano. Este año ofrecemos una variedad de programas de enriquecimiento académico, artes y deportes para mantener a los estudiantes comprometidos durante las vacaciones de verano.",
-  
+
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
   "Star messages to see them here": "Marca mensajes con estrella para verlos aquí",
   "Your inbox is empty": "Tu bandeja de entrada está vacía",
   "Principal Johnson": "Director Johnson",
-  
+
   // Auth page translations - English to Spanish
-  "Integral System": "Sistema Integral", 
+  "Integral System": "Sistema Integral",
   "for Educational Management": "de Gestión Educativa",
   "Madrid Community": "Comunidad de Madrid",
   "Access your space to manage communication with the school and perform educational procedures electronically.": "Accede a tu espacio para gestionar la comunicación con el centro y realizar trámites educativos por vía electrónica.",
   "Academic and Administrative Management of Centers": "Gestión Académica y Administrativa de Centros",
-  "Educational Monitoring": "Seguimiento Educativo", 
+  "Educational Monitoring": "Seguimiento Educativo",
   "Virtual Secretary": "Secretaría Virtual",
   "Educational Platform": "Plataforma Educativa",
   "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
@@ -205,15 +217,15 @@ export const spanishTranslations: Record<string, string> = {
   "Start a conversation with your AI wellness companion": "Inicia una conversación con tu compañero de bienestar de IA",
   "Available 24/7 for stress management, self-care tips, and emotional support": "Disponible 24/7 para manejo del estrés, consejos de autocuidado y apoyo emocional",
   "Click the chat widget to begin your wellness journey": "Haz clic en el widget de chat para comenzar tu viaje de bienestar",
-  
+
   // Legacy auth translations (keeping for compatibility)
   "Bienvenido a la plataforma educativa": "Welcome to the educational platform",
   "de la Comunidad de Madrid": "of the Madrid Community",
-  "Cursos y programas formativos especializados": "Specialized training courses and programs", 
+  "Cursos y programas formativos especializados": "Specialized training courses and programs",
   "Seguimiento personalizado de tu progreso": "Personalized progress tracking",
   "Recursos y materiales de calidad": "Quality resources and materials",
   "Soporte y acompañamiento continuo": "Continuous support and guidance",
-  
+
   // Additional Clerk form translations
   "Sign in": "Iniciar sesión",
   "Sign up": "Crear cuenta",
@@ -239,14 +251,15 @@ export const spanishTranslations: Record<string, string> = {
   "System Maintenance Notice": "Aviso de Mantenimiento del Sistema",
 
   // Services Page
-      "Available Services": "Servicios Disponibles",
-    "Support Services": "Servicios de Apoyo",
+  "Available Services": "Servicios Disponibles",
+  "Support Services": "Servicios de Apoyo",
   "Administrative Services": "Servicios Administrativos",
   "Access and manage all services from one centralized hub.": "Accede y gestiona todos los servicios desde un centro unificado.",
   "All Services": "Todos los Servicios",
   "Academic": "Académico",
   "Support": "Apoyo",
   "Extracurricular": "Extracurricular",
+  "All Categories": "Todas las Categorías",
   "Classroom Management": "Gestión de Aulas",
   "Manage morning classroom activities, attendance, and student participation": "Gestiona las actividades matutinas del aula, asistencia y participación estudiantil",
   "Transportation": "Transporte",
@@ -411,8 +424,8 @@ export const spanishTranslations: Record<string, string> = {
   "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.": "La página que buscas podría haber sido eliminada, haber cambiado de nombre o no estar disponible temporalmente.",
   "Return to Dashboard": "Volver al Panel de Control",
 
-      // Profile Page
-    "View and manage your professional profile": "Ve y gestiona tu perfil profesional",
+  // Profile Page
+  "View and manage your professional profile": "Ve y gestiona tu perfil profesional",
   "Senior English Teacher": "Profesor Senior de Inglés",
   "Language Arts": "Artes del Lenguaje",
   "teacher": "profesor",
@@ -460,8 +473,8 @@ export const spanishTranslations: Record<string, string> = {
   "Digital Learning Tools Workshop": "Taller de Herramientas de Aprendizaje Digital",
   "Participated in professional development workshop on AI-assisted teaching tools": "Participó en taller de desarrollo profesional sobre herramientas de enseñanza asistidas por IA",
 
-      // Notifications Page
-    "Stay updated with important announcements and alerts.": "Mantente actualizado con anuncios y alertas importantes.",
+  // Notifications Page
+  "Stay updated with important announcements and alerts.": "Mantente actualizado con anuncios y alertas importantes.",
   "All": "Todas",
   "All Notifications": "Todas las Notificaciones",
   "Unread": "No leídas",
@@ -644,7 +657,7 @@ export const spanishTranslations: Record<string, string> = {
 
   // My Data section translations
   "User Information": "Información del Usuario",
-  
+
   // Time references
   "This week": "Esta semana",
   "Last 30 days": "Últimos 30 días",
@@ -691,6 +704,8 @@ export const spanishTranslations: Record<string, string> = {
   "Event Reminders": "Recordatorios de Eventos",
   "Academic Event Integration": "Integración de Eventos Académicos",
   "Share Calendar Events": "Compartir Eventos del Calendario",
+  "Custom events": "Eventos personalizados",
+  "Events": "Eventos",
 
   // My Data section translations
   "My Data section - Coming soon": "Sección Mis Datos - Próximamente",
@@ -699,7 +714,7 @@ export const spanishTranslations: Record<string, string> = {
   "Personal Profile Settings": "Configuración de Perfil Personal",
   "Privacy Settings": "Configuración de Privacidad",
   "Data Export Options": "Opciones de Exportación de Datos",
-  
+
   // Section names for placeholders
   "Home Section": "Sección Inicio",
   "Communications Section": "Sección Comunicaciones",
@@ -734,15 +749,29 @@ export const spanishTranslations: Record<string, string> = {
   "End Call": "Finalizar Llamada",
   "Expand": "Expandir",
   "Listening...": "Escuchando...",
-  "Speaking...": "Hablando..."
+  "Speaking...": "Hablando...",
+  // Settings & Profile
+  "Personal Information": "Información Personal",
+  "Password & Security": "Contraseña y Seguridad",
+  "Preferences": "Preferencias",
+
+  // Common UI Terms
+  "Coming Soon": "Próximamente",
+  "extracurricular": "extraescolar",
+  "support": "apoyo",
+  "parent coaching assistant": "asistente de coaching para padres",
+  "morning classroom": "aula matinal",
+  "progress interpretation service": "servicio de interpretación de progreso",
+  "parent wellness and self-care": "bienestar y autocuidado para padres"
 };
 
 // Function to get Spanish translation with fallback
 export const getSpanishTranslation = (text: string): string => {
+  // console.log("Using local Spanish translation for:", text);
   return spanishTranslations[text] || text;
 };
 
 // Function to check if translation exists
 export const hasSpanishTranslation = (text: string): boolean => {
   return text in spanishTranslations;
-}; 
+};
