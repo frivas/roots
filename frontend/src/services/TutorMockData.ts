@@ -8,7 +8,6 @@ const tutorMockData = {
     school: 'Lincoln High School',
     joinDate: 'Septiembre 2018',
     avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    tags: ['student', 'Artes del Lenguaje'],
     bio: 'Profesora de inglés experimentada con pasión por ayudar a los estudiantes a desarrollar habilidades sólidas de alfabetización. Especializada en literatura contemporánea y escritura creativa, con enfoque en involucrar a los estudiantes a través de métodos de enseñanza innovadores e integración tecnológica.',
     specializations: [
         'Análisis Literario',
@@ -30,7 +29,14 @@ const tutorMockData = {
         { degree: 'Maestría en Literatura Inglesa', institution: 'Universidad de Michigan', year: '2016' },
         { degree: 'Licenciatura en Inglés', institution: 'Universidad Estatal de Ohio', year: '2014' },
         { degree: 'Certificación Docente', institution: 'Junta de Educación de Michigan', year: '2016' }
-    ]
+    ],
+    currentCourse: {
+        course: 'Five Years',
+        center: '28006254',
+        unit: 'I5',
+        unitDelegate: 'No student delegate',
+        unitSubdelegate: 'No student subdelegate',
+    },
 };
 
 export default tutorMockData;
