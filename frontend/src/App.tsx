@@ -38,6 +38,7 @@ const SchoolPlaceholder = lazy(() => import('./pages/placeholders/SchoolPlacehol
 const CalendarPlaceholder = lazy(() => import('./pages/placeholders/CalendarPlaceholder'));
 const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlaceholder'));
 
+// New component
 import TutorInfo from './pages/TutorInfo';
 
 // Loading component with better UX
