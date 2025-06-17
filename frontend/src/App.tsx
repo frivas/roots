@@ -30,6 +30,9 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 // Service Pages
 const ParentWellness = lazy(() => import('./pages/services/ParentWellness'));
 const ParentWellnessChat = lazy(() => import('./pages/services/ParentWellnessChat'));
+const ExtraCurricular = lazy(() => import('./pages/services/ExtraCurricular'));
+const ExtraCurricularSession = lazy(() => import('./pages/services/ExtraCurricularSession'));
+const ChessCoachingSession = lazy(() => import('./pages/services/ChessCoachingSession'));
 
 // Placeholder components for new routes
 const HomePlaceholder = lazy(() => import('./pages/placeholders/HomePlaceholder'));
@@ -117,6 +120,9 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/parent-wellness" element={<ParentWellness />} />
             <Route path="/services/parent-wellness-chat" element={<ParentWellnessChat />} />
+            <Route path="/services/extra-curricular" element={<ExtraCurricular />} />
+            <Route path="/services/extra-curricular-session/:activityType" element={<ExtraCurricularSession />} />
+            <Route path="/services/chess-coaching-session" element={<ChessCoachingSession />} />
             <Route path="/services/*" element={<Services />} />
 
             {/* Communications section */}

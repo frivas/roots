@@ -192,7 +192,7 @@ const Services = () => {
       icon: Sparkles,
       title: 'Extracurricular Activities',
       description: 'Register and manage after-school programs, clubs, and special events',
-      href: '/services/extracurricular',
+      href: '/services/extra-curricular',
       category: 'extracurricular',
       parentVisible: true, // Parent service
       isActive: true
