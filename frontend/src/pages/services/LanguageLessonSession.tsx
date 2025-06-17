@@ -1,11 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
+
+const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
+const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+
+// Static translations for widget UI
+const widgetTranslations = {
+  en: {
+    actionText: 'Click to talk',
+    startCall: 'Start Call',
+    endCall: 'End Call',
+    expand: 'Expand',
+    listening: 'Listening...',
+    speaking: 'Speaking...'
+  },
+  es: {
+    actionText: 'Haz clic para hablar',
+    startCall: 'Iniciar Llamada',
+    endCall: 'Finalizar Llamada',
+    expand: 'Expandir',
+    listening: 'Escuchando...',
+    speaking: 'Hablando...'
+  }
+};
 
 // Add window type for ElevenLabs API
 declare global {
@@ -16,26 +38,25 @@ declare global {
   }
 }
 
-const ExtraCurricularSession: React.FC = () => {
+const LanguageLessonSession: React.FC = () => {
   const navigate = useNavigate();
-  const { activityType } = useParams();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
+  const i18n = widgetTranslations[widgetLanguage];
 
   // Load widget script
   useEffect(() => {
-    if (!document.querySelector(`script[src="${WIDGET_CONFIG.SCRIPT_SRC}"]`)) {
+    if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
       const script = document.createElement('script');
-      script.src = WIDGET_CONFIG.SCRIPT_SRC;
+      script.src = SCRIPT_SRC;
       script.async = true;
       
       script.onload = () => {
         const checkInterval = setInterval(() => {
-          if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
+          if (customElements.get(WIDGET_ELEMENT_NAME)) {
             clearInterval(checkInterval);
             setIsElevenLabsLoaded(true);
           }
@@ -48,7 +69,7 @@ const ExtraCurricularSession: React.FC = () => {
     }
 
     return () => {
-      const widget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
+      const widget = document.querySelector(WIDGET_ELEMENT_NAME);
       if (widget) widget.remove();
     };
   }, []);
@@ -58,7 +79,7 @@ const ExtraCurricularSession: React.FC = () => {
     if (!isElevenLabsLoaded) return;
 
     // Remove existing widget
-    const existingWidget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
+    const existingWidget = document.querySelector(WIDGET_ELEMENT_NAME);
     if (existingWidget) {
       existingWidget.remove();
     }
@@ -78,17 +99,11 @@ const ExtraCurricularSession: React.FC = () => {
       if (!container) return;
 
       // Create new widget with language configuration
-      const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
+      const widget = document.createElement(WIDGET_ELEMENT_NAME);
       
-      // Configure widget based on activity type
-      const agentId = activityType && AGENT_IDS[activityType];
-      if (!agentId) {
-        console.error(`No agent ID found for activity type: ${activityType}`);
-        return;
-      }
-
+      // Configure widget
       const config = {
-        'agent-id': agentId,
+        'agent-id': 'agent_01jxy264qbe49b8f3rk71wnzn7',
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -109,7 +124,7 @@ const ExtraCurricularSession: React.FC = () => {
       container.appendChild(widget);
     }, 100);
 
-  }, [isElevenLabsLoaded, widgetLanguage, i18n, activityType]);
+  }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
   return (
     <motion.div
@@ -137,4 +152,4 @@ const ExtraCurricularSession: React.FC = () => {
   );
 };
 
-export default ExtraCurricularSession; 
+export default LanguageLessonSession; 

@@ -33,6 +33,9 @@ const ParentWellnessChat = lazy(() => import('./pages/services/ParentWellnessCha
 const ExtraCurricular = lazy(() => import('./pages/services/ExtraCurricular'));
 const ExtraCurricularSession = lazy(() => import('./pages/services/ExtraCurricularSession'));
 const ChessCoachingSession = lazy(() => import('./pages/services/ChessCoachingSession'));
+const MathTutoringSession = lazy(() => import('./pages/services/MathTutoringSession'));
+const StorytellingSession = lazy(() => import('./pages/services/StorytellingSession'));
+const LanguageLessonSession = lazy(() => import('./pages/services/LanguageLessonSession'));
 
 // Placeholder components for new routes
 const HomePlaceholder = lazy(() => import('./pages/placeholders/HomePlaceholder'));
@@ -123,6 +126,9 @@ function App() {
             <Route path="/services/extra-curricular" element={<ExtraCurricular />} />
             <Route path="/services/extra-curricular-session/:activityType" element={<ExtraCurricularSession />} />
             <Route path="/services/chess-coaching-session" element={<ChessCoachingSession />} />
+            <Route path="/services/math-tutoring-session" element={<MathTutoringSession />} />
+            <Route path="/services/storytelling-session" element={<StorytellingSession />} />
+            <Route path="/services/language-lesson-session" element={<LanguageLessonSession />} />
             <Route path="/services/*" element={<Services />} />
 
             {/* Communications section */}
