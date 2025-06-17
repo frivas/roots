@@ -1,11 +1,25 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import tutorMockData from '../services/TutorMockData';
 import { Calendar, Mail, Phone, School } from 'lucide-react';
+import Button from '../components/ui/Button';
+import { formatDate } from '../lib/utils';
+
+// Type assertions for Lucide icons
+const MailIcon = Mail as unknown as React.ComponentType<{ className?: string }>;
+const PhoneIcon = Phone as unknown as React.ComponentType<{ className?: string }>;
+const SchoolIcon = School as unknown as React.ComponentType<{ className?: string }>;
+const CalendarIcon = Calendar as unknown as React.ComponentType<{ className?: string }>;
 
 const TutorInfo: React.FC = () => {
     const tutor = tutorMockData;
+    const navigate = useNavigate();
+
+    const handleSendMessage = () => {
+        navigate('/messages', { replace: true });
+    };
 
     return (
         <div className="container mx-auto p-6 max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -21,24 +35,32 @@ const TutorInfo: React.FC = () => {
                     <div className="text-primary font-semibold mb-2">
                         <TranslatedText>{tutor.role}</TranslatedText>
                     </div>
-                    <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground mb-2">
+                    <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground mb-4">
                         <div className="flex items-center gap-2">
-                            {<Mail className="h-4 w-4" /> as any}
+                            <MailIcon className="h-4 w-4" />
                             <span>{tutor.email}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {<Phone className="h-4 w-4" /> as any}
+                            <PhoneIcon className="h-4 w-4" />
                             <span>{tutor.phone}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {<School className="h-4 w-4" /> as any}
+                            <SchoolIcon className="h-4 w-4" />
                             <span>{tutor.school}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {<Calendar className="h-4 w-4" /> as any}
-                            <TranslatedText>Joined</TranslatedText> <span>{tutor.joinDate}</span>
+                            <CalendarIcon className="h-4 w-4" />
+                            <TranslatedText>Joined</TranslatedText>{' '}
+                            <span>{formatDate(new Date(tutor.joinDate))}</span>
                         </div>
                     </div>
+                    <Button
+                        onClick={handleSendMessage}
+                        className="w-full flex items-center justify-center gap-2"
+                    >
+                        <MailIcon className="h-4 w-4" />
+                        <TranslatedText>Send a message</TranslatedText>
+                    </Button>
                 </div>
             </Card>
 
@@ -158,12 +180,12 @@ const TutorInfo: React.FC = () => {
                                     <div className="font-medium">
                                         <TranslatedText>{edu.degree}</TranslatedText>
                                     </div>
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        {<School className="mr-1 h-3 w-3" /> as any}
+                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <SchoolIcon className="h-4 w-4" />
                                         <TranslatedText>{edu.institution}</TranslatedText>
                                     </div>
-                                    <div className="text-sm text-muted-foreground flex items-center">
-                                        {<Calendar className="mr-1 h-3 w-3" /> as any}
+                                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                        <CalendarIcon className="h-4 w-4" />
                                         {edu.year}
                                     </div>
                                 </div>

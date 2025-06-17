@@ -770,7 +770,17 @@ export const spanishTranslations: Record<string, string> = {
   "Unit Delegate": "Delegado de la Unidad",
   "No student delegate": "Sin alumno delegado",
   "Unit Subdelegate": "Subdelegado de la Unidad",
-  "No student subdelegate": "Sin alumno subdelegado"
+  "No student subdelegate": "Sin alumno subdelegado",
+  "Secretary": "Secretario",
+  "Teacher of Growth in Harmony": "Profesor/a de Crecimiento en armonía",
+  "Teacher of Communication and Representation of Reality": "Profesor/a de Comunicación y representación de la realidad",
+  "Principal": "Director",
+  "Unit Tutor": "Tutor/a de la unidad",
+  "Teacher of Discovery and Exploration of the Environment": "Profesor/a de Descubrimiento y exploración del entorno",
+  "Teacher of Educational Support Measures": "Profesor/a de Medidas de Atención Educativa",
+  "Teacher of Communication and Representation of Reality. Foreign Language": "Profesor/a de Comunicación y representación de la realidad. Lengua extranjera",
+  "Head of Studies": "Jefe de Estudios",
+  "Select recipient": "Seleccionar destinatario"
 };
 
 // Function to get Spanish translation with fallback

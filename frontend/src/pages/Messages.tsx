@@ -23,6 +23,22 @@ import {
   X,
   Search
 } from 'lucide-react';
+import { getSpanishTranslation } from '../services/SpanishTranslations';
+
+// Type assertions for Lucide icons
+const ArchiveIcon = Archive as unknown as React.ComponentType<{ className?: string }>;
+const EditIcon = Edit as unknown as React.ComponentType<{ className?: string }>;
+const InboxIcon = Inbox as unknown as React.ComponentType<{ className?: string }>;
+const SendIcon = Send as unknown as React.ComponentType<{ className?: string }>;
+const StarIcon = Star as unknown as React.ComponentType<{ className?: string }>;
+const StarOffIcon = StarOff as unknown as React.ComponentType<{ className?: string }>;
+const TrashIcon = Trash2 as unknown as React.ComponentType<{ className?: string }>;
+const ReplyIcon = Reply as unknown as React.ComponentType<{ className?: string }>;
+const MoreHorizontalIcon = MoreHorizontal as unknown as React.ComponentType<{ className?: string }>;
+const ChevronLeftIcon = ChevronLeft as unknown as React.ComponentType<{ className?: string }>;
+const PaperclipIcon = Paperclip as unknown as React.ComponentType<{ className?: string }>;
+const XIcon = X as unknown as React.ComponentType<{ className?: string }>;
+const SearchIcon = Search as unknown as React.ComponentType<{ className?: string }>;
 
 interface Message {
   id: string;
@@ -82,8 +98,40 @@ const MOCK_MESSAGES: Message[] = [
   }
 ];
 
+// Recipient list for compose dropdown
+const RECIPIENTS = [
+  {
+    name: 'Andres Sanz, Mª Teresa de',
+    role: 'Secretary',
+  },
+  {
+    name: 'Portugal Herbosa, Nuria',
+    role: 'Teacher of Growth in Harmony, Teacher of Communication and Representation of Reality',
+  },
+  {
+    name: 'Reglero Ruiz, Mª Aránzazu',
+    role: 'Principal',
+  },
+  {
+    name: 'Ruiz Moreno, M.Africa',
+    role: 'Teacher of Growth in Harmony, Teacher of Communication and Representation of Reality',
+  },
+  {
+    name: 'Sanchez Hernandez, Teresa',
+    role: 'Unit Tutor, Teacher of Discovery and Exploration of the Environment, Teacher of Communication and Representation of Reality, Teacher of Educational Support Measures, Teacher of Growth in Harmony',
+  },
+  {
+    name: 'Sanchez Muñoz, Maria Rosa',
+    role: 'Teacher of Communication and Representation of Reality. Foreign Language',
+  },
+  {
+    name: 'Tomé Martín, Mª Gema',
+    role: 'Head of Studies',
+  },
+];
+
 const Messages = () => {
-  const { isInitialized, preloadingComplete } = useLingoTranslation();
+  const { isInitialized, preloadingComplete, language } = useLingoTranslation();
   const [activeFolder, setActiveFolder] = useState('inbox');
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [composeMode, setComposeMode] = useState(false);
@@ -111,11 +159,11 @@ const Messages = () => {
   }
 
   const folders = [
-    { id: 'inbox', name: 'Inbox', icon: Inbox, count: messages.filter(m => !m.read).length },
-    { id: 'starred', name: 'Starred', icon: Star, count: messages.filter(m => m.starred).length },
-    { id: 'sent', name: 'Sent', icon: Send, count: 0 },
-    { id: 'archived', name: 'Archived', icon: Archive, count: 0 },
-    { id: 'trash', name: 'Trash', icon: Trash2, count: 0 }
+    { id: 'inbox', name: 'Inbox', icon: InboxIcon, count: messages.filter(m => !m.read).length },
+    { id: 'starred', name: 'Starred', icon: StarIcon, count: messages.filter(m => m.starred).length },
+    { id: 'sent', name: 'Sent', icon: SendIcon, count: 0 },
+    { id: 'archived', name: 'Archived', icon: ArchiveIcon, count: 0 },
+    { id: 'trash', name: 'Trash', icon: TrashIcon, count: 0 }
   ];
 
   const filteredMessages = messages.filter(message => {
@@ -198,7 +246,7 @@ const Messages = () => {
                   setIsSearchActive(false);
                 }}
               >
-                <X className="h-4 w-4" />
+                <XIcon className="h-4 w-4" />
               </Button>
             </motion.div>
           ) : (
@@ -207,7 +255,7 @@ const Messages = () => {
               className="aspect-square p-0"
               onClick={() => setIsSearchActive(true)}
             >
-              <Search className="h-4 w-4" />
+              <SearchIcon className="h-4 w-4" />
             </Button>
           )}
           <Button
@@ -216,7 +264,7 @@ const Messages = () => {
               setSelectedMessage(null);
             }}
           >
-            <Edit className="h-4 w-4 mr-2" />
+            <EditIcon className="h-4 w-4 mr-2" />
             <TranslatedText>Compose</TranslatedText>
           </Button>
         </div>
@@ -276,7 +324,7 @@ const Messages = () => {
               <div className="h-full min-h-0 overflow-y-auto">
                 {filteredMessages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-                    <Inbox className="h-12 w-12 text-muted-foreground mb-4" />
+                    <InboxIcon className="h-12 w-12 text-muted-foreground mb-4" />
                     <TranslatedText element="p" className="text-lg font-medium">No messages found</TranslatedText>
                     <TranslatedText element="p" className="text-muted-foreground mt-1">
                       {searchQuery
@@ -306,9 +354,9 @@ const Messages = () => {
                             onClick={(e) => toggleStarred(message.id, e)}
                           >
                             {message.starred ? (
-                              <Star className="h-5 w-5 fill-amber-500 text-amber-500" />
+                              <StarIcon className="h-5 w-5 fill-amber-500 text-amber-500" />
                             ) : (
-                              <StarOff className="h-5 w-5" />
+                              <StarOffIcon className="h-5 w-5" />
                             )}
                           </button>
                           <div className="min-w-0 flex-1">
@@ -357,7 +405,7 @@ const Messages = () => {
                       className="mr-2 p-2"
                       onClick={() => setSelectedMessage(null)}
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeftIcon className="h-4 w-4" />
                     </Button>
                     <h2 className="text-xl font-semibold">{selectedMessage.subject}</h2>
                   </div>
@@ -368,13 +416,13 @@ const Messages = () => {
                       onClick={(e) => toggleStarred(selectedMessage.id, e)}
                     >
                       {selectedMessage.starred ? (
-                        <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+                        <StarIcon className="h-4 w-4 fill-amber-500 text-amber-500" />
                       ) : (
-                        <Star className="h-4 w-4" />
+                        <StarIcon className="h-4 w-4" />
                       )}
                     </Button>
                     <Button variant="ghost" className="p-2">
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontalIcon className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -444,7 +492,7 @@ const Messages = () => {
                   {(selectedMessage.id === '1' || selectedMessage.id === '2') && (
                     <div className="mt-6 p-3 border rounded-md bg-muted/50">
                       <div className="flex items-center">
-                        <Paperclip className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <PaperclipIcon className="h-4 w-4 mr-2 text-muted-foreground" />
                         <span className="text-sm font-medium">
                           {selectedMessage.id === '1' ? 'Staff_Meeting_Agenda.pdf' : 'Route12_Temporary_Changes.pdf'}
                         </span>
@@ -464,15 +512,15 @@ const Messages = () => {
                         setComposeMode(true);
                       }}
                     >
-                      <Reply className="h-4 w-4 mr-2" />
+                      <ReplyIcon className="h-4 w-4 mr-2" />
                       Reply
                     </Button>
                     <Button variant="outline">
-                      <Archive className="h-4 w-4 mr-2" />
+                      <ArchiveIcon className="h-4 w-4 mr-2" />
                       Archive
                     </Button>
                     <Button variant="outline">
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <TrashIcon className="h-4 w-4 mr-2" />
                       Delete
                     </Button>
                   </div>
@@ -494,7 +542,7 @@ const Messages = () => {
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b border-border">
                   <h2 className="text-xl font-semibold">
-                    {selectedMessage ? 'Reply to Message' : 'New Message'}
+                    <TranslatedText>{selectedMessage ? 'Reply to Message' : 'New Message'}</TranslatedText>
                   </h2>
                 </div>
 
@@ -502,15 +550,24 @@ const Messages = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <label htmlFor="to" className="text-sm font-medium text-muted-foreground">
-                        To:
+                        <TranslatedText>To:</TranslatedText>
                       </label>
-                      <input
+                      <select
                         id="to"
-                        type="text"
-                        placeholder="Recipients"
-                        defaultValue={selectedMessage ? selectedMessage.sender : ''}
                         className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                      />
+                        defaultValue={selectedMessage ? RECIPIENTS.find(r => r.name === selectedMessage.sender)?.name || '' : ''}
+                      >
+                        <option value="" disabled>{language === 'es-ES' ? 'Seleccionar destinatario' : 'Select recipient'}</option>
+                        {RECIPIENTS.map((recipient) => {
+                          const label = `${recipient.name} - ${recipient.role.split(',')[0].trim()}`;
+                          const translatedLabel = language === 'es-ES' ? getSpanishTranslation(label) : label;
+                          return (
+                            <option key={recipient.name} value={recipient.name}>
+                              {translatedLabel}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </div>
 
                     <div className="space-y-2">
@@ -544,7 +601,7 @@ const Messages = () => {
 
                     <div className="pt-2">
                       <Button variant="outline" className="text-sm">
-                        <Paperclip className="h-4 w-4 mr-2" />
+                        <PaperclipIcon className="h-4 w-4 mr-2" />
                         Attach Files
                       </Button>
                     </div>
@@ -568,7 +625,7 @@ const Messages = () => {
                       Save Draft
                     </Button>
                     <Button>
-                      <Send className="h-4 w-4 mr-2" />
+                      <SendIcon className="h-4 w-4 mr-2" />
                       Send Message
                     </Button>
                   </div>
