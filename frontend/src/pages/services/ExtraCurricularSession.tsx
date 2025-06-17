@@ -32,7 +32,7 @@ const widgetTranslations = {
 const AGENT_IDS = {
   language: 'agent_01jxy264qbe49b8f3rk71wnzn7',
   chess: 'your_chess_agent_id',
-  math: 'your_math_agent_id'
+  math: 'agent_01jxy66c6tfsaadxfv6a1snq06'
 };
 
 // Add window type for ElevenLabs API
