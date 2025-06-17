@@ -2,22 +2,22 @@
 const tutorMockData = {
     id: 'tutor-001',
     name: 'Lucía Martínez',
-    role: 'Profesora Senior de Inglés',
-    email: 'lucia.martinez@email.com',
+    role: 'Teacher/Tutor',
+    email: 'lucia.martinez@sanjuandelacruz.com',
     phone: '+34 612 345 678',
-    school: 'Lincoln High School',
-    joinDate: 'Septiembre 2018',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    bio: 'Profesora de inglés experimentada con pasión por ayudar a los estudiantes a desarrollar habilidades sólidas de alfabetización. Especializada en literatura contemporánea y escritura creativa, con enfoque en involucrar a los estudiantes a través de métodos de enseñanza innovadores e integración tecnológica.',
+    school: 'CP INF-PRI San Juan de la Cruz',
+    joinDate: '2018-09-01',
+    avatar: 'https://randomuser.me/api/portraits/women/79.jpg',
+    bio: 'Experienced English teacher with a passion for helping students develop strong literacy skills. Specialized in contemporary literature and creative writing, with a focus on engaging students through innovative teaching methods and technology integration.',
     specializations: [
-        'Análisis Literario',
-        'Escritura Creativa',
-        'Gramática Avanzada',
-        'Oratoria',
-        'Desarrollo Curricular',
-        'Mentoría Estudiantil',
-        'Aprendizaje Digital',
-        'Diseño de Evaluaciones'
+        'Literary Analysis',
+        'Creative Writing',
+        'Advanced Grammar',
+        'Public Speaking',
+        'Curriculum Development',
+        'Student Mentoring',
+        'Digital Learning',
+        'Assessment Design',
     ],
     stats: {
         classesTaught: 145,
@@ -26,9 +26,9 @@ const tutorMockData = {
         studentSatisfaction: 92
     },
     education: [
-        { degree: 'Maestría en Literatura Inglesa', institution: 'Universidad de Michigan', year: '2016' },
-        { degree: 'Licenciatura en Inglés', institution: 'Universidad Estatal de Ohio', year: '2014' },
-        { degree: 'Certificación Docente', institution: 'Junta de Educación de Michigan', year: '2016' }
+        { degree: 'Maestría en Inglés', institution: 'Universidad de Granada', year: '2016' },
+        { degree: 'Master en Educación Primaria', institution: 'Universidad de Granada', year: '2014' },
+        { degree: 'Licenciatura en Educación Primaria - Magisterio', institution: 'Universidad de Granada', year: '2012' }
     ],
     currentCourse: {
         course: 'Five Years',
