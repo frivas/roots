@@ -31,7 +31,11 @@ const ExtraCurricular: React.FC = () => {
   const [enrolledActivities, setEnrolledActivities] = useState<string[]>([]);
 
   const handleStartOnlineSession = (activityType: string) => {
-    navigate(`/services/extra-curricular-session/${activityType}`);
+    if (activityType === 'chess') {
+      navigate('/services/chess-coaching-session');
+    } else {
+      navigate(`/services/extra-curricular-session/${activityType}`);
+    }
   };
 
   const handleEnroll = (activityType: string) => {
