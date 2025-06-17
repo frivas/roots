@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Button from '../../components/ui/Button';
@@ -16,9 +16,8 @@ declare global {
   }
 }
 
-const ExtraCurricularSession: React.FC = () => {
+const StorytellingSession: React.FC = () => {
   const navigate = useNavigate();
-  const { activityType } = useParams();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
 
@@ -80,15 +79,9 @@ const ExtraCurricularSession: React.FC = () => {
       // Create new widget with language configuration
       const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
       
-      // Configure widget based on activity type
-      const agentId = activityType && AGENT_IDS[activityType];
-      if (!agentId) {
-        console.error(`No agent ID found for activity type: ${activityType}`);
-        return;
-      }
-
+      // Configure widget
       const config = {
-        'agent-id': agentId,
+        'agent-id': AGENT_IDS.storytelling,
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -109,7 +102,7 @@ const ExtraCurricularSession: React.FC = () => {
       container.appendChild(widget);
     }, 100);
 
-  }, [isElevenLabsLoaded, widgetLanguage, i18n, activityType]);
+  }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
   return (
     <motion.div
@@ -137,4 +130,4 @@ const ExtraCurricularSession: React.FC = () => {
   );
 };
 
-export default ExtraCurricularSession; 
+export default StorytellingSession; 

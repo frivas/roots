@@ -5,29 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-
-const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
-const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-
-// Static translations for widget UI
-const widgetTranslations = {
-  en: {
-    actionText: 'Click to talk',
-    startCall: 'Start Call',
-    endCall: 'End Call',
-    expand: 'Expand',
-    listening: 'Listening...',
-    speaking: 'Speaking...'
-  },
-  es: {
-    actionText: 'Haz clic para hablar',
-    startCall: 'Iniciar Llamada',
-    endCall: 'Finalizar Llamada',
-    expand: 'Expandir',
-    listening: 'Escuchando...',
-    speaking: 'Hablando...'
-  }
-};
+import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
 
 // Add window type for ElevenLabs API
 declare global {
@@ -45,18 +23,18 @@ const ChessCoachingSession: React.FC = () => {
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = widgetTranslations[widgetLanguage];
+  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
 
   // Load widget script
   useEffect(() => {
-    if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
+    if (!document.querySelector(`script[src="${WIDGET_CONFIG.SCRIPT_SRC}"]`)) {
       const script = document.createElement('script');
-      script.src = SCRIPT_SRC;
+      script.src = WIDGET_CONFIG.SCRIPT_SRC;
       script.async = true;
       
       script.onload = () => {
         const checkInterval = setInterval(() => {
-          if (customElements.get(WIDGET_ELEMENT_NAME)) {
+          if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
             clearInterval(checkInterval);
             setIsElevenLabsLoaded(true);
           }
@@ -69,7 +47,7 @@ const ChessCoachingSession: React.FC = () => {
     }
 
     return () => {
-      const widget = document.querySelector(WIDGET_ELEMENT_NAME);
+      const widget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
       if (widget) widget.remove();
     };
   }, []);
@@ -79,7 +57,7 @@ const ChessCoachingSession: React.FC = () => {
     if (!isElevenLabsLoaded) return;
 
     // Remove existing widget
-    const existingWidget = document.querySelector(WIDGET_ELEMENT_NAME);
+    const existingWidget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
     if (existingWidget) {
       existingWidget.remove();
     }
@@ -99,11 +77,11 @@ const ChessCoachingSession: React.FC = () => {
       if (!container) return;
 
       // Create new widget with language configuration
-      const widget = document.createElement(WIDGET_ELEMENT_NAME);
+      const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
       
       // Configure widget
       const config = {
-        'agent-id': 'agent_01jxy432zjfq7rywx4wm7md5hh',
+        'agent-id': AGENT_IDS.chess,
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -138,11 +116,11 @@ const ChessCoachingSession: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/extra-curricular')}
+          onClick={() => navigate('/services/extra-curricular?tab=online')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          <TranslatedText>Back to Activities</TranslatedText>
+          <TranslatedText>Back to Online Learning</TranslatedText>
         </Button>
       </div>
 

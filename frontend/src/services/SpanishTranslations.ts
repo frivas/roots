@@ -198,6 +198,47 @@ export const spanishTranslations: Record<string, string> = {
   "Your inbox is empty": "Tu bandeja de entrada está vacía",
   "Principal Johnson": "Director Johnson",
 
+  // Online Learning Sessions
+  "Back to Online Learning": "Volver al Aprendizaje en Línea",
+  "Click to talk": "Haz clic para hablar",
+  "Start Call": "Iniciar Llamada",
+  "End Call": "Finalizar Llamada",
+  "Expand": "Expandir",
+  "Listening...": "Escuchando...",
+  "Speaking...": "Hablando...",
+  "Loading activity session...": "Cargando sesión de actividad...",
+
+  // Online Activities
+  "Language Lessons": "Clases de Idiomas",
+  "Interactive language learning with AI tutors": "Aprendizaje interactivo de idiomas con tutores de IA",
+  "Conversation practice": "Práctica de conversación",
+  "Grammar lessons": "Lecciones de gramática",
+  "Cultural exchange": "Intercambio cultural",
+  "Chess Coaching": "Entrenamiento de Ajedrez",
+  "Learn chess strategies with AI grandmaster": "Aprende estrategias de ajedrez con un gran maestro de IA",
+  "Opening theory": "Teoría de aperturas",
+  "Tactical patterns": "Patrones tácticos",
+  "Endgame techniques": "Técnicas de final de juego",
+  "Math Tutoring": "Tutoría de Matemáticas",
+  "Personalized math help with AI tutor": "Ayuda personalizada en matemáticas con tutor de IA",
+  "Problem solving": "Resolución de problemas",
+  "Concept explanation": "Explicación de conceptos",
+  "Practice exercises": "Ejercicios prácticos",
+  "Storytelling Adventure Building": "Construcción de Aventuras Narrativas",
+  "Create amazing stories with an AI storytelling coach": "Crea historias increíbles con un coach de narración de IA",
+  "Character development": "Desarrollo de personajes",
+  "Plot building": "Construcción de tramas",
+  "Interactive storytelling": "Narración interactiva",
+  "What you'll learn:": "Lo que aprenderás:",
+
+  // Extra-Curricular Activities
+  "Physical Activities": "Actividades Físicas",
+  "Online Learning": "Aprendizaje en Línea",
+  "Why Extra-Curricular Activities Matter": "Por qué son importantes las actividades extracurriculares",
+  "Extra-curricular activities play a vital role in your child's development, fostering physical fitness, cognitive growth, and social skills. Our program offers both traditional physical activities and cutting-edge online learning experiences.": "Las actividades extracurriculares juegan un papel vital en el desarrollo de tu hijo, fomentando la aptitud física, el crecimiento cognitivo y las habilidades sociales. Nuestro programa ofrece tanto actividades físicas tradicionales como experiencias de aprendizaje en línea de vanguardia.",
+  "Improve coordination, strength, and fitness": "Mejora la coordinación, fuerza y estado físico",
+  "Enhance problem-solving and strategic thinking": "Mejora la resolución de problemas y el pensamiento estratégico",
+
   // Auth page translations - English to Spanish
   "Integral System": "Sistema Integral",
   "for Educational Management": "de Gestión Educativa",
@@ -300,25 +341,9 @@ export const spanishTranslations: Record<string, string> = {
   "field trips": "excursiones",
 
   // Extra-Curricular Activities Page
-  "Extra-Curricular Activities": "Actividades Extracurriculares",
-  "Enrich your child's education with diverse activities": "Enriquece la educación de tu hijo con actividades diversas",
-  "Why Extra-Curricular Activities Matter": "Por Qué Son Importantes las Actividades Extracurriculares",
-  "Physical Activities": "Actividades Físicas",
-  "Online Learning": "Aprendizaje en Línea",
-  "Program includes:": "El programa incluye:",
-  "What you'll learn:": "Lo que aprenderás:",
-
   "Start Activity Session": "Iniciar Sesión de Actividad",
   "View Schedule": "Ver Horario",
   "Online Activities": "Actividades en Línea",
-  "Physical Development": "Desarrollo Físico",
-  "Cognitive Growth": "Desarrollo Cognitivo",
-  "Social Skills": "Habilidades Sociales",
-  "Personal Achievement": "Logro Personal",
-  "Improve coordination, strength, and fitness": "Mejora la coordinación, fuerza y estado físico",
-  "Enhance problem-solving and strategic thinking": "Mejora la resolución de problemas y el pensamiento estratégico",
-  "Build teamwork and communication abilities": "Desarrolla el trabajo en equipo y las habilidades de comunicación",
-  "Set and accomplish personal goals": "Establece y alcanza metas personales",
   "Football Lessons": "Clases de Fútbol",
   "Professional football training for all skill levels": "Entrenamiento profesional de fútbol para todos los niveles",
   "Basic techniques": "Técnicas básicas",
@@ -339,13 +364,6 @@ export const spanishTranslations: Record<string, string> = {
   "Various sports": "Varios deportes",
   "Team building": "Construcción de equipo",
   "Motor skills": "Habilidades motoras",
-  "Language Lessons": "Clases de Idiomas",
-  "Interactive language learning with AI tutors": "Aprendizaje interactivo de idiomas con tutores de IA",
-  "Conversation practice": "Práctica de conversación",
-  "Grammar lessons": "Lecciones de gramática",
-  "Cultural exchange": "Intercambio cultural",
-  "Chess Coaching": "Clases de Ajedrez",
-  "Learn chess strategies and improve your game with our AI grandmaster coach": "Aprende estrategias de ajedrez y mejora tu juego con nuestro gran maestro de IA",
   "Opening Strategies": "Estrategias de Apertura",
   "Master essential chess openings and early game tactics": "Domina las aperturas esenciales de ajedrez y las tácticas de juego temprano",
   "Tactical Analysis": "Análisis Táctico",
@@ -353,16 +371,14 @@ export const spanishTranslations: Record<string, string> = {
   "Endgame Mastery": "Maestría en Finales",
   "Perfect your endgame techniques and strategies": "Perfecciona tus técnicas y estrategias de final de juego",
   "Interactive chess training with AI grandmaster": "Entrenamiento interactivo de ajedrez con gran maestro de IA",
-  "Math Tutoring": "Tutoría de Matemáticas",
-  "Personalized math help with AI tutor": "Ayuda personalizada en matemáticas con tutor de IA",
-  "Problem solving": "Resolución de problemas",
-  "Concept explanation": "Explicación de conceptos",
-  "Practice exercises": "Ejercicios prácticos",
   "Language Learning Session": "Sesión de Aprendizaje de Idiomas",
   "Chess Coaching Session": "Sesión de Clases de Ajedrez",
   "Math Tutoring Session": "Sesión de Tutoría de Matemáticas",
   "Back to Activities": "Volver a Actividades",
   "Enroll Now": "Apuntar",
+
+  // Storytelling Adventure Building
+  "Storytelling Session": "Sesión de Narración",
 
   // Parent Wellness Service Page
   "Back to Services": "Volver a Servicios",
@@ -808,12 +824,6 @@ export const spanishTranslations: Record<string, string> = {
   "Copy ID": "Copiar ID",
 
   // ElevenLabs Widget Translations
-  "Click to talk": "Haz clic para hablar",
-  "Start Call": "Iniciar Llamada",
-  "End Call": "Finalizar Llamada",
-  "Expand": "Expandir",
-  "Listening...": "Escuchando...",
-  "Speaking...": "Hablando...",
   // Settings & Profile
   "Personal Information": "Información Personal",
   "Password & Security": "Contraseña y Seguridad",
@@ -846,8 +856,10 @@ export const spanishTranslations: Record<string, string> = {
   "Head of Studies": "Jefe de Estudios",
   "Select recipient": "Seleccionar destinatario",
   "Enrolled": "Apuntado",
-  "Preview": "Probar"
-};
+  "Preview": "Vista previa",
+
+
+} as const;
 
 // Function to get Spanish translation with fallback
 export const getSpanishTranslation = (text: string): string => {

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
@@ -27,12 +27,27 @@ import {
 
 const ExtraCurricular: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [enrolledActivities, setEnrolledActivities] = useState<string[]>([]);
+
+  // Update active tab when URL params change
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   const handleStartOnlineSession = (activityType: string) => {
     if (activityType === 'chess') {
       navigate('/services/chess-coaching-session');
+    } else if (activityType === 'math') {
+      navigate('/services/math-tutoring-session');
+    } else if (activityType === 'storytelling') {
+      navigate('/services/storytelling-session');
+    } else if (activityType === 'language') {
+      navigate('/services/language-lesson-session');
     } else {
       navigate(`/services/extra-curricular-session/${activityType}`);
     }
@@ -109,6 +124,14 @@ const ExtraCurricular: React.FC = () => {
       features: ['Problem solving', 'Concept explanation', 'Practice exercises'],
       isAIAgent: true,
       agentType: 'math'
+    },
+    {
+      icon: Mic,
+      title: 'Storytelling Adventure Building',
+      description: 'Create amazing stories with an AI storytelling coach',
+      features: ['Character development', 'Plot building', 'Interactive storytelling'],
+      isAIAgent: true,
+      agentType: 'storytelling'
     }
   ];
 
