@@ -37,6 +37,14 @@ const StorytellingSession: React.FC = () => {
   const [sseConnection, setSseConnection] = useState<EventSource | null>(null);
   const [sseStatus, setSseStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
 
+  // Clear story content on mount to ensure fresh start
+  useEffect(() => {
+    setStoryContent('');
+    setIsGeneratingImage(false);
+    setGeneratedImage(null);
+    setImageError(null);
+  }, []); // Empty dependency array = run once on mount
+
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
   const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
@@ -213,17 +221,18 @@ const StorytellingSession: React.FC = () => {
 
     eventSource.onmessage = (event) => {
       try {
-        console.log('📡 Raw SSE event received:', event.data);
         const data = JSON.parse(event.data);
-        console.log('📡 Parsed SSE data:', data);
         
-        if (data.type === 'story-illustration') {
-          console.log('📡 SSE received image URL - setting image but keeping loading state');
-          console.log('🖼️ Image URL:', data.data.imageUrl);
+        if (data.type === 'generation-started') {
+          setIsGeneratingImage(true);
+          setImageError(null);
           setSseStatus('connected');
+        } else if (data.type === 'story-illustration') {
+          // Set the generated image and stop loading
           setGeneratedImage(data.data.imageUrl);
           setStoryImages(prev => [...prev, data.data.imageUrl]);
-          // Keep loading state on - image onLoad event will turn it off
+          setIsGeneratingImage(false);
+          setSseStatus('connected');
           
           // Update story context from webhook data
           if (data.data.context) {
@@ -239,12 +248,11 @@ const StorytellingSession: React.FC = () => {
           setSseStatus('connected');
         }
       } catch (error) {
-        console.error('Error parsing SSE data:', error);
+        // Handle SSE parsing errors silently
       }
     };
 
     eventSource.onerror = (error) => {
-      console.error('SSE connection error:', error);
       setSseStatus('error');
     };
 
@@ -304,7 +312,9 @@ const StorytellingSession: React.FC = () => {
     // Wait a brief moment before creating the new widget
     setTimeout(() => {
       const container = document.querySelector('.widget-container');
-      if (!container) return;
+      if (!container) {
+        return;
+      }
 
       // Create new widget with language configuration
       const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
@@ -329,6 +339,10 @@ const StorytellingSession: React.FC = () => {
       });
 
       // Add event listeners for conversation events
+      widget.addEventListener('conversation-start', (event: any) => {
+        // Conversation started
+      });
+      
       widget.addEventListener('conversation-end', (event: any) => {
         // Analyze the complete story and generate a final illustration
         if (storyContent.length > 50) {
@@ -344,7 +358,6 @@ const StorytellingSession: React.FC = () => {
 
       widget.addEventListener('agent-response', (event: any) => {
         const response = event.detail?.text || '';
-        console.log('🤖 Agent response:', response);
         
         // Accumulate story content
         setStoryContent(prev => prev + ' ' + response);
@@ -354,125 +367,6 @@ const StorytellingSession: React.FC = () => {
         if (updatedContent.length > 100) {
           const newContext = analyzeStoryContent(updatedContent);
           setStoryContext(newContext);
-        }
-        
-        // Check if response indicates image generation will happen
-        const lowerResponse = response.toLowerCase();
-        console.log('🔍 Checking response for creation phrases:', lowerResponse);
-        
-        // Set loading state for any story response that might trigger image generation
-        // Since ElevenLabs automatically triggers webhooks, we need to be proactive
-        if (response.length > 50 && !isGeneratingImage && !generatedImage) {
-          console.log('📖 Story response detected - preparing for potential image generation');
-          setIsGeneratingImage(true);
-          setImageError(null);
-          
-          // Set a timeout to turn off loading if no image comes
-          setTimeout(() => {
-            if (isGeneratingImage && !generatedImage) {
-              console.log('⏰ Image generation timeout - turning off loading');
-              setIsGeneratingImage(false);
-            }
-          }, 15000); // 15 second timeout
-        }
-        
-        const creatingIllustrationPhrases = [
-          // English
-          "i'm going to create", "i'll create", "creating an illustration", "generating an illustration", 
-          "making an illustration", "drawing a picture", "i'm creating", "i'll draw", "let me create",
-          "i'm making", "i'll make", "generating a picture", "creating a picture",
-          
-          // Spanish (Español)
-          "voy a crear", "crearé", "creando una ilustración", "generando una ilustración",
-          "haciendo una ilustración", "dibujando una imagen", "estoy creando", "voy a dibujar",
-          "déjame crear", "estoy haciendo", "haré", "generando una imagen", "creando una imagen",
-          
-          // Chinese (中文)
-          "我要创建", "我将创建", "正在创建插图", "生成插图", "制作插图", "画一幅图",
-          "我正在创建", "我要画", "让我创建", "我正在制作", "我将制作",
-          
-          // Ukrainian (Українська)
-          "я створю", "я створюю", "створюю ілюстрацію", "генерую ілюстрацію",
-          "роблю ілюстрацію", "малюю картинку", "дозвольте створити", "я малюю",
-          
-          // Romanian (Română)
-          "voi crea", "creez", "creez o ilustrație", "generez o ilustrație",
-          "fac o ilustrație", "desenez o imagine", "să creez", "desenez"
-        ];
-        
-        const isCreatingIllustration = creatingIllustrationPhrases.some(phrase => 
-          lowerResponse.includes(phrase));
-        
-        if (isCreatingIllustration) {
-          // Agent is saying it's creating an illustration - show loading state immediately
-          console.log('🎨 Agent says creating illustration - showing loading state');
-          setIsGeneratingImage(true);
-          setImageError(null);
-        }
-        
-        // Check if agent is asking about drawing/illustration
-        const drawingQuestions = [
-          // English
-          'would you like', 'do you want', 'should I', 'can I', 'shall I',
-          'want me to', 'like me to', 'how about', 'what if I',
-          
-          // Spanish (Español)
-          '¿te gustaría', '¿quieres que', '¿debería', '¿puedo', '¿debo',
-          'quieres que', 'te gustaría que', '¿qué tal si', '¿y si',
-          
-          // Chinese (中文)
-          '你想要', '你希望', '我应该', '我可以', '要不要我',
-          '需要我', '让我', '怎么样', '如果我',
-          
-          // Ukrainian (Українська)
-          'чи хотіли б ви', 'чи хочете', 'чи повинен я', 'чи можу я',
-          'хочете, щоб я', 'чі треба мені', 'як щодо', 'що якщо я',
-          
-          // Romanian (Română)
-          'ai vrea să', 'vrei să', 'ar trebui să', 'pot să', 'să fac eu',
-          'vrei ca eu să', 'ce-ar fi să', 'dacă aș'
-        ];
-        const drawingWords = [
-          // English
-          'picture', 'drawing', 'illustration', 'draw', 'paint', 'sketch',
-          'image', 'artwork', 'visual',
-          
-          // Spanish (Español)
-          'imagen', 'dibujo', 'ilustración', 'dibujar', 'pintar', 'boceto',
-          'pintura', 'arte visual', 'visual',
-          
-          // Chinese (中文)
-          '图片', '画', '插图', '绘画', '画画', '素描', '图像', '艺术', '视觉',
-          
-          // Ukrainian (Українська)
-          'картинка', 'малюнок', 'ілюстрація', 'намалюю', 'намалювати',
-          'зображення', 'ескіз', 'візуальний',
-          
-          // Romanian (Română)
-          'imagine', 'desen', 'ilustrație', 'desenez', 'pictez', 'schiță',
-          'pictură', 'artă vizuală', 'vizual'
-        ];
-        
-        const isAskingAboutDrawing = drawingQuestions.some(question => 
-          lowerResponse.includes(question)) && 
-          drawingWords.some(word => lowerResponse.includes(word));
-        
-        if (isAskingAboutDrawing) {
-          setIsWaitingForDrawingResponse(true);
-          // Clear the flag after 30 seconds if no response
-          setTimeout(() => setIsWaitingForDrawingResponse(false), 30000);
-        }
-        
-        // Auto-generate illustration on significant story moments
-        const storyMoments = [
-          'once upon a time', 'suddenly', 'then', 'finally', 
-          'the end', 'they lived happily', 'and so'
-        ];
-        
-        if (storyMoments.some(moment => lowerResponse.includes(moment))) {
-          setTimeout(() => {
-            handleGenerateIllustration();
-          }, 2000); // Small delay to let the story develop
         }
       });
 
@@ -585,6 +479,19 @@ const StorytellingSession: React.FC = () => {
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
+  // Global timeout to clear loading state if image takes too long
+  useEffect(() => {
+    if (isGeneratingImage) {
+      const timeout = setTimeout(() => {
+        setIsGeneratingImage(false);
+      }, 60000); // 60 seconds timeout
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [isGeneratingImage]);
+
+
+
   return (
     <motion.div
       className="space-y-8 pb-8"
@@ -632,18 +539,11 @@ const StorytellingSession: React.FC = () => {
         </motion.div>
       )}
 
-      {/* Debug Info */}
-      <div className="text-xs text-gray-500 p-2 bg-gray-50 rounded">
-        <div>SSE Status: {sseStatus}</div>
-        <div>Is Generating: {isGeneratingImage ? 'Yes' : 'No'}</div>
-        <div>Has Image: {generatedImage ? 'Yes' : 'No'}</div>
-        <div>Error: {imageError || 'None'}</div>
-      </div>
+
 
       {/* Story Illustration - Full Screen Display */}
       {(() => {
         const shouldShowSection = !!(generatedImage || isGeneratingImage || imageError);
-        console.log('🎯 shouldShowSection:', shouldShowSection, { generatedImage: !!generatedImage, isGeneratingImage, imageError });
         
         if (!shouldShowSection) return null;
         
@@ -654,56 +554,7 @@ const StorytellingSession: React.FC = () => {
             className="w-full"
           >
             {(() => {
-              if (isGeneratingImage) {
-                return (
-                  <div className="flex items-center justify-center py-16">
-                    <div className="text-center space-y-4">
-                      {/* Creative loading animation */}
-                      <div className="relative">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-200 mx-auto"></div>
-                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-purple-600 mx-auto absolute top-0 left-1/2 transform -translate-x-1/2" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                          <div className="animate-pulse">
-                            <svg className="h-6 w-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Fun loading text */}
-                      <div className="space-y-1">
-                        <p className="text-purple-700 font-medium text-lg">
-                          <TranslatedText>Creating your magical illustration...</TranslatedText>
-                        </p>
-                        <p className="text-purple-500 text-sm">
-                          <TranslatedText>The artist is painting your story scene!</TranslatedText>
-                        </p>
-                      </div>
-                      
-                      {/* Animated dots */}
-                      <div className="flex justify-center space-x-1">
-                        <div className="animate-bounce h-2 w-2 bg-purple-400 rounded-full" style={{ animationDelay: '0ms' }}></div>
-                        <div className="animate-bounce h-2 w-2 bg-purple-500 rounded-full" style={{ animationDelay: '150ms' }}></div>
-                        <div className="animate-bounce h-2 w-2 bg-purple-600 rounded-full" style={{ animationDelay: '300ms' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              if (imageError) {
-                return (
-                  <div className="text-center py-8">
-                    <div className="bg-red-100 border border-red-200 rounded-lg p-4">
-                      <p className="text-red-700">
-                        <TranslatedText>Sorry, we couldn't create the illustration. Please try again.</TranslatedText>
-                      </p>
-                    </div>
-                  </div>
-                );
-              }
-
+              // Priority 1: Show the image if we have one (regardless of loading state)
               if (generatedImage) {
                 return (
                   <div className="w-full space-y-4">
@@ -713,10 +564,7 @@ const StorytellingSession: React.FC = () => {
                         src={generatedImage}
                         alt="Story illustration"
                         className="w-full h-auto rounded-lg shadow-lg"
-                        onLoad={() => {
-                          console.log('🖼️ Image loaded - turning off loading state');
-                          setIsGeneratingImage(false);
-                        }}
+
                         onError={(e) => {
                           setImageError('Failed to load image');
                           setIsGeneratingImage(false);
@@ -737,6 +585,28 @@ const StorytellingSession: React.FC = () => {
                         <Download className="h-5 w-5 text-gray-700" />
                       </button>
                     </div>
+                  </div>
+                );
+              }
+
+              // Priority 2: Show error if there's an error
+              if (imageError) {
+                return (
+                  <div className="text-center py-8">
+                    <div className="bg-red-100 border border-red-200 rounded-lg p-4">
+                      <p className="text-red-700">
+                        <TranslatedText>Sorry, we couldn't create the illustration. Please try again.</TranslatedText>
+                      </p>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Priority 3: Show loading indicator only if we don't have an image yet
+              if (isGeneratingImage) {
+                return (
+                  <div className="flex items-center justify-center py-16">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-purple-600"></div>
                   </div>
                 );
               }

@@ -77,6 +77,24 @@ const images: FastifyPluginAsync = async (fastify) => {
         current_scene?: string;
       };
 
+      // 🎯 SEND GENERATION START EVENT FIRST
+      const sseConnections = fastify.sseConnections;
+      const startEventData = JSON.stringify({
+        type: 'generation-started',
+        data: {
+          message: 'Starting image generation...',
+          context: { story_content, characters, setting, mood, current_scene }
+        }
+      });
+
+      sseConnections.forEach((connection: any) => {
+        try {
+          connection.write(`data: ${startEventData}\n\n`);
+        } catch (error) {
+          sseConnections.delete(connection);
+        }
+      });
+
       // Generate contextual prompt based on story elements
       const generateContextualPrompt = () => {
         // Base style for children's illustrations
@@ -133,7 +151,6 @@ const images: FastifyPluginAsync = async (fastify) => {
       const imageUrl = response.data[0].url;
 
       // Broadcast the image to all connected SSE clients
-      const sseConnections = fastify.sseConnections;
       const eventData = JSON.stringify({
         type: 'story-illustration',
         data: {
