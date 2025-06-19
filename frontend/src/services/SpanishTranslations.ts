@@ -205,6 +205,8 @@ export const spanishTranslations: Record<string, string> = {
   // Story Illustration Feature
   "Story Illustration": "Ilustración del Cuento",
   "Creating your story illustration...": "Creando tu ilustración del cuento...",
+  "Creating your magical illustration...": "Creando tu ilustración mágica...",
+  "The artist is painting your story scene!": "¡El artista está pintando la escena de tu historia!",
   "Sorry, we couldn't create the illustration. Please try again.": "Lo siento, no pudimos crear la ilustración. Por favor, inténtalo de nuevo.",
   "Download Illustration": "Descargar Ilustración",
   "Generate Story Illustration": "Generar Ilustración del Cuento",
