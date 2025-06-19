@@ -192,11 +192,27 @@ export const spanishTranslations: Record<string, string> = {
   "Summer Program Registration": "Registro de Programa de Verano",
   "Registration for summer programs is now open. Space is limited, so please encourage interested students to sign up early. This year we are offering a variety of academic enrichment, arts, and sports programs to keep students engaged during the summer break.": "La inscripción para programas de verano ya está abierta. El espacio es limitado, así que por favor anime a los estudiantes interesados a inscribirse temprano. Este año ofrecemos una variedad de programas de enriquecimiento académico, artes y deportes para mantener a los estudiantes comprometidos durante las vacaciones de verano.",
 
+  // Storytelling Session - Drawing Integration
+  "The storyteller is asking about creating a drawing...": "El narrador está preguntando sobre crear un dibujo...",
+  "Say \"yes\" if you'd like me to create an illustration!": "¡Di \"sí\" si quieres que cree una ilustración!",
+
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
   "Star messages to see them here": "Marca mensajes con estrella para verlos aquí",
   "Your inbox is empty": "Tu bandeja de entrada está vacía",
   "Principal Johnson": "Director Johnson",
+
+  // Story Illustration Feature
+  "Story Illustration": "Ilustración del Cuento",
+  "Creating your story illustration...": "Creando tu ilustración del cuento...",
+  "Sorry, we couldn't create the illustration. Please try again.": "Lo siento, no pudimos crear la ilustración. Por favor, inténtalo de nuevo.",
+  "Download Illustration": "Descargar Ilustración",
+  "Generate Story Illustration": "Generar Ilustración del Cuento",
+  "Story Context Detected": "Contexto del Cuento Detectado",
+  "Characters": "Personajes",
+  "Setting": "Escenario",
+  "Mood": "Ambiente",
+  "Current Scene": "Escena Actual",
 
   // Online Learning Sessions
   "Back to Online Learning": "Volver al Aprendizaje en Línea",
@@ -856,7 +872,7 @@ export const spanishTranslations: Record<string, string> = {
   "Head of Studies": "Jefe de Estudios",
   "Select recipient": "Seleccionar destinatario",
   "Enrolled": "Apuntado",
-  "Preview": "Vista previa",
+  "Preview": "Probar",
 
 
 } as const;
