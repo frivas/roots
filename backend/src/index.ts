@@ -88,6 +88,25 @@ server.register(async function publicWebhooks(fastify) {
         current_scene?: string;
       };
 
+      // 🎯 SEND GENERATION START EVENT FIRST
+      const startEventData = JSON.stringify({
+        type: 'generation-started',
+        data: {
+          message: 'Starting image generation...',
+          context: { story_content, characters, setting, mood, current_scene }
+        }
+      });
+
+      sseConnections.forEach((connection) => {
+        try {
+          connection.write(`data: ${startEventData}\n\n`);
+          console.log('📡 Sent generation-started event to frontend');
+        } catch (error) {
+          console.error('Error sending generation-started SSE:', error);
+          sseConnections.delete(connection);
+        }
+      });
+
       // Import OpenAI dynamically
       const { default: OpenAI } = await import('openai');
       const openai = new OpenAI({
