@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Image as ImageIcon, Download } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import Button from '../../components/ui/Button';
+import PaintingSpinner from '../../components/ui/PaintingSpinner';
 import TranslatedText from '../../components/TranslatedText';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
@@ -605,8 +606,8 @@ const StorytellingSession: React.FC = () => {
               // Priority 3: Show loading indicator only if we don't have an image yet
               if (isGeneratingImage) {
                 return (
-                  <div className="flex items-center justify-center py-16">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-purple-600"></div>
+                  <div className="flex items-center justify-center py-8">
+                    <PaintingSpinner size="lg" />
                   </div>
                 );
               }
