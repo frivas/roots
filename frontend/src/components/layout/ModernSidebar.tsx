@@ -273,6 +273,8 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
               )}
             </div>
           ))}
+
+
         </nav>
       </div>
 
@@ -313,6 +315,8 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
           </div>
         )}
 
+
+
         {/* Sign Out Button */}
         <div className="flex justify-center w-full">
           <button
@@ -338,6 +342,8 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
           </button>
         </div>
       </div>
+
+
     </div>
   );
 };
