@@ -494,130 +494,142 @@ const StorytellingSession: React.FC = () => {
 
 
   return (
-    <motion.div
-      className="space-y-8 pb-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      {/* Back Button */}
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate('/services/extra-curricular?tab=online')}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <TranslatedText>Back to Online Learning</TranslatedText>
-        </Button>
-      </div>
-
-      {/* Widget Container */}
-      <div className="widget-container" />
-
-      {/* Drawing Request Indicator */}
-      {isWaitingForDrawingResponse && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-green-50 border border-green-200 rounded-lg p-4 text-center"
-        >
-          <div className="flex items-center justify-center gap-2 text-green-700">
-            <div className="animate-pulse">
-              <ImageIcon className="h-5 w-5" />
-            </div>
-            <span className="font-medium">
-              <TranslatedText>The storyteller is asking about creating a drawing...</TranslatedText>
-            </span>
-          </div>
-          <p className="text-sm text-green-600 mt-1">
-            <TranslatedText>Say "yes" if you'd like me to create an illustration!</TranslatedText>
-          </p>
-          <p className="text-xs text-green-500 mt-1 opacity-75">
-            English: "yes" | Español: "sí" | 中文: "好" | Українська: "так" | Română: "da"
-          </p>
-        </motion.div>
-      )}
-
-
-
-      {/* Story Illustration - Full Screen Display */}
-      {(() => {
-        const shouldShowSection = !!(generatedImage || isGeneratingImage || imageError);
-        
-        if (!shouldShowSection) return null;
-        
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full"
+    <div className="min-h-screen relative">
+      {/* Main Content */}
+      <motion.div
+        className="space-y-8 p-6 pb-16"
+        style={{ paddingBottom: '70px' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {/* Back Button */}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/services/extra-curricular?tab=online')}
+            className="flex items-center gap-2"
           >
-            {(() => {
-              // Priority 1: Show the image if we have one (regardless of loading state)
-              if (generatedImage) {
-                return (
-                  <div className="w-full space-y-4">
-                    {/* Full-width image without frame */}
-                    <div className="relative w-full">
-                      <img
-                        src={generatedImage}
-                        alt="Story illustration"
-                        className="w-full h-auto rounded-lg shadow-lg"
+            <ArrowLeft className="h-4 w-4" />
+            <TranslatedText>Back to Online Learning</TranslatedText>
+          </Button>
+        </div>
 
-                        onError={(e) => {
-                          setImageError('Failed to load image');
-                          setIsGeneratingImage(false);
-                        }}
-                      />
-                      
-                      {/* Minimal download button - just icon */}
-                      <button
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = generatedImage;
-                          link.download = 'story-illustration.png';
-                          link.click();
-                        }}
-                        className="absolute top-4 right-4 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all duration-200 hover:scale-110"
-                        title="Download Illustration"
-                      >
-                        <Download className="h-5 w-5 text-gray-700" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              }
+        {/* Widget Container */}
+        <div 
+          className="widget-container" 
+          style={{ maxHeight: 'calc(100vh - 200px)', overflow: 'hidden' }}
+        />
 
-              // Priority 2: Show error if there's an error
-              if (imageError) {
-                return (
-                  <div className="text-center py-8">
-                    <div className="bg-red-100 border border-red-200 rounded-lg p-4">
-                      <p className="text-red-700">
-                        <TranslatedText>Sorry, we couldn't create the illustration. Please try again.</TranslatedText>
-                      </p>
-                    </div>
-                  </div>
-                );
-              }
-
-              // Priority 3: Show loading indicator only if we don't have an image yet
-              if (isGeneratingImage) {
-                return (
-                  <div className="flex items-center justify-center py-8">
-                    <PaintingSpinner size="lg" />
-                  </div>
-                );
-              }
-
-              return null;
-            })()}
+        {/* Drawing Request Indicator */}
+        {isWaitingForDrawingResponse && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-50 border border-green-200 rounded-lg p-4 text-center"
+          >
+            <div className="flex items-center justify-center gap-2 text-green-700">
+              <div className="animate-pulse">
+                <ImageIcon className="h-5 w-5" />
+              </div>
+              <span className="font-medium">
+                <TranslatedText>The storyteller is asking about creating a drawing...</TranslatedText>
+              </span>
+            </div>
+            <p className="text-sm text-green-600 mt-1">
+              <TranslatedText>Say "yes" if you'd like me to create an illustration!</TranslatedText>
+            </p>
+            <p className="text-xs text-green-500 mt-1 opacity-75">
+              English: "yes" | Español: "sí" | 中文: "好" | Українська: "так" | Română: "da"
+            </p>
           </motion.div>
-        );
-      })()}
-    </motion.div>
+        )}
+
+        {/* Story Illustration - Full Screen Display */}
+        {(() => {
+          const shouldShowSection = !!(generatedImage || isGeneratingImage || imageError);
+          
+          if (!shouldShowSection) return null;
+          
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full"
+            >
+              {(() => {
+                // Priority 1: Show the image if we have one (regardless of loading state)
+                if (generatedImage) {
+                  return (
+                    <div className="w-full space-y-4">
+                      {/* Full-width image without frame */}
+                      <div className="relative w-full">
+                        <img
+                          src={generatedImage}
+                          alt="Story illustration"
+                          className="w-full h-auto rounded-lg shadow-lg"
+
+                          onError={(e) => {
+                            setImageError('Failed to load image');
+                            setIsGeneratingImage(false);
+                          }}
+                        />
+                        
+                        {/* Minimal download button - just icon */}
+                        <button
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = generatedImage;
+                            link.download = 'story-illustration.png';
+                            link.click();
+                          }}
+                          className="absolute top-4 right-4 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all duration-200 hover:scale-110"
+                          title="Download Illustration"
+                        >
+                          <Download className="h-5 w-5 text-gray-700" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Priority 2: Show error if there's an error
+                if (imageError) {
+                  return (
+                    <div className="text-center py-8">
+                      <div className="bg-red-100 border border-red-200 rounded-lg p-4">
+                        <p className="text-red-700">
+                          <TranslatedText>Sorry, we couldn't create the illustration. Please try again.</TranslatedText>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Priority 3: Show loading indicator only if we don't have an image yet
+                if (isGeneratingImage) {
+                  return (
+                    <div className="flex items-center justify-center py-8">
+                      <PaintingSpinner size="lg" />
+                    </div>
+                  );
+                }
+
+                return null;
+              })()}
+            </motion.div>
+          );
+        })()}
+      </motion.div>
+
+      {/* AI Footer Disclaimer - Fixed at bottom */}
+      <div className="bg-gray-50 border-t border-gray-200 px-4 py-3 mt-auto">
+        <p className="text-xs text-gray-600 text-center">
+          <TranslatedText>AI-generated content may contain inaccuracies. Use at your own discretion.</TranslatedText>
+        </p>
+      </div>
+    </div>
   );
 };
 

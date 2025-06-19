@@ -202,6 +202,18 @@ export const spanishTranslations: Record<string, string> = {
   "Your inbox is empty": "Tu bandeja de entrada está vacía",
   "Principal Johnson": "Director Johnson",
 
+  // AI Disclaimer Footer & Modal
+  "AI-Powered Service Notice": "Aviso de Servicio con Inteligencia Artificial",
+  "AI Service Notice": "Aviso de Servicio de IA",
+  "AI Notice": "Aviso de IA",
+  "Understood": "Entendido",
+  "This service uses artificial intelligence technology to provide interactive educational experiences. AI-generated content may contain inaccuracies. Use at your own discretion and verify important information independently.": "Este servicio utiliza tecnología de inteligencia artificial para proporcionar experiencias educativas interactivas. El contenido generado por IA puede contener inexactitudes. Úselo bajo su propia discreción y verifique la información importante de forma independiente.",
+  "This applies to all AI-powered services including voice conversations, story illustrations, and educational content.": "Esto se aplica a todos los servicios con IA incluyendo conversaciones de voz, ilustraciones de cuentos y contenido educativo.",
+  "AI-generated content may contain inaccuracies. Use at your own discretion.": "El contenido generado por IA puede contener inexactitudes. Úselo bajo su propia discreción.",
+  "Terms of Service": "Términos de Servicio", 
+  "Cookie Policy": "Política de Cookies",
+  "Comunidad de Madrid. All rights reserved.": "Comunidad de Madrid. Todos los derechos reservados.",
+
   // Story Illustration Feature
   "Story Illustration": "Ilustración del Cuento",
   "Creating your story illustration...": "Creando tu ilustración del cuento...",
