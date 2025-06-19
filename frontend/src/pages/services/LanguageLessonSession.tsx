@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Info } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
@@ -133,8 +133,8 @@ const LanguageLessonSession: React.FC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Back Button */}
-      <div className="flex items-center gap-4">
+      {/* Header with Back Button and AI Notice */}
+      <div className="flex items-center justify-between">
         <Button
           variant="outline"
           size="sm"
@@ -144,6 +144,19 @@ const LanguageLessonSession: React.FC = () => {
           <ArrowLeft className="h-4 w-4" />
           <TranslatedText>Back to Online Learning</TranslatedText>
         </Button>
+
+        {/* AI Notice Icon with Tooltip */}
+        <div className="relative group">
+          <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+            <Info className="h-5 w-5" />
+          </button>
+          
+          {/* Modern Tooltip */}
+          <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 shadow-lg">
+            <div className="absolute -top-1 right-4 w-2 h-2 bg-white border-l border-t border-gray-200 rotate-45"></div>
+            <TranslatedText>AI-generated content may contain inaccuracies. Use at your own discretion.</TranslatedText>
+          </div>
+        </div>
       </div>
 
       {/* Widget Container */}
