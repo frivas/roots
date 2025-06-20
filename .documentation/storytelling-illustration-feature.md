@@ -88,6 +88,7 @@ graph TD
 - **Model**: Advanced conversation model with tool calling
 - **Voice**: Child-friendly voice optimized for storytelling
 - **Language Support**: English, Spanish, Chinese, Ukrainian, Romanian
+- **Multi-language Widget**: Real-time language switching support
 
 #### Tool Configuration
 The agent is configured with a tool that can be called to generate illustrations:
@@ -103,7 +104,7 @@ The agent is configured with a tool that can be called to generate illustrations
     "mood": "The emotional tone (happy, magical, adventurous, etc.)",
     "current_scene": "Specific scene to illustrate"
   },
-  "webhook_url": "https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story"
+  "webhook_url": "https://your-production-domain.com/api/images/generate-for-story"
 }
 ```
 
@@ -474,6 +475,6 @@ The modular design allows for easy maintenance and future enhancements, while th
 
 ---
 
-*Last Updated: December 2024*  
-*Author: Development Team*  
-*Version: 1.0* 
+*Last Updated: January 2025*  
+*Author: AI Development Team*  
+*Version: 2.0* 
