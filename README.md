@@ -149,11 +149,22 @@ supabase db push
 ### ElevenLabs Configuration
 1. Create an ElevenLabs account
 2. Create conversational AI agents for each service:
-   - Storytelling: `agent_01jxy9664recb9nx14y9mj685n`
-   - Chess: `agent_01jxy432zjfq7rywx4wm7md5hh`
-   - Math: `agent_01jxy66c6tfsaadxfv6a1snq06`
-   - Language: `agent_01jxy264qbe49b8f3rk71wnzn7`
-   - Wellness: `agent_01jxkwsqkxe1nsztm4h461ahw0`
+   - Storytelling: `agent_YOUR_STORYTELLING_AGENT_ID`
+   - Chess: `agent_YOUR_CHESS_AGENT_ID`
+   - Math: `agent_YOUR_MATH_AGENT_ID`
+   - Language: `agent_YOUR_LANGUAGE_AGENT_ID`
+   - Wellness: `agent_YOUR_WELLNESS_AGENT_ID`
+
+3. Update the agent IDs in `frontend/src/config/agentConfig.ts`:
+```typescript
+export const AGENT_IDS = {
+  storytelling: 'agent_YOUR_STORYTELLING_AGENT_ID',
+  chess: 'agent_YOUR_CHESS_AGENT_ID',
+  math: 'agent_YOUR_MATH_AGENT_ID',
+  language: 'agent_YOUR_LANGUAGE_AGENT_ID',
+  wellness: 'agent_YOUR_WELLNESS_AGENT_ID'
+};
+```
 
 ### Webhook Configuration
 For local development with ngrok:
@@ -165,6 +176,10 @@ ngrok http 3000
 # Update ElevenLabs webhook URLs to:
 # https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story
 ```
+
+4. Configure each agent's webhook URL in ElevenLabs dashboard:
+   - Set webhook URL to: `https://your-domain.com/api/images/generate-for-story`
+   - For local development: `https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story`
 
 ## 📚 Key Features Documentation
 
