@@ -181,7 +181,7 @@ const Profile = () => {
     achievements: [
       { title: 'Teacher of the Year', year: '2022', description: 'Recognized for excellence in teaching and exceptional student engagement across all grade levels' },
       { title: 'Published Author', year: '2021', description: 'Published "Modern Approaches to Literature Education" in Teaching Today magazine' },
-      { title: 'Curriculum Development Lead', year: '2020', description: 'Led the comprehensive redesign of the 11th grade English curriculum with focus on digital literacy' }
+      { title: 'Curriculum Development Lead', year: '2020', description: 'Led the comprehensive redesign of the high school English curriculum with focus on digital literacy' }
     ],
     recentActivity: [
       { type: 'class', title: 'Advanced Literature Seminar', date: '2 days ago', description: 'Conducted a special seminar on modern poetry analysis with guest poet speaker' },
