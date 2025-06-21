@@ -53,6 +53,7 @@ const AcademicHistory = lazy(() => import('./pages/AcademicHistory'));
 const Documents = lazy(() => import('./pages/Documents'));
 const CurrentYearGrades = lazy(() => import('./pages/CurrentYearGrades'));
 const StudentProfile = lazy(() => import('./pages/StudentProfile'));
+const SchoolData = lazy(() => import('./pages/SchoolData'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -130,8 +131,9 @@ function App() {
             <Route path="/home/*" element={<HomePlaceholder />} />
 
             {/* Our School section */}
-            <Route path="/school/*" element={<SchoolPlaceholder />} />
+            <Route path="/school/data" element={<SchoolData />} />
             <Route path="/school/services" element={<Services />} />
+            <Route path="/school/*" element={<SchoolPlaceholder />} />
 
             {/* Services section */}
             <Route path="/services" element={<Services />} />
