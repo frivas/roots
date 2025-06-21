@@ -48,6 +48,7 @@ const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlacehol
 import TutorInfo from './pages/TutorInfo';
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Absences = lazy(() => import('./pages/Absences'));
+const Activities = lazy(() => import('./pages/Activities'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -116,6 +117,7 @@ function App() {
             <Route path="/home" element={<Dashboard />} />
             <Route path="/home/schedule" element={<Schedule />} />
             <Route path="/home/absences" element={<Absences />} />
+            <Route path="/home/activities" element={<Activities />} />
             <Route path="/home/tutoring" element={<TutorInfo />} />
             <Route path="/home/*" element={<HomePlaceholder />} />
 

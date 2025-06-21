@@ -38,6 +38,8 @@ const itemVariants = {
 const absenceData = {
   student: {
     name: "Sofía Hernández López",
+    course: "6th Grade",
+    group: "6A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
     delegate: "Carlos Mendoza Rivera",
@@ -279,6 +281,9 @@ const Absences: React.FC = () => {
                   <div className="mt-2">
                     <div className="text-lg font-medium text-foreground">
                       {absenceData.student.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {absenceData.student.course} - {absenceData.student.group}
                     </div>
                   </div>
                 </div>
