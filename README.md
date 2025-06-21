@@ -1,121 +1,258 @@
-# Roots - Educational Services Platform
+# Roots - AI-Powered Educational Platform
 
-Roots is a comprehensive web application designed to manage educational services including classroom management, transportation tracking, cafeteria services, extracurricular activities, language support, and mentorship programs.
+Roots is a next-generation educational platform that combines traditional educational services with cutting-edge AI technology. The platform features AI-powered tutoring, real-time illustration generation, multilingual support, and comprehensive family services.
 
-## Project Structure
+## 🚀 Key Features
 
-The project is structured into two main folders:
+### AI-Powered Learning
+- **Interactive Storytelling** with real-time DALL-E 3 illustration generation
+- **Chess Coaching** with AI grandmaster
+- **Math Tutoring** with personalized AI assistance
+- **Language Lessons** with conversational AI tutors
+- **Parent Wellness Coaching** with 24/7 AI support
 
-- `frontend/`: React application with TypeScript
-- `backend/`: Node.js API with Fastify and TypeScript
+### Advanced Localization
+- **Hybrid Translation System** with 900+ local translations
+- **Real-time Language Switching** (English/Spanish)
+- **AI-Powered Dynamic Translation** via Lingo.dev
+- **Regional Customization** for Spanish users (dates, phones, timezone)
 
-## Features
+### Real-Time Communication
+- **Server-Sent Events (SSE)** for live updates
+- **WebHook Integration** with ElevenLabs
+- **Multi-language Voice Agents**
+- **Real-time Illustration Broadcasting**
 
-- Authentication with Clerk
-- Role-based access control
-- Real-time messaging
-- Notifications system
-- Services management
-- Account settings
+### Comprehensive Services
+- Educational services management
+- Parent coaching and wellness programs
+- Extracurricular activities (physical and online)
+- Transportation and cafeteria management
+- Academic counseling and mentorship
 
-## Technology Stack
+## 🏗️ Architecture
+
+### Project Structure
+```
+roots/
+├── frontend/                 # React 19 application
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── contexts/        # React contexts (Auth, Translation)
+│   │   ├── pages/           # Application pages
+│   │   │   └── services/    # AI-powered service pages
+│   │   ├── services/        # Business logic services
+│   │   ├── hooks/           # Custom React hooks
+│   │   └── config/          # Configuration files
+│   └── package.json
+├── backend/                 # Node.js API with Fastify
+│   ├── src/
+│   │   ├── routes/          # API endpoints
+│   │   ├── lib/             # Shared libraries
+│   │   └── types/           # TypeScript definitions
+│   └── package.json
+├── .documentation/          # Comprehensive documentation
+├── scripts/                 # Utility scripts
+└── supabase/               # Database migrations
+```
+
+## 🛠️ Technology Stack
 
 ### Frontend
-- React 18
-- TypeScript
-- Tailwind CSS
-- React Router
-- Clerk Authentication
-- Socket.io Client
+- **React 19** with TypeScript
+- **Tailwind CSS** for styling
+- **Framer Motion** for animations
+- **React Router** for navigation
+- **Clerk Authentication** for user management
+- **Lingo.dev SDK** for AI translation
+- **Vite** for build tooling
 
 ### Backend
-- Node.js
-- Fastify
-- TypeScript
-- Prisma ORM
-- Socket.io
-- Clerk Authentication
-- Supabase (for database)
+- **Node.js** with **Fastify** framework
+- **TypeScript** for type safety
+- **Clerk Authentication** for server-side auth
+- **Supabase** for database management
+- **Server-Sent Events (SSE)** for real-time updates
 
-## Getting Started
+### AI & External Services
+- **ElevenLabs Conversational AI** for voice agents
+- **OpenAI DALL-E 3** for image generation
+- **Lingo.dev** for dynamic translation
+- **Groq API** for language processing
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 16+
-- npm or yarn
-- PostgreSQL database
+- **Node.js 18+**
+- **npm or yarn**
+- **PostgreSQL database** (via Supabase)
+- **API Keys**: OpenAI, ElevenLabs, Lingo.dev/Groq, Clerk
 
-### Installation
+### Environment Setup
 
-1. Clone the repository
-2. Install dependencies:
+Create `.env` files in both frontend and backend directories:
 
+#### Frontend (.env)
+```bash
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+VITE_GROQ_API_KEY=your_groq_api_key
+```
+
+#### Backend (.env)
+```bash
+CLERK_SECRET_KEY=your_clerk_secret_key
+OPENAI_API_KEY=your_openai_api_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_API_KEY=your_supabase_anon_key
+PORT=3000
+```
+
+### Installation & Development
+
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd roots
+```
+
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
-
-- Copy `.env.example` to `.env` in both frontend and backend folders
-- Fill in the required values
-
-### Development
-
-To run the development servers:
-
+3. **Run development servers**
 ```bash
-# Run frontend and backend concurrently
+# Run both frontend and backend concurrently
 npm run dev
 
-# Run only frontend
-npm run dev:frontend
-
-# Run only backend
-npm run dev:backend
+# Or run individually
+npm run dev:frontend  # React app on port 5173
+npm run dev:backend   # API server on port 3000
 ```
 
-## Database Setup
+### Database Setup
 
-The project uses Prisma ORM with PostgreSQL. To set up the database:
+The project uses Supabase for PostgreSQL hosting:
 
-1. Make sure PostgreSQL is running
-2. Update the `DATABASE_URL` in the backend `.env` file
-3. Run database migrations:
-
+1. **Create a Supabase project**
+2. **Run migrations**
 ```bash
-cd backend
-npx prisma migrate dev
+cd supabase
+supabase db push
 ```
 
-## Authentication
+3. **Update environment variables** with your Supabase credentials
 
-The application uses Clerk for authentication. You'll need to:
+## 🎯 AI Services Setup
 
-1. Create a Clerk account
-2. Set up an application in Clerk dashboard
-3. Add the Clerk publishable key to frontend `.env` file
-4. Add the Clerk secret key to backend `.env` file
+### ElevenLabs Configuration
+1. Create an ElevenLabs account
+2. Create conversational AI agents for each service:
+   - Storytelling: `agent_YOUR_STORYTELLING_AGENT_ID`
+   - Chess: `agent_YOUR_CHESS_AGENT_ID`
+   - Math: `agent_YOUR_MATH_AGENT_ID`
+   - Language: `agent_YOUR_LANGUAGE_AGENT_ID`
+   - Wellness: `agent_YOUR_WELLNESS_AGENT_ID`
 
-## Deployment
+3. Update the agent IDs in `frontend/src/config/agentConfig.ts`:
+```typescript
+export const AGENT_IDS = {
+  storytelling: 'agent_YOUR_STORYTELLING_AGENT_ID',
+  chess: 'agent_YOUR_CHESS_AGENT_ID',
+  math: 'agent_YOUR_MATH_AGENT_ID',
+  language: 'agent_YOUR_LANGUAGE_AGENT_ID',
+  wellness: 'agent_YOUR_WELLNESS_AGENT_ID'
+};
+```
 
-### Frontend
-
-The frontend can be built for production:
-
+### Webhook Configuration
+For local development with ngrok:
 ```bash
-cd frontend
+# Install and start ngrok
+npm install -g ngrok
+ngrok http 3000
+
+# Update ElevenLabs webhook URLs to:
+# https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story
+```
+
+4. Configure each agent's webhook URL in ElevenLabs dashboard:
+   - Set webhook URL to: `https://your-domain.com/api/images/generate-for-story`
+   - For local development: `https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story`
+
+## 📚 Key Features Documentation
+
+- **[Implementation Summary](.documentation/implementation-summary.md)** - Complete feature overview
+- **[Storytelling Feature](.documentation/storytelling-illustration-feature.md)** - Real-time illustration system
+- **[Localization Guide](.documentation/localization-guide.md)** - Translation system usage
+- **[Madrid Branding](.documentation/madrid-branding-guide.md)** - Design guidelines
+
+## 🧪 Quality Assurance
+
+### Automated Checks
+```bash
+# Check for untranslated strings
+npm run check-localization
+
+# Run linting
+npm run lint
+
+# Pre-commit validation
+npm run pre-commit
+```
+
+### Translation Testing
+- Use the Translation Debugger (available on Dashboard)
+- Test language switching between English and Spanish
+- Verify regional format changes (dates, phone numbers)
+
+## 🚀 Deployment
+
+### Production Build
+```bash
+# Build both frontend and backend
 npm run build
+
+# Individual builds
+npm run build:frontend
+npm run build:backend
 ```
 
-### Backend
+### Production Environment
+- Update webhook URLs from ngrok to production domain
+- Configure SSL certificates for HTTPS (required by ElevenLabs)
+- Set up rate limiting and monitoring
+- Configure CDN for static assets
 
-The backend can be built for production:
+## 🔧 Development Tools
 
-```bash
-cd backend
-npm run build
-```
+- **Concurrently**: Parallel dev server execution
+- **Vite**: Fast frontend development and building
+- **TypeScript**: Type safety across the stack
+- **ESLint**: Code quality enforcement
+- **Framer Motion**: Animation and transitions
 
-## License
+## 📱 Supported Platforms
+
+- **Web Browsers**: Chrome, Firefox, Safari, Edge
+- **Languages**: English (US), Spanish (ES)
+- **Voice Agents**: Support for 5+ languages
+- **Devices**: Desktop, tablet, mobile responsive
+
+## 🤝 Contributing
+
+1. Follow the localization requirements in `.cursorrules`
+2. Wrap all user-facing text with `<TranslatedText>`
+3. Add Spanish translations to `SpanishTranslations.ts`
+4. Test with Translation Debugger before committing
+5. Run pre-commit checks: `npm run pre-commit`
+
+## 📄 License
 
 [MIT](LICENSE)
+
+---
+
+**Built with ❤️ using React 19, Fastify, and AI technologies**  
+*Next-generation educational platform for the digital age*

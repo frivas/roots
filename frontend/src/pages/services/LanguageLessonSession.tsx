@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Info } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
-import { ArrowLeft, Info } from 'lucide-react';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 
 const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
 const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-const WIDGET_STYLE_ID = 'elevenlabs-widget-style';
 
 // Static translations for widget UI
 const widgetTranslations = {
@@ -38,7 +38,7 @@ declare global {
   }
 }
 
-const ParentWellnessChat: React.FC = () => {
+const LanguageLessonSession: React.FC = () => {
   const navigate = useNavigate();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
@@ -46,8 +46,6 @@ const ParentWellnessChat: React.FC = () => {
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
   const i18n = widgetTranslations[widgetLanguage];
-
-  console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
 
   // Load widget script
   useEffect(() => {
@@ -105,7 +103,7 @@ const ParentWellnessChat: React.FC = () => {
       
       // Configure widget
       const config = {
-        'agent-id': 'agent_01jxkwsqkxe1nsztm4h461ahw0',
+        'agent-id': 'agent_01jxy264qbe49b8f3rk71wnzn7',
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -124,23 +122,27 @@ const ParentWellnessChat: React.FC = () => {
 
       // Add to DOM
       container.appendChild(widget);
-      console.log('🔄 Widget initialized with language:', widgetLanguage, 'and config:', config);
     }, 100);
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
   return (
-    <div className="space-y-8 pb-8">
+    <motion.div
+      className="space-y-8 pb-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       {/* Header with Back Button and AI Notice */}
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/parent-wellness')}
+          onClick={() => navigate('/services/extra-curricular?tab=online')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          <TranslatedText>Back to Wellness</TranslatedText>
+          <TranslatedText>Back to Online Learning</TranslatedText>
         </Button>
 
         {/* AI Notice Icon with Tooltip */}
@@ -159,8 +161,8 @@ const ParentWellnessChat: React.FC = () => {
 
       {/* Widget Container */}
       <div className="widget-container" />
-    </div>
+    </motion.div>
   );
 };
 
-export default ParentWellnessChat; 
+export default LanguageLessonSession; 

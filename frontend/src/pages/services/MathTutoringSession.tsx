@@ -1,33 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Info } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
-import { ArrowLeft, Info } from 'lucide-react';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-
-const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
-const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-const WIDGET_STYLE_ID = 'elevenlabs-widget-style';
-
-// Static translations for widget UI
-const widgetTranslations = {
-  en: {
-    actionText: 'Click to talk',
-    startCall: 'Start Call',
-    endCall: 'End Call',
-    expand: 'Expand',
-    listening: 'Listening...',
-    speaking: 'Speaking...'
-  },
-  es: {
-    actionText: 'Haz clic para hablar',
-    startCall: 'Iniciar Llamada',
-    endCall: 'Finalizar Llamada',
-    expand: 'Expandir',
-    listening: 'Escuchando...',
-    speaking: 'Hablando...'
-  }
-};
+import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
 
 // Add window type for ElevenLabs API
 declare global {
@@ -38,27 +16,25 @@ declare global {
   }
 }
 
-const ParentWellnessChat: React.FC = () => {
+const MathTutoringSession: React.FC = () => {
   const navigate = useNavigate();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = widgetTranslations[widgetLanguage];
-
-  console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
+  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
 
   // Load widget script
   useEffect(() => {
-    if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
+    if (!document.querySelector(`script[src="${WIDGET_CONFIG.SCRIPT_SRC}"]`)) {
       const script = document.createElement('script');
-      script.src = SCRIPT_SRC;
+      script.src = WIDGET_CONFIG.SCRIPT_SRC;
       script.async = true;
       
       script.onload = () => {
         const checkInterval = setInterval(() => {
-          if (customElements.get(WIDGET_ELEMENT_NAME)) {
+          if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
             clearInterval(checkInterval);
             setIsElevenLabsLoaded(true);
           }
@@ -71,7 +47,7 @@ const ParentWellnessChat: React.FC = () => {
     }
 
     return () => {
-      const widget = document.querySelector(WIDGET_ELEMENT_NAME);
+      const widget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
       if (widget) widget.remove();
     };
   }, []);
@@ -81,7 +57,7 @@ const ParentWellnessChat: React.FC = () => {
     if (!isElevenLabsLoaded) return;
 
     // Remove existing widget
-    const existingWidget = document.querySelector(WIDGET_ELEMENT_NAME);
+    const existingWidget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
     if (existingWidget) {
       existingWidget.remove();
     }
@@ -101,11 +77,11 @@ const ParentWellnessChat: React.FC = () => {
       if (!container) return;
 
       // Create new widget with language configuration
-      const widget = document.createElement(WIDGET_ELEMENT_NAME);
+      const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
       
       // Configure widget
       const config = {
-        'agent-id': 'agent_01jxkwsqkxe1nsztm4h461ahw0',
+        'agent-id': AGENT_IDS.math,
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -124,23 +100,27 @@ const ParentWellnessChat: React.FC = () => {
 
       // Add to DOM
       container.appendChild(widget);
-      console.log('🔄 Widget initialized with language:', widgetLanguage, 'and config:', config);
     }, 100);
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
   return (
-    <div className="space-y-8 pb-8">
+    <motion.div
+      className="space-y-8 pb-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       {/* Header with Back Button and AI Notice */}
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/parent-wellness')}
+          onClick={() => navigate('/services/extra-curricular?tab=online')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          <TranslatedText>Back to Wellness</TranslatedText>
+          <TranslatedText>Back to Online Learning</TranslatedText>
         </Button>
 
         {/* AI Notice Icon with Tooltip */}
@@ -159,8 +139,8 @@ const ParentWellnessChat: React.FC = () => {
 
       {/* Widget Container */}
       <div className="widget-container" />
-    </div>
+    </motion.div>
   );
 };
 
-export default ParentWellnessChat; 
+export default MathTutoringSession; 
