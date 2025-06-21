@@ -56,3 +56,7 @@
 **/*.seed
 **/*.pid.lock
 i18n.cache
+.vercel
+
+# Local Netlify folder
+.netlify
