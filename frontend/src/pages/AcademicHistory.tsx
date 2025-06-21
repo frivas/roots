@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import TranslatedText from '../components/TranslatedText';
 import { History, Filter, ChevronDown, Calendar, BookOpen, Award, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 // Animation variants
 const containerVariants = {
@@ -183,6 +184,7 @@ const AcademicHistory: React.FC = () => {
   const [expandedRecord, setExpandedRecord] = useState<number | null>(null);
   const [isYearFilterOpen, setIsYearFilterOpen] = useState(false);
   const [isRecordTypeFilterOpen, setIsRecordTypeFilterOpen] = useState(false);
+  const { language } = useLingoTranslation();
 
   const recordsPerPage = 5;
 
@@ -210,14 +212,26 @@ const AcademicHistory: React.FC = () => {
     setExpandedRecord(expandedRecord === recordId ? null : recordId);
   };
 
+  // Format date based on user's language preference
   const formatDate = (dateString: string): string => {
     const [day, month, year] = dateString.split('/');
     const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
+    
+    if (language === 'es-ES') {
+      // Spanish format: DD/MM/YYYY
+      return date.toLocaleDateString('es-ES', { 
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric' 
+      });
+    } else {
+      // English format: MM/DD/YYYY
+      return date.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+      });
+    }
   };
 
   return (
@@ -243,7 +257,7 @@ const AcademicHistory: React.FC = () => {
                       {academicHistoryData.student.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {academicHistoryData.student.course} - {academicHistoryData.student.group}
+                      <TranslatedText>{academicHistoryData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {academicHistoryData.student.group}
                     </div>
                   </div>
                 </div>

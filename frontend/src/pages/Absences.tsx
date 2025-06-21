@@ -283,7 +283,7 @@ const Absences: React.FC = () => {
                       {absenceData.student.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {absenceData.student.course} - {absenceData.student.group}
+                      <TranslatedText>{absenceData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {absenceData.student.group}
                     </div>
                   </div>
                 </div>
