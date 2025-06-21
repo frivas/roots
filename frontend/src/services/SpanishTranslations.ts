@@ -199,6 +199,29 @@ export const spanishTranslations: Record<string, string> = {
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
+  // Absences Page
+  "Student Absences": "Faltas de Asistencia del Alumno",
+  "Absence Record": "Registro de Ausencias",
+  "Show:": "Mostrar:",
+  "Justified": "Justificadas",
+  "Unjustified": "Injustificadas",
+  "With Attachment": "Con Adjunto",
+  "Date": "Fecha",
+  "Time Slot": "Tramo Horario",
+  "Absence Status": "Estado de Ausencia",
+  "Reported": "Informada",
+  "Attachment": "Adjunto",
+  "Full day": "Día completo",
+  "Total:": "Total:",
+  "absences": "ausencias",
+  "No absences found": "No se encontraron ausencias",
+  "No absences match the selected filter.": "Ninguna ausencia coincide con el filtro seleccionado.",
+  "Total Absences": "Total de Ausencias",
+  "Showing": "Mostrando",
+  "to": "a",
+  "Previous": "Anterior",
+  "Next": "Siguiente",
+
   // Schedule Page
   "Student Schedule": "Horario Escolar del Alumno",
   "Unit:": "Unidad:",
