@@ -318,7 +318,7 @@ const Activities: React.FC = () => {
                       {activityData.student.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {activityData.student.course} - {activityData.student.group}
+                      <TranslatedText>{activityData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {activityData.student.group}
                     </div>
                   </div>
                 </div>

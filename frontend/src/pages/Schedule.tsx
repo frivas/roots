@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import TranslatedText from '../components/TranslatedText';
 import { Calendar, Clock, BookOpen, Users, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 // Animation variants
 const containerVariants = {
@@ -124,15 +125,26 @@ const subjectColors = {
 const Schedule: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const { language } = useLingoTranslation();
   
   const currentDate = new Date();
   const currentWeekStart = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
   
+  // Format date based on user's language preference
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
-    });
+    if (language === 'es-ES') {
+      // Spanish format: DD/MM/YYYY
+      return date.toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'short'
+      });
+    } else {
+      // English format: MM/DD/YYYY
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+    }
   };
 
   const getWeekNumber = (date: Date) => {
@@ -239,7 +251,7 @@ const Schedule: React.FC = () => {
                       {scheduleData.student.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {scheduleData.student.course} - {scheduleData.student.group}
+                      <TranslatedText>{scheduleData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {scheduleData.student.group}
                     </div>
                                          <div className="space-y-1">
                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
