@@ -46,6 +46,16 @@ const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlacehol
 
 // New component
 import TutorInfo from './pages/TutorInfo';
+const Schedule = lazy(() => import('./pages/Schedule'));
+const Absences = lazy(() => import('./pages/Absences'));
+const Activities = lazy(() => import('./pages/Activities'));
+const AcademicHistory = lazy(() => import('./pages/AcademicHistory'));
+const Documents = lazy(() => import('./pages/Documents'));
+const CurrentYearGrades = lazy(() => import('./pages/CurrentYearGrades'));
+const StudentProfile = lazy(() => import('./pages/StudentProfile'));
+const SchoolData = lazy(() => import('./pages/SchoolData'));
+const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
+const SchoolElections = lazy(() => import('./pages/SchoolElections'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -112,12 +122,22 @@ function App() {
 
             {/* Home section */}
             <Route path="/home" element={<Dashboard />} />
-            <Route path="/home/*" element={<HomePlaceholder />} />
+            <Route path="/home/schedule" element={<Schedule />} />
+            <Route path="/home/absences" element={<Absences />} />
+            <Route path="/home/activities" element={<Activities />} />
+            <Route path="/home/history" element={<AcademicHistory />} />
+            <Route path="/home/documents" element={<Documents />} />
+            <Route path="/home/grades" element={<CurrentYearGrades />} />
+            <Route path="/home/profile" element={<StudentProfile />} />
             <Route path="/home/tutoring" element={<TutorInfo />} />
+            <Route path="/home/*" element={<HomePlaceholder />} />
 
             {/* Our School section */}
-            <Route path="/school/*" element={<SchoolPlaceholder />} />
+            <Route path="/school/data" element={<SchoolData />} />
+            <Route path="/school/calendar" element={<SchoolCalendar />} />
             <Route path="/school/services" element={<Services />} />
+            <Route path="/school/elections" element={<SchoolElections />} />
+            <Route path="/school/*" element={<SchoolPlaceholder />} />
 
             {/* Services section */}
             <Route path="/services" element={<Services />} />

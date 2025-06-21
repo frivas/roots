@@ -9,25 +9,28 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a date using the browser's locale
+ * Format a date using Spanish locale for consistency
  */
 export function formatDate(date: Date | string | number): string {
   const d = new Date(date);
-  return d.toLocaleDateString(undefined, {
+  // Use Spanish date format (DD/MM/YYYY) - consistent with Spanish regional settings
+  return d.toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
-    month: 'long',
-    day: 'numeric',
   });
 }
 
 /**
- * Format a time using the browser's locale
+ * Format a time using Spanish locale for consistency (24-hour format)
  */
 export function formatTime(date: Date | string | number): string {
   const d = new Date(date);
-  return d.toLocaleTimeString(undefined, {
+  // Use Spanish time format (24-hour) - consistent with Spanish regional settings
+  return d.toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit',
+    hour12: false
   });
 }
 
