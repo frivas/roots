@@ -199,6 +199,33 @@ export const spanishTranslations: Record<string, string> = {
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
+  // Activities Page
+  "Evaluable Activities": "Actividades Evaluables",
+  "Academic Activities": "Actividades Académicas",
+  "Category": "Categoría",
+  "Daily?": "¿Diaria?",
+  "All Subjects": "Todas las Materias",
+  "All Evaluations": "Todas las Evaluaciones",
+  "1st Evaluation": "1ª Evaluación",
+  "2nd Evaluation": "2ª Evaluación",
+  "3rd Evaluation": "3ª Evaluación",
+  "Final Evaluation": "Evaluación Final",
+  "Spanish Language": "Lengua Castellana",
+  "Natural Sciences": "Ciencias Naturales",
+  "History Subject": "Historia",
+  "English Subject": "Inglés",
+  "Art Subject": "Arte",
+  "Music Subject": "Música",
+  "Social Sciences": "Ciencias Sociales",
+  "Oral": "Oral",
+  "Practical": "Práctica",
+  "Performance": "Interpretación",
+  "Total Activities": "Total Actividades",
+  "Average Grade": "Nota Media",
+  "No activities found": "No se encontraron actividades",
+  "No activities match the selected filters.": "No hay actividades que coincidan con los filtros seleccionados.",
+  "Evaluation:": "Evaluación:",
+
   // Absences Page
   "Student Absences": "Faltas de Asistencia del Alumno",
   "Absence Record": "Registro de Ausencias",

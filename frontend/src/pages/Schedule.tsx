@@ -37,6 +37,8 @@ const itemVariants = {
 const scheduleData = {
   student: {
     name: "Sofía Hernández López",
+    course: "6th Grade",
+    group: "6A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
     delegate: "Carlos Mendoza Rivera",
@@ -235,6 +237,9 @@ const Schedule: React.FC = () => {
                   <div className="mt-2 space-y-1">
                     <div className="text-lg font-medium text-foreground">
                       {scheduleData.student.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {scheduleData.student.course} - {scheduleData.student.group}
                     </div>
                                          <div className="space-y-1">
                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
