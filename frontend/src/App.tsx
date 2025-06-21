@@ -30,6 +30,12 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 // Service Pages
 const ParentWellness = lazy(() => import('./pages/services/ParentWellness'));
 const ParentWellnessChat = lazy(() => import('./pages/services/ParentWellnessChat'));
+const ExtraCurricular = lazy(() => import('./pages/services/ExtraCurricular'));
+const ExtraCurricularSession = lazy(() => import('./pages/services/ExtraCurricularSession'));
+const ChessCoachingSession = lazy(() => import('./pages/services/ChessCoachingSession'));
+const MathTutoringSession = lazy(() => import('./pages/services/MathTutoringSession'));
+const StorytellingSession = lazy(() => import('./pages/services/StorytellingSession'));
+const LanguageLessonSession = lazy(() => import('./pages/services/LanguageLessonSession'));
 
 // Placeholder components for new routes
 const HomePlaceholder = lazy(() => import('./pages/placeholders/HomePlaceholder'));
@@ -37,6 +43,9 @@ const CommunicationsPlaceholder = lazy(() => import('./pages/placeholders/Commun
 const SchoolPlaceholder = lazy(() => import('./pages/placeholders/SchoolPlaceholder'));
 const CalendarPlaceholder = lazy(() => import('./pages/placeholders/CalendarPlaceholder'));
 const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlaceholder'));
+
+// New component
+import TutorInfo from './pages/TutorInfo';
 
 // Loading component with better UX
 const Loading = () => (
@@ -100,21 +109,28 @@ function App() {
           }>
             {/* Redirect dashboard to home */}
             <Route path="/dashboard" element={<Navigate to="/home" replace />} />
-            
+
             {/* Home section */}
             <Route path="/home" element={<Dashboard />} />
             <Route path="/home/*" element={<HomePlaceholder />} />
-            
+            <Route path="/home/tutoring" element={<TutorInfo />} />
+
             {/* Our School section */}
             <Route path="/school/*" element={<SchoolPlaceholder />} />
             <Route path="/school/services" element={<Services />} />
-            
+
             {/* Services section */}
             <Route path="/services" element={<Services />} />
             <Route path="/services/parent-wellness" element={<ParentWellness />} />
             <Route path="/services/parent-wellness-chat" element={<ParentWellnessChat />} />
+            <Route path="/services/extra-curricular" element={<ExtraCurricular />} />
+            <Route path="/services/extra-curricular-session/:activityType" element={<ExtraCurricularSession />} />
+            <Route path="/services/chess-coaching-session" element={<ChessCoachingSession />} />
+            <Route path="/services/math-tutoring-session" element={<MathTutoringSession />} />
+            <Route path="/services/storytelling-session" element={<StorytellingSession />} />
+            <Route path="/services/language-lesson-session" element={<LanguageLessonSession />} />
             <Route path="/services/*" element={<Services />} />
-            
+
             {/* Communications section */}
             <Route path="/communications" element={<CommunicationsPlaceholder />} />
             <Route path="/communications/messages" element={<Messages />} />
@@ -122,15 +138,15 @@ function App() {
             <Route path="/communications/notifications" element={<Notifications />} />
             <Route path="/communications/notifications/*" element={<Notifications />} />
             <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
-            
+
             {/* Personal Calendar section */}
             <Route path="/calendar/*" element={<CalendarPlaceholder />} />
-            
+
             {/* My Data section */}
             <Route path="/data/personal" element={<PersonalData />} />
             <Route path="/data/password" element={<PasswordChange />} />
             <Route path="/data/*" element={<MyDataPlaceholder />} />
-            
+
             {/* Legacy routes - redirect to new structure */}
             <Route path="/messages/*" element={<Navigate to="/communications/messages" replace />} />
             <Route path="/notifications" element={<Navigate to="/communications/notifications" replace />} />
