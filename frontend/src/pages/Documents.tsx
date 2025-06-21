@@ -38,8 +38,8 @@ const itemVariants = {
 const documentData = {
   student: {
     name: "Sofía Hernández López",
-    course: "6th Grade",
-    group: "6A"
+    course: "1° de E.S.O.",
+    group: "1A"
   },
   documents: [
     {

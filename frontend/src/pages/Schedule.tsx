@@ -38,8 +38,8 @@ const itemVariants = {
 const scheduleData = {
   student: {
     name: "Sofía Hernández López",
-    course: "6th Grade",
-    group: "6A",
+    course: "1° de E.S.O.",
+    group: "1A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
     delegate: "Carlos Mendoza Rivera",
