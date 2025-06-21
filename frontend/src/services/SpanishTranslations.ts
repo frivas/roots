@@ -199,6 +199,23 @@ export const spanishTranslations: Record<string, string> = {
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
+  // Academic History Page
+  "Academic History": "Historial Académico",
+  "Complete academic record and trajectory": "Expediente académico completo y trayectoria",
+  "Student Information": "Información del Estudiante",
+  "Student Name": "Nombre del Estudiante",
+  "Filter Records": "Filtrar Registros",
+  "All Years": "Todos los Años",
+  "All Types": "Todos los Tipos",
+  "Secondary Education": "Educación Secundaria",
+  "Primary Education": "Educación Primaria",
+  "Entry Date": "Fecha de Ingreso",
+  "Subject Group": "Grupo de Materias",
+  "Academic Summary": "Resumen Académico",
+  "Total Records": "Registros Totales",
+  "Total Subjects": "Materias Totales",
+  "Academic Years": "Años Académicos",
+
   // Activities Page
   "Evaluable Activities": "Actividades Evaluables",
   "Academic Activities": "Actividades Académicas",
@@ -861,7 +878,6 @@ export const spanishTranslations: Record<string, string> = {
   "Tutoring Information & Scheduled Visits": "Información de Tutorías y Visitas Programadas",
   "Absences Management": "Gestión de Ausencias",
   "Assessable Activities": "Actividades Evaluables",
-  "Academic History": "Historial Académico",
   "Student Documents": "Documentos del Estudiante",
   "Current Year Grades": "Calificaciones del Año Actual",
   "Student Profile": "Perfil del Estudiante",
