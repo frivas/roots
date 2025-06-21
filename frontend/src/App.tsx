@@ -49,6 +49,7 @@ import TutorInfo from './pages/TutorInfo';
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Absences = lazy(() => import('./pages/Absences'));
 const Activities = lazy(() => import('./pages/Activities'));
+const AcademicHistory = lazy(() => import('./pages/AcademicHistory'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -118,6 +119,7 @@ function App() {
             <Route path="/home/schedule" element={<Schedule />} />
             <Route path="/home/absences" element={<Absences />} />
             <Route path="/home/activities" element={<Activities />} />
+            <Route path="/home/history" element={<AcademicHistory />} />
             <Route path="/home/tutoring" element={<TutorInfo />} />
             <Route path="/home/*" element={<HomePlaceholder />} />
 
