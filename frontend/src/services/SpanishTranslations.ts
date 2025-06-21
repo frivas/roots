@@ -243,7 +243,7 @@ export const spanishTranslations: Record<string, string> = {
   "Mother": "Madre",
   "Father": "Padre",
 
-  // Student Profile - Common data values  
+  // Student Profile - Common data values
   "Spanish": "Española",
   "Collado Villalba": "Collado Villalba",
   "From the profile, if the center allows it, you will be able to access editing the student's photo. For this, click on the Student Photo button. Once on the Student Photo screen, if you want to upload a photo or change the one that appears, click Select file and locate the image on your computer, and upload it.": "Desde la ficha, si el centro lo permite, podrás acceder a la edición de la foto del alumno. Para ello, pulsa sobre el botón Foto del Alumno. Una vez en la pantalla de Foto del Alumno, si quieres subir una foto o cambiar la que aparece, pulsa Seleccionar archivo y localiza la imagen en tu ordenador, y súbela.",
@@ -361,7 +361,7 @@ export const spanishTranslations: Record<string, string> = {
   "Weekly Schedule": "Horario Semanal",
   "Time": "Hora",
   "Monday": "Lunes",
-  "Tuesday": "Martes", 
+  "Tuesday": "Martes",
   "Wednesday": "Miércoles",
   "Thursday": "Jueves",
   "Friday": "Viernes",
@@ -394,7 +394,7 @@ export const spanishTranslations: Record<string, string> = {
   "This service uses artificial intelligence technology to provide interactive educational experiences. AI-generated content may contain inaccuracies. Use at your own discretion and verify important information independently.": "Este servicio utiliza tecnología de inteligencia artificial para proporcionar experiencias educativas interactivas. El contenido generado por IA puede contener inexactitudes. Úselo bajo su propia discreción y verifique la información importante de forma independiente.",
   "This applies to all AI-powered services including voice conversations, story illustrations, and educational content.": "Esto se aplica a todos los servicios con IA incluyendo conversaciones de voz, ilustraciones de cuentos y contenido educativo.",
   "AI-generated content may contain inaccuracies. Use at your own discretion.": "El contenido generado por IA puede contener inexactitudes. Úselo bajo su propia discreción.",
-  "Terms of Service": "Términos de Servicio", 
+  "Terms of Service": "Términos de Servicio",
   "Cookie Policy": "Política de Cookies",
   "Comunidad de Madrid. All rights reserved.": "Comunidad de Madrid. Todos los derechos reservados.",
 
@@ -994,7 +994,7 @@ export const spanishTranslations: Record<string, string> = {
   "School Services - Medical, Psychological, etc.": "Servicios del Centro - Médico, Psicológico, etc.",
   "Student Elections & Voting": "Elecciones Estudiantiles y Votaciones",
   "School Board Information": "Información del Consejo Escolar",
-  
+
   // School Elections Page
   "School Elections": "Elecciones Escolares",
   "School elections": "Elecciones escolares",
@@ -1033,15 +1033,22 @@ export const spanishTranslations: Record<string, string> = {
   "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.": "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.",
   "The school council is one of the most important bodies in the educational structure. From this option in Roots you can consult the dates of constitution of the electoral board and the council itself, as well as the type of formation process and its composition.": "El consejo escolar es uno de los organismos más importantes de la estructura educativa. Desde esta opción de Raíces podrás consultar las fechas de constitución de la junta electoral y del propio consejo, así como el tipo de proceso de formación y su composición.",
   "Faculty Directory": "Directorio de Profesores",
-  
+
   // Missing translations for School Elections page
   "Year": "Año",
   "Year:": "Año:",
   "Elections:": "Elecciones:",
   "Member": "Miembro",
   "Sector": "Sector",
-  "Start": "Inicio",
-  "End": "Fin",
+
+  // Morning Classroom Service translations
+  "Morning Classroom Service": "Servicio de Aula Matinal",
+  "Early morning care and educational activities": "Cuidado matutino temprano y actividades educativas",
+  "Service Period": "Período del Servicio",
+  "Service Start Date": "Fecha de Inicio del Servicio",
+  "Service End Date": "Fecha de Fin del Servicio",
+  "Service Schedule": "Horario del Servicio",
+  "The Morning Classroom Service provides supervised care and educational activities for students before regular school hours. This service ensures students have a safe and nurturing environment to start their day.": "El Servicio de Aula Matinal proporciona cuidado supervisado y actividades educativas para los estudiantes antes del horario escolar regular. Este servicio garantiza que los estudiantes tengan un entorno seguro y enriquecedor para comenzar su día.",
   "Completed Elections": "Elecciones Completadas",
   "All Elections": "Todas las Elecciones",
 
@@ -1230,16 +1237,16 @@ export const spanishTranslations: Record<string, string> = {
   "December": "Diciembre",
   "January - March 2025": "Enero - Marzo 2025",
   "April - June 2025": "Abril - Junio 2025",
-  
+
   // Subject names
   "Biology and Geology": "Biología y Geología",
-  "Sports": "Deporte", 
+  "Sports": "Deporte",
   "Visual and Audiovisual Arts": "Educación Plástica, Visual y Audiovisual",
   "Geography and History": "Geografía e Historia",
   "Spanish Language and Literature": "Lengua Castellana y Literatura",
   "First Foreign Language (English)": "Primera Lengua Extranjera (Inglés)",
   "Ethical Values": "Valores Éticos",
-  
+
   // Subject types
   "Core General": "Troncales generales",
   "Optional Specific/LCA": "Específicas opcionales/LCA",
