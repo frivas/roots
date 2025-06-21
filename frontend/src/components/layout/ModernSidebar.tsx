@@ -20,9 +20,10 @@ interface MenuItem {
 interface ModernSidebarProps {
   className?: string;
   userRoles?: Role[];
+  hideBottomBorder?: boolean;
 }
 
-const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
+const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBottomBorder = false }) => {
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
@@ -122,7 +123,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
   return (
     <div
       className={cn(
-        "relative h-screen border-r bg-background transition-all duration-300 flex flex-col",
+        "relative border-r bg-background transition-all duration-300 flex flex-col flex-1",
         isHovered ? "w-72" : "w-16"
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -280,8 +281,9 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [] }) => {
 
       {/* User Profile and Sign Out Section - Always at bottom */}
       <div className={cn(
-        "border-t bg-background flex-shrink-0",
-        isHovered ? "p-4" : "p-2"
+        "bg-background flex-shrink-0",
+        !hideBottomBorder && "border-t",
+        isHovered ? "p-4" : "py-4 px-2"
       )}>
         {/* User Info */}
         {isHovered && user && (

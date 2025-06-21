@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
-import { User, Calendar, MapPin, Phone, Mail, FileText, Users, School, IdCard, Camera } from 'lucide-react';
+import { User, Calendar, MapPin, Phone, Mail, FileText, Users, School, IdCard, Camera, ChevronDown } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
@@ -105,6 +105,7 @@ const studentProfileData = {
 
 const StudentProfile: React.FC = () => {
   const { language } = useLingoTranslation();
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   const formatDate = (dateString: string) => {
     if (language === 'es-ES') {
@@ -114,6 +115,16 @@ const StudentProfile: React.FC = () => {
       const [day, month, year] = dateString.split('/');
       return `${month}/${day}/${year}`;
     }
+  };
+
+  const toggleSection = (sectionId: string) => {
+    const newExpandedSections = new Set(expandedSections);
+    if (newExpandedSections.has(sectionId)) {
+      newExpandedSections.delete(sectionId);
+    } else {
+      newExpandedSections.add(sectionId);
+    }
+    setExpandedSections(newExpandedSections);
   };
 
   return (
@@ -248,308 +259,394 @@ const StudentProfile: React.FC = () => {
       {/* Birth Data */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              <TranslatedText>Birth Data</TranslatedText>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Birth Date</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{formatDate(studentProfileData.birthData.birthDate)}</div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Age</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.birthData.age}</div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Age at Dec 31</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.birthData.ageAt31Dec}</div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Gender</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.birthData.gender}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Country</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.birthData.country}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Province</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.birthData.province}</TranslatedText>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Municipality</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.birthData.municipality}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Locality</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.birthData.locality}</TranslatedText>
-                </div>
-              </div>
+          <CardHeader 
+            className="cursor-pointer hover:bg-muted transition-colors"
+            onClick={() => toggleSection('birthData')}
+          >
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                <TranslatedText>Birth Data</TranslatedText>
+              </CardTitle>
+              <ChevronDown className={cn(
+                "h-4 w-4 text-muted-foreground transition-transform",
+                expandedSections.has('birthData') ? "rotate-180" : ""
+              )} />
             </div>
-          </CardContent>
+          </CardHeader>
+          
+          {expandedSections.has('birthData') && (
+            <CardContent className="pt-0">
+              <div className="border-t border-border pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Birth Date</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {formatDate(studentProfileData.birthData.birthDate)}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Age</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.birthData.age}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Age at Dec 31</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.birthData.ageAt31Dec}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Gender</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.birthData.gender}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Country</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.birthData.country}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Province</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.birthData.province}</TranslatedText>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Municipality</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.birthData.municipality}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Locality</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.birthData.locality}</TranslatedText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          )}
         </Card>
       </motion.div>
 
       {/* Family Data */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              <TranslatedText>Family Data</TranslatedText>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* Primary Tutor */}
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground mb-3">
-                  <TranslatedText>Primary Tutor</TranslatedText>
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>ID Type</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.primaryTutor.idType}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>ID Number</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.primaryTutor.idNumber}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>First Name</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.primaryTutor.firstName}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>Relationship</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">
-                      <TranslatedText>{studentProfileData.familyData.primaryTutor.relationship}</TranslatedText>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Secondary Tutor */}
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground mb-3">
-                  <TranslatedText>Secondary Tutor</TranslatedText>
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>ID Type</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.secondaryTutor.idType}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>ID Number</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.secondaryTutor.idNumber}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>First Name</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">{studentProfileData.familyData.secondaryTutor.firstName}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      <TranslatedText>Relationship</TranslatedText>
-                    </label>
-                    <div className="mt-1 text-sm font-medium">
-                      <TranslatedText>{studentProfileData.familyData.secondaryTutor.relationship}</TranslatedText>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <CardHeader 
+            className="cursor-pointer hover:bg-muted transition-colors"
+            onClick={() => toggleSection('familyData')}
+          >
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                <TranslatedText>Family Data</TranslatedText>
+              </CardTitle>
+              <ChevronDown className={cn(
+                "h-4 w-4 text-muted-foreground transition-transform",
+                expandedSections.has('familyData') ? "rotate-180" : ""
+              )} />
             </div>
-          </CardContent>
+          </CardHeader>
+          
+          {expandedSections.has('familyData') && (
+            <CardContent className="pt-0">
+              <div className="border-t border-border pt-4">
+                <div className="space-y-6">
+                  {/* Primary Tutor */}
+                  <div>
+                    <h4 className="font-medium text-sm text-gray-700 mb-3">
+                      <TranslatedText>Primary Tutor</TranslatedText>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>ID Type</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.primaryTutor.idType}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>ID Number</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.primaryTutor.idNumber}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>First Name</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.primaryTutor.firstName}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>Relationship</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          <TranslatedText>{studentProfileData.familyData.primaryTutor.relationship}</TranslatedText>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Secondary Tutor */}
+                  <div>
+                    <h4 className="font-medium text-sm text-gray-700 mb-3">
+                      <TranslatedText>Secondary Tutor</TranslatedText>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>ID Type</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.secondaryTutor.idType}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>ID Number</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.secondaryTutor.idNumber}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>First Name</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          {studentProfileData.familyData.secondaryTutor.firstName}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          <TranslatedText>Relationship</TranslatedText>
+                        </label>
+                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                          <TranslatedText>{studentProfileData.familyData.secondaryTutor.relationship}</TranslatedText>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          )}
         </Card>
       </motion.div>
 
       {/* Contact Information */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              <TranslatedText>Contact Information</TranslatedText>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Address</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.contactData.address}</div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Postal Code</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.contactData.postalCode}</div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>City</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.contactData.city}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Province</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.contactData.province}</TranslatedText>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Phone</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.contactData.phone}</div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Email</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.contactData.email}</div>
-              </div>
-              
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Emergency Contact</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.contactData.emergencyContact}</div>
-              </div>
+          <CardHeader 
+            className="cursor-pointer hover:bg-muted transition-colors"
+            onClick={() => toggleSection('contactInfo')}
+          >
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                <TranslatedText>Contact Information</TranslatedText>
+              </CardTitle>
+              <ChevronDown className={cn(
+                "h-4 w-4 text-muted-foreground transition-transform",
+                expandedSections.has('contactInfo') ? "rotate-180" : ""
+              )} />
             </div>
-          </CardContent>
+          </CardHeader>
+          
+          {expandedSections.has('contactInfo') && (
+            <CardContent className="pt-0">
+              <div className="border-t border-border pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Address</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.contactData.address}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Postal Code</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.contactData.postalCode}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>City</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.contactData.city}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Province</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.contactData.province}</TranslatedText>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Phone</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.contactData.phone}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Email</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.contactData.email}
+                    </div>
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Emergency Contact</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.contactData.emergencyContact}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          )}
         </Card>
       </motion.div>
 
       {/* Academic Information */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <School className="h-5 w-5" />
-              <TranslatedText>Academic Information</TranslatedText>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Current Course</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.currentCourse}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Group</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">{studentProfileData.academicData.group}</div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Enrollment Status</TranslatedText>
-                </label>
-                <div className="mt-1">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                    <TranslatedText>{studentProfileData.academicData.enrollmentStatus}</TranslatedText>
-                  </span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Class Delegate</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.delegate}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Class Subdelegate</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.subdelegate}</TranslatedText>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Secretary</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.secretary}</TranslatedText>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Special Needs</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.specialNeeds}</TranslatedText>
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-muted-foreground">
-                  <TranslatedText>Previous Education</TranslatedText>
-                </label>
-                <div className="mt-1 text-sm font-medium">
-                  <TranslatedText>{studentProfileData.academicData.previousEducation}</TranslatedText>
-                </div>
-              </div>
+          <CardHeader 
+            className="cursor-pointer hover:bg-muted transition-colors"
+            onClick={() => toggleSection('academicInfo')}
+          >
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <School className="h-5 w-5" />
+                <TranslatedText>Academic Information</TranslatedText>
+              </CardTitle>
+              <ChevronDown className={cn(
+                "h-4 w-4 text-muted-foreground transition-transform",
+                expandedSections.has('academicInfo') ? "rotate-180" : ""
+              )} />
             </div>
-          </CardContent>
+          </CardHeader>
+          
+          {expandedSections.has('academicInfo') && (
+            <CardContent className="pt-0">
+              <div className="border-t border-border pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Current Course</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.academicData.currentCourse}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Group</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      {studentProfileData.academicData.group}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Enrollment Status</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                        <TranslatedText>{studentProfileData.academicData.enrollmentStatus}</TranslatedText>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Class Delegate</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.academicData.delegate}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Class Subdelegate</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.academicData.subdelegate}</TranslatedText>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Secretary</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.academicData.secretary}</TranslatedText>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Special Needs</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.academicData.specialNeeds}</TranslatedText>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      <TranslatedText>Previous Education</TranslatedText>
+                    </label>
+                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                      <TranslatedText>{studentProfileData.academicData.previousEducation}</TranslatedText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          )}
         </Card>
       </motion.div>
 
