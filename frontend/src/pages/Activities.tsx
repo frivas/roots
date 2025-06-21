@@ -38,8 +38,8 @@ const itemVariants = {
 const activityData = {
   student: {
     name: "Sofía Hernández López",
-    course: "6th Grade",
-    group: "6A"
+    course: "1° de E.S.O.",
+    group: "1A"
   },
   activities: [
     {
@@ -311,7 +311,7 @@ const Activities: React.FC = () => {
                 <Award className="h-8 w-8 text-muted-foreground" />
                 <div>
                   <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Evaluable Activities</TranslatedText>
+                    <TranslatedText>Assessable Activities</TranslatedText>
                   </CardTitle>
                   <div className="mt-2">
                     <div className="text-lg font-medium text-foreground">

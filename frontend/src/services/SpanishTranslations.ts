@@ -224,7 +224,7 @@ export const spanishTranslations: Record<string, string> = {
   "Academic and Administrative Documents": "Documentos Académicos y Administrativos",
   "Category": "Categoría",
   "Grade": "Calificación",
-  "6th Grade": "6º de Primaria",
+  "1° de E.S.O.": "1° de E.S.O.",
   "1st Grade": "1º de Primaria",
   "2nd Grade": "2º de Primaria",
   "3rd Grade": "3º de Primaria",
@@ -255,7 +255,7 @@ export const spanishTranslations: Record<string, string> = {
   "Academic Years": "Años Académicos",
 
   // Activities Page
-  "Evaluable Activities": "Actividades Evaluables",
+  "Assessable Activities": "Actividades Evaluables",
   "Academic Activities": "Actividades Académicas",
   "Daily?": "¿Diaria?",
   "All Subjects": "Todas las Materias",
@@ -915,8 +915,16 @@ export const spanishTranslations: Record<string, string> = {
   "Available Home Features (Coming Soon):": "Funciones de Inicio Disponibles (Próximamente):",
   "Tutoring Information & Scheduled Visits": "Información de Tutorías y Visitas Programadas",
   "Absences Management": "Gestión de Ausencias",
-  "Assessable Activities": "Actividades Evaluables",
   "Current Year Grades": "Calificaciones del Año Actual",
+  "Academic grades for the current school year": "Calificaciones académicas del curso escolar actual",
+  "Type": "Tipo",
+  "Adaptation": "Adaptación",
+  "Evaluation": "Evaluación",
+  "Not published": "No publicada",
+  "grades": "calificaciones",
+  "Academic Grades": "Calificaciones",
+  "Published Grades": "Calificaciones Publicadas",
+  "Please note that grades obtained in each evaluation will only be visible once the center has activated their publication.": "Ten en cuenta que las notas obtenidas en cada evaluación solo estarán visibles una vez el centro haya activado su publicación.",
   "Student Profile": "Perfil del Estudiante",
 
   // Communications section translations
@@ -1020,6 +1028,26 @@ export const spanishTranslations: Record<string, string> = {
   "Enrolled": "Apuntado",
   "Preview": "Probar",
 
+  // Evaluation periods
+  "September - December 2024": "Septiembre - Diciembre 2024",
+  "January - March 2025": "Enero - Marzo 2025",
+  "April - June 2025": "Abril - Junio 2025",
+  
+  // Subject names
+  "Biology and Geology": "Biología y Geología",
+  "Sports": "Deporte", 
+  "Visual and Audiovisual Arts": "Educación Plástica, Visual y Audiovisual",
+  "Geography and History": "Geografía e Historia",
+  "Spanish Language and Literature": "Lengua Castellana y Literatura",
+  "First Foreign Language (English)": "Primera Lengua Extranjera (Inglés)",
+  "Ethical Values": "Valores Éticos",
+  
+  // Subject types
+  "Core General": "Troncales generales",
+  "Optional Specific/LCA": "Específicas opcionales/LCA",
+  "Mandatory Specific": "Específicas obligatorias",
+  "Core Languages": "Troncales de idiomas",
+  "Religion and Alternative": "Rel. y Alter.",
 
 } as const;
 
