@@ -54,6 +54,7 @@ const Documents = lazy(() => import('./pages/Documents'));
 const CurrentYearGrades = lazy(() => import('./pages/CurrentYearGrades'));
 const StudentProfile = lazy(() => import('./pages/StudentProfile'));
 const SchoolData = lazy(() => import('./pages/SchoolData'));
+const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -132,6 +133,7 @@ function App() {
 
             {/* Our School section */}
             <Route path="/school/data" element={<SchoolData />} />
+            <Route path="/school/calendar" element={<SchoolCalendar />} />
             <Route path="/school/services" element={<Services />} />
             <Route path="/school/*" element={<SchoolPlaceholder />} />
 
