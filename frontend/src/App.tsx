@@ -57,6 +57,7 @@ const StudentProfile = lazy(() => import('./pages/StudentProfile'));
 const SchoolData = lazy(() => import('./pages/SchoolData'));
 const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 const SchoolElections = lazy(() => import('./pages/SchoolElections'));
+const PersonalCalendar = lazy(() => import('./pages/PersonalCalendar'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -162,6 +163,7 @@ function App() {
             <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
 
             {/* Personal Calendar section */}
+            <Route path="/calendar/create" element={<PersonalCalendar />} />
             <Route path="/calendar/*" element={<CalendarPlaceholder />} />
 
             {/* My Data section */}

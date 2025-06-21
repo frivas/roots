@@ -199,6 +199,25 @@ export const spanishTranslations: Record<string, string> = {
   // Additional Messages UI
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
+  // Personal Calendar
+  "Personal Agenda": "Agenda personal",
+  "Manage your personal events and appointments": "Gestiona tus eventos personales y citas",
+  "Priority Levels": "Niveles de Prioridad",
+  "Events are color-coded by priority level": "Los eventos están codificados por colores según el nivel de prioridad",
+  "High Priority": "Prioridad Alta",
+  "Medium Priority": "Prioridad Media",
+  "Low Priority": "Prioridad Baja",
+  "Start Date": "Fecha inicio",
+  "Start Time": "Hora de inicio",
+  "End Date": "Fecha fin",
+  "End Time": "Hora de fin",
+  "Notes": "Anotaciones",
+  "I want to receive an email reminder for this event one day before it starts": "Deseo recibir un recordatorio a mi cuenta de correo, para este evento un día antes de su comienzo",
+  "Creating...": "Creando...",
+  "Success!": "¡Éxito!",
+  "more": "más",
+  "To register an event, you must specify at least the title and start and end dates, and click Accept. After this action you can see the new event in the agenda calendar.": "Para registrar el evento deberás especificar al menos el título y las fechas de inicio y fin, y pulsar Aceptar. Tras esta acción podrás ver el nuevo evento en el calendario de la agenda.",
+
   // Student Profile specific translations
   "Identification Data": "Datos Identificativos",
   "Birth Data": "Datos de Nacimiento",
