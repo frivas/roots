@@ -1,0 +1,59 @@
+# --- Node ---
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
+
+# --- Build ---
+**/dist/
+**/build/
+**/out/
+**/.next/
+**/.eslintcache
+
+# --- React ---
+*.log
+**/.cache/
+**/coverage/
+**/public/static/
+
+# --- TypeScript ---
+**/*.tsbuildinfo
+
+# --- Environment Files ---
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Clerk ---
+**/.clerk/
+**/.clerk-debug.log
+
+# --- Supabase ---
+**/supabase/.temp/
+**/supabase/.output/
+**/.supabase
+
+# --- VSCode ---
+**/.vscode/
+**/.history/
+
+# --- Mac OS ---
+**/.DS_Store
+
+# --- Lingo.dev ---
+**/.lingo-cache/
+**/lingo/
+
+# --- Logs ---
+**/logs/
+**/*.log
+**/*.pid
+**/*.seed
+**/*.pid.lock
+i18n.cache
+.vercel
