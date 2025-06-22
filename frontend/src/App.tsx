@@ -168,6 +168,7 @@ function App() {
             <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
 
             {/* Personal Calendar section */}
+            <Route path="/calendar/monthly" element={<PersonalCalendar />} />
             <Route path="/calendar/create" element={<PersonalCalendar />} />
             <Route path="/calendar/*" element={<CalendarPlaceholder />} />
 
