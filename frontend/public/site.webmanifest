@@ -1,0 +1,27 @@
+{
+  "name": "Raíces - Educational Management System for Madrid Community",
+  "short_name": "Raíces",
+  "description": "A comprehensive platform for educational services management",
+  "theme_color": "#228B22",
+  "background_color": "#F0F8F0",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon-16x16.svg", 
+      "sizes": "16x16",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+} 
