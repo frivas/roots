@@ -19,6 +19,7 @@ export const spanishTranslations: Record<string, string> = {
   "Calendar": "Calendario",
   "Elections": "Elecciones",
   "Bulletin": "Tablón de Anuncios",
+  "Bulletin Board": "Tablón de Anuncios",
   "Monthly": "Mensual",
   "Custom": "Personalizado",
   "Create": "Crear Evento",
@@ -537,6 +538,8 @@ export const spanishTranslations: Record<string, string> = {
   "Access and manage all services from one centralized hub.": "Accede y gestiona todos los servicios desde un centro unificado.",
   "All Services": "Todos los Servicios",
   "Academic": "Académico",
+  "Community": "Comunidad",
+  "Technology": "Tecnología",
   "Support": "Apoyo",
   "Extracurricular": "Extracurricular",
   "All Categories": "Todas las Categorías",
@@ -837,6 +840,7 @@ export const spanishTranslations: Record<string, string> = {
   "Import": "Importar",
   "Upload": "Subir",
   "Print": "Imprimir",
+  "Published": "Publicado",
   "Share": "Compartir",
   "Copy": "Copiar",
   "Paste": "Pegar",
@@ -959,6 +963,48 @@ export const spanishTranslations: Record<string, string> = {
   "Notification subscriptions": "Suscripciones de Notificación",
   "Notification method": "Método de Notificación",
   "User-type-specific management": "Gestión Específica por Tipo de Usuario",
+
+  // Bulletin Board Page
+  "School announcements and important information": "Anuncios escolares e información importante",
+  "Showing {0} of {1} announcements": "Mostrando {0} de {1} anuncios",
+  "All Audiences": "Todas las Audiencias",
+  "ESO Parents": "Padres de ESO",
+  "Secondary Students": "Estudiantes de Secundaria",
+  "No announcements found": "No se encontraron anuncios",
+  "Try adjusting your filters to see more announcements": "Prueba ajustando los filtros para ver más anuncios",
+  "The bulletin board allows the school to post announcements of interest to the Educational Community, and includes the possibility of submitting news proposals by parents and guardians of students. Recent announcements are highlighted on the main dashboard.": "El tablón de anuncios permite al centro dar difusión de asuntos que se estimen de interés o utilidad a la Comunidad Educativa, y cuenta con la posibilidad de envío de propuestas de noticias por parte de los padres y madres de los alumnos. Los anuncios recientes se destacan en el panel principal.",
+
+  // Bulletin Board Mock Data Translations
+  "Informational Session for ESO Parents": "Sesión Informativa para Padres de ESO",
+  "We will be holding an informational session for parents and guardians of ESO students on June 20th. The session will cover important topics regarding academic expectations, assessment criteria, and extracurricular opportunities.": "Celebraremos una sesión informativa para padres y tutores de estudiantes de ESO el 20 de junio. La sesión cubrirá temas importantes sobre expectativas académicas, criterios de evaluación y oportunidades extracurriculares.",
+  "Academic Direction Team": "Equipo de Dirección Académica",
+  
+  "School Transportation Route Changes": "Cambios en las Rutas de Transporte Escolar",
+  "Due to road construction on Calle Mayor, bus routes 3 and 5 will have temporary modifications starting Monday, June 9th. Please check the attached route map for details.": "Debido a obras en Calle Mayor, las rutas de autobús 3 y 5 tendrán modificaciones temporales a partir del lunes 9 de junio. Consulte el mapa de rutas adjunto para más detalles.",
+  "Transportation Department": "Departamento de Transporte",
+  
+  "New Cafeteria Menu Options": "Nuevas Opciones del Menú de Cafetería",
+  "Starting this semester, we're introducing new healthy menu options including vegetarian and gluten-free alternatives. The updated menu has been developed with nutritionists to ensure balanced meals for all students.": "A partir de este semestre, introducimos nuevas opciones de menú saludables, incluyendo alternativas vegetarianas y sin gluten. El menú actualizado ha sido desarrollado con nutricionistas para asegurar comidas equilibradas para todos los estudiantes.",
+  "Food Services": "Servicios de Alimentación",
+  
+  "Parent-Teacher Association Meeting": "Reunión de la Asociación de Madres y Padres",
+  "The PTA meeting was held on May 5th at 18:00 in the main auditorium. We discussed this year's educational initiatives and fundraising activities for the upcoming semester.": "La reunión del AMPA se celebró el 5 de mayo a las 18:00 en el auditorio principal. Discutimos las iniciativas educativas de este año y las actividades de recaudación de fondos para el próximo semestre.",
+  "Parent-Teacher Association": "Asociación de Madres y Padres",
+  
+  "Science Fair Registration Open": "Abierto el Registro para la Feria de Ciencias",
+  "Students can now register for the annual science fair. This year's theme is 'Sustainability and Innovation'. Registration deadline is June 30th. Projects will be presented in July.": "Los estudiantes ya pueden registrarse para la feria de ciencias anual. El tema de este año es 'Sostenibilidad e Innovación'. La fecha límite de registro es el 30 de junio. Los proyectos se presentarán en julio.",
+  "Science Department": "Departamento de Ciencias",
+  
+  "Holiday Schedule Update": "Actualización del Calendario de Vacaciones",
+  "Please note the updated holiday schedule for the academic year 2024-2025. Classes were suspended from December 21st to January 8th for winter break. Summer break begins June 25th.": "Tenga en cuenta el calendario de vacaciones actualizado para el año académico 2024-2025. Las clases se suspendieron del 21 de diciembre al 8 de enero para las vacaciones de invierno. Las vacaciones de verano comienzan el 25 de junio.",
+  "Academic Administration": "Administración Académica",
+  
+  "Digital Platform Training for Parents": "Formación en Plataforma Digital para Padres",
+  "We're offering training sessions for parents on how to use the Raíces educational platform. Sessions were held every Thursday in May from 17:00 to 18:00 in the computer lab.": "Ofrecimos sesiones de formación para padres sobre cómo usar la plataforma educativa Raíces. Las sesiones se celebraron todos los jueves de mayo de 17:00 a 18:00 en el aula de informática.",
+  
+  "School Elections - Student Council": "Elecciones Escolares - Consejo de Estudiantes",
+  "Student council elections took place from April 14th to 16th. Results have been announced and the new council will begin their duties in the next semester.": "Las elecciones del consejo estudiantil tuvieron lugar del 14 al 16 de abril. Los resultados han sido anunciados y el nuevo consejo comenzará sus funciones en el próximo semestre.",
+  "Student Affairs": "Asuntos Estudiantiles",
 
   // Personal Calendar submenu
   "Monthly calendar view": "Vista de Calendario Mensual",
