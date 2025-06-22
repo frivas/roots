@@ -48,6 +48,7 @@ const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlacehol
 
 // New component
 import TutorInfo from './pages/TutorInfo';
+import DynamicTitle from './components/DynamicTitle';
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Absences = lazy(() => import('./pages/Absences'));
 const Activities = lazy(() => import('./pages/Activities'));
@@ -73,6 +74,7 @@ const Loading = () => (
 function App() {
   return (
     <AuthProvider>
+      <DynamicTitle />
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* Public routes */}
