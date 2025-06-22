@@ -159,7 +159,7 @@ const Services = () => {
       href: '/services/morning-classroom',
       category: 'support',
       parentVisible: true, // Parent service - before-school care
-      isActive: false
+      isActive: true
     },
     {
       icon: Users,

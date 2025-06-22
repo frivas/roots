@@ -29,7 +29,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
 
   return (
     <footer className={cn(
-      "bg-background border-t border-border mt-auto",
+      "bg-background",
       className
     )}>
       <div className="container mx-auto px-4 py-6">

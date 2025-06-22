@@ -1,0 +1,28 @@
+{
+  "functions": {
+    "api/serverless.ts": {
+      "maxDuration": 30
+    },
+    "api/health.ts": {
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    {
+      "src": "/health",
+      "dest": "/api/health"
+    },
+    {
+      "src": "/webhook/(.*)",
+      "dest": "/api/serverless"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/serverless"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/serverless"
+    }
+  ]
+}
