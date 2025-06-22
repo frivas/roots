@@ -929,7 +929,7 @@ export const spanishTranslations: Record<string, string> = {
 
   // Core Navigation & UI
   "Communications": "Comunicaciones",
-  "Personal Calendar": "Calendario Personal",
+  "Personal Calendar": "Agenda personal",
   "My Data": "Mis Datos",
   "Sign Out": "Cerrar Sesión",
 
@@ -1009,6 +1009,9 @@ export const spanishTranslations: Record<string, string> = {
   // Personal Calendar submenu
   "Monthly calendar view": "Vista de Calendario Mensual",
   "Create event": "Crear Evento",
+
+  // Personal Calendar submenu
+  "Monthly calendar": "Calendario Mensual",
 
   // My Data submenu
   "User personal information": "Información Personal del Usuario",
@@ -1233,6 +1236,8 @@ export const spanishTranslations: Record<string, string> = {
   "Holiday Details": "Detalles de la Festividad",
   "Close Details": "Cerrar Detalles",
   "Next holidays and important school events": "Próximas festividades y eventos escolares importantes",
+  "Today": "Hoy",
+  "Title": "Título",
   "Through this School Calendar section, you can view the complete academic year with all holidays, school events, and important dates. Click on any highlighted date to see detailed information about that event.": "A través de esta sección de Calendario Escolar, puedes ver el año académico completo con todas las festividades, eventos escolares y fechas importantes. Haz clic en cualquier fecha resaltada para ver información detallada sobre ese evento.",
 
   // Holiday/Event names for 2025

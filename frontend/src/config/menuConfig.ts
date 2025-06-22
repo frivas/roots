@@ -148,19 +148,9 @@ const commonMenuItems: MenuItem[] = [
         icon: Calendar,
         children: [
             {
-                name: 'Monthly calendar view',
+                name: 'Monthly calendar',
                 href: '/calendar/monthly',
                 icon: CalendarDays
-            },
-            {
-                name: 'Custom events',
-                href: '/calendar/events',
-                icon: CalendarCheck
-            },
-            {
-                name: 'Create event',
-                href: '/calendar/create',
-                icon: Plus
             }
         ]
     },
