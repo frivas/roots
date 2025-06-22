@@ -1,0 +1,22 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded square background -->
+  <rect width="180" height="180" rx="36" fill="#F0F8F0"/>
+  
+  <!-- Tree trunk -->
+  <rect x="82" y="105" width="16" height="32" fill="#8B4513" rx="4"/>
+  
+  <!-- Tree canopy/leaves -->
+  <circle cx="90" cy="80" r="32" fill="#228B22"/>
+  <circle cx="70" cy="70" r="24" fill="#32CD32" opacity="0.8"/>
+  <circle cx="110" cy="70" r="24" fill="#32CD32" opacity="0.8"/>
+  
+  <!-- Roots underground -->
+  <path d="M90 137 Q70 145 40 137 Q50 155 80 145" stroke="#8B4513" stroke-width="6" fill="none"/>
+  <path d="M90 137 Q110 145 140 137 Q130 155 100 145" stroke="#8B4513" stroke-width="6" fill="none"/>
+  <path d="M90 137 Q90 155 90 165" stroke="#8B4513" stroke-width="6" fill="none"/>
+  
+  <!-- Highlights -->
+  <circle cx="80" cy="60" r="8" fill="#90EE90" opacity="0.6"/>
+  <circle cx="105" cy="55" r="6" fill="#90EE90" opacity="0.6"/>
+  <circle cx="70" cy="85" r="5" fill="#90EE90" opacity="0.4"/>
+</svg> 
