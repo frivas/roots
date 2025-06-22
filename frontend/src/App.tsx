@@ -9,6 +9,7 @@ import {
   SignedIn,
   SignedOut
 } from '@clerk/clerk-react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Layouts
 import MainLayout from './components/layout/MainLayout';
@@ -198,6 +199,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      <Analytics />
     </AuthProvider>
   );
 }

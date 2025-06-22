@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^4.30.3",
     "@headlessui/react": "^1.7.18",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.6.7",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
