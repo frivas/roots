@@ -7,6 +7,7 @@
     "dev": "npm run build && npm run start",
     "build": "tsc --project tsconfig.json",
     "start": "node dist/index.js",
+    "vercel-build": "npm run build",
     "lint": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.25",
+    "@vercel/node": "^3.0.0",
     "eslint": "^9.9.1",
     "tsx": "^4.19.4",
     "typescript": "^5.5.3",

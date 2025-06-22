@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import SimpleHeader from './SimpleHeader';
 import ModernSidebar from './ModernSidebar';
 import Footer from './Footer';
@@ -11,6 +11,7 @@ import { type Role } from '../../config/menuConfig';
 
 const MainLayout: React.FC = () => {
   const { user, isLoaded } = useUser();
+  const location = useLocation();
 
   // Get user roles from Clerk metadata and ensure they match our Role type
   const userRoles = React.useMemo(() => {
@@ -20,36 +21,60 @@ const MainLayout: React.FC = () => {
     );
   }, [user, isLoaded]);
 
+  // Define pages with ElevenLabs agent integrations (hide footer and AI disclaimer)
+  const elevenLabsAgentPaths = [
+    '/services/parent-wellness-chat',
+    '/services/language-lesson-session',
+    '/services/math-tutoring-session',
+    '/services/extra-curricular-session',
+    '/services/chess-coaching-session',
+    '/services/storytelling-session'
+  ];
+
+  // Check if current page has ElevenLabs agent integration
+  const hasElevenLabsAgent = elevenLabsAgentPaths.some(path => 
+    location.pathname.startsWith(path)
+  );
+
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      {/* Row: Sidebar + Main Content */}
-      <div className="flex flex-1">
-        {/* Modern Sidebar - hidden on mobile */}
-        <div className="hidden md:block">
-          <ModernSidebar userRoles={userRoles} />
-        </div>
-
-        {/* Mobile Header */}
-        <div className="md:hidden">
-          <SimpleHeader />
-        </div>
-
-        {/* Main Content */}
-        <main className={cn(
-          "flex-1 p-6 overflow-auto",
-          "pt-0 md:pt-6" // No top padding on mobile (header handles it)
-        )}>
-          <ErrorBoundary>
-            <RouteWrapper>
-              <div id="outlet-container">
-                <Outlet />
-              </div>
-            </RouteWrapper>
-          </ErrorBoundary>
-        </main>
+    <div className="h-screen bg-background flex flex-col">
+      {/* Mobile Header */}
+      <div className="md:hidden flex-shrink-0">
+        <SimpleHeader />
       </div>
-      {/* Footer always at the bottom */}
-      <Footer />
+
+      {/* Main Container: Sidebar + Content - Takes remaining height */}
+      <div className="flex flex-1 min-h-0">
+        {/* Modern Sidebar - hidden on mobile, full height */}
+        <div className="hidden md:flex flex-col flex-shrink-0">
+          <ModernSidebar userRoles={userRoles} hideBottomBorder={hasElevenLabsAgent} />
+        </div>
+
+        {/* Main Content - Takes remaining width and matches sidebar height */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Content Area - Takes available space */}
+          <div className={cn(
+            "flex-1 overflow-auto",
+            "p-6 pt-0 md:pt-6", // No top padding on mobile (header handles it)
+            hasElevenLabsAgent ? "pb-6" : "pb-0" // Add bottom padding when no footer
+          )}>
+            <ErrorBoundary>
+              <RouteWrapper>
+                <div id="outlet-container">
+                  <Outlet />
+                </div>
+              </RouteWrapper>
+            </ErrorBoundary>
+          </div>
+          
+          {/* Footer - Only render when not on ElevenLabs agent pages */}
+          {!hasElevenLabsAgent && (
+            <div className="flex-shrink-0 border-t bg-background px-6 py-4">
+              <Footer />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
