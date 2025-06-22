@@ -25,6 +25,10 @@ export const spanishTranslations: Record<string, string> = {
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
   "Raíces": "Raíces",
+  
+  // Browser Title
+  "Raíces - Educational Management System for Madrid Community": "Raíces - Sistema Integral de Gestión Educativa de Madrid",
+  "A comprehensive platform for educational services management": "Una plataforma integral para la gestión de servicios educativos",
 
   // Dashboard - Main
   "Welcome to Raíces!": "¡Bienvenidos a Raíces!",
