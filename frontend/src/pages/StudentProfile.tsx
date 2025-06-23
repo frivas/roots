@@ -157,22 +157,26 @@ const StudentProfile: React.FC = () => {
               </div>
               
               {/* Profile Photo */}
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-border">
-                  <img
-                    src="/images/sofia-profile.jpg"
-                    alt="Sofía Hernández López"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback to illustration avatar if local image fails
-                      const fallbackImages = [
-                        "https://api.dicebear.com/7.x/personas/svg?seed=Sofia&backgroundColor=b6e3f4&hair=long01,long02&hairColor=brown&eyes=normal&mouth=smile&skinColor=f4d1ad",
-                        "https://ui-avatars.com/api/?name=Sofia+H&size=200&background=e3f2fd&color=1976d2&font-size=0.6&bold=true"
-                      ];
-                      const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-                      e.currentTarget.src = fallbackImages[randomIndex];
-                    }}
-                  />
+              <div className="flex justify-center items-center">
+                <div className="relative">
+                  <div className="w-24 h-32 rounded-xl overflow-hidden ring-4 ring-blue-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-1">
+                    <div className="w-full h-full rounded-lg overflow-hidden bg-white">
+                      <img
+                        src="/images/sofia-profile.jpg"
+                        alt="Sofía Hernández López"
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        onError={(e) => {
+                          // Fallback to illustration avatar if local image fails
+                          const fallbackImages = [
+                            "https://api.dicebear.com/7.x/personas/svg?seed=Sofia&backgroundColor=b6e3f4&hair=long01,long02&hairColor=brown&eyes=normal&mouth=smile&skinColor=f4d1ad",
+                            "https://ui-avatars.com/api/?name=Sofia+H&size=200&background=e3f2fd&color=1976d2&font-size=0.6&bold=true"
+                          ];
+                          const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+                          e.currentTarget.src = fallbackImages[randomIndex];
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
