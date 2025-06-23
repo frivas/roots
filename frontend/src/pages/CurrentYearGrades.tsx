@@ -41,7 +41,7 @@ const currentYearGradesData = {
     course: "4°",
     group: "1A",
     academicYear: "2024-2025",
-    center: "IES LAS CANTERAS"
+    center: "CP INF-PRI San Juan de la Cruz"
   },
   evaluations: [
     {

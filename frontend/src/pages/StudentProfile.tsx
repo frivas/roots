@@ -56,9 +56,9 @@ const studentProfileData = {
     placeOfResidence: ""
   },
   birthData: {
-    birthDate: "10/03/2012",
-    age: 12,
-    ageAt31Dec: 12,
+    birthDate: "10/03/2010",
+    age: 15,
+    ageAt31Dec: 15,
     gender: "Female",
     country: "Spain",
     province: "Madrid",

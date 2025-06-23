@@ -159,7 +159,7 @@ const Services = () => {
       href: '/services/morning-classroom',
       category: 'support',
       parentVisible: true, // Parent service - before-school care
-      isActive: true
+      isActive: false
     },
     {
       icon: Users,
@@ -204,7 +204,7 @@ const Services = () => {
       href: '/services/language',
       category: 'academic',
       parentVisible: true, // Parent service
-      isActive: true
+      isActive: false
     },
     {
       icon: Users,
@@ -213,7 +213,7 @@ const Services = () => {
       href: '/services/mentorship',
       category: 'academic',
       parentVisible: true, // Parent service
-      isActive: true
+      isActive: false
     },
     {
       icon: Calendar,
