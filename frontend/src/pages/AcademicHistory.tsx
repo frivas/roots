@@ -52,7 +52,7 @@ const academicHistoryData = {
       course: "4° de E.S.O.",
       academicYear: "2023-2024",
       entryDate: "10/09/2023",
-      center: "28041597 - IES LAS CANTERAS",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Comunes",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
@@ -73,7 +73,7 @@ const academicHistoryData = {
       course: "3° de E.S.O.",
       academicYear: "2022-2023",
       entryDate: "12/09/2022",
-      center: "28041597 - IES LAS CANTERAS",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Troncales generales",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "7" },
@@ -94,7 +94,7 @@ const academicHistoryData = {
       course: "2° de E.S.O.",
       academicYear: "2021-2022",
       entryDate: "10/09/2021",
-      center: "28041597 - IES LAS CANTERAS",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Troncales de idiomas",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
@@ -115,7 +115,7 @@ const academicHistoryData = {
       course: "4°",
       academicYear: "2020-2021",
       entryDate: "14/09/2020",
-      center: "28041597 - IES LAS CANTERAS",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Específicas obligatorias",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
