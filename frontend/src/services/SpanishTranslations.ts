@@ -1547,7 +1547,6 @@ export const spanishTranslations: Record<string, string> = {
 
   // Dashboard specific translations
   "Loading dashboard...": "Cargando panel...",
-  "Quick Actions": "Acciones Rápidas",
   "Recent Notifications": "Notificaciones Recientes",
   "Recent Messages": "Mensajes Recientes",
   "View Notifications": "Ver Notificaciones",
