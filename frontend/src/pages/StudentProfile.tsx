@@ -38,7 +38,7 @@ const itemVariants = {
 const studentProfileData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.",
+    course: "4°",
     group: "1A",
     academicYear: "2024-2025"
   },
@@ -92,7 +92,7 @@ const studentProfileData = {
     emergencyContact: "César Hernández - +34 666 789 012"
   },
   academicData: {
-    currentCourse: "1° de E.S.O.",
+    currentCourse: "4°",
     group: "1A",
     delegate: "No",
     subdelegate: "No", 
