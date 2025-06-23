@@ -173,7 +173,7 @@ const Services = () => {
     {
       icon: GraduationCap,
       title: 'Progress Interpretation Service',
-      description: 'Age-appropriate guidance for understanding academic progress and communication strategies for difficult topics',
+      description: 'Comprehensive academic progress analysis and personalized guidance for parents to understand their child\'s educational journey',
       href: '/services/progress-interpretation',
       category: 'academic',
       parentVisible: true, // Parent service - academic progress support

@@ -38,7 +38,7 @@ const itemVariants = {
 const academicHistoryData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.", 
+    course: "4°", 
     group: "1A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
@@ -112,7 +112,7 @@ const academicHistoryData = {
     {
       id: 4,
       recordType: "Educación Secundaria Obligatoria",
-      course: "1° de E.S.O.",
+      course: "4°",
       academicYear: "2020-2021",
       entryDate: "14/09/2020",
       center: "28041597 - IES LAS CANTERAS",

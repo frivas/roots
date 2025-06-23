@@ -38,7 +38,7 @@ const itemVariants = {
 const currentYearGradesData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.",
+    course: "4°",
     group: "1A",
     academicYear: "2024-2025",
     center: "IES LAS CANTERAS"
@@ -50,14 +50,14 @@ const currentYearGradesData = {
       period: "September - December 2024",
       published: true,
       grades: [
-        { subject: "Biology and Geology", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 8 },
-        { subject: "Sports", course: "1° de E.S.O.", type: "Optional Specific/LCA", adaptation: "", grade: 7 },
-        { subject: "Visual and Audiovisual Arts", course: "1° de E.S.O.", type: "Mandatory Specific", adaptation: "", grade: 8 },
-        { subject: "Geography and History", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 7 },
-        { subject: "Spanish Language and Literature", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 8 },
-        { subject: "Mathematics", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 6 },
-        { subject: "First Foreign Language (English)", course: "1° de E.S.O.", type: "Core Languages", adaptation: "", grade: 7 },
-        { subject: "Ethical Values", course: "1° de E.S.O.", type: "Religion and Alternative", adaptation: "", grade: 8 }
+            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 7 },
+    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 8 },
+    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 7 },
+    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 6 },
+    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 7 },
+    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 8 }
       ]
     },
     {
@@ -66,14 +66,14 @@ const currentYearGradesData = {
       period: "January - March 2025",
       published: true,
       grades: [
-        { subject: "Biology and Geology", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 9 },
-        { subject: "Sports", course: "1° de E.S.O.", type: "Optional Specific/LCA", adaptation: "", grade: 8 },
-        { subject: "Visual and Audiovisual Arts", course: "1° de E.S.O.", type: "Mandatory Specific", adaptation: "", grade: 9 },
-        { subject: "Geography and History", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 8 },
-        { subject: "Spanish Language and Literature", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 9 },
-        { subject: "Mathematics", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: 7 },
-        { subject: "First Foreign Language (English)", course: "1° de E.S.O.", type: "Core Languages", adaptation: "", grade: 8 },
-        { subject: "Ethical Values", course: "1° de E.S.O.", type: "Religion and Alternative", adaptation: "", grade: 9 }
+            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 9 },
+    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 8 },
+    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 9 },
+    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 9 },
+    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 7 },
+    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 8 },
+    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 9 }
       ]
     },
     {
@@ -82,14 +82,14 @@ const currentYearGradesData = {
       period: "April - June 2025",
       published: false,
       grades: [
-        { subject: "Biology and Geology", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: null },
-        { subject: "Sports", course: "1° de E.S.O.", type: "Optional Specific/LCA", adaptation: "", grade: null },
-        { subject: "Visual and Audiovisual Arts", course: "1° de E.S.O.", type: "Mandatory Specific", adaptation: "", grade: null },
-        { subject: "Geography and History", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: null },
-        { subject: "Spanish Language and Literature", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: null },
-        { subject: "Mathematics", course: "1° de E.S.O.", type: "Core General", adaptation: "", grade: null },
-        { subject: "First Foreign Language (English)", course: "1° de E.S.O.", type: "Core Languages", adaptation: "", grade: null },
-        { subject: "Ethical Values", course: "1° de E.S.O.", type: "Religion and Alternative", adaptation: "", grade: null }
+            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: null },
+    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: null },
+    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: null },
+    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: null },
+    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: null },
+    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: null },
+    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: null },
+    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: null }
       ]
     }
   ]
