@@ -99,7 +99,7 @@ const MOCK_INBOX_MESSAGES: Message[] = [
   },
   {
     id: '6',
-    sender: 'Nurse Johnson',
+    sender: 'Nurse Martinez',
     subject: 'Health Screening Reminder',
     preview: 'Annual health screenings for all students are scheduled for next week. Please review the parent information packet and make sure your child comes prepared with any necessary documentation.',
     date: '2025-01-10T08:30:00',
@@ -610,15 +610,20 @@ const Messages = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex justify-between items-center mb-4">
-        <motion.h1
-          className="text-4xl font-bold tracking-tight text-foreground"
+      <div className="flex justify-between items-start mb-4">
+        <motion.div
+          className="flex flex-col gap-2"
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.3 }}
         >
-          <TranslatedText>Messages</TranslatedText>
-        </motion.h1>
+          <TranslatedText element="h1" className="text-4xl font-bold tracking-tight text-foreground">
+            Messages
+          </TranslatedText>
+          <TranslatedText element="p" className="text-muted-foreground text-lg">
+            Stay connected with the school community
+          </TranslatedText>
+        </motion.div>
         <div className="flex items-center gap-2">
           {isSearchActive ? (
             <motion.div

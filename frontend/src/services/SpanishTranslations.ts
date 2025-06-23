@@ -8,6 +8,7 @@ export const spanishTranslations: Record<string, string> = {
   "Our School": "Centro",
   "Services": "Servicios",
   "Messages": "Mensajes",
+  "Stay connected with the school community": "Mantente conectado con la comunidad de tu escuela",
   "Notifications": "Notificaciones",
   "Settings": "Configuración",
   "Profile": "Perfil",
@@ -380,7 +381,7 @@ export const spanishTranslations: Record<string, string> = {
   "Extracurricular Coordinator": "Coordinador de Actividades Extraescolares",
   
   // New message senders
-  "Nurse Johnson": "Enfermera Johnson",
+  "Nurse Martinez": "Enfermera Martinez",
   "Library Services": "Servicios de Biblioteca",
   "Parent Association": "Asociación de Padres",
   "Art Department": "Departamento de Arte",
