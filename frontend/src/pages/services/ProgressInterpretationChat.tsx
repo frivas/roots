@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
-import { ArrowLeft, Info, GraduationCap } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 
 const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
 const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-const WIDGET_STYLE_ID = 'elevenlabs-widget-style';
 
 // Static translations for widget UI
 const widgetTranslations = {
@@ -29,22 +28,15 @@ const widgetTranslations = {
   }
 };
 
-// Add window type for ElevenLabs API
-declare global {
-  interface Window {
-    ElevenLabs?: {
-      init?: (config: any) => void;
-    };
-  }
-}
+
 
 const ProgressInterpretationChat: React.FC = () => {
   const navigate = useNavigate();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
 
-  // Convert our app's language code to ElevenLabs format and force lowercase
-  const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
+  // Convert our app's language code to ElevenLabs format
+  const widgetLanguage = language === 'en-US' ? 'en' : 'es';
   const i18n = widgetTranslations[widgetLanguage];
 
   console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
@@ -55,7 +47,7 @@ const ProgressInterpretationChat: React.FC = () => {
       const script = document.createElement('script');
       script.src = SCRIPT_SRC;
       script.async = true;
-      
+
       script.onload = () => {
         const checkInterval = setInterval(() => {
           if (customElements.get(WIDGET_ELEMENT_NAME)) {
@@ -102,7 +94,7 @@ const ProgressInterpretationChat: React.FC = () => {
 
       // Create new widget with language configuration
       const widget = document.createElement(WIDGET_ELEMENT_NAME);
-      
+
       // Configure widget with Progress Interpretation agent
       const config = {
         'agent-id': 'agent_01jydqtbt4e5prhwvrjd9m24bp',
@@ -129,7 +121,7 @@ const ProgressInterpretationChat: React.FC = () => {
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
-    return (
+  return (
     <div className="space-y-8 pb-8">
       {/* Back Button */}
       <div className="flex items-center">
@@ -150,4 +142,4 @@ const ProgressInterpretationChat: React.FC = () => {
   );
 };
 
-export default ProgressInterpretationChat; 
+export default ProgressInterpretationChat;
