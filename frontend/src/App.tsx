@@ -88,14 +88,13 @@ function App() {
 
           {/* Auth routes */}
           <Route
-            path="/auth/login/*"
+            path="/auth/login"
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signIn"
-                    routing="path"
-                    path="/auth/login"
+                    routing="virtual"
                     redirectUrl="/home"
                   />
                 </AuthLayout>
@@ -104,14 +103,13 @@ function App() {
           />
 
           <Route
-            path="/auth/register/*"
+            path="/auth/register"
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signUp"
-                    routing="path"
-                    path="/auth/register"
+                    routing="virtual"
                     redirectUrl="/home"
                   />
                 </AuthLayout>
