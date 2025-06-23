@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,9 @@ import {
   MessageCircle,
   AlertTriangle,
   CheckCircle2,
-  Info
+  Info,
+  Mail,
+  Check
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import TranslatedText from '../components/TranslatedText';
@@ -77,6 +79,41 @@ const mockNotifications = [
   }
 ];
 
+const mockMessages = [
+  {
+    id: '1',
+    sender: 'Principal García',
+    subject: 'Staff Meeting Update',
+    preview: 'The weekly staff meeting has been moved to Thursday at 3:00 PM due to a scheduling conflict with the district meeting. We will be discussing the new semester curriculum changes, parent-teacher conference schedules, and the upcoming school fundraising event.',
+    time: '1h ago',
+    read: false
+  },
+  {
+    id: '2',
+    sender: 'Transportation Dept',
+    subject: 'Bus Route Changes',
+    preview: 'Due to road construction on Main Street, bus route #12 will be temporarily modified starting Monday. The new pickup times will be 15 minutes earlier than usual. Please ensure your child is ready at the bus stop by 7:45 AM instead of 8:00 AM.',
+    time: '3h ago',
+    read: true
+  },
+  {
+    id: '3',
+    sender: 'Cafeteria Services',
+    subject: 'New Menu Options',
+    preview: 'We are excited to announce new vegetarian and gluten-free options available in our cafeteria starting next week. The new menu includes quinoa bowls, fresh salad bars, and allergen-free desserts. Nutritional information will be posted on our website.',
+    time: '5h ago',
+    read: false
+  },
+  {
+    id: '4',
+    sender: 'Library Services',
+    subject: 'Digital Resources Update',
+    preview: 'Our digital library has been expanded with over 500 new e-books and audiobooks for students. New resources include STEM learning materials, language learning tools, and interactive educational games. Access credentials will be sent to parents via email.',
+    time: '1d ago',
+    read: false
+  }
+];
+
 const mockCalendarEvents = [
   {
     id: '1',
@@ -117,6 +154,18 @@ const getNotificationIcon = (type: string) => {
 const Dashboard = () => {
   const { isInitialized, preloadingComplete } = useLingoTranslation();
   const navigate = useNavigate();
+
+  // State to track which messages have been marked as read on the dashboard
+  const [hiddenMessageIds, setHiddenMessageIds] = useState<string[]>([]);
+
+  // Function to mark a message as read and hide it from dashboard
+  const markAsRead = (messageId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent navigation when clicking the button
+    setHiddenMessageIds(prev => [...prev, messageId]);
+  };
+
+  // Filter out hidden messages for display
+  const visibleMessages = mockMessages.filter(message => !hiddenMessageIds.includes(message.id));
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
@@ -159,14 +208,14 @@ const Dashboard = () => {
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
 
-        {/* Recent Notifications - Left Side */}
+        {/* Recent Notifications - Left */}
         <motion.div
           className="lg:col-span-2 order-2 lg:order-1"
           variants={itemVariants}
         >
           <Card className="h-full border-border">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
+              <CardTitle className="flex items-center gap-2 text-base">
                 <Bell className="h-5 w-5" />
                 <TranslatedText>Recent Notifications</TranslatedText>
               </CardTitle>
@@ -208,10 +257,10 @@ const Dashboard = () => {
                 variant="outline"
                 size="sm"
                 className="w-full mt-4"
-                onClick={() => navigate('/messages')}
+                onClick={() => navigate('/notifications')}
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                <TranslatedText>View Messages</TranslatedText>
+                <Bell className="h-4 w-4 mr-2" />
+                <TranslatedText>View Notifications</TranslatedText>
               </Button>
             </CardContent>
           </Card>
@@ -287,9 +336,109 @@ const Dashboard = () => {
           </Card>
         </motion.div>
 
+        {/* Recent Messages - Full Width Below */}
+        <motion.div
+          className="lg:col-span-3 order-3 lg:order-3"
+          variants={itemVariants}
+        >
+          <Card className="border-border">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Mail className="h-5 w-5" />
+                <TranslatedText>Recent Messages</TranslatedText>
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/messages')}
+                className="text-primary hover:text-primary shrink-0"
+              >
+                <TranslatedText>View All</TranslatedText>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-0">
+              <div className="space-y-1">
+                {visibleMessages.length === 0 ? (
+                  <div className="flex items-center justify-center py-8 text-center">
+                    <div className="space-y-2">
+                      <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto" />
+                      <TranslatedText className="text-sm text-muted-foreground">
+                        All messages marked as read!
+                      </TranslatedText>
+                      <TranslatedText className="text-xs text-muted-foreground">
+                        Visit the Messages section to view all your messages.
+                      </TranslatedText>
+                    </div>
+                  </div>
+                ) : (
+                  visibleMessages.slice(0, 4).map((message, index) => (
+                    <motion.div
+                      key={message.id}
+                      className="group relative p-4 hover:bg-muted/50 transition-colors cursor-pointer border-b border-border/50 last:border-b-0"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * index }}
+                      onClick={() => navigate('/messages')}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 mt-1">
+                          <div className={cn(
+                            "w-2.5 h-2.5 rounded-full",
+                            message.read ? 'bg-muted' : 'bg-primary'
+                          )} />
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <TranslatedText className="text-sm font-medium leading-tight">
+                                {message.sender}
+                              </TranslatedText>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-xs text-muted-foreground">{message.time}</span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0 hover:bg-green-100 hover:text-green-700 transition-all duration-200"
+                                onClick={(e) => markAsRead(message.id, e)}
+                              >
+                                <Check className="h-3.5 w-3.5" />
+                                <span className="sr-only">
+                                  <TranslatedText>Mark as read</TranslatedText>
+                                </span>
+                              </Button>
+                            </div>
+                          </div>
+                          <TranslatedText className="text-sm font-medium line-clamp-1 leading-tight text-foreground">
+                            {message.subject}
+                          </TranslatedText>
+                          <TranslatedText className="text-sm text-muted-foreground leading-relaxed line-clamp-2 sm:line-clamp-3 lg:line-clamp-2 xl:line-clamp-3">
+                            {message.preview}
+                          </TranslatedText>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+                )}
+              </div>
+              <div className="mt-4 pt-4 border-t border-border">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/messages')}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  <TranslatedText>View Messages</TranslatedText>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         {/* Personal Calendar Preview - Full Width */}
         <motion.div
-          className="lg:col-span-3 order-3"
+          className="lg:col-span-3 order-4 lg:order-4"
           variants={itemVariants}
         >
           <Card className="border-border">
