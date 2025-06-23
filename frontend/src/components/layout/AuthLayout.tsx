@@ -13,21 +13,23 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
 
   return (
     <div className={cn("min-h-screen bg-white flex relative", className)}>
-      {/* Language Switcher - Top Right */}
-      <div className="absolute top-4 right-4 z-20">
+      {/* Language Switcher - Top Right - Hidden on mobile to avoid duplicate */}
+      <div className="absolute top-4 right-4 z-20 hidden lg:block">
         <LanguageSwitcher />
       </div>
 
+      {/* Powered by Bolt New - Top Left - Show on all screens */}
+      <a
+        id="bolt-button"
+        href="https://bolt.new"
+        target="_blank"
+        title="Powered By Bolt"
+        className="absolute top-2 left-2 z-30 lg:top-4 lg:left-4"
+      >
+      </a>
+
       {/* Left side - Welcome content */}
       <div className="hidden lg:flex lg:w-1/2 bg-white flex-col justify-center px-12 py-24 relative">
-        {/* Powered by Bolt New - Top Left */}
-        <a 
-          id="bolt-button" 
-          href="https://bolt.new" 
-          target="_blank" 
-          title="Powered By Bolt"
-        >
-        </a>
 
         <div className="max-w-md mx-auto space-y-8">
           {/* Madrid Logo */}
@@ -56,7 +58,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
                 <TranslatedText>Madrid Community</TranslatedText>
               </h4>
             </div>
-            
+
             <p className="text-lg text-gray-700 leading-relaxed">
               <TranslatedText>
                 Access your space to manage communication with the school and perform educational procedures electronically.
@@ -105,7 +107,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
                   </p>
                 </div>
               </div>
-              <div className="lg:hidden">
+              <div>
                 <LanguageSwitcher />
               </div>
             </div>
@@ -127,16 +129,16 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
               <TranslatedText>© 2025 Madrid Community. All rights reserved.</TranslatedText>
             </p>
             <div className="flex justify-center gap-4">
-              <a 
-                href="/privacy-policy" 
+              <a
+                href="/privacy-policy"
                 className="text-[#ff0000] hover:text-[#e60000] transition-colors"
               >
                 <TranslatedText>Privacy Policy</TranslatedText>
               </a>
               <span>•</span>
-              <a 
-                href="https://www.comunidad.madrid/protecciondedatos" 
-                target="_blank" 
+              <a
+                href="https://www.comunidad.madrid/protecciondedatos"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#ff0000] hover:text-[#e60000] transition-colors"
               >
@@ -150,4 +152,4 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
   );
 };
 
-export default AuthLayout; 
+export default AuthLayout;
