@@ -1543,6 +1543,29 @@ export const spanishTranslations: Record<string, string> = {
   "Warning": "Advertencia",
   "Return to Home": "Volver al Inicio",
 
+  // Dashboard specific translations
+  "Loading dashboard...": "Cargando panel...",
+  "Quick Actions": "Acciones Rápidas",
+  "Recent Notifications": "Notificaciones Recientes",
+  "Analyze your child's academic progress": "Analiza el progreso académico de tu hijo",
+  "Support for your well-being": "Apoyo para tu bienestar",
+  "Explore activities for your child": "Explora actividades para tu hijo",
+  "Access digital learning resources": "Accede a recursos de aprendizaje digital",
+  "View All": "Ver Todo",
+  "Open Calendar": "Abrir Calendario",
+  "View Full Calendar": "Ver Calendario Completo",
+  "New Message from Teacher": "Nuevo Mensaje del Profesor",
+  "Your child's progress report is now available": "El informe de progreso de tu hijo ya está disponible",
+  "Bus Route Update": "Actualización de Ruta de Autobús",
+  "Route 12 will be delayed by 15 minutes today": "La ruta 12 se retrasará 15 minutos hoy",
+  "Registration Confirmed": "Registro Confirmado",
+  "Successfully enrolled in Parent Wellness program": "Inscrito exitosamente en el programa de Bienestar de Padres",
+  "School Board Meeting": "Reunión de la Junta Escolar",
+  "Student Performance Review": "Revisión de Rendimiento Estudiantil",
+  "high": "alta",
+  "medium": "media",
+  "low": "baja",
+
 } as const;
 
 // Function to get Spanish translation with fallback

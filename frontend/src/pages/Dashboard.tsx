@@ -1,16 +1,28 @@
-// @ts-nocheck
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
-import { useAuth } from '../contexts/AuthContext';
-import { BarChart, Bell, Briefcase, Calendar, ChevronRight, GraduationCap, LineChart, Users, type LucideIcon } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import { useNavigate } from 'react-router-dom';
+import {
+  BarChart,
+  Bell,
+  Calendar,
+  ChevronRight,
+  Users,
+  Heart,
+  GraduationCap,
+  Globe,
+  BookOpen,
+  Clock,
+  MessageCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Info
+} from 'lucide-react';
 import { cn } from '../lib/utils';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-// import LanguageDebugger from '../components/LanguageDebugger';
-// import TranslationDebugger from '../components/TranslationDebugger';
-// import TranslationTest from '../components/TranslationTest';
+import Button from '../components/ui/Button';
 
 // Animation variants
 const containerVariants = {
@@ -40,134 +52,71 @@ const itemVariants = {
   }
 };
 
-// Custom grid pattern card component
-const GridPatternCard = ({
-  className,
-  icon,
-  title,
-  value,
-  trend,
-  trendValue,
-  trendDirection,
-}: {
-  className?: string;
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  trend: string;
-  trendValue: string;
-  trendDirection: 'up' | 'down';
-}) => {
-  return (
-    <motion.div
-      className={cn(
-        "border w-full rounded-lg overflow-hidden",
-        "bg-background",
-        "border-border",
-        "p-3",
-        "hover:shadow-md transition-all duration-300",
-        className
-      )}
-      variants={itemVariants}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-    >
-      <div className={cn(
-        "size-full bg-repeat bg-[length:30px_30px]",
-        "bg-[radial-gradient(rgba(0,0,0,0.03)_1px,transparent_1px)]",
-      )}>
-        <div className={cn(
-          "size-full bg-background/95",
-        )}>
-          <div className="flex flex-col p-4">
-            <div className="flex justify-between items-center mb-4">
-              <div className="text-sm font-medium text-muted-foreground">{title}</div>
-              <div className="text-muted-foreground">{icon}</div>
-            </div>
-            <div className="text-2xl font-bold mb-1">{value}</div>
-            <div className="flex items-center text-xs">
-              <span className={cn(
-                "mr-1",
-                trendDirection === 'up' ? 'text-green-500' : 'text-rose-500'
-              )}>
-                {trendDirection === 'up' ? '↑' : '↓'} {trendValue}
-              </span>
-              <span className="text-muted-foreground">{trend}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+// Mock data for preview sections
+const mockNotifications = [
+  {
+    id: '1',
+    title: 'New Message from Teacher',
+    message: 'Your child\'s progress report is now available',
+    type: 'info',
+    time: '2h ago'
+  },
+  {
+    id: '2',
+    title: 'Bus Route Update',
+    message: 'Route 12 will be delayed by 15 minutes today',
+    type: 'warning',
+    time: '4h ago'
+  },
+  {
+    id: '3',
+    title: 'Registration Confirmed',
+    message: 'Successfully enrolled in Parent Wellness program',
+    type: 'success',
+    time: '1d ago'
+  }
+];
 
-// Translated version of GridPatternCard
-const TranslatedGridPatternCard = ({
-  className,
-  icon,
-  title,
-  value,
-  trend,
-  trendValue,
-  trendDirection,
-}: {
-  className?: string;
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  trend: string;
-  trendValue: string;
-  trendDirection: 'up' | 'down';
-}) => {
-  return (
-    <motion.div
-      className={cn(
-        "border w-full rounded-lg overflow-hidden",
-        "bg-background",
-        "border-border",
-        "p-3",
-        "hover:shadow-md transition-all duration-300",
-        className
-      )}
-      variants={itemVariants}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-    >
-      <div className={cn(
-        "size-full bg-repeat bg-[length:30px_30px]",
-        "bg-[radial-gradient(rgba(0,0,0,0.03)_1px,transparent_1px)]",
-      )}>
-        <div className={cn(
-          "size-full bg-background/95",
-        )}>
-          <div className="flex flex-col p-4">
-            <div className="flex justify-between items-center mb-4">
-              <TranslatedText className="text-sm font-medium text-muted-foreground">
-                {title}
-              </TranslatedText>
-              <div className="text-muted-foreground">{icon}</div>
-            </div>
-            <div className="text-2xl font-bold mb-1">{value}</div>
-            <div className="flex items-center text-xs">
-              <span className={cn(
-                "mr-1",
-                trendDirection === 'up' ? 'text-green-500' : 'text-rose-500'
-              )}>
-                {trendDirection === 'up' ? '↑' : '↓'} {trendValue}
-              </span>
-              <TranslatedText className="text-muted-foreground">
-                {trend}
-              </TranslatedText>
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
+const mockCalendarEvents = [
+  {
+    id: '1',
+    title: 'Parent-Teacher Conference',
+    time: '3:00 PM',
+    date: 'Today',
+    priority: 'high'
+  },
+  {
+    id: '2',
+    title: 'School Board Meeting',
+    time: '7:00 PM',
+    date: 'Tomorrow',
+    priority: 'medium'
+  },
+  {
+    id: '3',
+    title: 'Student Performance Review',
+    time: '2:30 PM',
+    date: 'Friday',
+    priority: 'high'
+  }
+];
+
+const getNotificationIcon = (type: string) => {
+  switch (type) {
+    case 'info':
+      return <Info className="h-4 w-4 text-blue-500" />;
+    case 'success':
+      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+    case 'warning':
+      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+    default:
+      return <Bell className="h-4 w-4 text-muted-foreground" />;
+  }
 };
 
 const Dashboard = () => {
-  const { userRole, userEmail } = useAuth();
   const { isInitialized, preloadingComplete } = useLingoTranslation();
-  const [activeTab, setActiveTab] = useState('overview');
+  const navigate = useNavigate();
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
@@ -175,7 +124,7 @@ const Dashboard = () => {
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
-          <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+          <TranslatedText element="p" className="text-sm text-muted-foreground">Loading dashboard...</TranslatedText>
         </div>
       </div>
     );
@@ -207,146 +156,129 @@ const Dashboard = () => {
         </TranslatedText>
       </motion.div>
 
-      {/* Translation Test Section */}
-      {/* <motion.div variants={itemVariants}>
-        <TranslationTest />
-      </motion.div> */}
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
 
-      {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <TranslatedGridPatternCard
-          icon={<Calendar className="h-5 w-5" />}
-          title="Upcoming Classes"
-          value="12"
-          trend="from last week"
-          trendValue="2"
-          trendDirection="up"
-        />
-
-        <TranslatedGridPatternCard
-          icon={<Briefcase className="h-5 w-5" />}
-          title="Active Programs"
-          value="4"
-          trend="same as last month"
-          trendValue="0"
-          trendDirection="up"
-        />
-
-        <TranslatedGridPatternCard
-          icon={<Bell className="h-5 w-5" />}
-          title="New Messages"
-          value="8"
-          trend="require attention"
-          trendValue="3"
-          trendDirection="up"
-        />
-
-        <TranslatedGridPatternCard
-          icon={<Users className="h-5 w-5" />}
-          title="Active Mentorships"
-          value="6"
-          trend="since last quarter"
-          trendValue="2"
-          trendDirection="up"
-        />
-      </div>
-
-      {/* Main Content Section */}
-      <div className="grid gap-6 md:grid-cols-7">
-        {/* Activity Chart */}
+        {/* Recent Notifications - Left Side */}
         <motion.div
-          className="col-span-7 md:col-span-4"
+          className="lg:col-span-2 order-2 lg:order-1"
           variants={itemVariants}
         >
-          <Card className="overflow-hidden border-border">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <TranslatedText element="h3" className="text-xl font-semibold">
-                    Learning Activity
-                  </TranslatedText>
-                  <TranslatedText element="p" className="text-sm text-muted-foreground">
-                    Your activity across all courses for the past 30 days
-                  </TranslatedText>
-                </div>
-                <div className="flex space-x-2">
-                  <button className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    activeTab === 'overview'
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  )} onClick={() => setActiveTab('overview')}>
-                    <TranslatedText>Home Overview</TranslatedText>
-                  </button>
-                  <button className={cn(
-                    "px-3 py-1 text-sm rounded-md transition-colors",
-                    activeTab === 'detailed'
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  )} onClick={() => setActiveTab('detailed')}>
-                    <TranslatedText>Detailed</TranslatedText>
-                  </button>
-                </div>
-              </div>
+          <Card className="h-full border-border">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Bell className="h-5 w-5" />
+                <TranslatedText>Recent Notifications</TranslatedText>
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/notifications')}
+                className="text-primary hover:text-primary shrink-0"
+              >
+                <TranslatedText>View All</TranslatedText>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
             </CardHeader>
-            <CardContent>
-              <div className="flex h-[250px] items-center justify-center bg-muted/20 rounded-md">
-                {activeTab === 'overview' ? (
-                  <div className="flex flex-col items-center">
-                    <BarChart className="h-16 w-16 text-muted-foreground mb-2" />
-                    <TranslatedText element="p" className="text-muted-foreground">
-                      Activity overview chart will appear here
-                    </TranslatedText>
+            <CardContent className="space-y-3">
+              {mockNotifications.slice(0, 3).map((notification, index) => (
+                <motion.div
+                  key={notification.id}
+                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  onClick={() => navigate('/notifications')}
+                >
+                  <div className="shrink-0 mt-0.5">
+                    {getNotificationIcon(notification.type)}
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center">
-                    <LineChart className="h-16 w-16 text-muted-foreground mb-2" />
-                    <TranslatedText element="p" className="text-muted-foreground">
-                      Detailed activity chart will appear here
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <TranslatedText className="text-sm font-medium line-clamp-2 leading-tight">
+                      {notification.title}
                     </TranslatedText>
+                    <TranslatedText className="text-xs text-muted-foreground line-clamp-2 leading-tight">
+                      {notification.message}
+                    </TranslatedText>
+                    <span className="text-xs text-muted-foreground">{notification.time}</span>
                   </div>
-                )}
-              </div>
+                </motion.div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full mt-4"
+                onClick={() => navigate('/messages')}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                <TranslatedText>View Messages</TranslatedText>
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Right Side */}
         <motion.div
-          className="col-span-7 md:col-span-3"
+          className="lg:col-span-1 order-1 lg:order-2"
           variants={itemVariants}
         >
           <Card className="h-full border-border">
             <CardHeader>
-              <TranslatedText element="h3" className="text-xl font-semibold">
-                Quick Actions
-              </TranslatedText>
-              <TranslatedText element="p" className="text-sm text-muted-foreground">
-                Frequently used learning tools
-              </TranslatedText>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart className="h-5 w-5" />
+                <TranslatedText>Quick Actions</TranslatedText>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { icon: <Calendar className="h-6 w-6" />, label: "Schedule Class", color: "bg-blue-500/10 text-blue-500" },
-                  { icon: <Users className="h-6 w-6" />, label: "Find Mentor", color: "bg-purple-500/10 text-purple-500" },
-                  { icon: <Bell className="h-6 w-6" />, label: "Notifications", color: "bg-amber-500/10 text-amber-500" },
-                  { icon: <GraduationCap className="h-6 w-6" />, label: "My Courses", color: "bg-green-500/10 text-green-500" },
+                  {
+                    icon: <GraduationCap className="h-6 w-6" />,
+                    label: "Progress Interpretation Service",
+                    description: "Analyze your child's academic progress",
+                    color: "bg-blue-500/10 text-blue-500",
+                    route: "/services/progress-interpretation"
+                  },
+                  {
+                    icon: <Heart className="h-6 w-6" />,
+                    label: "Parent Wellness and Self-Care",
+                    description: "Support for your well-being",
+                    color: "bg-purple-500/10 text-purple-500",
+                    route: "/services/parent-wellness"
+                  },
+                  {
+                    icon: <Users className="h-6 w-6" />,
+                    label: "Extra-Curricular Activities",
+                    description: "Explore activities for your child",
+                    color: "bg-green-500/10 text-green-500",
+                    route: "/services/extra-curricular"
+                  },
+                  {
+                    icon: <Globe className="h-6 w-6" />,
+                    label: "Online Learning",
+                    description: "Access digital learning resources",
+                    color: "bg-amber-500/10 text-amber-500",
+                    route: "/services?tab=online"
+                  },
                 ].map((item, index) => (
                   <motion.button
                     key={index}
-                    className="flex flex-col items-center justify-center rounded-lg border border-border p-4 hover:bg-muted transition-colors"
-                    whileHover={{ scale: 1.03 }}
+                    className="flex flex-col items-start p-4 rounded-lg border border-border hover:bg-muted transition-colors text-left w-full"
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * index }}
+                    onClick={() => navigate(item.route)}
                   >
-                    <div className={`mb-2 p-2 rounded-full ${item.color}`}>
+                    <div className={`mb-3 p-3 rounded-full ${item.color}`}>
                       {item.icon}
                     </div>
-                    <TranslatedText className="text-sm font-medium">
+                    <TranslatedText className="text-sm font-medium mb-1 line-clamp-2">
                       {item.label}
+                    </TranslatedText>
+                    <TranslatedText className="text-xs text-muted-foreground line-clamp-2">
+                      {item.description}
                     </TranslatedText>
                   </motion.button>
                 ))}
@@ -354,72 +286,89 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </motion.div>
-      </div>
 
-      {/* Recent Courses Section */}
-      <motion.div variants={itemVariants}>
-        <div className="flex items-center justify-between mb-4">
-          <TranslatedText element="h2" className="text-xl font-semibold">
-            Recent Courses
-          </TranslatedText>
-          <button className="text-sm text-primary flex items-center hover:underline">
-            <TranslatedText>View all courses</TranslatedText>
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </button>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            { title: "Introduction to Data Science", progress: 75, lessons: 12, completed: 9 },
-            { title: "Advanced Web Development", progress: 45, lessons: 20, completed: 9 },
-            { title: "UX Design Fundamentals", progress: 30, lessons: 15, completed: 5 },
-          ].map((course, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="group"
-            >
-              <Card className="overflow-hidden border-border h-full transition-all duration-300 group-hover:shadow-md">
-                <CardHeader className="pb-2">
-                  <TranslatedText element="h3" className="text-lg font-semibold">
-                    {course.title}
-                  </TranslatedText>
-                  <p className="text-sm text-muted-foreground">
-                    {course.completed} <TranslatedText>of</TranslatedText> {course.lessons} <TranslatedText>lessons completed</TranslatedText>
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-primary rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${course.progress}%` }}
-                        transition={{ duration: 1, delay: 0.2 + (index * 0.1) }}
-                      />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">
-                        {course.progress}% <TranslatedText>complete</TranslatedText>
+        {/* Personal Calendar Preview - Full Width */}
+        <motion.div
+          className="lg:col-span-3 order-3"
+          variants={itemVariants}
+        >
+          <Card className="border-border">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                <TranslatedText>Upcoming Events</TranslatedText>
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/personal-calendar')}
+                className="text-primary hover:text-primary"
+              >
+                <TranslatedText>Open Calendar</TranslatedText>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                {mockCalendarEvents.map((event, index) => (
+                  <motion.div
+                    key={event.id}
+                    className={cn(
+                      "p-4 rounded-lg border transition-colors cursor-pointer hover:bg-muted/50",
+                      event.priority === 'high' ? 'border-l-4 border-l-red-500 bg-red-50/50' :
+                        event.priority === 'medium' ? 'border-l-4 border-l-yellow-500 bg-yellow-50/50' :
+                          'border-l-4 border-l-green-500 bg-green-50/50'
+                    )}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index }}
+                    onClick={() => navigate('/personal-calendar')}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <TranslatedText className="text-sm font-medium line-clamp-2 pr-2">
+                        {event.title}
+                      </TranslatedText>
+                      <span className={cn(
+                        "text-xs px-2 py-1 rounded-full shrink-0",
+                        event.priority === 'high' ? 'bg-red-100 text-red-800' :
+                          event.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                      )}>
+                        <TranslatedText>{event.priority}</TranslatedText>
                       </span>
-                      <button className="text-sm text-primary hover:underline">
-                        <TranslatedText>Continue</TranslatedText>
-                      </button>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3 shrink-0" />
+                      <span>{event.time}</span>
+                      <span>•</span>
+                      <TranslatedText>{event.date}</TranslatedText>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
 
-      {/* Include TranslationDebugger for testing */}
-      {/* <TranslationDebugger /> */}
-
-      {/* Temporary debugging component */}
-      {/* <LanguageDebugger /> */}
+              <div className="mt-4 pt-4 border-t border-border flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/personal-calendar')}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <TranslatedText>View Full Calendar</TranslatedText>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/schedule')}
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  <TranslatedText>Class Schedule</TranslatedText>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
