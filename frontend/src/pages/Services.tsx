@@ -159,7 +159,7 @@ const Services = () => {
       href: '/services/morning-classroom',
       category: 'support',
       parentVisible: true, // Parent service - before-school care
-      isActive: true
+      isActive: false
     },
     {
       icon: Users,
@@ -173,7 +173,7 @@ const Services = () => {
     {
       icon: GraduationCap,
       title: 'Progress Interpretation Service',
-      description: 'Age-appropriate guidance for understanding academic progress and communication strategies for difficult topics',
+      description: 'Comprehensive academic progress analysis and personalized guidance for parents to understand their child\'s educational journey',
       href: '/services/progress-interpretation',
       category: 'academic',
       parentVisible: true, // Parent service - academic progress support
@@ -204,7 +204,7 @@ const Services = () => {
       href: '/services/language',
       category: 'academic',
       parentVisible: true, // Parent service
-      isActive: true
+      isActive: false
     },
     {
       icon: Users,
@@ -213,7 +213,7 @@ const Services = () => {
       href: '/services/mentorship',
       category: 'academic',
       parentVisible: true, // Parent service
-      isActive: true
+      isActive: false
     },
     {
       icon: Calendar,

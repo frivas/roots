@@ -28,7 +28,8 @@ const MainLayout: React.FC = () => {
     '/services/math-tutoring-session',
     '/services/extra-curricular-session',
     '/services/chess-coaching-session',
-    '/services/storytelling-session'
+    '/services/storytelling-session',
+    '/services/progress-interpretation-chat'
   ];
 
   // Check if current page has ElevenLabs agent integration

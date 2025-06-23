@@ -38,7 +38,7 @@ const itemVariants = {
 const academicHistoryData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.", 
+    course: "4°", 
     group: "1A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
@@ -50,19 +50,19 @@ const academicHistoryData = {
       id: 1,
       recordType: "Educación Secundaria Obligatoria",
       course: "4° de E.S.O.",
-      academicYear: "2023-2024",
-      entryDate: "10/09/2023",
-      center: "28041597 - IES LAS CANTERAS",
+      academicYear: "2024-2025",
+      entryDate: "10/09/2024",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Comunes",
       subjects: [
-        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
-        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "8" },
+        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "7" },
+        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "9" },
         { name: "Educación Plástica y Visual", type: "Matriculada", grade: "8" },
-        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "8" },
-        { name: "Matemáticas", type: "Matriculada", grade: "8" },
+        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "9" },
+        { name: "Matemáticas", type: "Matriculada", grade: "6" },
         { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "8" },
-        { name: "Educación Física", type: "Matriculada", grade: "8" },
-        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "8" },
+        { name: "Educación Física", type: "Matriculada", grade: "9" },
+        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "7" },
         { name: "Tecnología", type: "Matriculada", grade: "8" },
         { name: "Religión Católica", type: "Matriculada", grade: "8" }
       ]
@@ -71,20 +71,20 @@ const academicHistoryData = {
       id: 2,
       recordType: "Educación Secundaria Obligatoria",
       course: "3° de E.S.O.",
-      academicYear: "2022-2023",
-      entryDate: "12/09/2022",
-      center: "28041597 - IES LAS CANTERAS",
+      academicYear: "2023-2024",
+      entryDate: "12/09/2023",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Troncales generales",
       subjects: [
-        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "7" },
-        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "7" },
-        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "7" },
-        { name: "Matemáticas", type: "Matriculada", grade: "8" },
-        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "7" },
-        { name: "Educación para la Ciudadanía y los Derechos Humanos", type: "Matriculada", grade: "8" },
-        { name: "Educación Física", type: "Matriculada", grade: "8" },
-        { name: "Música", type: "Matriculada", grade: "8" },
-        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "7" },
+        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
+        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "8" },
+        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "8" },
+        { name: "Matemáticas", type: "Matriculada", grade: "7" },
+        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "8" },
+        { name: "Educación para la Ciudadanía y los Derechos Humanos", type: "Matriculada", grade: "9" },
+        { name: "Educación Física", type: "Matriculada", grade: "9" },
+        { name: "Música", type: "Matriculada", grade: "9" },
+        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "8" },
         { name: "Religión Católica", type: "Matriculada", grade: "8" }
       ]
     },
@@ -92,18 +92,18 @@ const academicHistoryData = {
       id: 3,
       recordType: "Educación Secundaria Obligatoria", 
       course: "2° de E.S.O.",
-      academicYear: "2021-2022",
-      entryDate: "10/09/2021",
-      center: "28041597 - IES LAS CANTERAS",
+      academicYear: "2022-2023",
+      entryDate: "10/09/2022",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Troncales de idiomas",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
-        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "8" },
-        { name: "Educación Plástica y Visual", type: "Matriculada", grade: "8" },
+        { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "7" },
+        { name: "Educación Plástica y Visual", type: "Matriculada", grade: "9" },
         { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "8" },
-        { name: "Matemáticas", type: "Matriculada", grade: "8" },
-        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "8" },
-        { name: "Educación Física", type: "Matriculada", grade: "8" },
+        { name: "Matemáticas", type: "Matriculada", grade: "7" },
+        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "9" },
+        { name: "Educación Física", type: "Matriculada", grade: "9" },
         { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "8" },
         { name: "Tecnología", type: "Matriculada", grade: "8" },
         { name: "Religión Católica", type: "Matriculada", grade: "8" }
@@ -113,40 +113,40 @@ const academicHistoryData = {
       id: 4,
       recordType: "Educación Secundaria Obligatoria",
       course: "1° de E.S.O.",
-      academicYear: "2020-2021",
-      entryDate: "14/09/2020",
-      center: "28041597 - IES LAS CANTERAS",
+      academicYear: "2021-2022",
+      entryDate: "14/09/2021",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Específicas obligatorias",
       subjects: [
-        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "8" },
+        { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "9" },
         { name: "Ciencias Sociales, Geografía e Historia", type: "Matriculada", grade: "8" },
         { name: "Educación Plástica y Visual", type: "Matriculada", grade: "8" },
-        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "8" },
+        { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "7" },
         { name: "Matemáticas", type: "Matriculada", grade: "8" },
-        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "8" },
-        { name: "Educación Física", type: "Matriculada", grade: "8" },
-        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "8" },
+        { name: "Primera Lengua Extranjera (Francés)", type: "Matriculada", grade: "7" },
+        { name: "Educación Física", type: "Matriculada", grade: "9" },
+        { name: "Segunda Lengua Extranjera (Inglés)", type: "Matriculada", grade: "6" },
         { name: "Tecnología", type: "Matriculada", grade: "8" },
-        { name: "Religión Católica", type: "Matriculada", grade: "8" }
+        { name: "Religión Católica", type: "Matriculada", grade: "9" }
       ]
     },
     {
       id: 5,
       recordType: "Educación Primaria",
       course: "6° de Primaria",
-      academicYear: "2019-2020",
-      entryDate: "09/09/2019",
-      center: "28041597 - CEIP SANTA MARÍA",
+      academicYear: "2020-2021",
+      entryDate: "09/09/2020",
+      center: "28041597 - CP INF-PRI San Juan de la Cruz",
       subjectGroup: "Específicas opcionales/CA",
       subjects: [
         { name: "Ciencias de la Naturaleza", type: "Matriculada", grade: "9" },
-        { name: "Ciencias Sociales", type: "Matriculada", grade: "9" },
-        { name: "Educación Artística", type: "Matriculada", grade: "9" },
-        { name: "Educación Física", type: "Matriculada", grade: "9" },
+        { name: "Ciencias Sociales", type: "Matriculada", grade: "10" },
+        { name: "Educación Artística", type: "Matriculada", grade: "10" },
+        { name: "Educación Física", type: "Matriculada", grade: "10" },
         { name: "Lengua Castellana y Literatura", type: "Matriculada", grade: "9" },
         { name: "Matemáticas", type: "Matriculada", grade: "9" },
-        { name: "Primera Lengua Extranjera (Inglés)", type: "Matriculada", grade: "9" },
-        { name: "Religión Católica", type: "Matriculada", grade: "9" }
+        { name: "Primera Lengua Extranjera (Inglés)", type: "Matriculada", grade: "8" },
+        { name: "Religión Católica", type: "Matriculada", grade: "10" }
       ]
     }
   ]
@@ -155,11 +155,11 @@ const academicHistoryData = {
 // Filter options
 const filterOptions = [
   { value: 'all', label: 'All Years' },
+  { value: '2024-2025', label: '2024-2025' },
   { value: '2023-2024', label: '2023-2024' },
   { value: '2022-2023', label: '2022-2023' },
   { value: '2021-2022', label: '2021-2022' },
-  { value: '2020-2021', label: '2020-2021' },
-  { value: '2019-2020', label: '2019-2020' }
+  { value: '2020-2021', label: '2020-2021' }
 ];
 
 const recordTypeOptions = [

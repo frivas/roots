@@ -7,7 +7,7 @@ const tutorMockData = {
     phone: '+34 612 345 678',
     school: 'CP INF-PRI San Juan de la Cruz',
     joinDate: '2018-09-01',
-    avatar: 'https://randomuser.me/api/portraits/women/79.jpg',
+    avatar: '/images/lucia-profile.jpg',
     bio: 'Experienced English teacher with a passion for helping students develop strong literacy skills. Specialized in contemporary literature and creative writing, with a focus on engaging students through innovative teaching methods and technology integration.',
     specializations: [
         'Literary Analysis',
@@ -31,9 +31,9 @@ const tutorMockData = {
         { degree: 'Licenciatura en Educación Primaria - Magisterio', institution: 'Universidad de Granada', year: '2012' }
     ],
     currentCourse: {
-        course: 'Five Years',
-        center: '28006254',
-        unit: 'I5',
+        course: '4° de E.S.O.',
+        center: '28041597',
+        unit: '1A',
         unitDelegate: 'No student delegate',
         unitSubdelegate: 'No student subdelegate',
     },

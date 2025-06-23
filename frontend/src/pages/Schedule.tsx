@@ -65,7 +65,7 @@ const itemVariants = {
 const scheduleData: ScheduleData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.",
+    course: "4°",
     group: "1A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
