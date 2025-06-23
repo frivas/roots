@@ -24,7 +24,7 @@ const ExtraCurricularSession: React.FC = () => {
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
+  const i18n = WIDGET_TRANSLATIONS[widgetLanguage as keyof typeof WIDGET_TRANSLATIONS];
 
   // Load widget script
   useEffect(() => {
@@ -32,7 +32,7 @@ const ExtraCurricularSession: React.FC = () => {
       const script = document.createElement('script');
       script.src = WIDGET_CONFIG.SCRIPT_SRC;
       script.async = true;
-      
+
       script.onload = () => {
         const checkInterval = setInterval(() => {
           if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
@@ -79,9 +79,9 @@ const ExtraCurricularSession: React.FC = () => {
 
       // Create new widget with language configuration
       const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
-      
+
       // Configure widget based on activity type
-      const agentId = activityType && AGENT_IDS[activityType];
+      const agentId = activityType && AGENT_IDS[activityType as keyof typeof AGENT_IDS];
       if (!agentId) {
         console.error(`No agent ID found for activity type: ${activityType}`);
         return;
@@ -135,7 +135,7 @@ const ExtraCurricularSession: React.FC = () => {
           <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
             <Info className="h-5 w-5" />
           </button>
-          
+
           {/* Modern Tooltip */}
           <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 shadow-lg">
             <div className="absolute -top-1 right-4 w-2 h-2 bg-white border-l border-t border-gray-200 rotate-45"></div>
@@ -150,4 +150,4 @@ const ExtraCurricularSession: React.FC = () => {
   );
 };
 
-export default ExtraCurricularSession; 
+export default ExtraCurricularSession;

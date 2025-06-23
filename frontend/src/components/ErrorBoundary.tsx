@@ -37,15 +37,15 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="flex justify-center">
               <AlertTriangle className="h-12 w-12 text-error" />
             </div>
-            
+
             <h2 className="text-xl font-semibold text-foreground">
               Something went wrong
             </h2>
-            
+
             <p className="text-muted-foreground">
               The page encountered an error and couldn't load properly.
             </p>
-            
+
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="text-left bg-muted p-4 rounded-md text-sm">
                 <summary className="cursor-pointer font-medium">Error Details</summary>
@@ -54,7 +54,7 @@ class ErrorBoundary extends Component<Props, State> {
                 </pre>
               </details>
             )}
-            
+
             <div className="flex gap-2 justify-center">
               <Button
                 onClick={() => {
@@ -65,13 +65,13 @@ class ErrorBoundary extends Component<Props, State> {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
               </Button>
-              
+
               <Button
                 onClick={() => {
-                  window.location.href = '/dashboard';
+                  window.location.href = '/home';
                 }}
               >
-                Go to Dashboard
+                Go to Home
               </Button>
             </div>
           </div>
@@ -83,4 +83,4 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default ErrorBoundary; 
+export default ErrorBoundary;

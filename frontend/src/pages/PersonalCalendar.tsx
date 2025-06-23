@@ -251,7 +251,6 @@ const PersonalCalendar: React.FC = () => {
             createdAt: new Date()
         }
     ]);
-    const [selectedDate, setSelectedDate] = useState<string>('');
 
     const currentLocale = language === 'es-ES' ? 'es-ES' : 'en-US';
 
@@ -385,30 +384,14 @@ const PersonalCalendar: React.FC = () => {
     };
 
     // Handle input changes
-    const handleInputChange = (field: string, value: any) => {
+    const handleInputChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
     };
 
-    // Format date for display
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        if (language === 'es-ES') {
-            return date.toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        } else {
-            return date.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-    };
+
 
     const calendar = generateCalendarGrid();
 
@@ -546,7 +529,6 @@ const PersonalCalendar: React.FC = () => {
                                                 )}
                                                 onClick={() => {
                                                     if (day.isCurrentMonth) {
-                                                        setSelectedDate(day.dateString);
                                                         setFormData(prev => ({
                                                             ...prev,
                                                             startDate: day.dateString,
@@ -565,7 +547,7 @@ const PersonalCalendar: React.FC = () => {
 
                                                 {/* Events for this day */}
                                                 <div className="space-y-1">
-                                                    {day.events.slice(0, 3).map((event, eventIndex) => {
+                                                    {day.events.slice(0, 3).map((event) => {
                                                         const priority = priorityTypes[event.priority];
                                                         return (
                                                             <div
