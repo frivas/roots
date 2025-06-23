@@ -37,6 +37,8 @@ const ChessCoachingSession = lazy(() => import('./pages/services/ChessCoachingSe
 const MathTutoringSession = lazy(() => import('./pages/services/MathTutoringSession'));
 const StorytellingSession = lazy(() => import('./pages/services/StorytellingSession'));
 const LanguageLessonSession = lazy(() => import('./pages/services/LanguageLessonSession'));
+const ProgressInterpretationService = lazy(() => import('./pages/services/ProgressInterpretationService'));
+const ProgressInterpretationChat = lazy(() => import('./pages/services/ProgressInterpretationChat'));
 const MorningClassroom = lazy(() => import('./pages/MorningClassroom'));
 
 // Placeholder components for new routes
@@ -155,6 +157,8 @@ function App() {
             <Route path="/services/math-tutoring-session" element={<MathTutoringSession />} />
             <Route path="/services/storytelling-session" element={<StorytellingSession />} />
             <Route path="/services/language-lesson-session" element={<LanguageLessonSession />} />
+            <Route path="/services/progress-interpretation" element={<ProgressInterpretationService />} />
+            <Route path="/services/progress-interpretation-chat" element={<ProgressInterpretationChat />} />
             <Route path="/services/morning-classroom" element={<MorningClassroom />} />
             <Route path="/services/*" element={<Services />} />
 
