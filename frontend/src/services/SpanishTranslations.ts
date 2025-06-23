@@ -62,6 +62,48 @@ export const spanishTranslations: Record<string, string> = {
   "User Management": "Gestión de Usuarios",
   "Academic Calendar": "Calendario Académico",
   "Announcements": "Anuncios",
+
+  // Tutoring Page
+  "Meet your dedicated teacher and access tutoring resources.": "Conoce a tu profesor dedicado y accede a recursos de tutoría.",
+  "Teacher/Tutor": "Profesor/Tutor",
+  "Joined": "Se unió",
+  "Send a message": "Enviar un mensaje",
+  "About Me": "Acerca de Mí",
+  "Current Course": "Curso Actual",
+  "Course": "Curso",
+  "Center": "Centro",
+  "Unit": "Unidad",
+  "Unit Delegate": "Delegado de Unidad",
+  "Unit Subdelegate": "Subdelegado de Unidad",
+  "Teaching Specializations": "Especializaciones Docentes",
+  "Teaching Performance Metrics": "Métricas de Rendimiento Docente",
+  "Classes Taught": "Clases Impartidas",
+  "Students Mentored": "Estudiantes Mentorizados",
+  "Educational Events Organized": "Eventos Educativos Organizados",
+  "Student Satisfaction Score": "Puntuación de Satisfacción Estudiantil",
+  "Education & Credentials": "Educación y Credenciales",
+
+  // Tutor Specializations
+  "Literary Analysis": "Análisis Literario",
+  "Creative Writing": "Escritura Creativa",
+  "Advanced Grammar": "Gramática Avanzada",
+  "Public Speaking": "Oratoria",
+  "Curriculum Development": "Desarrollo Curricular",
+  "Student Mentoring": "Mentoría Estudiantil",
+  "Digital Learning": "Aprendizaje Digital",
+  "Assessment Design": "Diseño de Evaluaciones",
+
+  // Tutor Education & Course Data
+  "Maestría en Inglés": "Maestría en Inglés",
+  "Master en Educación Primaria": "Máster en Educación Primaria",
+  "Licenciatura en Educación Primaria - Magisterio": "Licenciatura en Educación Primaria - Magisterio",
+  "Universidad de Granada": "Universidad de Granada",
+  "4° de E.S.O.": "4° de E.S.O.",
+  "No student delegate": "Sin delegado estudiantil",
+  "No student subdelegate": "Sin subdelegado estudiantil",
+
+  // Tutor Bio
+  "Experienced English teacher with a passion for helping students develop strong literacy skills. Specialized in contemporary literature and creative writing, with a focus on engaging students through innovative teaching methods and technology integration.": "Profesora de inglés experimentada con pasión por ayudar a los estudiantes a desarrollar sólidas habilidades de alfabetización. Especializada en literatura contemporánea y escritura creativa, con enfoque en involucrar a los estudiantes a través de métodos de enseñanza innovadores e integración tecnológica.",
   
   // Browser Title
   "Raíces - Educational Management System for Madrid Community": "Raíces - Sistema Integral de Gestión Educativa de Madrid",

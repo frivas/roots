@@ -159,7 +159,7 @@ const StudentProfile: React.FC = () => {
               {/* Profile Photo */}
               <div className="flex justify-center items-center">
                 <div className="relative">
-                  <div className="w-24 h-32 rounded-xl overflow-hidden ring-4 ring-blue-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-1">
+                  <div className="w-24 h-32 rounded-xl overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
                     <div className="w-full h-full rounded-lg overflow-hidden bg-white">
                       <img
                         src="/images/sofia-profile.jpg"
