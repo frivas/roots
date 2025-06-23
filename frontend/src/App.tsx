@@ -81,7 +81,7 @@ function App() {
           {/* Public routes */}
           <Route
             path="/"
-            element={<Navigate to="/dashboard" replace />}
+            element={<Navigate to="/home" replace />}
           />
 
           {/* Auth routes */}
@@ -94,7 +94,7 @@ function App() {
                     type="signIn"
                     routing="path"
                     path="/auth/login"
-                    redirectUrl="/dashboard"
+                    redirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>
@@ -110,7 +110,7 @@ function App() {
                     type="signUp"
                     routing="path"
                     path="/auth/register"
-                    redirectUrl="/dashboard"
+                    redirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>
@@ -197,7 +197,7 @@ function App() {
           {/* Catch unauthenticated users */}
           <Route
             path="/signin"
-            element={<RedirectToSignIn redirectUrl="/dashboard" />}
+            element={<RedirectToSignIn redirectUrl="/home" />}
           />
 
           {/* 404 route */}

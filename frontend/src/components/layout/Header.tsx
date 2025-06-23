@@ -11,15 +11,15 @@ const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isLoaded } = useUser();
   const location = useLocation();
-  
+
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Home', href: '/home', icon: Home },
     { name: 'Services', href: '/services', icon: BookOpen },
     { name: 'Messages', href: '/messages', icon: Mail },
     { name: 'Notifications', href: '/notifications', icon: Bell },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
-  
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
               <MadridLogo size="md" />
               <span className="text-xl font-bold text-foreground">Raíces</span>
             </Link>
-            
+
             <nav className="ml-10 hidden md:flex space-x-8">
               {navigation.map((item) => (
                 <Link
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
               ))}
             </nav>
           </div>
-          
+
           {/* User menu and mobile menu button */}
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
@@ -62,7 +62,7 @@ const Header: React.FC = () => {
                 <UserButton afterSignOutUrl="/auth/login" />
               </div>
             )}
-            
+
             <button
               type="button"
               className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden animate-fade-in">

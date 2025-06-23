@@ -3,8 +3,7 @@
 
 export const spanishTranslations: Record<string, string> = {
   // Navigation & Layout
-  "Dashboard": "Panel de Control",
-  "Home": "Seguimiento del Curso",
+  "Home": "Inicio",
   "Our School": "Centro",
   "Services": "Servicios",
   "Messages": "Mensajes",
@@ -26,16 +25,16 @@ export const spanishTranslations: Record<string, string> = {
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
   "Raíces": "Raíces",
-  
+
   // Browser Title
   "Raíces - Educational Management System for Madrid Community": "Raíces - Sistema Integral de Gestión Educativa de Madrid",
   "A comprehensive platform for educational services management": "Una plataforma integral para la gestión de servicios educativos",
 
-  // Dashboard - Main
+  // Home - Main
   "Welcome to Raíces!": "¡Bienvenidos a Raíces!",
   "Here's an overview of your educational journey.": "Aquí tienes una visión general de tu viaje educativo.",
 
-  // Dashboard - Stats Cards
+  // Home - Stats Cards
   "Upcoming Classes": "Clases Próximas",
   "Active Programs": "Programas Activos",
   "New Messages": "Mensajes Nuevos",
@@ -45,10 +44,10 @@ export const spanishTranslations: Record<string, string> = {
   "require attention": "requieren atención",
   "since last quarter": "desde el último trimestre",
 
-  // Dashboard - Learning Activity
+  // Home - Learning Activity
   "Learning Activity": "Actividad de Aprendizaje",
   "Your activity across all courses for the past 30 days": "Tu actividad en todos los cursos durante los últimos 30 días",
-  "Dashboard Overview": "Resumen",
+  "Home Overview": "Resumen",
   "Detailed": "Detallado",
   "Activity overview chart will appear here": "El gráfico de resumen de actividad aparecerá aquí",
   "Detailed activity chart will appear here": "El gráfico detallado de actividad aparecerá aquí",
@@ -747,7 +746,7 @@ export const spanishTranslations: Record<string, string> = {
   // Error Pages
   "Page Not Found": "Página No Encontrada",
   "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.": "La página que buscas podría haber sido eliminada, haber cambiado de nombre o no estar disponible temporalmente.",
-  "Return to Dashboard": "Volver al Panel de Control",
+  "Return to Home": "Volver al Inicio",
 
   // Profile Page
   "View and manage your professional profile": "Ve y gestiona tu perfil profesional",
@@ -978,30 +977,30 @@ export const spanishTranslations: Record<string, string> = {
   "Informational Session for ESO Parents": "Sesión Informativa para Padres de ESO",
   "We will be holding an informational session for parents and guardians of ESO students on June 20th. The session will cover important topics regarding academic expectations, assessment criteria, and extracurricular opportunities.": "Celebraremos una sesión informativa para padres y tutores de estudiantes de ESO el 20 de junio. La sesión cubrirá temas importantes sobre expectativas académicas, criterios de evaluación y oportunidades extracurriculares.",
   "Academic Direction Team": "Equipo de Dirección Académica",
-  
+
   "School Transportation Route Changes": "Cambios en las Rutas de Transporte Escolar",
   "Due to road construction on Calle Mayor, bus routes 3 and 5 will have temporary modifications starting Monday, June 9th. Please check the attached route map for details.": "Debido a obras en Calle Mayor, las rutas de autobús 3 y 5 tendrán modificaciones temporales a partir del lunes 9 de junio. Consulte el mapa de rutas adjunto para más detalles.",
   "Transportation Department": "Departamento de Transporte",
-  
+
   "New Cafeteria Menu Options": "Nuevas Opciones del Menú de Cafetería",
   "Starting this semester, we're introducing new healthy menu options including vegetarian and gluten-free alternatives. The updated menu has been developed with nutritionists to ensure balanced meals for all students.": "A partir de este semestre, introducimos nuevas opciones de menú saludables, incluyendo alternativas vegetarianas y sin gluten. El menú actualizado ha sido desarrollado con nutricionistas para asegurar comidas equilibradas para todos los estudiantes.",
   "Food Services": "Servicios de Alimentación",
-  
+
   "Parent-Teacher Association Meeting": "Reunión de la Asociación de Madres y Padres",
   "The PTA meeting was held on May 5th at 18:00 in the main auditorium. We discussed this year's educational initiatives and fundraising activities for the upcoming semester.": "La reunión del AMPA se celebró el 5 de mayo a las 18:00 en el auditorio principal. Discutimos las iniciativas educativas de este año y las actividades de recaudación de fondos para el próximo semestre.",
   "Parent-Teacher Association": "Asociación de Madres y Padres",
-  
+
   "Science Fair Registration Open": "Abierto el Registro para la Feria de Ciencias",
   "Students can now register for the annual science fair. This year's theme is 'Sustainability and Innovation'. Registration deadline is June 30th. Projects will be presented in July.": "Los estudiantes ya pueden registrarse para la feria de ciencias anual. El tema de este año es 'Sostenibilidad e Innovación'. La fecha límite de registro es el 30 de junio. Los proyectos se presentarán en julio.",
   "Science Department": "Departamento de Ciencias",
-  
+
   "Holiday Schedule Update": "Actualización del Calendario de Vacaciones",
   "Please note the updated holiday schedule for the academic year 2024-2025. Classes were suspended from December 21st to January 8th for winter break. Summer break begins June 25th.": "Tenga en cuenta el calendario de vacaciones actualizado para el año académico 2024-2025. Las clases se suspendieron del 21 de diciembre al 8 de enero para las vacaciones de invierno. Las vacaciones de verano comienzan el 25 de junio.",
   "Academic Administration": "Administración Académica",
-  
+
   "Digital Platform Training for Parents": "Formación en Plataforma Digital para Padres",
   "We're offering training sessions for parents on how to use the Raíces educational platform. Sessions were held every Thursday in May from 17:00 to 18:00 in the computer lab.": "Ofrecimos sesiones de formación para padres sobre cómo usar la plataforma educativa Raíces. Las sesiones se celebraron todos los jueves de mayo de 17:00 a 18:00 en el aula de informática.",
-  
+
   "School Elections - Student Council": "Elecciones Escolares - Consejo de Estudiantes",
   "Student council elections took place from April 14th to 16th. Results have been announced and the new council will begin their duties in the next semester.": "Las elecciones del consejo estudiantil tuvieron lugar del 14 al 16 de abril. Los resultados han sido anunciados y el nuevo consejo comenzará sus funciones en el próximo semestre.",
   "Student Affairs": "Asuntos Estudiantiles",

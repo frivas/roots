@@ -12,9 +12,9 @@ const NotFound = () => {
         <p className="text-muted-foreground">
           The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
         </p>
-        <Link to="/dashboard">
+        <Link to="/home">
           <Button leftIcon={<Home className="h-4 w-4" />}>
-            Return to Dashboard
+            Return to Home
           </Button>
         </Link>
       </div>

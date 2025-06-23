@@ -25,8 +25,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -41,7 +41,7 @@ const itemVariants = {
 };
 
 // Custom grid pattern card component
-const GridPatternCard = ({ 
+const GridPatternCard = ({
   className,
   icon,
   title,
@@ -101,7 +101,7 @@ const GridPatternCard = ({
 };
 
 // Translated version of GridPatternCard
-const TranslatedGridPatternCard = ({ 
+const TranslatedGridPatternCard = ({
   className,
   icon,
   title,
@@ -182,25 +182,25 @@ const Dashboard = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="space-y-8 pb-8"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       {/* Header Section */}
-      <motion.div 
+      <motion.div
         className="flex flex-col gap-2"
         variants={itemVariants}
       >
-        <TranslatedText 
-          element="h1" 
+        <TranslatedText
+          element="h1"
           className="text-4xl font-bold tracking-tight text-foreground"
         >
-                          Welcome to Raíces!
+          Welcome to Raíces!
         </TranslatedText>
-        <TranslatedText 
-          element="p" 
+        <TranslatedText
+          element="p"
           className="text-muted-foreground text-lg"
         >
           Here's an overview of your educational journey.
@@ -222,7 +222,7 @@ const Dashboard = () => {
           trendValue="2"
           trendDirection="up"
         />
-        
+
         <TranslatedGridPatternCard
           icon={<Briefcase className="h-5 w-5" />}
           title="Active Programs"
@@ -231,7 +231,7 @@ const Dashboard = () => {
           trendValue="0"
           trendDirection="up"
         />
-        
+
         <TranslatedGridPatternCard
           icon={<Bell className="h-5 w-5" />}
           title="New Messages"
@@ -240,7 +240,7 @@ const Dashboard = () => {
           trendValue="3"
           trendDirection="up"
         />
-        
+
         <TranslatedGridPatternCard
           icon={<Users className="h-5 w-5" />}
           title="Active Mentorships"
@@ -254,7 +254,7 @@ const Dashboard = () => {
       {/* Main Content Section */}
       <div className="grid gap-6 md:grid-cols-7">
         {/* Activity Chart */}
-        <motion.div 
+        <motion.div
           className="col-span-7 md:col-span-4"
           variants={itemVariants}
         >
@@ -272,16 +272,16 @@ const Dashboard = () => {
                 <div className="flex space-x-2">
                   <button className={cn(
                     "px-3 py-1 text-sm rounded-md transition-colors",
-                    activeTab === 'overview' 
-                      ? "bg-primary text-primary-foreground" 
+                    activeTab === 'overview'
+                      ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   )} onClick={() => setActiveTab('overview')}>
-                    <TranslatedText>Dashboard Overview</TranslatedText>
+                    <TranslatedText>Home Overview</TranslatedText>
                   </button>
                   <button className={cn(
                     "px-3 py-1 text-sm rounded-md transition-colors",
-                    activeTab === 'detailed' 
-                      ? "bg-primary text-primary-foreground" 
+                    activeTab === 'detailed'
+                      ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   )} onClick={() => setActiveTab('detailed')}>
                     <TranslatedText>Detailed</TranslatedText>
@@ -310,9 +310,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </motion.div>
-        
+
         {/* Quick Actions */}
-        <motion.div 
+        <motion.div
           className="col-span-7 md:col-span-3"
           variants={itemVariants}
         >
@@ -333,7 +333,7 @@ const Dashboard = () => {
                   { icon: <Bell className="h-6 w-6" />, label: "Notifications", color: "bg-amber-500/10 text-amber-500" },
                   { icon: <GraduationCap className="h-6 w-6" />, label: "My Courses", color: "bg-green-500/10 text-green-500" },
                 ].map((item, index) => (
-                  <motion.button 
+                  <motion.button
                     key={index}
                     className="flex flex-col items-center justify-center rounded-lg border border-border p-4 hover:bg-muted transition-colors"
                     whileHover={{ scale: 1.03 }}
@@ -367,14 +367,14 @@ const Dashboard = () => {
             <ChevronRight className="h-4 w-4 ml-1" />
           </button>
         </div>
-        
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[
             { title: "Introduction to Data Science", progress: 75, lessons: 12, completed: 9 },
             { title: "Advanced Web Development", progress: 45, lessons: 20, completed: 9 },
             { title: "UX Design Fundamentals", progress: 30, lessons: 15, completed: 5 },
           ].map((course, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               variants={itemVariants}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
@@ -392,7 +392,7 @@ const Dashboard = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         className="h-full bg-primary rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${course.progress}%` }}
@@ -417,7 +417,7 @@ const Dashboard = () => {
 
       {/* Include TranslationDebugger for testing */}
       {/* <TranslationDebugger /> */}
-      
+
       {/* Temporary debugging component */}
       {/* <LanguageDebugger /> */}
     </motion.div>

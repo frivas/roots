@@ -45,7 +45,7 @@ const LanguageLessonSession: React.FC = () => {
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = widgetTranslations[widgetLanguage];
+  const i18n = widgetTranslations[widgetLanguage as keyof typeof widgetTranslations];
 
   // Load widget script
   useEffect(() => {
@@ -53,7 +53,7 @@ const LanguageLessonSession: React.FC = () => {
       const script = document.createElement('script');
       script.src = SCRIPT_SRC;
       script.async = true;
-      
+
       script.onload = () => {
         const checkInterval = setInterval(() => {
           if (customElements.get(WIDGET_ELEMENT_NAME)) {
@@ -100,7 +100,7 @@ const LanguageLessonSession: React.FC = () => {
 
       // Create new widget with language configuration
       const widget = document.createElement(WIDGET_ELEMENT_NAME);
-      
+
       // Configure widget
       const config = {
         'agent-id': 'agent_01jxy264qbe49b8f3rk71wnzn7',
@@ -150,7 +150,7 @@ const LanguageLessonSession: React.FC = () => {
           <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
             <Info className="h-5 w-5" />
           </button>
-          
+
           {/* Modern Tooltip */}
           <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 shadow-lg">
             <div className="absolute -top-1 right-4 w-2 h-2 bg-white border-l border-t border-gray-200 rotate-45"></div>
@@ -165,4 +165,4 @@ const LanguageLessonSession: React.FC = () => {
   );
 };
 
-export default LanguageLessonSession; 
+export default LanguageLessonSession;
