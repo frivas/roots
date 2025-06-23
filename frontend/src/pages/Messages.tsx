@@ -50,13 +50,14 @@ interface Message {
   starred: boolean;
 }
 
-const MOCK_MESSAGES: Message[] = [
+// Mock messages for inbox
+const MOCK_INBOX_MESSAGES: Message[] = [
   {
     id: '1',
-    sender: 'Principal Johnson',
+    sender: 'Principal García',
     subject: 'Staff Meeting Schedule Update',
     preview: 'The weekly staff meeting has been moved to Thursday at 3:00 PM. Please make sure to prepare your department updates and bring any relevant materials. We will be discussing the upcoming school events and budget allocations for the next quarter.',
-    date: '2023-05-15T14:30:00',
+    date: '2025-01-15T14:30:00',
     read: true,
     starred: true
   },
@@ -65,7 +66,7 @@ const MOCK_MESSAGES: Message[] = [
     sender: 'Transportation Dept',
     subject: 'Bus Route Changes',
     preview: 'Due to road construction, bus route #12 will be temporarily rerouted through Oak Street instead of Maple Avenue. This change will be effective starting next Monday and will continue for approximately three weeks. Please inform affected students and parents.',
-    date: '2023-05-14T09:15:00',
+    date: '2025-01-14T09:15:00',
     read: false,
     starred: false
   },
@@ -74,7 +75,7 @@ const MOCK_MESSAGES: Message[] = [
     sender: 'Cafeteria Services',
     subject: 'New Menu Options',
     preview: 'We are excited to announce new vegetarian and gluten-free options in our cafeteria starting next month. These additions are part of our ongoing commitment to provide nutritious and inclusive meal options for all students and staff.',
-    date: '2023-05-13T11:45:00',
+    date: '2025-01-13T11:45:00',
     read: false,
     starred: true
   },
@@ -83,7 +84,7 @@ const MOCK_MESSAGES: Message[] = [
     sender: 'IT Department',
     subject: 'System Maintenance',
     preview: 'The school management system will be offline for updates this Saturday from 10 PM to 2 AM. During this time, you will not be able to access grades, attendance records, or other administrative functions. Please plan accordingly.',
-    date: '2023-05-12T16:20:00',
+    date: '2025-01-12T16:20:00',
     read: true,
     starred: false
   },
@@ -92,7 +93,379 @@ const MOCK_MESSAGES: Message[] = [
     sender: 'Extracurricular Coordinator',
     subject: 'Summer Program Registration',
     preview: 'Registration for summer programs is now open. Space is limited, so please encourage interested students to sign up early. This year we are offering a variety of academic enrichment, arts, and sports programs to keep students engaged during the summer break.',
-    date: '2023-05-11T10:00:00',
+    date: '2025-01-11T10:00:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: '6',
+    sender: 'Nurse Johnson',
+    subject: 'Health Screening Reminder',
+    preview: 'Annual health screenings for all students are scheduled for next week. Please review the parent information packet and make sure your child comes prepared with any necessary documentation.',
+    date: '2025-01-10T08:30:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: '7',
+    sender: 'Library Services',
+    subject: 'New Books Available',
+    preview: 'We have received a new shipment of books including the latest educational materials for your grade level. These include science textbooks, literature collections, and interactive learning resources.',
+    date: '2025-01-09T13:15:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: '8',
+    sender: 'Parent Association',
+    subject: 'Volunteer Opportunities',
+    preview: 'The Parent Association is looking for volunteers for the upcoming spring fundraiser event. We need help with setup, coordination, and cleanup activities. Your participation would be greatly appreciated.',
+    date: '2025-01-08T15:45:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: '9',
+    sender: 'Art Department',
+    subject: 'Art Exhibition Invitation',
+    preview: 'You are cordially invited to attend the student art exhibition this Friday evening at 6 PM. The exhibition will showcase creative works from students across all grade levels.',
+    date: '2025-01-07T12:00:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: '10',
+    sender: 'Security Office',
+    subject: 'Updated Security Protocols',
+    preview: 'Please review the updated security protocols that will be implemented starting next month. These changes are designed to enhance the safety and security of all students and staff.',
+    date: '2025-01-06T10:30:00',
+    read: false,
+    starred: true
+  },
+  {
+    id: '11',
+    sender: 'Music Department',
+    subject: 'Winter Concert Rehearsal',
+    preview: 'Reminder: Extra rehearsal for the winter concert is scheduled for this Saturday at 9 AM. Please bring your instruments and sheet music. We will be focusing on the final pieces.',
+    date: '2024-01-05T14:20:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: '12',
+    sender: 'Guidance Counselor',
+    subject: 'Academic Planning Session',
+    preview: 'Please schedule an appointment to discuss your academic progress and future course selections. We will review your current performance and plan for the upcoming semester.',
+    date: '2024-01-04T11:00:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: '13',
+    sender: 'Sports Coordinator',
+    subject: 'Basketball Season Schedule',
+    preview: 'The basketball season schedule has been finalized. Please check the dates for your team and make note of home and away games. Practice schedules are also included.',
+    date: '2024-01-03T16:45:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: '14',
+    sender: 'Administrative Office',
+    subject: 'Document Submission Deadline',
+    preview: 'Reminder: All required documents must be submitted by the end of this week. This includes enrollment forms, medical records, and emergency contact information.',
+    date: '2024-01-02T09:30:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: '15',
+    sender: 'Technology Support',
+    subject: 'New Educational Software',
+    preview: 'We are excited to introduce new educational software tools that will enhance your learning experience. Training sessions will be available for both students and teachers.',
+    date: '2024-01-01T13:00:00',
+    read: true,
+    starred: false
+  }
+];
+
+// Mock messages for sent folder
+const MOCK_SENT_MESSAGES: Message[] = [
+  {
+    id: 's1',
+    sender: 'You',
+    subject: 'Re: Staff Meeting Schedule Update',
+    preview: 'Thank you for the update. I will make sure to attend the meeting on Thursday at 3:00 PM and bring the required materials.',
+    date: '2025-01-15T15:00:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's2',
+    sender: 'You',
+    subject: 'Field Trip Permission Request',
+    preview: 'I would like to request permission for a field trip to the Natural History Museum for my biology class next month.',
+    date: '2025-01-13T10:30:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's3',
+    sender: 'You',
+    subject: 'Student Progress Report Inquiry',
+    preview: 'Could you please provide an update on Sofia\'s academic progress in mathematics? I want to discuss additional support options.',
+    date: '2025-01-12T14:15:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: 's4',
+    sender: 'You',
+    subject: 'Art Supplies Request',
+    preview: 'The art department needs additional supplies for the upcoming projects. I have attached a detailed list of required materials.',
+    date: '2024-01-10T11:45:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's5',
+    sender: 'You',
+    subject: 'Volunteer Confirmation',
+    preview: 'I confirm my availability to volunteer for the spring fundraiser event. Please let me know what specific tasks I can help with.',
+    date: '2024-01-08T16:20:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's6',
+    sender: 'You',
+    subject: 'Parent-Teacher Conference Schedule',
+    preview: 'I would like to schedule a parent-teacher conference to discuss my child\'s progress and any areas that need improvement.',
+    date: '2024-01-07T09:00:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's7',
+    sender: 'You',
+    subject: 'Technology Support Request',
+    preview: 'I am experiencing issues with the new educational software. The login process seems to be malfunctioning on my device.',
+    date: '2024-01-05T13:30:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's8',
+    sender: 'You',
+    subject: 'Lunch Menu Feedback',
+    preview: 'Thank you for introducing the new vegetarian options. The students have responded very positively to the variety of choices.',
+    date: '2024-01-04T12:00:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: 's9',
+    sender: 'You',
+    subject: 'Concert Attendance Confirmation',
+    preview: 'I will be attending the winter concert on Friday evening. Looking forward to seeing the students\' performances.',
+    date: '2024-01-03T17:45:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's10',
+    sender: 'You',
+    subject: 'Security Protocol Questions',
+    preview: 'I have a few questions about the new security protocols. Could we schedule a brief meeting to discuss the implementation details?',
+    date: '2024-01-02T08:15:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's11',
+    sender: 'You',
+    subject: 'Library Book Recommendation',
+    preview: 'I would like to recommend some additional books for the library collection that would benefit students in advanced mathematics.',
+    date: '2023-12-28T14:20:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 's12',
+    sender: 'You',
+    subject: 'Health Screening Preparation',
+    preview: 'My child is prepared for the health screening next week. All required documentation has been completed and will be brought on the scheduled day.',
+    date: '2023-12-27T10:45:00',
+    read: true,
+    starred: false
+  }
+];
+
+// Mock messages for archived folder
+const MOCK_ARCHIVED_MESSAGES: Message[] = [
+  {
+    id: 'a1',
+    sender: 'Former Principal',
+    subject: 'End of Year Celebration',
+    preview: 'Thank you all for making this academic year successful. The end of year celebration will be held in the main auditorium.',
+    date: '2023-06-15T16:00:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: 'a2',
+    sender: 'Maintenance Dept',
+    subject: 'Summer Renovation Notice',
+    preview: 'The school building will undergo renovations during the summer break. Access will be limited during this period.',
+    date: '2023-06-10T09:30:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a3',
+    sender: 'Registration Office',
+    subject: 'Fall Semester Enrollment',
+    preview: 'Fall semester enrollment is now open. Please submit all required documents by the specified deadline.',
+    date: '2023-03-20T11:15:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a4',
+    sender: 'Special Programs',
+    subject: 'Gifted Program Application',
+    preview: 'Applications for the gifted and talented program are now being accepted. Please review the eligibility criteria.',
+    date: '2023-02-14T14:30:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: 'a5',
+    sender: 'PTA Committee',
+    subject: 'Winter Fundraiser Results',
+    preview: 'The winter fundraiser was a great success! Thank you to all parents and volunteers who participated in making this possible.',
+    date: '2023-01-25T13:45:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a6',
+    sender: 'Science Department',
+    subject: 'Science Fair Winners',
+    preview: 'Congratulations to all the students who participated in the annual science fair. The winners will be announced at the assembly.',
+    date: '2022-12-18T10:20:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a7',
+    sender: 'Language Department',
+    subject: 'Foreign Language Exchange',
+    preview: 'The foreign language exchange program applications are now available. This is a great opportunity for cultural learning.',
+    date: '2022-11-22T15:10:00',
+    read: true,
+    starred: true
+  },
+  {
+    id: 'a8',
+    sender: 'Drama Club',
+    subject: 'Spring Play Auditions',
+    preview: 'Auditions for the spring play will be held next week. All interested students are encouraged to participate.',
+    date: '2022-10-30T12:30:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a9',
+    sender: 'Environmental Club',
+    subject: 'Earth Day Activities',
+    preview: 'Join us for various Earth Day activities including tree planting, recycling drives, and environmental awareness presentations.',
+    date: '2022-04-18T08:45:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 'a10',
+    sender: 'Chess Club',
+    subject: 'Regional Tournament Victory',
+    preview: 'Our chess team won the regional tournament! Congratulations to all team members for their dedication and hard work.',
+    date: '2022-03-12T16:30:00',
+    read: true,
+    starred: true
+  }
+];
+
+// Mock messages for trash folder
+const MOCK_TRASH_MESSAGES: Message[] = [
+  {
+    id: 't1',
+    sender: 'Spam Filter',
+    subject: 'Suspicious Activity Alert',
+    preview: 'This message was flagged as potential spam and moved to trash automatically.',
+    date: '2025-01-16T12:00:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: 't2',
+    sender: 'Old System',
+    subject: 'Outdated Notification',
+    preview: 'This notification is from the old system and is no longer relevant. It has been moved to trash.',
+    date: '2025-01-15T08:00:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 't3',
+    sender: 'Duplicate Sender',
+    subject: 'Duplicate Message',
+    preview: 'This appears to be a duplicate of a previous message and has been moved to trash.',
+    date: '2024-01-14T14:30:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: 't4',
+    sender: 'Invalid Department',
+    subject: 'Invalid Message Source',
+    preview: 'This message came from an unrecognized department and has been flagged for review.',
+    date: '2024-01-13T11:15:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 't5',
+    sender: 'Test User',
+    subject: 'Test Message - Please Ignore',
+    preview: 'This was a test message sent during system testing and can be safely ignored.',
+    date: '2024-01-12T09:45:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: 't6',
+    sender: 'Expired Event',
+    subject: 'Expired Event Notification',
+    preview: 'This event notification has expired and is no longer relevant. The event has already concluded.',
+    date: '2023-12-20T16:20:00',
+    read: true,
+    starred: false
+  },
+  {
+    id: 't7',
+    sender: 'Cancelled Service',
+    subject: 'Cancelled Service Notice',
+    preview: 'This service has been cancelled and the notification is no longer needed.',
+    date: '2023-12-15T13:00:00',
+    read: false,
+    starred: false
+  },
+  {
+    id: 't8',
+    sender: 'Wrong Recipient',
+    subject: 'Misdelivered Message',
+    preview: 'This message was sent to the wrong recipient and has been moved to trash.',
+    date: '2023-12-10T10:30:00',
     read: true,
     starred: false
   }
@@ -137,14 +510,41 @@ const Messages = () => {
   const [composeMode, setComposeMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [messagesPerPage] = useState(10);
   const composeSubjectRef = useRef<HTMLInputElement>(null);
+
+  // Get messages based on active folder
+  const getMessagesForFolder = (folder: string): Message[] => {
+    switch (folder) {
+      case 'inbox':
+        return MOCK_INBOX_MESSAGES;
+      case 'sent':
+        return MOCK_SENT_MESSAGES;
+      case 'archived':
+        return MOCK_ARCHIVED_MESSAGES;
+      case 'trash':
+        return MOCK_TRASH_MESSAGES;
+      case 'starred':
+        return [...MOCK_INBOX_MESSAGES, ...MOCK_SENT_MESSAGES, ...MOCK_ARCHIVED_MESSAGES].filter(m => m.starred);
+      default:
+        return MOCK_INBOX_MESSAGES;
+    }
+  };
+
+  const [messages, setMessages] = useState(() => getMessagesForFolder('inbox'));
 
   useEffect(() => {
     if (composeMode && composeSubjectRef.current) {
       composeSubjectRef.current.focus();
     }
   }, [composeMode]);
+
+  // Update messages when folder changes
+  useEffect(() => {
+    setMessages(getMessagesForFolder(activeFolder));
+    setCurrentPage(1); // Reset to first page when changing folders
+  }, [activeFolder]);
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
@@ -159,24 +559,15 @@ const Messages = () => {
   }
 
   const folders = [
-    { id: 'inbox', name: 'Inbox', icon: InboxIcon, count: messages.filter(m => !m.read).length },
-    { id: 'starred', name: 'Starred', icon: StarIcon, count: messages.filter(m => m.starred).length },
-    { id: 'sent', name: 'Sent', icon: SendIcon, count: 0 },
-    { id: 'archived', name: 'Archived', icon: ArchiveIcon, count: 0 },
-    { id: 'trash', name: 'Trash', icon: TrashIcon, count: 0 }
+    { id: 'inbox', name: 'Inbox', icon: InboxIcon, count: MOCK_INBOX_MESSAGES.filter(m => !m.read).length },
+    { id: 'starred', name: 'Starred', icon: StarIcon, count: [...MOCK_INBOX_MESSAGES, ...MOCK_SENT_MESSAGES, ...MOCK_ARCHIVED_MESSAGES].filter(m => m.starred).length },
+    { id: 'sent', name: 'Sent', icon: SendIcon, count: MOCK_SENT_MESSAGES.length },
+    { id: 'archived', name: 'Archived', icon: ArchiveIcon, count: MOCK_ARCHIVED_MESSAGES.length },
+    { id: 'trash', name: 'Trash', icon: TrashIcon, count: MOCK_TRASH_MESSAGES.length }
   ];
 
+  // Filter messages by search query
   const filteredMessages = messages.filter(message => {
-    // Filter by folder
-    if (activeFolder === 'inbox') {
-      // pass
-    } else if (activeFolder === 'starred' && !message.starred) {
-      return false;
-    } else if (activeFolder !== 'inbox' && activeFolder !== 'starred') {
-      return false;
-    }
-
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -185,9 +576,15 @@ const Messages = () => {
         message.preview.toLowerCase().includes(query)
       );
     }
-
     return true;
   });
+
+  // Calculate pagination
+  const totalMessages = filteredMessages.length;
+  const totalPages = Math.ceil(totalMessages / messagesPerPage);
+  const startIndex = (currentPage - 1) * messagesPerPage;
+  const endIndex = startIndex + messagesPerPage;
+  const paginatedMessages = filteredMessages.slice(startIndex, endIndex);
 
   const toggleStarred = (messageId: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -232,7 +629,7 @@ const Messages = () => {
             >
               <input
                 type="text"
-                placeholder="Search messages..."
+                placeholder={language === 'es-ES' ? 'Buscar mensajes...' : 'Search messages...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pr-8 rounded-md border border-border bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -321,22 +718,23 @@ const Messages = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="h-full min-h-0 overflow-y-auto">
-                {filteredMessages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-                    <InboxIcon className="h-12 w-12 text-muted-foreground mb-4" />
-                    <TranslatedText element="p" className="text-lg font-medium">No messages found</TranslatedText>
-                    <TranslatedText element="p" className="text-muted-foreground mt-1">
-                      {searchQuery
-                        ? "Try adjusting your search terms"
-                        : activeFolder === 'starred'
-                          ? "Star messages to see them here"
-                          : "Your inbox is empty"}
-                    </TranslatedText>
-                  </div>
-                ) : (
-                  <ul className="divide-y divide-border">
-                    {filteredMessages.map((message, index) => (
+              <div className="h-full min-h-0 flex flex-col">
+                <div className="flex-1 overflow-y-auto">
+                  {paginatedMessages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                      <InboxIcon className="h-12 w-12 text-muted-foreground mb-4" />
+                      <TranslatedText element="p" className="text-lg font-medium">No messages found</TranslatedText>
+                      <TranslatedText element="p" className="text-muted-foreground mt-1">
+                        {searchQuery
+                          ? "Try adjusting your search terms"
+                          : activeFolder === 'starred'
+                            ? "Star messages to see them here"
+                            : "Your inbox is empty"}
+                      </TranslatedText>
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-border">
+                      {paginatedMessages.map((message, index) => (
                       <motion.li
                         key={message.id}
                         className={`cursor-pointer hover:bg-muted transition-colors ${!message.read ? 'bg-muted/50' : ''}`}
@@ -361,12 +759,12 @@ const Messages = () => {
                           </button>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center">
-                              <p className={`text-sm font-medium ${!message.read ? 'font-semibold' : ''}`}>
-                                <TranslatedText>{message.sender}</TranslatedText>
-                              </p>
-                              <p className="ml-auto text-xs text-muted-foreground">
-                                {formatDate(new Date(message.date))}
-                              </p>
+                                                          <p className={`text-sm font-medium ${!message.read ? 'font-semibold' : ''}`}>
+                              <TranslatedText>{message.sender}</TranslatedText>
+                            </p>
+                            <p className="ml-auto text-xs text-muted-foreground">
+                              {formatDate(new Date(message.date), language)}
+                            </p>
                             </div>
                             <p className={`text-sm ${!message.read ? 'font-medium' : ''}`}>
                               <TranslatedText>{message.subject}</TranslatedText>
@@ -382,6 +780,64 @@ const Messages = () => {
                       </motion.li>
                     ))}
                   </ul>
+                )}
+                </div>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="border-t border-border p-4 bg-background">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-muted-foreground">
+                        <span>
+                          Showing {startIndex + 1} to {Math.min(endIndex, totalMessages)} of {totalMessages} messages
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        >
+                          <TranslatedText>Previous</TranslatedText>
+                        </Button>
+                        <div className="flex items-center space-x-1">
+                          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum;
+                            if (totalPages <= 5) {
+                              pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                              pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                              pageNum = totalPages - 4 + i;
+                            } else {
+                              pageNum = currentPage - 2 + i;
+                            }
+                            
+                            return (
+                              <Button
+                                key={pageNum}
+                                variant={currentPage === pageNum ? "primary" : "outline"}
+                                size="sm"
+                                className="w-8 h-8 p-0"
+                                onClick={() => setCurrentPage(pageNum)}
+                              >
+                                {pageNum}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          <TranslatedText>Next</TranslatedText>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -436,7 +892,7 @@ const Messages = () => {
                       <div>
                         <p className="font-medium">{selectedMessage.sender}</p>
                         <p className="text-sm text-muted-foreground">
-                          {formatDate(new Date(selectedMessage.date))}
+                          {formatDate(new Date(selectedMessage.date), language)}
                         </p>
                       </div>
                     </div>
@@ -497,7 +953,7 @@ const Messages = () => {
                           {selectedMessage.id === '1' ? 'Staff_Meeting_Agenda.pdf' : 'Route12_Temporary_Changes.pdf'}
                         </span>
                         <Button variant="ghost" className="ml-auto text-sm">
-                          View
+                          <TranslatedText>View</TranslatedText>
                         </Button>
                       </div>
                     </div>
@@ -513,15 +969,15 @@ const Messages = () => {
                       }}
                     >
                       <ReplyIcon className="h-4 w-4 mr-2" />
-                      Reply
+                      <TranslatedText>Reply</TranslatedText>
                     </Button>
                     <Button variant="outline">
                       <ArchiveIcon className="h-4 w-4 mr-2" />
-                      Archive
+                      <TranslatedText>Archive</TranslatedText>
                     </Button>
                     <Button variant="outline">
                       <TrashIcon className="h-4 w-4 mr-2" />
-                      Delete
+                      <TranslatedText>Delete</TranslatedText>
                     </Button>
                   </div>
                 </div>
@@ -559,11 +1015,12 @@ const Messages = () => {
                       >
                         <option value="" disabled>{language === 'es-ES' ? 'Seleccionar destinatario' : 'Select recipient'}</option>
                         {RECIPIENTS.map((recipient) => {
-                          const label = `${recipient.name} - ${recipient.role.split(',')[0].trim()}`;
-                          const translatedLabel = language === 'es-ES' ? getSpanishTranslation(label) : label;
+                          const role = recipient.role.split(',')[0].trim();
+                          const translatedRole = language === 'es-ES' ? getSpanishTranslation(role) : role;
+                          const label = `${recipient.name} - ${translatedRole}`;
                           return (
                             <option key={recipient.name} value={recipient.name}>
-                              {translatedLabel}
+                              {label}
                             </option>
                           );
                         })}
@@ -572,12 +1029,12 @@ const Messages = () => {
 
                     <div className="space-y-2">
                       <label htmlFor="subject" className="text-sm font-medium text-muted-foreground">
-                        Subject:
+                        <TranslatedText>Subject:</TranslatedText>
                       </label>
                       <input
                         id="subject"
                         type="text"
-                        placeholder="Subject"
+                        placeholder={language === 'es-ES' ? 'Asunto' : 'Subject'}
                         ref={composeSubjectRef}
                         defaultValue={selectedMessage ? `Re: ${selectedMessage.subject}` : ''}
                         className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -586,12 +1043,12 @@ const Messages = () => {
 
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm font-medium text-muted-foreground">
-                        Message:
+                        <TranslatedText>Message:</TranslatedText>
                       </label>
                       <textarea
                         id="message"
                         rows={12}
-                        placeholder="Write your message here..."
+                        placeholder={language === 'es-ES' ? 'Escribe tu mensaje aquí...' : 'Write your message here...'}
                         className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                         defaultValue={selectedMessage ?
                           `\n\n\n\n-------- Original Message --------\nFrom: ${selectedMessage.sender}\nDate: ${formatDate(new Date(selectedMessage.date))}\nSubject: ${selectedMessage.subject}\n\n${selectedMessage.preview}` :
@@ -602,7 +1059,7 @@ const Messages = () => {
                     <div className="pt-2">
                       <Button variant="outline" className="text-sm">
                         <PaperclipIcon className="h-4 w-4 mr-2" />
-                        Attach Files
+                        <TranslatedText>Attach Files</TranslatedText>
                       </Button>
                     </div>
                   </div>
@@ -618,15 +1075,15 @@ const Messages = () => {
                       }
                     }}
                   >
-                    Cancel
+                    <TranslatedText>Cancel</TranslatedText>
                   </Button>
                   <div className="flex gap-2">
                     <Button variant="outline">
-                      Save Draft
+                      <TranslatedText>Save Draft</TranslatedText>
                     </Button>
                     <Button>
                       <SendIcon className="h-4 w-4 mr-2" />
-                      Send Message
+                      <TranslatedText>Send Message</TranslatedText>
                     </Button>
                   </div>
                 </div>

@@ -43,35 +43,50 @@
 
 ## ACADEMIC PERFORMANCE
 
-### Current Year Grades (2024-2025)
+### Current Year Grades (2024-2025) - 4th ESO
 
-#### 1st Evaluation (September - December 2024)
-| Subject | Type | Grade |
-|---------|------|-------|
-| Biology and Geology | Core General | 8/10 |
-| Sports | Optional Specific/LCA | 7/10 |
-| Visual and Audiovisual Arts | Mandatory Specific | 8/10 |
-| Geography and History | Core General | 7/10 |
-| Spanish Language and Literature | Core General | 8/10 |
-| Mathematics | Core General | 6/10 |
-| First Foreign Language (English) | Core Languages | 7/10 |
-| Ethical Values | Religion and Alternative | 8/10 |
+#### Academic Performance Overview (4th ESO)
+| Subject | Official Grade | Performance Notes |
+|---------|---------------|-------------------|
+| Ciencias de la Naturaleza | 7/10 | Struggling with complex concepts, but showing improvement |
+| Ciencias Sociales, Geografía e Historia | 9/10 | Exceptional analytical skills and historical understanding |
+| Educación Plástica y Visual | 8/10 | Strong artistic abilities and creative expression |
+| Lengua Castellana y Literatura | 9/10 | Outstanding literary analysis and writing skills |
+| Matemáticas | 6/10 | Significant challenge area; receiving additional support |
+| Primera Lengua Extranjera (Francés) | 8/10 | Good proficiency in French language |
+| Educación Física | 9/10 | Excellent athletic performance and competitive spirit |
+| Segunda Lengua Extranjera (Inglés) | 7/10 | Steady improvement in English communication |
+| Tecnología | 8/10 | Good understanding of technical concepts |
+| Religión Católica | 8/10 | Consistent performance in religious studies |
 
-**1st Evaluation Average:** 7.4/10
+**Current Year Average:** 7.8/10
 
-#### 2nd Evaluation (January - March 2025)
-| Subject | Type | Grade |
-|---------|------|-------|
-| Biology and Geology | Core General | 9/10 |
-| Sports | Optional Specific/LCA | 8/10 |
-| Visual and Audiovisual Arts | Mandatory Specific | 9/10 |
-| Geography and History | Core General | 8/10 |
-| Spanish Language and Literature | Core General | 9/10 |
-| Mathematics | Core General | 7/10 |
-| First Foreign Language (English) | Core Languages | 8/10 |
-| Ethical Values | Religion and Alternative | 9/10 |
+### Historical Academic Progression
 
-**2nd Evaluation Average:** 8.4/10
+#### 3rd ESO (2023-2024) Performance Highlights
+- **Matemáticas:** 7/10 (Improved from previous struggles)
+- **Educación para la Ciudadanía y los Derechos Humanos:** 9/10 (Exceptional civic understanding)
+- **Música:** 9/10 (Strong musical aptitude)
+- **Segunda Lengua Extranjera (Inglés):** 8/10 (Significant improvement)
+
+#### 2nd ESO (2022-2023) Performance Highlights  
+- **Educación Plástica y Visual:** 9/10 (Discovered artistic talents)
+- **Primera Lengua Extranjera (Francés):** 9/10 (Natural language ability)
+- **Educación Física:** 9/10 (Consistent athletic excellence)
+- **Matemáticas:** 7/10 (Beginning to show improvement with support)
+
+#### 1st ESO (2021-2022) Foundation Year
+- **Ciencias de la Naturaleza:** 9/10 (Strong start in sciences)
+- **Educación Física:** 9/10 (Natural athletic ability evident)
+- **Segunda Lengua Extranjera (Inglés):** 6/10 (Initial struggle with English)
+- **Primera Lengua Extranjera (Francés):** 7/10 (Good foundation building)
+
+#### 6th Primary (2020-2021) Final Primary Year
+- **Ciencias Sociales:** 10/10 (Outstanding performance)
+- **Educación Artística:** 10/10 (Exceptional artistic abilities)
+- **Educación Física:** 10/10 (Superior athletic performance)
+- **Religión Católica:** 10/10 (Excellent understanding)
+- **Overall Primary Performance:** 9.3/10 (Excellent student)
 
 ### Recent Academic Activities (2nd Evaluation)
 
@@ -293,20 +308,35 @@ Parents have expressed concern about Sofía's perfectionism and tendency to be h
 
 ## FUTURE ACADEMIC PLANNING
 
+### **Academic Strengths Pattern (2020-2025):**
+- **Exceptional Areas:** History/Social Sciences (9-10/10), Arts (9-10/10), Physical Education (9-10/10), Spanish Literature (9/10)
+- **Strong Areas:** French Language (7-9/10), Technology (8/10), Religious Studies (8-10/10)
+- **Developing Areas:** English Language (improved from 6/10 to 7-8/10), Sciences (varies 7-9/10)
+- **Challenge Area:** Mathematics (consistently 6-7/10, requires ongoing support)
+
+### **Academic Progression Summary:**
+- **Primary (6th grade):** Outstanding student (9.3/10 average) with particular excellence in arts and social sciences
+- **1st ESO:** Strong foundation year despite initial English challenges
+- **2nd ESO:** Artistic talents flourished, math support began showing results
+- **3rd ESO:** Significant English improvement, continued math progress
+- **4th ESO:** Mature academic profile with clear strengths and targeted support needs
+
 ### **Strengths to Build Upon:**
-- Strong analytical and creative thinking skills
-- Excellent work ethic and dedication
-- Natural leadership abilities
-- Artistic and scientific talents
+- Strong analytical and creative thinking skills in humanities and arts
+- Excellent athletic abilities and competitive drive
+- Natural talent for languages (particularly French)
+- Outstanding historical and literary analysis capabilities
+- Artistic expression and visual creativity
 
 ### **Areas for Development:**
+- Mathematical reasoning and problem-solving confidence
 - Collaborative and teamwork skills
-- Emotional regulation under pressure
-- Empathy and peer relationship building
-- Self-compassion and realistic self-expectations
+- Emotional regulation under academic pressure
+- Empathy and peer relationship building in academic settings
+- Self-compassion regarding learning challenges (especially mathematics)
 
 ### **Predicted Trajectory:**
-Sofía is on track to be a high-achieving student who will likely pursue higher education. With continued support for her social-emotional development alongside her academic strengths, she has the potential to be both academically successful and socially well-adjusted.
+Sofía shows a clear academic profile suited for humanities, arts, or social sciences pathways. Her consistent excellence in history, literature, and arts, combined with strong athletic abilities, positions her well for Bachillerato programs in Humanities and Social Sciences or Arts. Mathematics remains a challenge area requiring continued support, but her overall academic trajectory shows a dedicated student with strong analytical skills in her preferred subjects. With continued social-emotional support, she has excellent potential for higher education success in fields aligned with her strengths.
 
 ---
 
