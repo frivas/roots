@@ -134,6 +134,30 @@ const mockCalendarEvents = [
   }
 ];
 
+const mockSchoolCalendarEvents = [
+  {
+    id: '1',
+    title: 'Spring Break',
+    time: 'All Day',
+    date: 'April 1-5',
+    priority: 'high'
+  },
+  {
+    id: '2',
+    title: 'Final Exams Week',
+    time: '8:00 AM',
+    date: 'June 10-14',
+    priority: 'high'
+  },
+  {
+    id: '3',
+    title: 'Graduation Ceremony',
+    time: '3:00 PM',
+    date: 'June 20',
+    priority: 'medium'
+  }
+];
+
 // Import actual message data for consistency
 const ACTUAL_INBOX_MESSAGES = [
   {
@@ -377,50 +401,6 @@ const Dashboard = () => {
         </TranslatedText>
       </motion.div>
 
-      {/* Quick Stats Grid */}
-      <motion.div
-        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        variants={itemVariants}
-      >
-        {quickStats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * index }}
-          >
-            <Card 
-              className="hover:shadow-md transition-shadow cursor-pointer border-border"
-              onClick={() => navigate(stat.route)}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <TranslatedText className="text-sm text-muted-foreground">
-                    {stat.label}
-                  </TranslatedText>
-                  <stat.icon className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                <div className="flex items-center gap-1 text-sm">
-                  {stat.trendType === 'up' && <TrendingUp className="h-4 w-4 text-green-500" />}
-                  {stat.trendType === 'down' && <TrendingDown className="h-4 w-4 text-red-500" />}
-                  {stat.trendType === 'steady' && <Minus className="h-4 w-4 text-yellow-500" />}
-                  <span className={`font-medium ${
-                    stat.trendType === 'up' ? 'text-green-500' :
-                    stat.trendType === 'down' ? 'text-red-500' :
-                    'text-yellow-500'
-                  }`}>
-                    {stat.trend}
-                  </span>
-                  <TranslatedText className="text-muted-foreground ml-1">
-                    {stat.trendText}
-                  </TranslatedText>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
 
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
@@ -644,6 +624,80 @@ const Dashboard = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
                   onClick={() => navigate('/personal-calendar')}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <TranslatedText className="text-sm font-medium line-clamp-2 pr-2">
+                      {event.title}
+                    </TranslatedText>
+                    <span className={cn(
+                      "text-xs px-2 py-0.5 rounded-full shrink-0",
+                      event.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        event.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-green-100 text-green-800'
+                    )}>
+                      <TranslatedText>{event.priority}</TranslatedText>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3 shrink-0" />
+                    <span>{event.time}</span>
+                    <span>•</span>
+                    <TranslatedText>{event.date}</TranslatedText>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* School Calendar - Compact Horizontal Layout */}
+      <motion.div
+        className="order-4"
+        variants={itemVariants}
+      >
+        <Card className="border-border">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Calendar className="h-5 w-5" />
+              <TranslatedText>School Calendar</TranslatedText>
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/school-calendar')}
+                className="text-xs"
+              >
+                <Calendar className="h-3 w-3 mr-1" />
+                <TranslatedText>View All</TranslatedText>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/school-data')}
+                className="text-xs"
+              >
+                <BookOpen className="h-3 w-3 mr-1" />
+                <TranslatedText>School Data</TranslatedText>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 md:grid-cols-3">
+              {mockSchoolCalendarEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  className={cn(
+                    "p-3 rounded-lg border transition-colors cursor-pointer hover:bg-muted/50",
+                    event.priority === 'high' ? 'border-l-4 border-l-red-500 bg-red-50/30' :
+                      event.priority === 'medium' ? 'border-l-4 border-l-yellow-500 bg-yellow-50/30' :
+                        'border-l-4 border-l-green-500 bg-green-50/30'
+                  )}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  onClick={() => navigate('/school-calendar')}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <TranslatedText className="text-sm font-medium line-clamp-2 pr-2">
