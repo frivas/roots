@@ -367,7 +367,7 @@ const Bulletin: React.FC = () => {
       </motion.div>
 
       {/* Announcements Grid */}
-      <motion.div variants={itemVariants} className="grid gap-6">
+      <motion.div variants={itemVariants} className="grid gap-4">
         {paginatedAnnouncements.length === 0 ? (
           <Card className="p-8 text-center border-border">
             <div className="flex flex-col items-center gap-4">
@@ -397,73 +397,99 @@ const Bulletin: React.FC = () => {
                   announcement.isHighlighted && "border-l-4 border-l-primary",
                   announcement.isPinned && "ring-1 ring-primary/20 bg-primary/5"
                 )}>
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between gap-4">
+                  <CardHeader className="flex flex-row items-start justify-between p-4 pb-2">
+                    <div className="flex items-start space-x-3 flex-1 min-w-0">
+                      <div className={cn(
+                        "p-1.5 rounded-full flex-shrink-0",
+                        categoryDisplay.color.includes('blue') ? 'bg-blue-100' : '',
+                        categoryDisplay.color.includes('orange') ? 'bg-orange-100' : '',
+                        categoryDisplay.color.includes('green') ? 'bg-green-100' : '',
+                        categoryDisplay.color.includes('purple') ? 'bg-purple-100' : '',
+                        categoryDisplay.color.includes('indigo') ? 'bg-indigo-100' : '',
+                        categoryDisplay.color.includes('teal') ? 'bg-teal-100' : '',
+                        categoryDisplay.color.includes('red') ? 'bg-red-100' : '',
+                        !categoryDisplay.color.includes('blue') && 
+                        !categoryDisplay.color.includes('orange') && 
+                        !categoryDisplay.color.includes('green') && 
+                        !categoryDisplay.color.includes('purple') && 
+                        !categoryDisplay.color.includes('indigo') && 
+                        !categoryDisplay.color.includes('teal') && 
+                        !categoryDisplay.color.includes('red') ? 'bg-gray-100' : ''
+                      )}>
+                        {React.createElement(categoryDisplay.icon, { 
+                          className: cn(
+                            "h-4 w-4",
+                            categoryDisplay.color.includes('blue') ? 'text-blue-500' : '',
+                            categoryDisplay.color.includes('orange') ? 'text-orange-500' : '',
+                            categoryDisplay.color.includes('green') ? 'text-green-500' : '',
+                            categoryDisplay.color.includes('purple') ? 'text-purple-500' : '',
+                            categoryDisplay.color.includes('indigo') ? 'text-indigo-500' : '',
+                            categoryDisplay.color.includes('teal') ? 'text-teal-500' : '',
+                            categoryDisplay.color.includes('red') ? 'text-red-500' : '',
+                            !categoryDisplay.color.includes('blue') && 
+                            !categoryDisplay.color.includes('orange') && 
+                            !categoryDisplay.color.includes('green') && 
+                            !categoryDisplay.color.includes('purple') && 
+                            !categoryDisplay.color.includes('indigo') && 
+                            !categoryDisplay.color.includes('teal') && 
+                            !categoryDisplay.color.includes('red') ? 'text-gray-500' : ''
+                          )
+                        })}
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-1">
                           {announcement.isPinned && (
-                            <Pin className="h-4 w-4 text-primary fill-primary" />
+                            <Pin className="h-3 w-3 text-primary fill-primary" />
                           )}
+                          <CardTitle className="text-base font-semibold truncate">
+                            <TranslatedText>{announcement.title}</TranslatedText>
+                          </CardTitle>
                           <span className={cn(
-                            "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border",
+                            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border flex-shrink-0",
                             categoryDisplay.color
                           )}>
-                            {React.createElement(categoryDisplay.icon, { className: "h-3 w-3" })}
                             <TranslatedText>{categoryDisplay.label}</TranslatedText>
                           </span>
-                          <span className="text-xs text-muted-foreground">
-                            <TranslatedText>{announcement.targetAudience}</TranslatedText>
-                          </span>
                         </div>
-                        
-                        <CardTitle className="text-xl leading-tight mb-2">
-                          <TranslatedText>{announcement.title}</TranslatedText>
-                        </CardTitle>
-                        
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-1">
                           <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
+                            <Calendar className="h-3 w-3" />
                             <span>{formatDate(announcement.date)}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            <TranslatedText>Published</TranslatedText> {formatDate(announcement.publishDate)}
+                            <Eye className="h-3 w-3" />
+                            <span>{announcement.views}</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-4 w-4" />
-                            <span>{announcement.views.toString()}</span>
-                          </div>
+                          <span className="text-muted-foreground">
+                            <TranslatedText>{announcement.targetAudience}</TranslatedText>
+                          </span>
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {announcement.hasAttachment && (
+                        <div className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Has attachment">
+                          <FileText className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                      )}
+                      <button className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                        <Bell className="h-3 w-3 text-muted-foreground" />
+                      </button>
+                    </div>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
-                    <p className="text-foreground leading-relaxed mb-4">
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
                       <TranslatedText>{announcement.content}</TranslatedText>
                     </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>
-                          <TranslatedText>By</TranslatedText> <TranslatedText>{announcement.author}</TranslatedText>
-                        </span>
-                        {announcement.hasAttachment && (
-                          <div className="flex items-center gap-1">
-                            <FileText className="h-4 w-4" />
-                            <TranslatedText>Attachment</TranslatedText>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <button className="p-2 rounded-md hover:bg-muted transition-colors">
-                          <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                        </button>
-                        <button className="p-2 rounded-md hover:bg-muted transition-colors">
-                          <Bell className="h-4 w-4 text-muted-foreground" />
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-xs text-muted-foreground">
+                        <TranslatedText>By</TranslatedText> <TranslatedText>{announcement.author}</TranslatedText>
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        <TranslatedText>Published</TranslatedText> {formatDate(announcement.publishDate)}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
