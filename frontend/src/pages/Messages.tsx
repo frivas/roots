@@ -672,45 +672,46 @@ const Messages = () => {
         </div>
       </div>
 
-      <Card className="flex flex-1 h-full min-h-0 overflow-hidden border-border">
-        {/* Sidebar */}
-        <div className="w-64 min-w-64 max-w-64 border-r border-border bg-card flex-shrink-0">
-          <div className="h-full overflow-y-auto pt-4">
-            <nav className="px-3 space-y-1">
-              {folders.map((folder) => (
-                <motion.button
-                  key={folder.id}
-                  className={cn(
-                    "flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-md transition-colors min-w-0",
+      {/* Horizontal Navigation Tabs */}
+      <Card className="mb-4 border-border">
+        <div className="border-b border-border bg-card">
+          <nav className="flex space-x-1 p-2">
+            {folders.map((folder) => (
+              <motion.button
+                key={folder.id}
+                className={cn(
+                  "relative flex items-center gap-2 px-4 py-2.5 rounded-md transition-colors min-w-0",
+                  activeFolder === folder.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+                onClick={() => {
+                  setActiveFolder(folder.id);
+                  setSelectedMessage(null);
+                  setComposeMode(false);
+                }}
+              >
+                <folder.icon className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium text-sm">
+                  <TranslatedText>{folder.name}</TranslatedText>
+                </span>
+                {folder.count > 0 && (
+                  <span className={cn(
+                    "ml-1 min-w-[20px] h-5 flex items-center justify-center rounded-full text-xs font-medium leading-none",
                     activeFolder === folder.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  )}
-                  onClick={() => {
-                    setActiveFolder(folder.id);
-                    setSelectedMessage(null);
-                    setComposeMode(false);
-                  }}
-                >
-                  <div className="flex items-center min-w-0 flex-1">
-                    <folder.icon className="mr-2 h-4 w-4 flex-shrink-0" />
-                    <span className="truncate"><TranslatedText>{folder.name}</TranslatedText></span>
-                  </div>
-                  {folder.count > 0 && (
-                    <span className={cn(
-                      "ml-2 rounded-full px-2 py-0.5 text-xs font-medium flex-shrink-0",
-                      activeFolder === folder.id
-                        ? 'bg-primary-foreground text-primary'
-                        : 'bg-muted-foreground text-background'
-                    )}>
-                      {folder.count}
-                    </span>
-                  )}
-                </motion.button>
-              ))}
-            </nav>
-          </div>
+                      ? 'bg-primary-foreground text-primary'
+                      : 'bg-muted-foreground text-background'
+                  )}>
+                    {folder.count > 99 ? '99+' : folder.count}
+                  </span>
+                )}
+              </motion.button>
+            ))}
+          </nav>
         </div>
+      </Card>
+
+      <Card className="flex-1 h-full min-h-0 overflow-hidden border-border">
 
         {/* Message list */}
         <AnimatePresence mode="wait">

@@ -84,6 +84,13 @@
   animation: slideIn 0.3s ease-in-out;
 }
 
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Clerk Auth Madrid Styling */
 .clerk-auth-madrid .cl-formButtonPrimary {
   background-color: #ff0000 !important;

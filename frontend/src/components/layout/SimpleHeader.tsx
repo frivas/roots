@@ -36,7 +36,7 @@ const SimpleHeader: React.FC = () => {
       <div className="px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Madrid Logo for mobile */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/home" className="flex items-center gap-3">
             <MadridLogo size="sm" />
             <span className="text-xl font-bold text-foreground">Raíces</span>
           </Link>
