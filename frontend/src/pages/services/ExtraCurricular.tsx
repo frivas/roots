@@ -322,7 +322,7 @@ const ExtraCurricular: React.FC = () => {
                         onClick={() => handleEnroll(activity.type)}
                       >
                         <TranslatedText>
-                          {enrolledActivities.includes(activity.type) ? "Enrolled" : "Enroll Now"}
+                          {enrolledActivities.includes(activity.type) ? "Enrolled" : "Enroll"}
                         </TranslatedText>
                       </Button>
                     </div>
@@ -387,9 +387,9 @@ const ExtraCurricular: React.FC = () => {
                             : ""}
                           onClick={() => handleEnroll(activity.agentType)}
                         >
-                          <TranslatedText>
-                            {enrolledActivities.includes(activity.agentType) ? "Enrolled" : "Enroll Now"}
-                          </TranslatedText>
+                                                  <TranslatedText>
+                          {enrolledActivities.includes(activity.agentType) ? "Enrolled" : "Enroll"}
+                        </TranslatedText>
                         </Button>
                         <Button 
                           size="sm"

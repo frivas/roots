@@ -40,7 +40,9 @@ export const spanishTranslations: Record<string, string> = {
   "School calendar": "Calendario Escolar",
   "School elections": "Elecciones Escolares",
   "Bulletin board": "Tablón de Anuncios",
-  "Personal Calendar": "Calendario Personal",
+  "Personal Calendar": "Agenda Personal",
+  "Personal Agenda": "Agenda Personal",
+  "Upcoming Events": "Próximos Eventos",
   "Monthly calendar": "Calendario Mensual",
   "My Data": "Mis Datos",
   "User personal information": "Información Personal del Usuario",
@@ -122,6 +124,8 @@ export const spanishTranslations: Record<string, string> = {
   "same as last month": "igual que el mes pasado",
   "require attention": "requieren atención",
   "since last quarter": "desde el último trimestre",
+  "Enrolled Activities": "Actividades Inscritas",
+  "Active Notifications": "Notificaciones Activas",
 
   // Home - Learning Activity
   "Learning Activity": "Actividad de Aprendizaje",
@@ -137,6 +141,28 @@ export const spanishTranslations: Record<string, string> = {
   "Schedule Class": "Programar Clase",
   "Find Mentor": "Buscar Mentor",
   "My Courses": "Mis Cursos",
+
+  // Dashboard - Recent Activity
+  "Recent Activity": "Actividad Reciente",
+  "All": "Todo",
+  "New Message from Teacher": "Nuevo Mensaje del Profesor",
+  "Your child's progress report is now available": "El informe de progreso de tu hijo ya está disponible",
+  "Bus Route Update": "Actualización de Ruta de Autobús",
+  "Route 12 will be delayed by 15 minutes today": "La Ruta 12 se retrasará 15 minutos hoy",
+  "Registration Confirmed": "Inscripción Confirmada",
+  "Successfully enrolled in Parent Wellness program": "Inscrito exitosamente en el programa de Bienestar para Padres",
+  "Principal García": "Director García",
+  "Staff Meeting Update": "Actualización de Reunión de Personal",
+  "The weekly staff meeting has been moved to Thursday at 3:00 PM due to a scheduling conflict.": "La reunión semanal de personal se ha trasladado al jueves a las 3:00 PM debido a un conflicto de horario.",
+  "Transportation Dept": "Departamento de Transporte",
+  "Bus Route Changes": "Cambios en Rutas de Autobús",
+  "Due to road construction on Main Street, bus route #12 will be temporarily modified.": "Debido a construcción en la Calle Principal, la ruta de autobús #12 será temporalmente modificada.",
+  "All caught up!": "¡Todo al día!",
+
+  // Dashboard - Progress Interpretation & Services
+  "Progress Interpretation": "Interpretación de Progreso",
+  "Parent Wellness": "Bienestar de Padres",
+  "Extra-Curricular": "Extracurricular",
 
   // Dashboard - Recent Courses
   "Recent Courses": "Cursos Recientes",
@@ -373,8 +399,6 @@ export const spanishTranslations: Record<string, string> = {
   "Send Message": "Enviar Mensaje",
   "View": "Ver",
   // Message Content Translations
-  "Principal García": "Director García",
-  "Transportation Dept": "Departamento de Transporte",
   "Cafeteria Services": "Servicios de Cafetería",
   "IT Department": "Departamento de TI",
   "Extracurricular Coordinator": "Coordinador de Actividades Extraescolares",
@@ -468,7 +492,6 @@ export const spanishTranslations: Record<string, string> = {
   "Head of Studies": "Jefa de Estudios",
 
   "Staff Meeting Schedule Update": "Actualización de Horario de Reunión de Personal",
-  "Bus Route Changes": "Cambios de Ruta de Autobús",
   "New Menu Options": "Nuevas Opciones de Menú",
   "System Maintenance": "Mantenimiento del Sistema",
   "Summer Program Registration": "Registro de Programa de Verano",
@@ -492,7 +515,6 @@ export const spanishTranslations: Record<string, string> = {
   "Parent Wellness and Self-Care": "Bienestar y Autocuidado Parental",
   "Support your family by taking care of yourself first": "Apoya a tu familia cuidándote primero",
   "Programs": "Programas",
-  "Upcoming Events": "Próximos Eventos",
 
   // Error handling
   "AI-generated content may contain inaccuracies. Use at your own discretion.": "El contenido generado por IA puede contener inexactitudes. Úsalo bajo tu propia discreción.",
@@ -515,7 +537,6 @@ export const spanishTranslations: Record<string, string> = {
   "Michigan Board of Education": "Junta de Educación de Michigan",
   "Profile Overview": "Vista General",
   "Achievements": "Logros",
-  "Recent Activity": "Actividad Reciente",
   "Professional Achievements & Recognition": "Logros Profesionales y Reconocimientos",
   "Teacher of the Year": "Maestro del Año",
   "Recognized for excellence in teaching and exceptional student engagement across all grade levels": "Reconocido por la excelencia en la enseñanza y el compromiso estudiantil excepcional en todos los niveles de grado",
@@ -533,7 +554,6 @@ export const spanishTranslations: Record<string, string> = {
 
   // Notifications Page
   "Stay updated with important announcements and alerts.": "Mantente actualizado con anuncios y alertas importantes.",
-  "All": "Todas",
   "All Notifications": "Todas las Notificaciones",
   "Unread": "No leídas",
   "Mark all as read": "Marcar todas como leídas",
@@ -1013,7 +1033,6 @@ export const spanishTranslations: Record<string, string> = {
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
   // Personal Calendar
-  "Personal Agenda": "Agenda personal",
   "Manage your personal events and appointments": "Gestiona tus eventos personales y citas",
   "Priority Levels": "Niveles de Prioridad",
   "Events are color-coded by priority level": "Los eventos están codificados por colores según el nivel de prioridad",
@@ -1557,18 +1576,6 @@ export const spanishTranslations: Record<string, string> = {
   "View All": "Ver Todo",
   "Open Calendar": "Abrir Calendario",
   "View Full Calendar": "Ver Calendario Completo",
-  "New Message from Teacher": "Nuevo Mensaje del Profesor",
-  "Your child's progress report is now available": "El informe de progreso de tu hijo ya está disponible",
-  "Bus Route Update": "Actualización de Ruta de Autobús",
-  "Route 12 will be delayed by 15 minutes today": "La ruta 12 se retrasará 15 minutos hoy",
-  "Registration Confirmed": "Registro Confirmado",
-  "Successfully enrolled in Parent Wellness program": "Inscrito exitosamente en el programa de Bienestar de Padres",
-  "School Board Meeting": "Reunión de la Junta Escolar",
-  "Student Performance Review": "Revisión de Rendimiento Estudiantil",
-  "Staff Meeting Update": "Actualización de Reunión de Personal",
-  "The weekly staff meeting has been moved to Thursday at 3:00 PM...": "La reunión semanal de personal se ha trasladado al jueves a las 3:00 PM...",
-  "Due to road construction, bus route #12 will be temporarily...": "Debido a construcción vial, la ruta de autobús #12 será temporalmente...",
-  "We are excited to announce new vegetarian and gluten-free...": "Nos complace anunciar nuevas opciones vegetarianas y sin gluten...",
   "high": "alta",
   "medium": "media",
   "low": "baja",

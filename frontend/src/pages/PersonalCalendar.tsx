@@ -412,7 +412,7 @@ const PersonalCalendar: React.FC = () => {
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-foreground mb-2">
-                                    <TranslatedText>Personal Agenda</TranslatedText>
+                                    <TranslatedText>Personal Calendar</TranslatedText>
                                 </h1>
                                 <div className="space-y-1">
                                     <div className="text-lg font-medium text-foreground">
