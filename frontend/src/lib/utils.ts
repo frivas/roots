@@ -9,29 +9,49 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format a date using Spanish locale for consistency
+ * Format a date based on current language/locale
  */
-export function formatDate(date: Date | string | number): string {
+export function formatDate(date: Date | string | number, language: string = 'en'): string {
   const d = new Date(date);
-  // Use Spanish date format (DD/MM/YYYY) - consistent with Spanish regional settings
-  return d.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  
+  if (language === 'es' || language === 'es-ES') {
+    // Spanish format: DD/MM/YYYY
+    return d.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  } else {
+    // English format: MM/DD/YYYY
+    return d.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    });
+  }
 }
 
 /**
- * Format a time using Spanish locale for consistency (24-hour format)
+ * Format a time based on current language/locale
  */
-export function formatTime(date: Date | string | number): string {
+export function formatTime(date: Date | string | number, language: string = 'en'): string {
   const d = new Date(date);
-  // Use Spanish time format (24-hour) - consistent with Spanish regional settings
-  return d.toLocaleTimeString('es-ES', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  
+  if (language === 'es' || language === 'es-ES') {
+    // Spanish time format (24-hour)
+    return d.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  } else {
+    // English time format (12-hour)
+    return d.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
 }
 
 /**

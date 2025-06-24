@@ -130,7 +130,7 @@ const PersonalCalendar: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
     const [events, setEvents] = useState<CalendarEvent[]>([
-        // Example event like the one from the image
+        // Example events like those mentioned in the user guide
         {
             id: 'demo_event_1',
             title: 'Quedada padres de 1ª',
@@ -143,9 +143,114 @@ const PersonalCalendar: React.FC = () => {
             priority: 'media',
             emailReminder: true,
             createdAt: new Date()
+        },
+        // Add more diverse mock events
+        {
+            id: 'demo_event_2',
+            title: 'Visita programada',
+            startDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 2);
+                return date.toISOString().split('T')[0];
+            })(),
+            startTime: '16:30',
+            endDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 2);
+                return date.toISOString().split('T')[0];
+            })(),
+            endTime: '17:30',
+            description: 'Visita programada registrada por el profesorado del alumno',
+            notes: 'Reunión con la tutora de Pedro',
+            priority: 'alta',
+            emailReminder: true,
+            createdAt: new Date()
+        },
+        {
+            id: 'demo_event_3',
+            title: 'Cita médica',
+            startDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 5);
+                return date.toISOString().split('T')[0];
+            })(),
+            startTime: '11:00',
+            endDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 5);
+                return date.toISOString().split('T')[0];
+            })(),
+            endTime: '12:00',
+            description: 'Revisión anual pediatra',
+            notes: 'Centro de Salud El Escorial - Dr. García',
+            priority: 'alta',
+            emailReminder: true,
+            createdAt: new Date()
+        },
+        {
+            id: 'demo_event_4',
+            title: 'Actividad extraescolar',
+            startDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 7);
+                return date.toISOString().split('T')[0];
+            })(),
+            startTime: '17:00',
+            endDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 7);
+                return date.toISOString().split('T')[0];
+            })(),
+            endTime: '18:30',
+            description: 'Clase de natación',
+            notes: 'Piscina municipal - recordar traer gafas',
+            priority: 'baja',
+            emailReminder: false,
+            createdAt: new Date()
+        },
+        {
+            id: 'demo_event_5',
+            title: 'Reunión AMPA',
+            startDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 10);
+                return date.toISOString().split('T')[0];
+            })(),
+            startTime: '19:30',
+            endDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 10);
+                return date.toISOString().split('T')[0];
+            })(),
+            endTime: '21:00',
+            description: 'Reunión mensual de la Asociación de Madres y Padres',
+            notes: 'Sala de profesores - orden del día en la web',
+            priority: 'media',
+            emailReminder: true,
+            createdAt: new Date()
+        },
+        {
+            id: 'demo_event_6',
+            title: 'Cumpleaños Laura',
+            startDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 14);
+                return date.toISOString().split('T')[0];
+            })(),
+            startTime: '17:30',
+            endDate: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() + 14);
+                return date.toISOString().split('T')[0];
+            })(),
+            endTime: '19:30',
+            description: 'Fiesta de cumpleaños de Laura',
+            notes: 'Casa de Laura - llevar regalo y tarjeta',
+            priority: 'media',
+            emailReminder: true,
+            createdAt: new Date()
         }
     ]);
-    const [selectedDate, setSelectedDate] = useState<string>('');
 
     const currentLocale = language === 'es-ES' ? 'es-ES' : 'en-US';
 
@@ -279,30 +384,14 @@ const PersonalCalendar: React.FC = () => {
     };
 
     // Handle input changes
-    const handleInputChange = (field: string, value: any) => {
+    const handleInputChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
     };
 
-    // Format date for display
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        if (language === 'es-ES') {
-            return date.toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        } else {
-            return date.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-    };
+
 
     const calendar = generateCalendarGrid();
 
@@ -440,7 +529,6 @@ const PersonalCalendar: React.FC = () => {
                                                 )}
                                                 onClick={() => {
                                                     if (day.isCurrentMonth) {
-                                                        setSelectedDate(day.dateString);
                                                         setFormData(prev => ({
                                                             ...prev,
                                                             startDate: day.dateString,
@@ -459,7 +547,7 @@ const PersonalCalendar: React.FC = () => {
 
                                                 {/* Events for this day */}
                                                 <div className="space-y-1">
-                                                    {day.events.slice(0, 3).map((event, eventIndex) => {
+                                                    {day.events.slice(0, 3).map((event) => {
                                                         const priority = priorityTypes[event.priority];
                                                         return (
                                                             <div

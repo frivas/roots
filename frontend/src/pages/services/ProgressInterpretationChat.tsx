@@ -1,40 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Info } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
+import { ArrowLeft } from 'lucide-react';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
-import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
 
-// Add window type for ElevenLabs API
-declare global {
-  interface Window {
-    ElevenLabs?: {
-      init?: (config: any) => void;
-    };
+const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
+const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+
+// Static translations for widget UI
+const widgetTranslations = {
+  en: {
+    actionText: 'Click to discuss progress',
+    startCall: 'Start Progress Review',
+    endCall: 'End Session',
+    expand: 'Expand',
+    listening: 'Listening...',
+    speaking: 'Analyzing...'
+  },
+  es: {
+    actionText: 'Haz clic para discutir progreso',
+    startCall: 'Iniciar Revisión de Progreso',
+    endCall: 'Finalizar Sesión',
+    expand: 'Expandir',
+    listening: 'Escuchando...',
+    speaking: 'Analizando...'
   }
-}
+};
 
-const MathTutoringSession: React.FC = () => {
+
+
+const ProgressInterpretationChat: React.FC = () => {
   const navigate = useNavigate();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const { language } = useLingoTranslation();
 
-  // Convert our app's language code to ElevenLabs format and force lowercase
-  const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = WIDGET_TRANSLATIONS[widgetLanguage as keyof typeof WIDGET_TRANSLATIONS];
+  // Convert our app's language code to ElevenLabs format
+  const widgetLanguage = language === 'en-US' ? 'en' : 'es';
+  const i18n = widgetTranslations[widgetLanguage];
+
+  console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
 
   // Load widget script
   useEffect(() => {
-    if (!document.querySelector(`script[src="${WIDGET_CONFIG.SCRIPT_SRC}"]`)) {
+    if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
       const script = document.createElement('script');
-      script.src = WIDGET_CONFIG.SCRIPT_SRC;
+      script.src = SCRIPT_SRC;
       script.async = true;
 
       script.onload = () => {
         const checkInterval = setInterval(() => {
-          if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
+          if (customElements.get(WIDGET_ELEMENT_NAME)) {
             clearInterval(checkInterval);
             setIsElevenLabsLoaded(true);
           }
@@ -47,7 +63,7 @@ const MathTutoringSession: React.FC = () => {
     }
 
     return () => {
-      const widget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
+      const widget = document.querySelector(WIDGET_ELEMENT_NAME);
       if (widget) widget.remove();
     };
   }, []);
@@ -57,7 +73,7 @@ const MathTutoringSession: React.FC = () => {
     if (!isElevenLabsLoaded) return;
 
     // Remove existing widget
-    const existingWidget = document.querySelector(WIDGET_CONFIG.ELEMENT_NAME);
+    const existingWidget = document.querySelector(WIDGET_ELEMENT_NAME);
     if (existingWidget) {
       existingWidget.remove();
     }
@@ -77,11 +93,11 @@ const MathTutoringSession: React.FC = () => {
       if (!container) return;
 
       // Create new widget with language configuration
-      const widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
+      const widget = document.createElement(WIDGET_ELEMENT_NAME);
 
-      // Configure widget
+      // Configure widget with Progress Interpretation agent
       const config = {
-        'agent-id': AGENT_IDS.math,
+        'agent-id': 'agent_01jydqtbt4e5prhwvrjd9m24bp',
         'language': widgetLanguage,
         'default-language': widgetLanguage,
         'action-text': i18n.actionText,
@@ -100,47 +116,30 @@ const MathTutoringSession: React.FC = () => {
 
       // Add to DOM
       container.appendChild(widget);
+      console.log('🔄 Progress Interpretation widget initialized with language:', widgetLanguage, 'and config:', config);
     }, 100);
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 
   return (
-    <motion.div
-      className="space-y-8 pb-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      {/* Header with Back Button and AI Notice */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 pb-8">
+      {/* Back Button */}
+      <div className="flex items-center">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/extra-curricular?tab=online')}
+          onClick={() => navigate('/services/progress-interpretation')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          <TranslatedText>Back to Online Learning</TranslatedText>
+          <TranslatedText>Back to Progress Service</TranslatedText>
         </Button>
-
-        {/* AI Notice Icon with Tooltip */}
-        <div className="relative group">
-          <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
-            <Info className="h-5 w-5" />
-          </button>
-
-          {/* Modern Tooltip */}
-          <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 shadow-lg">
-            <div className="absolute -top-1 right-4 w-2 h-2 bg-white border-l border-t border-gray-200 rotate-45"></div>
-            <TranslatedText>AI-generated content may contain inaccuracies. Use at your own discretion.</TranslatedText>
-          </div>
-        </div>
       </div>
 
       {/* Widget Container */}
       <div className="widget-container" />
-    </motion.div>
+    </div>
   );
 };
 
-export default MathTutoringSession;
+export default ProgressInterpretationChat;

@@ -12,7 +12,7 @@ const TranslationDebugger: React.FC = () => {
   const [translatedResult, setTranslatedResult] = useState('');
 
   const sampleTexts = [
-    'Dashboard',
+    'Home',
     'Welcome to Raíces!',
     'Here\'s an overview of your educational journey.',
     'Upcoming Classes',
@@ -29,7 +29,7 @@ const TranslationDebugger: React.FC = () => {
 
   const toggleLanguage = async () => {
     const newLang = language === 'en-US' ? 'es-ES' : 'en-US';
-    
+
     // Dispatch custom event for LanguageSwitcher compatibility
     window.dispatchEvent(new CustomEvent('languageChanged', {
       detail: { language: newLang }
@@ -69,11 +69,10 @@ const TranslationDebugger: React.FC = () => {
         <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2">
             <span className="font-medium">Current Language:</span>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              language === 'es-ES' 
-                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${language === 'es-ES'
+                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                 : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-            }`}>
+              }`}>
               {language === 'es-ES' ? 'Español (ES)' : 'English (US)'}
             </span>
           </div>
@@ -181,4 +180,4 @@ const TranslationDebugger: React.FC = () => {
   );
 };
 
-export default TranslationDebugger; 
+export default TranslationDebugger;

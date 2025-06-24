@@ -6,7 +6,7 @@ const useClerkLocalization = () => {
 
   useEffect(() => {
     // Translation mappings (English ↔ Spanish)
-    const translations = {
+    const translations: Record<string, string> = {
       'Sign in': 'Iniciar sesión',
       'Sign up': 'Crear cuenta',
       'Enter your password': 'Introduce tu contraseña',
@@ -35,7 +35,7 @@ const useClerkLocalization = () => {
     };
 
     // Create reverse mapping (Spanish → English)
-    const reverseTranslations = Object.fromEntries(
+    const reverseTranslations: Record<string, string> = Object.fromEntries(
       Object.entries(translations).map(([english, spanish]) => [spanish, english])
     );
 
@@ -64,10 +64,10 @@ const useClerkLocalization = () => {
         }
 
         const targetTranslations = language === 'es-ES' ? translations : reverseTranslations;
-        
+
         // Only translate static text elements that are clearly safe
         const safeSelectors = [
-          '.cl-headerTitle', 
+          '.cl-headerTitle',
           '.cl-headerSubtitle',
           '.cl-footerActionText',
           '.cl-footerActionLink',
@@ -100,7 +100,7 @@ const useClerkLocalization = () => {
         const textNodes = clerkContainer.querySelectorAll('p, span:not([role]):not([class*="button"])');
         textNodes.forEach(el => {
           if (el.children.length === 0 && el.textContent?.includes('to continue to roots')) {
-            const newText = language === 'es-ES' 
+            const newText = language === 'es-ES'
               ? el.textContent.replace('to continue to roots', 'para ir a Raíces')
               : el.textContent.replace('to continue to roots', 'to continue to Raíces');
             el.textContent = newText;
@@ -115,12 +115,12 @@ const useClerkLocalization = () => {
     // Much more limited observer - only for major DOM changes
     const observer = new MutationObserver((mutations) => {
       // Only react to significant changes and not during auth flows
-      const shouldUpdate = mutations.some(mutation => 
-        mutation.type === 'childList' && 
+      const shouldUpdate = mutations.some(mutation =>
+        mutation.type === 'childList' &&
         mutation.addedNodes.length > 0 &&
         !document.querySelector('.clerk-auth-madrid button[disabled]')
       );
-      
+
       if (shouldUpdate) {
         console.log('🔄 Clerk content changed, re-translating');
         replaceText();
@@ -142,7 +142,7 @@ const useClerkLocalization = () => {
         document.querySelector('.clerk-auth-madrid .cl-loading') ||
         document.querySelector('body[data-clerk-loading]')
       );
-      
+
       if (!hasAuthActivity) {
         replaceText();
       }
@@ -156,4 +156,4 @@ const useClerkLocalization = () => {
   }, [language]);
 };
 
-export default useClerkLocalization; 
+export default useClerkLocalization;

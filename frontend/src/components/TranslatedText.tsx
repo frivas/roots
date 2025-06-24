@@ -10,32 +10,32 @@ interface TranslatedTextProps {
   fallback?: string;
 }
 
-const TranslatedText: React.FC<TranslatedTextProps> = ({ 
-  children, 
-  className = '', 
+const TranslatedText: React.FC<TranslatedTextProps> = ({
+  children,
+  className = '',
   element = 'span',
   showLoader = false,
   fallback
 }) => {
   const { language, translateText, isTranslating } = useLingoTranslation();
-  
+
   // Initialize with immediate translation if available
   const [translatedText, setTranslatedText] = useState(() => {
     if (language === 'en-US') {
       return children; // Show English text as-is
     }
-    
+
     // For Spanish, check for immediate translation from English to Spanish
     const immediateTranslation = getSpanishTranslation(children);
     return immediateTranslation !== children ? immediateTranslation : children;
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const performTranslation = useCallback(async () => {
     setError(null);
-    
+
     if (language === 'en-US') {
       setTranslatedText(children); // Show English text as-is
       return;
@@ -72,20 +72,16 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
     performTranslation();
   }, [performTranslation]);
 
-  const Element = element as keyof JSX.IntrinsicElements;
-  
+  const Element = element as keyof React.JSX.IntrinsicElements;
+
   // Always render something - never return null or empty
-  return (
-    <Element className={className}>
-      {showLoader && isLoading ? (
-        <span className="opacity-60">
-          {translatedText}
-        </span>
-      ) : (
-        translatedText || children || fallback || ''
-      )}
-    </Element>
+  return React.createElement(Element, { className },
+    showLoader && isLoading ? (
+      React.createElement('span', { className: 'opacity-60' }, translatedText)
+    ) : (
+      translatedText || children || fallback || ''
+    )
   );
 };
 
-export default TranslatedText; 
+export default TranslatedText;

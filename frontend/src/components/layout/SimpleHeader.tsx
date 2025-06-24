@@ -13,16 +13,16 @@ const SimpleHeader: React.FC = () => {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const location = useLocation();
-  
+
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Home', href: '/home', icon: Home },
     { name: 'Services', href: '/services', icon: BookOpen },
     { name: 'Messages', href: '/messages', icon: Mail },
     { name: 'Notifications', href: '/notifications', icon: Bell },
     { name: 'Settings', href: '/settings', icon: Settings },
     { name: 'Profile', href: '/profile', icon: User },
   ];
-  
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -40,7 +40,7 @@ const SimpleHeader: React.FC = () => {
             <MadridLogo size="sm" />
             <span className="text-xl font-bold text-foreground">Raíces</span>
           </Link>
-          
+
           {/* Mobile menu button */}
           <button
             type="button"
@@ -56,7 +56,7 @@ const SimpleHeader: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="animate-fade-in bg-background border-t border-border">
@@ -79,12 +79,12 @@ const SimpleHeader: React.FC = () => {
               </Link>
             ))}
 
-            
+
             {/* User Section */}
             {isLoaded && user && (
               <div className="border-t border-border pt-3 mt-3">
                 <div className="flex items-center py-3 px-3 rounded-lg">
-                  <UserButton 
+                  <UserButton
                     appearance={{
                       elements: {
                         avatarBox: "w-8 h-8"
@@ -100,7 +100,7 @@ const SimpleHeader: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={() => {
                     handleSignOut();
@@ -120,4 +120,4 @@ const SimpleHeader: React.FC = () => {
   );
 };
 
-export default SimpleHeader; 
+export default SimpleHeader;
