@@ -37,6 +37,8 @@ const ChessCoachingSession = lazy(() => import('./pages/services/ChessCoachingSe
 const MathTutoringSession = lazy(() => import('./pages/services/MathTutoringSession'));
 const StorytellingSession = lazy(() => import('./pages/services/StorytellingSession'));
 const LanguageLessonSession = lazy(() => import('./pages/services/LanguageLessonSession'));
+const ProgressInterpretationService = lazy(() => import('./pages/services/ProgressInterpretationService'));
+const ProgressInterpretationChat = lazy(() => import('./pages/services/ProgressInterpretationChat'));
 const MorningClassroom = lazy(() => import('./pages/MorningClassroom'));
 
 // Placeholder components for new routes
@@ -60,6 +62,7 @@ const SchoolData = lazy(() => import('./pages/SchoolData'));
 const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 const SchoolElections = lazy(() => import('./pages/SchoolElections'));
 const PersonalCalendar = lazy(() => import('./pages/PersonalCalendar'));
+const Bulletin = lazy(() => import('./pages/Bulletin'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -80,20 +83,19 @@ function App() {
           {/* Public routes */}
           <Route
             path="/"
-            element={<Navigate to="/dashboard" replace />}
+            element={<Navigate to="/home" replace />}
           />
 
           {/* Auth routes */}
           <Route
-            path="/auth/login/*"
+            path="/auth/login"
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signIn"
-                    routing="path"
-                    path="/auth/login"
-                    redirectUrl="/dashboard"
+                    routing="virtual"
+                    redirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>
@@ -101,15 +103,14 @@ function App() {
           />
 
           <Route
-            path="/auth/register/*"
+            path="/auth/register"
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signUp"
-                    routing="path"
-                    path="/auth/register"
-                    redirectUrl="/dashboard"
+                    routing="virtual"
+                    redirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>
@@ -154,6 +155,8 @@ function App() {
             <Route path="/services/math-tutoring-session" element={<MathTutoringSession />} />
             <Route path="/services/storytelling-session" element={<StorytellingSession />} />
             <Route path="/services/language-lesson-session" element={<LanguageLessonSession />} />
+            <Route path="/services/progress-interpretation" element={<ProgressInterpretationService />} />
+            <Route path="/services/progress-interpretation-chat" element={<ProgressInterpretationChat />} />
             <Route path="/services/morning-classroom" element={<MorningClassroom />} />
             <Route path="/services/*" element={<Services />} />
 
@@ -161,11 +164,13 @@ function App() {
             <Route path="/communications" element={<CommunicationsPlaceholder />} />
             <Route path="/communications/messages" element={<Messages />} />
             <Route path="/communications/messages/*" element={<Messages />} />
+            <Route path="/communications/bulletin" element={<Bulletin />} />
             <Route path="/communications/notifications" element={<Notifications />} />
             <Route path="/communications/notifications/*" element={<Notifications />} />
             <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
 
             {/* Personal Calendar section */}
+            <Route path="/calendar/monthly" element={<PersonalCalendar />} />
             <Route path="/calendar/create" element={<PersonalCalendar />} />
             <Route path="/calendar/*" element={<CalendarPlaceholder />} />
 
@@ -194,7 +199,7 @@ function App() {
           {/* Catch unauthenticated users */}
           <Route
             path="/signin"
-            element={<RedirectToSignIn redirectUrl="/dashboard" />}
+            element={<RedirectToSignIn redirectUrl="/home" />}
           />
 
           {/* 404 route */}

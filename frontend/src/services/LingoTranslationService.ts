@@ -144,7 +144,7 @@ class LingoTranslationService {
     if (targetLocale !== 'es-ES') return;
 
     const commonPhrases = [
-      "Dashboard", "Settings", "Profile", "Messages", "Notifications",
+      "Home", "Settings", "Profile", "Messages", "Notifications",
       "Welcome to Raíces!", "Save", "Cancel", "Edit", "Delete", "Search"
     ];
 

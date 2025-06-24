@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import TranslatedText from '../TranslatedText';
@@ -30,7 +30,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
   const { user } = useUser();
   const { signOut } = useClerk();
 
-  const navigation = getMenuItems(userRoles);
+  const navigation = useMemo(() => getMenuItems(userRoles), [userRoles]);
 
   // Auto-expand menus that contain the current page (only for specific routes, not root)
   useEffect(() => {
@@ -41,7 +41,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
 
     const findMenusToExpand = (items: MenuItem[], path: string): string[] => {
       const menusToExpand: string[] = [];
-      
+
       items.forEach(item => {
         if (item.children) {
           // Check if this menu contains the current page
@@ -52,10 +52,10 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
             }
             return false;
           });
-          
+
           if (containsCurrentPage) {
             menusToExpand.push(item.name);
-            
+
             // Also check for nested menus
             item.children.forEach(child => {
               if (child.children) {
@@ -68,7 +68,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
           }
         }
       });
-      
+
       return menusToExpand;
     };
 
@@ -81,7 +81,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
         return newSet;
       });
     }
-  }, [location.pathname]); // Removed navigation dependency to prevent resets
+  }, [location.pathname, navigation]);
 
   const toggleMenu = (menuName: string) => {
     console.log('Toggling menu:', menuName); // Debug log
@@ -99,15 +99,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     });
   };
 
-  const isMenuActive = (item: MenuItem) => {
-    if (item.href) {
-      return location.pathname === item.href;
-    }
-    if (item.children) {
-      return item.children.some((child) => location.pathname === child.href);
-    }
-    return false;
-  };
+
 
   const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
     const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
@@ -120,34 +112,54 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     children: React.ReactNode;
   }>;
 
+  // For desktop (md and up): always expanded (w-72)
+  // For mobile: hover to expand (w-16 default, w-72 on hover)
+  const isExpanded = isHovered; // Mobile hover state
+
   return (
     <div
       className={cn(
         "relative border-r bg-background transition-all duration-300 flex flex-col flex-1",
-        isHovered ? "w-72" : "w-16"
+        // Mobile: hover effect (w-16 collapsed, w-72 expanded)
+        "w-16 md:w-72",
+        isExpanded && "w-72"
       )}
+      // Only add hover effects on mobile (below md breakpoint)
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header Section */}
       <div className={cn(
         "flex h-16 items-center border-b flex-shrink-0",
-        isHovered ? "px-6" : "px-0 justify-center"
+        // Mobile: responsive padding based on hover, Desktop: always px-6
+        "px-0 justify-center md:px-6",
+        isExpanded && "px-6"
       )}>
         <Link to="/" className={cn(
           "flex items-center gap-3 font-semibold",
-          !isHovered && "justify-center w-full"
+          // Mobile: center when collapsed, Desktop: always left-aligned
+          "justify-center w-full md:justify-start md:w-auto",
+          isExpanded && "justify-start w-auto"
         )}>
           <MadridLogo size="sm" variant="positive" />
-          {isHovered && <TranslatedText className="text-lg font-semibold text-foreground">Raíces</TranslatedText>}
+          {/* Mobile: show text on hover, Desktop: always show */}
+          <span className={cn(
+            "text-lg font-semibold text-foreground",
+            "hidden md:block",
+            isExpanded && "block"
+          )}>
+            <TranslatedText>Raíces</TranslatedText>
+          </span>
         </Link>
       </div>
-      
+
       {/* Navigation Section - Takes available space */}
       <div className="flex-1 overflow-auto py-4">
         <nav className={cn(
           "grid gap-2",
-          isHovered ? "px-4" : "px-1"
+          // Mobile: responsive padding, Desktop: always px-4
+          "px-1 md:px-4",
+          isExpanded && "px-4"
         )}>
           {navigation.map((item) => (
             <div key={item.name}>
@@ -158,80 +170,51 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                     onClick={() => toggleMenu(item.name)}
                     className={cn(
                       "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
-                      isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
+                      // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
+                      "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
+                      isExpanded && "px-4 py-3 justify-start",
                       "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                     )}
                   >
                     <div className={cn(
                       "flex items-center justify-center",
-                      isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
+                      "w-6 h-6 md:w-6 md:min-w-[24px]",
+                      isExpanded && "w-6 min-w-[24px]"
                     )}>
                       <IconComponent icon={item.icon} />
                     </div>
-                    {isHovered && (
-                      <span className="text-sm font-medium ml-3">
-                        <TranslatedText>{item.name}</TranslatedText>
-                      </span>
-                    )}
+                    {/* Mobile: show text on hover, Desktop: always show */}
+                    <span className={cn(
+                      "text-sm font-medium ml-3",
+                      "hidden md:block",
+                      isExpanded && "block"
+                    )}>
+                      <TranslatedText>{item.name}</TranslatedText>
+                    </span>
                   </button>
-                  {isHovered && expandedMenus.has(item.name) && (
-                    <div className="ml-6 mt-2 space-y-2 relative">
-                      {/* Connector line from parent to children */}
-                      <div className="absolute left-[-12px] top-0 bottom-0 w-px bg-border"></div>
-                      {item.children.map((child, childIndex) => (
-                        <div key={child.name} className="relative">
-                          {/* Horizontal connector line */}
-                          <div className="absolute left-[-12px] top-1/2 w-3 h-px bg-border"></div>
-                          {child.children && !child.href ? (
-                            // Child with only children - expandable button
-                            <>
-                              <button
-                                onClick={() => toggleMenu(child.name)}
-                                className={cn(
-                                  "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                  "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
-                                )}
-                              >
-                                <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                  <IconComponent icon={child.icon} />
-                                </div>
-                                <span className="text-sm font-medium ml-3">
-                                  <TranslatedText>{child.name}</TranslatedText>
-                                </span>
-                              </button>
-                              {expandedMenus.has(child.name) && (
-                                <div className="ml-6 mt-2 space-y-2">
-                                  {child.children.map((grandchild) => (
-                                    <Link
-                                      key={grandchild.name}
-                                      to={grandchild.href || '#'}
-                                      className={cn(
-                                        "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                        location.pathname === grandchild.href 
-                                          ? "bg-red-500/20 text-red-700 font-semibold" 
-                                          : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
-                                      )}
-                                    >
-                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                        <IconComponent icon={grandchild.icon} />
-                                      </div>
-                                      <span className="text-sm font-medium ml-3">
-                                        <TranslatedText>{grandchild.name}</TranslatedText>
-                                      </span>
-                                    </Link>
-                                  ))}
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            // Child with href - simple clickable link
-                            <Link
-                              to={child.href || '#'}
+                  {/* Mobile: show submenu on hover, Desktop: always show when expanded */}
+                  <div className={cn(
+                    "ml-6 mt-2 space-y-2 relative",
+                    "hidden md:block",
+                    isExpanded && expandedMenus.has(item.name) && "block",
+                    (!isExpanded || !expandedMenus.has(item.name)) && "md:hidden",
+                    expandedMenus.has(item.name) && "md:block"
+                  )}>
+                    {/* Connector line from parent to children */}
+                    <div className="absolute left-[-12px] top-0 bottom-0 w-px bg-border"></div>
+                    {item.children.map((child) => (
+                      <div key={child.name} className="relative">
+                        {/* Horizontal connector line */}
+                        <div className="absolute left-[-12px] top-1/2 w-3 h-px bg-border"></div>
+                        {child.children && !child.href ? (
+                          // Child with only children - expandable button
+                          <>
+                            <button
+                              onClick={() => toggleMenu(child.name)}
                               className={cn(
-                                "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                location.pathname === child.href 
-                                  ? "bg-red-500/20 text-red-700 font-semibold" 
-                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                               )}
                             >
                               <div className="flex items-center justify-center w-6 min-w-[24px]">
@@ -240,12 +223,53 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                               <span className="text-sm font-medium ml-3">
                                 <TranslatedText>{child.name}</TranslatedText>
                               </span>
-                            </Link>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                            </button>
+                            {expandedMenus.has(child.name) && (
+                              <div className="ml-6 mt-2 space-y-2">
+                                {child.children.map((grandchild) => (
+                                  <Link
+                                    key={grandchild.name}
+                                    to={grandchild.href || '#'}
+                                    className={cn(
+                                      "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                      location.pathname === grandchild.href
+                                        ? "bg-red-500/20 text-red-700 font-semibold"
+                                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                    )}
+                                  >
+                                    <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                      <IconComponent icon={grandchild.icon} />
+                                    </div>
+                                    <span className="text-sm font-medium ml-3">
+                                      <TranslatedText>{grandchild.name}</TranslatedText>
+                                    </span>
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          // Child with href - simple clickable link
+                          <Link
+                            to={child.href || '#'}
+                            className={cn(
+                              "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                              location.pathname === child.href
+                                ? "bg-red-500/20 text-red-700 font-semibold"
+                                : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                            )}
+                          >
+                            <div className="flex items-center justify-center w-6 min-w-[24px]">
+                              <IconComponent icon={child.icon} />
+                            </div>
+                            <span className="text-sm font-medium ml-3">
+                              <TranslatedText>{child.name}</TranslatedText>
+                            </span>
+                          </Link>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </>
               ) : (
                 // Item with href - simple clickable link
@@ -253,29 +277,34 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                   to={item.href || '#'}
                   className={cn(
                     "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
-                    isHovered ? "px-4 py-3" : "px-0 py-3 justify-center",
-                    location.pathname === item.href 
-                      ? "bg-red-500/20 text-red-700 font-semibold" 
+                    // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
+                    "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
+                    isExpanded && "px-4 py-3 justify-start",
+                    location.pathname === item.href
+                      ? "bg-red-500/20 text-red-700 font-semibold"
                       : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                   )}
                 >
                   <div className={cn(
                     "flex items-center justify-center",
-                    isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+                    // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
+                    "w-6 h-6 md:w-6 md:min-w-[24px]",
+                    isExpanded && "w-6 min-w-[24px]"
                   )}>
                     <IconComponent icon={item.icon} />
                   </div>
-                  {isHovered && (
-                    <span className="text-sm font-medium ml-3">
-                      <TranslatedText>{item.name}</TranslatedText>
-                    </span>
-                  )}
+                  {/* Mobile: show text on hover, Desktop: always show */}
+                  <span className={cn(
+                    "text-sm font-medium ml-3",
+                    "hidden md:block",
+                    isExpanded && "block"
+                  )}>
+                    <TranslatedText>{item.name}</TranslatedText>
+                  </span>
                 </Link>
               )}
             </div>
           ))}
-
-
         </nav>
       </div>
 
@@ -283,16 +312,23 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
       <div className={cn(
         "bg-background flex-shrink-0",
         !hideBottomBorder && "border-t",
-        isHovered ? "p-4" : "py-4 px-2"
+        // Mobile: responsive padding, Desktop: always p-4
+        "py-4 px-2 md:p-4",
+        isExpanded && "p-4"
       )}>
         {/* User Info */}
-        {isHovered && user && (
-          <div className="mb-4 flex flex-col items-center justify-center">
+        {/* Mobile: show user info on hover, Desktop: always show */}
+        <div className={cn(
+          "mb-4 flex flex-col items-center justify-center",
+          "hidden md:flex",
+          isExpanded && user && "flex"
+        )}>
+          {user && (
             <div className="flex flex-col items-center gap-2 w-full">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
                 {user.imageUrl ? (
-                  <img 
-                    src={user.imageUrl} 
+                  <img
+                    src={user.imageUrl}
                     alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
                     className="h-full w-full object-cover rounded-full"
                   />
@@ -304,7 +340,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
               </div>
               <div className="flex flex-col items-center w-full">
                 <p className="text-sm font-medium truncate w-full text-center text-foreground">
-                  {user.firstName && user.lastName 
+                  {user.firstName && user.lastName
                     ? `${user.firstName} ${user.lastName}`
                     : user.firstName || user.lastName || 'User'
                   }
@@ -314,10 +350,8 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 </p>
               </div>
             </div>
-          </div>
-        )}
-
-
+          )}
+        </div>
 
         {/* Sign Out Button */}
         <div className="flex justify-center w-full">
@@ -325,27 +359,30 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
             onClick={() => signOut()}
             className={cn(
               "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors",
-              isHovered 
-                ? "px-4 py-3 w-full max-w-[180px] justify-center" 
-                : "px-0 py-3 w-full justify-center"
+              // Mobile: responsive layout, Desktop: always expanded style
+              "px-0 py-3 w-full justify-center md:px-4 md:py-3 md:w-full md:max-w-[180px] md:justify-center",
+              isExpanded && "px-4 py-3 w-full max-w-[180px] justify-center"
             )}
           >
             <div className={cn(
               "flex items-center justify-center",
-              isHovered ? "w-6 min-w-[24px]" : "w-6 h-6"
+              // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
+              "w-6 h-6 md:w-6 md:min-w-[24px]",
+              isExpanded && "w-6 min-w-[24px]"
             )}>
               <IconComponent icon={LogOut} />
             </div>
-            {isHovered && (
-              <span className="text-sm font-medium ml-3">
-                <TranslatedText>Sign Out</TranslatedText>
-              </span>
-            )}
+            {/* Mobile: show text on hover, Desktop: always show */}
+            <span className={cn(
+              "text-sm font-medium ml-3",
+              "hidden md:block",
+              isExpanded && "block"
+            )}>
+              <TranslatedText>Sign Out</TranslatedText>
+            </span>
           </button>
         </div>
       </div>
-
-
     </div>
   );
 };

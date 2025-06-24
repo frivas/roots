@@ -6,6 +6,33 @@ import { Calendar, Clock, BookOpen, Users, MapPin, ChevronLeft, ChevronRight } f
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
+// Type definitions
+type SubjectCode = 'COMUN' | 'CREATE' | 'MATH' | 'DISCOVER' | 'SCIENCE' | 'PHYS' | 'COMPLEX';
+type DayName = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday';
+type TimeSlot = '09:00 - 09:45' | '09:45 - 10:30' | '10:30 - 11:15' | '11:45 - 12:30' | '14:30 - 15:15' | '15:15 - 16:00';
+
+interface Subject {
+  name: string;
+  teacher: string;
+  room: string;
+}
+
+interface ScheduleData {
+  student: {
+    name: string;
+    course: string;
+    group: string;
+    delegated: string;
+    subcategory: string;
+    delegate: string;
+    subdelegate: string;
+  };
+  subjects: Record<SubjectCode, Subject>;
+  timeSlots: TimeSlot[];
+  weekDays: DayName[];
+  schedule: Record<TimeSlot, Record<DayName, SubjectCode | ''>>;
+}
+
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -19,8 +46,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -35,10 +62,10 @@ const itemVariants = {
 };
 
 // Mock schedule data
-const scheduleData = {
+const scheduleData: ScheduleData = {
   student: {
     name: "Sofía Hernández López",
-    course: "1° de E.S.O.",
+    course: "4°",
     group: "1A",
     delegated: "Math Group",
     subcategory: "Advanced Mathematics",
@@ -112,7 +139,7 @@ const scheduleData = {
 };
 
 // Subject color mapping
-const subjectColors = {
+const subjectColors: Record<SubjectCode, string> = {
   "COMUN": "bg-blue-100 text-blue-800 border-blue-200",
   "CREATE": "bg-purple-100 text-purple-800 border-purple-200",
   "MATH": "bg-green-100 text-green-800 border-green-200",
@@ -124,12 +151,12 @@ const subjectColors = {
 
 const Schedule: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState(0);
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<SubjectCode | null>(null);
   const { language } = useLingoTranslation();
-  
+
   const currentDate = new Date();
   const currentWeekStart = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
-  
+
   // Format date based on user's language preference
   const formatDate = (date: Date) => {
     if (language === 'es-ES') {
@@ -156,7 +183,7 @@ const Schedule: React.FC = () => {
   const getWeekDates = (weekOffset: number) => {
     const startDate = new Date(currentWeekStart);
     startDate.setDate(startDate.getDate() + (weekOffset * 7));
-    
+
     return scheduleData.weekDays.map((_, index) => {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + index);
@@ -164,57 +191,57 @@ const Schedule: React.FC = () => {
     });
   };
 
-  const getCurrentTimeSlotSubject = () => {
+  const getCurrentTimeSlotSubject = (): SubjectCode | null => {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     const currentTime = currentHour * 60 + currentMinute; // Convert to minutes
-    
+
     // Get current day name
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     let currentDay = dayNames[now.getDay()];
-    
+
     // If it's weekend, use Friday
     if (currentDay === 'Saturday' || currentDay === 'Sunday') {
       currentDay = 'Friday';
     }
-    
+
     // Time slot ranges in minutes (from midnight)
     const timeSlots = [
-      { slot: "09:00 - 09:45", start: 9 * 60, end: 9 * 60 + 45 },
-      { slot: "09:45 - 10:30", start: 9 * 60 + 45, end: 10 * 60 + 30 },
-      { slot: "11:00 - 11:45", start: 11 * 60, end: 11 * 60 + 45 },
-      { slot: "11:45 - 12:30", start: 11 * 60 + 45, end: 12 * 60 + 30 },
-      { slot: "14:30 - 15:15", start: 14 * 60 + 30, end: 15 * 60 + 15 },
-      { slot: "15:15 - 16:00", start: 15 * 60 + 15, end: 16 * 60 }
+      { slot: "09:00 - 09:45" as TimeSlot, start: 9 * 60, end: 9 * 60 + 45 },
+      { slot: "09:45 - 10:30" as TimeSlot, start: 9 * 60 + 45, end: 10 * 60 + 30 },
+      { slot: "10:30 - 11:15" as TimeSlot, start: 10 * 60 + 30, end: 11 * 60 + 15 },
+      { slot: "11:45 - 12:30" as TimeSlot, start: 11 * 60 + 45, end: 12 * 60 + 30 },
+      { slot: "14:30 - 15:15" as TimeSlot, start: 14 * 60 + 30, end: 15 * 60 + 15 },
+      { slot: "15:15 - 16:00" as TimeSlot, start: 15 * 60 + 15, end: 16 * 60 }
     ];
-    
+
     // Find current time slot
     for (const timeSlot of timeSlots) {
       if (currentTime >= timeSlot.start && currentTime <= timeSlot.end) {
-        const subject = scheduleData.schedule[timeSlot.slot][currentDay];
-        if (subject) return subject;
+        const subject = scheduleData.schedule[timeSlot.slot][currentDay as DayName];
+        if (subject !== '') return subject;
       }
     }
-    
+
     // If no current class, find the last class of Friday or the next class today
     if (currentDay !== 'Friday') {
       // Find next class today
       for (const timeSlot of timeSlots) {
         if (currentTime < timeSlot.start) {
-          const subject = scheduleData.schedule[timeSlot.slot][currentDay];
-          if (subject) return subject;
+          const subject = scheduleData.schedule[timeSlot.slot][currentDay as DayName];
+          if (subject !== '') return subject;
         }
       }
     }
-    
+
     // Fall back to last class of Friday
-    const fridaySlots = ["15:15 - 16:00", "14:30 - 15:15", "11:45 - 12:30", "11:00 - 11:45", "09:45 - 10:30", "09:00 - 09:45"];
+    const fridaySlots: TimeSlot[] = ["15:15 - 16:00", "14:30 - 15:15", "11:45 - 12:30", "10:30 - 11:15", "09:45 - 10:30", "09:00 - 09:45"];
     for (const slot of fridaySlots) {
       const subject = scheduleData.schedule[slot]["Friday"];
-      if (subject) return subject;
+      if (subject !== '') return subject;
     }
-    
+
     return null;
   };
 
@@ -229,7 +256,7 @@ const Schedule: React.FC = () => {
   }, []);
 
   return (
-    <motion.div 
+    <motion.div
       className="space-y-6 pb-8"
       initial="hidden"
       animate="visible"
@@ -253,48 +280,48 @@ const Schedule: React.FC = () => {
                     <div className="text-sm text-muted-foreground">
                       <TranslatedText>{scheduleData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {scheduleData.student.group}
                     </div>
-                                         <div className="space-y-1">
-                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                         <span>
-                           <span className="font-bold"><TranslatedText>Unit:</TranslatedText></span> {scheduleData.student.delegated}
-                         </span>
-                         <span>•</span>
-                         <span>
-                           <span className="font-bold"><TranslatedText>Group:</TranslatedText></span> {scheduleData.student.subcategory}
-                         </span>
-                       </div>
-                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                         <span>
-                           <span className="font-bold"><TranslatedText>Delegate:</TranslatedText></span> {scheduleData.student.delegate}
-                         </span>
-                         <span>•</span>
-                         <span>
-                           <span className="font-bold"><TranslatedText>Subdelegate:</TranslatedText></span> {scheduleData.student.subdelegate}
-                         </span>
-                       </div>
-                     </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>
+                          <span className="font-bold"><TranslatedText>Unit:</TranslatedText></span> {scheduleData.student.delegated}
+                        </span>
+                        <span>•</span>
+                        <span>
+                          <span className="font-bold"><TranslatedText>Group:</TranslatedText></span> {scheduleData.student.subcategory}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>
+                          <span className="font-bold"><TranslatedText>Delegate:</TranslatedText></span> {scheduleData.student.delegate}
+                        </span>
+                        <span>•</span>
+                        <span>
+                          <span className="font-bold"><TranslatedText>Subdelegate:</TranslatedText></span> {scheduleData.student.subdelegate}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              
+
               {/* Week Navigator */}
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <div className="text-sm font-medium text-foreground">
                     {formatDate(weekDates[0])} - {formatDate(weekDates[4])}
                   </div>
-                                     <div className="text-xs text-muted-foreground">
-                     <TranslatedText>Week</TranslatedText> {getWeekNumber(weekDates[0])}
-                   </div>
+                  <div className="text-xs text-muted-foreground">
+                    <TranslatedText>Week</TranslatedText> {getWeekNumber(weekDates[0])}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button 
+                  <button
                     onClick={() => setSelectedWeek(Math.max(0, selectedWeek - 1))}
                     className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
                   >
                     <ChevronLeft className="h-4 w-4 text-muted-foreground" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => setSelectedWeek(Math.min(3, selectedWeek + 1))}
                     className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
                   >
@@ -335,7 +362,7 @@ const Schedule: React.FC = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {/* Schedule Rows */}
                   {scheduleData.timeSlots.map((timeSlot) => (
                     <React.Fragment key={timeSlot}>
@@ -343,23 +370,25 @@ const Schedule: React.FC = () => {
                       <div className="p-3 bg-white rounded-lg border text-center font-medium text-sm">
                         {timeSlot}
                       </div>
-                      
+
                       {/* Subject Columns */}
                       {scheduleData.weekDays.map((day) => {
                         const subject = scheduleData.schedule[timeSlot][day];
-                        const isEmpty = !subject;
-                        
+                        // @ts-expect-error - TypeScript incorrectly thinks SubjectCode and '' don't overlap
+                        const isEmpty = !subject || subject === '';
+                        const subjectCode = isEmpty ? null : subject;
+
                         return (
                           <div
                             key={`${timeSlot}-${day}`}
                             className={cn(
                               "p-2 rounded-lg border min-h-[60px] flex items-center justify-center cursor-pointer transition-all",
-                              isEmpty 
-                                ? "bg-gray-50 border-gray-200" 
-                                : `${subjectColors[subject]} hover:scale-105 hover:shadow-md`,
-                              selectedSubject === subject && "ring-2 ring-blue-400"
+                              isEmpty
+                                ? "bg-gray-50 border-gray-200"
+                                : `${subjectColors[subject as SubjectCode]} hover:scale-105 hover:shadow-md`,
+                              selectedSubject === subjectCode && "ring-2 ring-blue-400"
                             )}
-                            onClick={() => setSelectedSubject(isEmpty ? null : subject)}
+                            onClick={() => setSelectedSubject(subjectCode)}
                           >
                             {!isEmpty && (
                               <div className="text-center">
@@ -411,7 +440,7 @@ const Schedule: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <Users className="h-4 w-4 text-gray-400" />
                   <div>
@@ -423,7 +452,7 @@ const Schedule: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <MapPin className="h-4 w-4 text-gray-400" />
                   <div>
@@ -457,9 +486,9 @@ const Schedule: React.FC = () => {
                   key={code}
                   className={cn(
                     "p-3 rounded-lg border flex items-center gap-3 hover:scale-105 transition-transform cursor-pointer",
-                    subjectColors[code]
+                    subjectColors[code as SubjectCode]
                   )}
-                  onClick={() => setSelectedSubject(code)}
+                  onClick={() => setSelectedSubject(code as SubjectCode)}
                 >
                   <div className="font-bold text-sm">{code}</div>
                   <div className="text-sm">
@@ -475,4 +504,4 @@ const Schedule: React.FC = () => {
   );
 };
 
-export default Schedule; 
+export default Schedule;

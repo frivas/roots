@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import tutorMockData from '../services/TutorMockData';
-import { Calendar, Mail, Phone, School } from 'lucide-react';
+import { Calendar, Mail, Phone, School, UserCheck } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { formatDate } from '../lib/utils';
 
@@ -22,14 +23,56 @@ const TutorInfo: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto p-6 max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-8 pb-8">
+            {/* Header Section */}
+            <motion.div
+                className="flex flex-col gap-2"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="flex items-center gap-3">
+                    <div className="p-3 bg-primary/10 text-primary rounded-lg">
+                        <UserCheck className="h-8 w-8" />
+                    </div>
+                    <div>
+                        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight text-foreground">Tutoring</TranslatedText>
+                        <TranslatedText element="p" className="text-muted-foreground text-lg">
+                            Meet your dedicated teacher and access tutoring resources.
+                        </TranslatedText>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Content Section */}
+            <motion.div 
+                className="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+            >
             {/* Profile Card */}
             <Card className="md:col-span-1 flex flex-col items-center p-6">
-                <img
-                    src={tutor.avatar}
-                    alt={tutor.name}
-                    className="w-32 h-32 rounded-full object-cover border-4 border-primary mb-4"
-                />
+                <div className="relative mb-4">
+                  <div className="w-24 h-32 rounded-xl overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
+                    <div className="w-full h-full rounded-lg overflow-hidden bg-white">
+                      <img
+                        src={tutor.avatar}
+                        alt={tutor.name}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        onError={(e) => {
+                          // Fallback to illustration avatar if local image fails
+                          const fallbackImages = [
+                            "https://api.dicebear.com/7.x/personas/svg?seed=Lucia&backgroundColor=f4d1ad&hair=long01,long02&hairColor=brown&eyes=normal&mouth=smile&skinColor=f4d1ad",
+                            "https://ui-avatars.com/api/?name=Lucia+M&size=200&background=e3f2fd&color=1976d2&font-size=0.6&bold=true"
+                          ];
+                          const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+                          e.currentTarget.src = fallbackImages[randomIndex];
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="text-center">
                     <h2 className="text-2xl font-bold mb-1">{tutor.name}</h2>
                     <div className="text-primary font-semibold mb-2">
@@ -194,6 +237,7 @@ const TutorInfo: React.FC = () => {
                     </CardContent>
                 </Card>
             </div>
+            </motion.div>
         </div>
     );
 };

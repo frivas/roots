@@ -14,8 +14,9 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
+        ws: true, // Enable WebSocket proxy for SSE
       },
-      '/events': {
+      '/webhook': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,

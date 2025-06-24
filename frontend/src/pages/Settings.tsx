@@ -722,12 +722,6 @@ const Settings = () => {
                     </p>
                   </div>
                 </CardContent>
-                <div className="bg-muted/20 px-6 py-4">
-                  <Button type="submit" className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
-                    <TranslatedText>Save Language Settings</TranslatedText>
-                  </Button>
-                </div>
               </Card>
               
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
