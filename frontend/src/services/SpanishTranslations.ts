@@ -1651,6 +1651,9 @@ export const spanishTranslations: Record<string, string> = {
   // Page Header Subtitles
   "View your current academic year grades and evaluations": "Ve las calificaciones y evaluaciones de tu año académico actual",
   "View your weekly class schedule and timetable": "Ve tu horario semanal de clases y calendario",
+  "View and manage your absence records and justifications": "Ve y gestiona tus registros de ausencias y justificaciones",
+  "Track your academic activities, grades, and evaluations": "Rastrea tus actividades académicas, calificaciones y evaluaciones",
+  "View detailed student information and academic records": "Ve información detallada del estudiante y registros académicos",
   "Filter Announcements": "Filtrar Anuncios",
   "Filter Grades": "Filtrar Calificaciones",
 
