@@ -696,13 +696,13 @@ const PersonalCalendar: React.FC = () => {
                                         onChange={(e) => handleInputChange('priority', e.target.value)}
                                     >
                                         <option value="baja">
-                                            {language === 'es-ES' ? 'Prioridad Baja' : 'Low Priority'}
+                                            <TranslatedText>Low Priority</TranslatedText>
                                         </option>
                                         <option value="media">
-                                            {language === 'es-ES' ? 'Prioridad Media' : 'Medium Priority'}
+                                            <TranslatedText>Medium Priority</TranslatedText>
                                         </option>
                                         <option value="alta">
-                                            {language === 'es-ES' ? 'Prioridad Alta' : 'High Priority'}
+                                            <TranslatedText>High Priority</TranslatedText>
                                         </option>
                                     </select>
                                 </div>

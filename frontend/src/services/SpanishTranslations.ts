@@ -529,6 +529,7 @@ export const spanishTranslations: Record<string, string> = {
   "Senior English Teacher": "Profesor Senior de Inglés",
   "teacher": "profesor",
   "user": "usuario",
+  "User": "Usuario",
   "Edit Profile": "Editar Perfil",
   "Master of Arts in English Literature": "Maestría en Literatura Inglesa",
   "University of Michigan": "Universidad de Michigan",
@@ -1656,6 +1657,9 @@ export const spanishTranslations: Record<string, string> = {
   "Track your academic activities, grades, and evaluations": "Rastrea tus actividades académicas, calificaciones y evaluaciones",
   "View detailed student information and academic records": "Ve información detallada del estudiante y registros académicos",
   "Meet your dedicated teacher and access tutoring resources": "Conoce a tu profesor dedicado y accede a recursos de tutoría",
+  "No services found": "No se encontraron servicios",
+  "We couldn't find any services matching your search criteria. Try adjusting your search or browse all services.": "No pudimos encontrar servicios que coincidan con tus criterios de búsqueda. Intenta ajustar tu búsqueda o navega por todos los servicios.",
+  "View all services": "Ver todos los servicios",
   "Filter Announcements": "Filtrar Anuncios",
   "Filter Grades": "Filtrar Calificaciones",
 
