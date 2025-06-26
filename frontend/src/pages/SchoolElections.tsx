@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-import { 
-  Vote, 
-  Users, 
+import {
+  Vote,
+  Users,
   Calendar,
   Info,
   CheckCircle,
@@ -34,8 +34,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -75,7 +75,7 @@ const electionData = {
       icon: <Building className="h-4 w-4" />
     },
     {
-      sector: "Teaching Staff", 
+      sector: "Teaching Staff",
       member: "Martín Ruiz, Carlos",
       appointmentDate: new Date(2024, 9, 25), // October 25, 2024
       termEnd: new Date(2026, 9, 25), // October 25, 2026
@@ -83,7 +83,7 @@ const electionData = {
     },
     {
       sector: "Teaching Staff",
-      member: "Rodríguez Sánchez, Elena", 
+      member: "Rodríguez Sánchez, Elena",
       appointmentDate: new Date(2024, 9, 25), // October 25, 2024
       termEnd: new Date(2026, 9, 25), // October 25, 2026
       icon: <GraduationCap className="h-4 w-4" />
@@ -120,7 +120,7 @@ const electionData = {
   activeElections: [
     {
       id: 1,
-      title: "Partial School Council Renewal", 
+      title: "Partial School Council Renewal",
       description: "Election of representatives from the Parents/Legal Guardians sector",
       startDate: new Date(2024, 10, 1), // November 1, 2024
       endDate: new Date(2024, 10, 15), // November 15, 2024
@@ -148,7 +148,7 @@ interface TabsProps {
 
 const Tabs = ({ defaultValue, className, children }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
-  
+
   return (
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
@@ -195,8 +195,8 @@ const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: Ta
     <button
       onClick={() => setActiveTab?.(value)}
       className={`
-        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
-        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 
+        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium
+        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2
         focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         ${isActive ? 'bg-background text-foreground shadow-sm' : 'hover:bg-muted/50'}
         ${className || ''}
@@ -325,26 +325,30 @@ const SchoolElections: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>School Elections</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>Electoral processes and council member composition</TranslatedText>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Filter Section */}
+      <motion.div variants={itemVariants}>
         <Card className="bg-muted/70">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Vote className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>School Elections</TranslatedText>
+                  <CardTitle className="text-xl font-semibold">
+                    <TranslatedText>School Council Management</TranslatedText>
                   </CardTitle>
-                  <div className="mt-2">
-                    <div className="text-lg font-medium text-foreground">
-                      <TranslatedText>School Council Management</TranslatedText>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      <TranslatedText>Electoral processes and council composition</TranslatedText>
-                    </div>
-                  </div>
                 </div>
               </div>
-              
+
               {/* Filter Dropdowns */}
               <div className="flex items-center gap-3">
                 {/* Academic Year Filter */}
@@ -359,7 +363,7 @@ const SchoolElections: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isYearFilterOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isYearFilterOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[150px]">
                       {yearOptions.map((option) => (
@@ -393,7 +397,7 @@ const SchoolElections: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isQueryTypeFilterOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isQueryTypeFilterOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                       {queryTypeOptions.map((option) => (
@@ -450,13 +454,13 @@ const SchoolElections: React.FC = () => {
               <TabsContent value="council" className="mt-6">
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <DataRow 
-                      label="Constitution Date" 
+                    <DataRow
+                      label="Constitution Date"
                       value={formatDate(electionData.schoolCouncil.constitutionDate)}
                       icon={<Calendar className="h-4 w-4" />}
                     />
-                    <DataRow 
-                      label="Process Type" 
+                    <DataRow
+                      label="Process Type"
                       value={electionData.schoolCouncil.processType}
                       icon={<Info className="h-4 w-4" />}
                     />
@@ -551,23 +555,23 @@ const SchoolElections: React.FC = () => {
               {/* Electoral Process Tab */}
               <TabsContent value="process" className="mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <DataRow 
-                    label="Academic Year" 
+                  <DataRow
+                    label="Academic Year"
                     value={electionData.academicYear}
                     icon={<Calendar className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Electoral Board Constitution Date" 
+                  <DataRow
+                    label="Electoral Board Constitution Date"
                     value={formatDate(electionData.electoralBoard.constitutionDate)}
                     icon={<Calendar className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="School Council Constitution Date" 
+                  <DataRow
+                    label="School Council Constitution Date"
                     value={formatDate(electionData.schoolCouncil.constitutionDate)}
                     icon={<Calendar className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Center Type" 
+                  <DataRow
+                    label="Center Type"
                     value={electionData.schoolCouncil.centerType}
                     icon={<Building className="h-4 w-4" />}
                   />
@@ -629,4 +633,4 @@ const SchoolElections: React.FC = () => {
   );
 };
 
-export default SchoolElections; 
+export default SchoolElections;

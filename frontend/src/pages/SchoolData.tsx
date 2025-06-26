@@ -199,27 +199,13 @@ const SchoolData: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
-        <div className="bg-muted/50 rounded-lg p-6 mb-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
-              <div className="bg-white p-3 rounded-lg shadow-sm">
-                <Building className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">
-                  <TranslatedText>School Information</TranslatedText>
-                </h1>
-                <div className="space-y-1">
-                  <div className="text-lg font-medium text-foreground">
-                    {schoolData.basicData.centerName}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    <TranslatedText>{schoolData.basicData.centerType}</TranslatedText> - <TranslatedText>Center Code</TranslatedText>: {schoolData.basicData.centerCode}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>School Information</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>Complete information about the educational center</TranslatedText>
+          </p>
         </div>
       </motion.div>
 

@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -274,21 +274,30 @@ const Bulletin: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Bulletin board</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>School announcements and important information</TranslatedText>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Filter Section */}
+      <motion.div variants={itemVariants}>
         <Card className="bg-muted/70">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Newspaper className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Bulletin board</TranslatedText>
+                  <CardTitle className="text-xl font-semibold">
+                    <TranslatedText>Filter Announcements</TranslatedText>
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    <TranslatedText>School announcements and important information</TranslatedText>
-                  </p>
                 </div>
               </div>
-              
+
               {/* Filter Dropdowns */}
               <div className="flex items-center gap-2">
                 {/* Category Filter */}
@@ -303,7 +312,7 @@ const Bulletin: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isCategoryDropdownOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isCategoryDropdownOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                       {categoryOptions.map((option) => (
@@ -338,7 +347,7 @@ const Bulletin: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isAudienceDropdownOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isAudienceDropdownOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                       {audienceOptions.map((option) => (
@@ -385,7 +394,7 @@ const Bulletin: React.FC = () => {
         ) : (
           paginatedAnnouncements.map((announcement) => {
             const categoryDisplay = getCategoryDisplay(announcement.category);
-            
+
             return (
               <motion.div
                 key={announcement.id}
@@ -408,15 +417,15 @@ const Bulletin: React.FC = () => {
                         categoryDisplay.color.includes('indigo') ? 'bg-indigo-100' : '',
                         categoryDisplay.color.includes('teal') ? 'bg-teal-100' : '',
                         categoryDisplay.color.includes('red') ? 'bg-red-100' : '',
-                        !categoryDisplay.color.includes('blue') && 
-                        !categoryDisplay.color.includes('orange') && 
-                        !categoryDisplay.color.includes('green') && 
-                        !categoryDisplay.color.includes('purple') && 
-                        !categoryDisplay.color.includes('indigo') && 
-                        !categoryDisplay.color.includes('teal') && 
-                        !categoryDisplay.color.includes('red') ? 'bg-gray-100' : ''
+                        !categoryDisplay.color.includes('blue') &&
+                          !categoryDisplay.color.includes('orange') &&
+                          !categoryDisplay.color.includes('green') &&
+                          !categoryDisplay.color.includes('purple') &&
+                          !categoryDisplay.color.includes('indigo') &&
+                          !categoryDisplay.color.includes('teal') &&
+                          !categoryDisplay.color.includes('red') ? 'bg-gray-100' : ''
                       )}>
-                        {React.createElement(categoryDisplay.icon, { 
+                        {React.createElement(categoryDisplay.icon, {
                           className: cn(
                             "h-4 w-4",
                             categoryDisplay.color.includes('blue') ? 'text-blue-500' : '',
@@ -426,13 +435,13 @@ const Bulletin: React.FC = () => {
                             categoryDisplay.color.includes('indigo') ? 'text-indigo-500' : '',
                             categoryDisplay.color.includes('teal') ? 'text-teal-500' : '',
                             categoryDisplay.color.includes('red') ? 'text-red-500' : '',
-                            !categoryDisplay.color.includes('blue') && 
-                            !categoryDisplay.color.includes('orange') && 
-                            !categoryDisplay.color.includes('green') && 
-                            !categoryDisplay.color.includes('purple') && 
-                            !categoryDisplay.color.includes('indigo') && 
-                            !categoryDisplay.color.includes('teal') && 
-                            !categoryDisplay.color.includes('red') ? 'text-gray-500' : ''
+                            !categoryDisplay.color.includes('blue') &&
+                              !categoryDisplay.color.includes('orange') &&
+                              !categoryDisplay.color.includes('green') &&
+                              !categoryDisplay.color.includes('purple') &&
+                              !categoryDisplay.color.includes('indigo') &&
+                              !categoryDisplay.color.includes('teal') &&
+                              !categoryDisplay.color.includes('red') ? 'text-gray-500' : ''
                           )
                         })}
                       </div>
@@ -466,7 +475,7 @@ const Bulletin: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-1 flex-shrink-0">
                       {announcement.hasAttachment && (
                         <div className="p-1.5 rounded-md hover:bg-muted transition-colors" title="Has attachment">
@@ -478,7 +487,7 @@ const Bulletin: React.FC = () => {
                       </button>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="p-4 pt-0">
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       <TranslatedText>{announcement.content}</TranslatedText>
@@ -508,22 +517,22 @@ const Bulletin: React.FC = () => {
                 <div className="text-sm text-muted-foreground">
                   <TranslatedText>Showing</TranslatedText> {startIndex + 1} <TranslatedText>to</TranslatedText> {Math.min(endIndex, sortedAnnouncements.length)} <TranslatedText>of</TranslatedText> {sortedAnnouncements.length} <TranslatedText>announcements</TranslatedText>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={cn(
                       "flex items-center gap-1 px-3 py-1 text-sm rounded-lg border transition-colors",
-                      currentPage === 1 
-                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed" 
+                      currentPage === 1
+                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     )}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <TranslatedText>Previous</TranslatedText>
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
                       <button
@@ -540,7 +549,7 @@ const Bulletin: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
@@ -580,4 +589,4 @@ const Bulletin: React.FC = () => {
   );
 };
 
-export default Bulletin; 
+export default Bulletin;
