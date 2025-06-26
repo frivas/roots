@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -44,103 +44,103 @@ const documentData = {
   documents: [
     {
       id: 1,
-      name: "Boletín de Calificaciones - 2ª Evaluación",
+      name: "Report Card - 2nd Evaluation",
       category: "academic",
       type: "report_card",
       date: new Date(2025, 3, 15),
       size: "245 KB",
       format: "PDF",
-      description: "Boletín oficial con calificaciones del segundo trimestre"
+      description: "Official report card with second quarter grades"
     },
     {
       id: 2,
-      name: "Certificado de Matrícula 2024-2025",
+      name: "Enrollment Certificate 2024-2025",
       category: "administrative",
       type: "enrollment",
       date: new Date(2024, 8, 1),
       size: "156 KB",
       format: "PDF",
-      description: "Certificado oficial de matrícula para el curso académico actual"
+      description: "Official enrollment certificate for the current academic year"
     },
     {
       id: 3,
-      name: "Autorización Actividades Extraescolares",
+      name: "Extracurricular Activities Authorization",
       category: "administrative",
       type: "authorization",
       date: new Date(2024, 8, 15),
       size: "98 KB",
       format: "PDF",
-      description: "Documento de autorización para participar en actividades extraescolares"
+      description: "Authorization document to participate in extracurricular activities"
     },
     {
       id: 4,
-      name: "Informe de Evaluación Psicopedagógica",
+      name: "Psychopedagogical Evaluation Report",
       category: "academic",
       type: "evaluation",
       date: new Date(2025, 2, 10),
       size: "432 KB",
       format: "PDF",
-      description: "Evaluación psicopedagógica realizada por el departamento de orientación"
+      description: "Psychopedagogical evaluation conducted by the guidance department"
     },
     {
       id: 5,
-      name: "Justificante Médico - Marzo 2025",
+      name: "Medical Certificate - March 2025",
       category: "medical",
       type: "medical_certificate",
       date: new Date(2025, 2, 25),
       size: "134 KB",
       format: "PDF",
-      description: "Justificante médico para ausencias del mes de marzo"
+      description: "Medical certificate for March absences"
     },
     {
       id: 6,
-      name: "Proyecto Final - Ciencias Naturales",
+      name: "Final Project - Natural Sciences",
       category: "academic",
       type: "project",
       date: new Date(2025, 2, 20),
       size: "2.1 MB",
       format: "PDF",
-      description: "Proyecto final sobre el sistema solar presentado en marzo"
+      description: "Final project on the solar system presented in March"
     },
     {
       id: 7,
-      name: "Autorización Salida Educativa - Museo",
+      name: "Educational Trip Authorization - Museum",
       category: "administrative",
       type: "authorization",
       date: new Date(2025, 1, 5),
       size: "89 KB",
       format: "PDF",
-      description: "Autorización para participar en la visita educativa al Museo de Ciencias"
+      description: "Authorization to participate in the educational visit to the Science Museum"
     },
     {
       id: 8,
-      name: "Boletín de Calificaciones - 1ª Evaluación",
+      name: "Report Card - 1st Evaluation",
       category: "academic",
       type: "report_card",
       date: new Date(2024, 11, 20),
       size: "238 KB",
       format: "PDF",
-      description: "Boletín oficial con calificaciones del primer trimestre"
+      description: "Official report card with first quarter grades"
     },
     {
       id: 9,
-      name: "Seguro Escolar 2024-2025",
+      name: "School Insurance 2024-2025",
       category: "administrative",
       type: "insurance",
       date: new Date(2024, 8, 1),
       size: "287 KB",
       format: "PDF",
-      description: "Póliza de seguro escolar para el curso académico actual"
+      description: "School insurance policy for the current academic year"
     },
     {
       id: 10,
-      name: "Informe Tutorial - 1er Trimestre",
+      name: "Tutorial Report - 1st Quarter",
       category: "academic",
       type: "tutorial_report",
       date: new Date(2024, 11, 15),
       size: "198 KB",
       format: "PDF",
-      description: "Informe del tutor sobre el desarrollo académico y personal del primer trimestre"
+      description: "Tutor report on academic and personal development of the first quarter"
     }
   ]
 };
@@ -292,7 +292,7 @@ const Documents: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Filter Dropdown */}
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -306,7 +306,7 @@ const Documents: React.FC = () => {
                       </span>
                       <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isFilterOpen && "rotate-180")} />
                     </button>
-                    
+
                     {isFilterOpen && (
                       <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                         {categoryOptions.map((option) => (
@@ -354,7 +354,7 @@ const Documents: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {currentDocuments.map((document) => {
                     const { color, icon: Icon, label } = getDocumentDisplay(document.type, document.category);
-                    
+
                     return (
                       <motion.div
                         key={document.id}
@@ -371,7 +371,7 @@ const Documents: React.FC = () => {
                                 </div>
                                 <div className="flex-1">
                                   <CardTitle className="text-lg font-semibold text-gray-900 leading-tight">
-                                    {document.name}
+                                    <TranslatedText>{document.name}</TranslatedText>
                                   </CardTitle>
                                   <p className={cn("text-xs font-medium px-2 py-1 rounded-full mt-2 inline-block", color)}>
                                     <TranslatedText>{label}</TranslatedText>
@@ -383,9 +383,9 @@ const Documents: React.FC = () => {
                           <CardContent className="pt-0">
                             <div className="space-y-3">
                               <p className="text-sm text-gray-600 line-clamp-2">
-                                {document.description}
+                                <TranslatedText>{document.description}</TranslatedText>
                               </p>
-                              
+
                               <div className="flex items-center gap-4 text-xs text-gray-500">
                                 <div className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
@@ -443,22 +443,22 @@ const Documents: React.FC = () => {
                   <div className="text-sm text-muted-foreground">
                     <TranslatedText>Showing</TranslatedText> {startIndex + 1} <TranslatedText>to</TranslatedText> {Math.min(endIndex, filteredDocuments.length)} <TranslatedText>of</TranslatedText> {filteredDocuments.length} <TranslatedText>documents</TranslatedText>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                       disabled={currentPage === 1}
                       className={cn(
                         "flex items-center gap-1 px-3 py-1 text-sm rounded-lg border transition-colors",
-                        currentPage === 1 
-                          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed" 
+                        currentPage === 1
+                          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                           : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                       )}
                     >
                       <ChevronLeft className="h-4 w-4" />
                       <TranslatedText>Previous</TranslatedText>
                     </button>
-                    
+
                     <div className="flex items-center gap-1">
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
                         <button
@@ -475,7 +475,7 @@ const Documents: React.FC = () => {
                         </button>
                       ))}
                     </div>
-                    
+
                     <button
                       onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
@@ -500,4 +500,4 @@ const Documents: React.FC = () => {
   );
 };
 
-export default Documents; 
+export default Documents;

@@ -283,20 +283,20 @@ const Schedule: React.FC = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>
-                          <span className="font-bold"><TranslatedText>Unit:</TranslatedText></span> {scheduleData.student.delegated}
+                          <span className="font-bold"><TranslatedText>Unit:</TranslatedText></span> <TranslatedText>{scheduleData.student.delegated}</TranslatedText>
                         </span>
                         <span>•</span>
                         <span>
-                          <span className="font-bold"><TranslatedText>Group:</TranslatedText></span> {scheduleData.student.subcategory}
+                          <span className="font-bold"><TranslatedText>Group:</TranslatedText></span> <TranslatedText>{scheduleData.student.subcategory}</TranslatedText>
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>
-                          <span className="font-bold"><TranslatedText>Delegate:</TranslatedText></span> {scheduleData.student.delegate}
+                          <span className="font-bold"><TranslatedText>Delegate:</TranslatedText></span> <TranslatedText>{scheduleData.student.delegate}</TranslatedText>
                         </span>
                         <span>•</span>
                         <span>
-                          <span className="font-bold"><TranslatedText>Subdelegate:</TranslatedText></span> {scheduleData.student.subdelegate}
+                          <span className="font-bold"><TranslatedText>Subdelegate:</TranslatedText></span> <TranslatedText>{scheduleData.student.subdelegate}</TranslatedText>
                         </span>
                       </div>
                     </div>
@@ -396,7 +396,7 @@ const Schedule: React.FC = () => {
                                   {subject}
                                 </div>
                                 <div className="text-xs opacity-80 mt-1">
-                                  {scheduleData.subjects[subject]?.teacher}
+                                  <TranslatedText>{scheduleData.subjects[subject]?.teacher}</TranslatedText>
                                 </div>
                               </div>
                             )}
@@ -448,7 +448,7 @@ const Schedule: React.FC = () => {
                       <TranslatedText>Teacher</TranslatedText>
                     </div>
                     <div className="text-gray-600">
-                      {scheduleData.subjects[selectedSubject]?.teacher}
+                      <TranslatedText>{scheduleData.subjects[selectedSubject]?.teacher}</TranslatedText>
                     </div>
                   </div>
                 </div>
@@ -460,7 +460,7 @@ const Schedule: React.FC = () => {
                       <TranslatedText>Room</TranslatedText>
                     </div>
                     <div className="text-gray-600">
-                      {scheduleData.subjects[selectedSubject]?.room}
+                      <TranslatedText>{scheduleData.subjects[selectedSubject]?.room}</TranslatedText>
                     </div>
                   </div>
                 </div>
