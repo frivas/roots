@@ -404,35 +404,13 @@ const PersonalCalendar: React.FC = () => {
         >
             {/* Header Section */}
             <motion.div variants={itemVariants}>
-                <div className="bg-muted/50 rounded-lg p-6 mb-6">
-                    <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-4">
-                            <div className="bg-white p-3 rounded-lg shadow-sm">
-                                <Calendar className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-foreground mb-2">
-                                    <TranslatedText>Personal Calendar</TranslatedText>
-                                </h1>
-                                <div className="space-y-1">
-                                    <div className="text-lg font-medium text-foreground">
-                                        {monthNames[currentLocale][currentMonth]} {currentYear}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        <TranslatedText>Manage your personal events and appointments</TranslatedText>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <Button
-                            onClick={() => setShowCreateForm(true)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            <TranslatedText>Create Event</TranslatedText>
-                        </Button>
-                    </div>
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-4xl font-bold tracking-tight">
+                        <TranslatedText>Personal Calendar</TranslatedText>
+                    </h1>
+                    <p className="text-muted-foreground text-lg">
+                        <TranslatedText>Manage your personal events and appointments</TranslatedText>
+                    </p>
                 </div>
             </motion.div>
 

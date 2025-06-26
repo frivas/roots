@@ -813,8 +813,8 @@ export const spanishTranslations: Record<string, string> = {
   "Election of representatives from the Parents/Legal Guardians sector": "Elección de representantes del sector de Madres/Padres/Tutores",
   "Administrative Staff Representative Election": "Elección de representante del Personal de Administración",
   "Replacement due to end of mandate": "Sustitución por finalización de mandato",
-  "Constitución/Renovación": "Constitución/Renovación",
-  "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.": "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.",
+  "Constitution/Renewal": "Constitución/Renovación",
+  "School Council renewal process for the academic year 2024-2025. All regulatory commissions have been established.": "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.",
   "The school council is one of the most important bodies in the educational structure. From this option in Roots you can consult the dates of constitution of the electoral board and the council itself, as well as the type of formation process and its composition.": "El consejo escolar es uno de los organismos más importantes de la estructura educativa. Desde esta opción de Raíces podrás consultar las fechas de constitución de la junta electoral y del propio consejo, así como el tipo de proceso de formación y su composición.",
   "Faculty Directory": "Directorio de Profesores",
 
@@ -916,7 +916,7 @@ export const spanishTranslations: Record<string, string> = {
   "parent wellness and self-care": "bienestar y autocuidado para padres",
   "Five Years": "Cinco Años",
   "Select recipient": "Seleccionar destinatario",
-  "Enrolled": "Apuntado",
+  "Enrolled": "Matriculado",
   "Preview": "Probar",
 
   // Evaluation periods
@@ -1010,13 +1010,24 @@ export const spanishTranslations: Record<string, string> = {
   "January - March 2025": "Enero - Marzo 2025",
   "April - June 2025": "Abril - Junio 2025",
 
-  // Subject names
-  "Biology and Geology": "Biología y Geología",
+  // Subject names - Academic History specific
+  "Natural Sciences": "Ciencias de la Naturaleza",
+  "Social Sciences, Geography and History": "Ciencias Sociales, Geografía e Historia",
+  "Arts and Visual Education": "Educación Plástica y Visual",
+  "First Foreign Language (French)": "Primera Lengua Extranjera (Francés)",
+  "Second Foreign Language (English)": "Segunda Lengua Extranjera (Inglés)",
+  "Catholic Religion": "Religión Católica",
+  "Citizenship and Human Rights Education": "Educación para la Ciudadanía y los Derechos Humanos",
+  "Artistic Education": "Educación Artística",
+
+  // Record types
+  "Compulsory Secondary Education": "Escuela Secundaria Obligatoria",
+  "Primary Education": "Educación Primaria",
+
+  // Enrollment status
   "Sports": "Deporte",
   "Visual and Audiovisual Arts": "Educación Plástica, Visual y Audiovisual",
   "Geography and History": "Geografía e Historia",
-  "Spanish Language and Literature": "Lengua Castellana y Literatura",
-  "First Foreign Language (English)": "Primera Lengua Extranjera (Inglés)",
   "Ethical Values": "Valores Éticos",
 
   // Subject types
@@ -1143,7 +1154,6 @@ export const spanishTranslations: Record<string, string> = {
   "All Years": "Todos los Años",
   "All Types": "Todos los Tipos",
   "Secondary Education": "Educación Secundaria",
-  "Primary Education": "Educación Primaria",
   "Entry Date": "Fecha de Ingreso",
   "Subject Group": "Grupo de Materias",
   "Academic Summary": "Resumen Académico",
@@ -1162,7 +1172,6 @@ export const spanishTranslations: Record<string, string> = {
   "3rd Evaluation": "3ª Evaluación",
   "Final Evaluation": "Evaluación Final",
   "Spanish Language": "Lengua Castellana",
-  "Natural Sciences": "Ciencias Naturales",
   "History Subject": "Historia",
   "English Subject": "Inglés",
   "Art Subject": "Arte",
@@ -1239,7 +1248,7 @@ export const spanishTranslations: Record<string, string> = {
   "This applies to all AI-powered services including voice conversations, story illustrations, and educational content.": "Esto se aplica a todos los servicios con IA incluyendo conversaciones de voz, ilustraciones de cuentos y contenido educativo.",
   "Terms of Service": "Términos de Servicio",
   "Cookie Policy": "Política de Cookies",
-  "Comunidad de Madrid. All rights reserved.": "Comunidad de Madrid. Todos los derechos reservados.",
+  "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
 
   // Story Illustration Feature
   "Story Illustration": "Ilustración del Cuento",
@@ -1307,7 +1316,6 @@ export const spanishTranslations: Record<string, string> = {
   "Educational Monitoring": "Seguimiento Educativo",
   "Virtual Secretary": "Secretaría Virtual",
   "Educational Platform": "Plataforma Educativa",
-  "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
   "Privacy Policy": "Política de Privacidad",
   "Data Protection": "Protección de Datos",
 
@@ -1319,12 +1327,12 @@ export const spanishTranslations: Record<string, string> = {
   "Click the chat widget to begin your wellness journey": "Haz clic en el widget de chat para comenzar tu viaje de bienestar",
 
   // Legacy auth translations (keeping for compatibility)
-  "Bienvenido a la plataforma educativa": "Welcome to the educational platform",
-  "de la Comunidad de Madrid": "of the Madrid Community",
-  "Cursos y programas formativos especializados": "Specialized training courses and programs",
-  "Seguimiento personalizado de tu progreso": "Personalized progress tracking",
-  "Recursos y materiales de calidad": "Quality resources and materials",
-  "Soporte y acompañamiento continuo": "Continuous support and guidance",
+  "Welcome to the educational platform": "Bienvenido a la plataforma educativa",
+  "of the Madrid Community": "de la Comunidad de Madrid",
+  "Specialized training courses and programs": "Cursos y programas formativos especializados",
+  "Personalized progress tracking": "Seguimiento personalizado de tu progreso",
+  "Quality resources and materials": "Recursos y materiales de calidad",
+  "Continuous support and guidance": "Soporte y acompañamiento continuo",
 
   // Additional Clerk form translations
   "Sign in": "Iniciar sesión",
@@ -1415,7 +1423,6 @@ export const spanishTranslations: Record<string, string> = {
   "All Categories": "Todas las Categorías",
   "All Docs": "Todos los Documentos",
   "Category:": "Categoría:",
-  "Todas las Categorías": "Todas las Categorías",
   "Classroom Management": "Gestión de Aulas",
   "Manage morning classroom activities, attendance, and student participation": "Gestiona las actividades matutinas del aula, asistencia y participación estudiantil",
   "Transportation": "Transporte",
@@ -1640,6 +1647,13 @@ export const spanishTranslations: Record<string, string> = {
   "high": "alta",
   "medium": "media",
   "low": "baja",
+
+  // Page Header Subtitles
+  "View your current academic year grades and evaluations": "Ve las calificaciones y evaluaciones de tu año académico actual",
+  "View your weekly class schedule and timetable": "Ve tu horario semanal de clases y calendario",
+  "Filter Announcements": "Filtrar Anuncios",
+  "Filter Grades": "Filtrar Calificaciones",
+
 } as const;
 
 // Function to get Spanish translation with fallback
