@@ -413,7 +413,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 <p className="text-sm font-medium truncate w-full text-center text-foreground">
                   {user.firstName && user.lastName
                     ? `${user.firstName} ${user.lastName}`
-                    : user.firstName || user.lastName || 'User'
+                    : user.firstName || user.lastName || <TranslatedText>User</TranslatedText>
                   }
                 </p>
                 <p className="text-xs text-muted-foreground truncate w-full text-center">
