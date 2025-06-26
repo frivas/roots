@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import SimpleHeader from './SimpleHeader';
 import ModernSidebar from './ModernSidebar';
 import Footer from './Footer';
@@ -37,6 +38,19 @@ const MainLayout: React.FC = () => {
     location.pathname.startsWith(path)
   );
 
+  // Page transition variants
+  const pageVariants = {
+    initial: { opacity: 0, y: 10 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -10 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.2
+  };
+
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Mobile Header */}
@@ -61,9 +75,19 @@ const MainLayout: React.FC = () => {
           )}>
             <ErrorBoundary>
               <RouteWrapper>
-                <div id="outlet-container">
-                  <Outlet />
-                </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={location.pathname}
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    id="outlet-container"
+                  >
+                    <Outlet />
+                  </motion.div>
+                </AnimatePresence>
               </RouteWrapper>
             </ErrorBoundary>
           </div>

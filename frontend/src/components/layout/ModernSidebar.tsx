@@ -23,6 +23,8 @@ interface ModernSidebarProps {
   hideBottomBorder?: boolean;
 }
 
+
+
 const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBottomBorder = false }) => {
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [isHovered, setIsHovered] = useState(false);
@@ -99,8 +101,6 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     });
   };
 
-
-
   const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
     const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
     return <IconElement className={cn("h-6 w-6", className)} />;
@@ -112,7 +112,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     if (item.href) {
       return location.pathname === item.href;
     }
-    
+
     // For items with children but no href, they should never be highlighted
     // Only the specific selected child should be highlighted
     return false;
@@ -271,7 +271,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                                       </span>
                                     </Link>
                                   ) : (
-                                    <div 
+                                    <div
                                       key={grandchild.name}
                                       className="group flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-default"
                                     >
