@@ -33,7 +33,7 @@ const MainLayout: React.FC = () => {
   ];
 
   // Check if current page has ElevenLabs agent integration
-  const hasElevenLabsAgent = elevenLabsAgentPaths.some(path => 
+  const hasElevenLabsAgent = elevenLabsAgentPaths.some(path =>
     location.pathname.startsWith(path)
   );
 
@@ -67,7 +67,7 @@ const MainLayout: React.FC = () => {
               </RouteWrapper>
             </ErrorBoundary>
           </div>
-          
+
           {/* Footer - Only render when not on ElevenLabs agent pages */}
           {!hasElevenLabsAgent && (
             <div className="flex-shrink-0 border-t bg-background px-6 py-4">

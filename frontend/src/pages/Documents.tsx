@@ -273,22 +273,29 @@ const Documents: React.FC = () => {
       >
         {/* Header Section */}
         <motion.div variants={itemVariants}>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl font-bold tracking-tight">
+              <TranslatedText>Student Documents</TranslatedText>
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              <TranslatedText>Access and download your academic and administrative documents</TranslatedText>
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Student Info and Filter Section */}
+        <motion.div variants={itemVariants}>
           <Card className="bg-muted/70">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <FileText className="h-8 w-8 text-muted-foreground" />
                   <div>
-                    <CardTitle className="text-2xl font-semibold">
-                      <TranslatedText>Student Documents</TranslatedText>
-                    </CardTitle>
-                    <div className="mt-2">
-                      <div className="text-lg font-medium text-foreground">
-                        {documentData.student.name}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        <TranslatedText>{documentData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {documentData.student.group}
-                      </div>
+                    <div className="text-lg font-medium text-foreground">
+                      {documentData.student.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      <TranslatedText>{documentData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {documentData.student.group}
                     </div>
                   </div>
                 </div>
