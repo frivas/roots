@@ -5,16 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
 import {
-  Users,
   ArrowLeft,
   CheckCircle,
   Dumbbell,
-  Brain,
   Globe,
-  Calendar,
   Clock,
-  User,
-  Gamepad2,
   School,
   Languages,
   Dice1,
@@ -54,16 +49,14 @@ const ExtraCurricular: React.FC = () => {
   };
 
   const handleEnroll = (activityType: string) => {
-    setEnrolledActivities(prev => 
-      prev.includes(activityType) 
+    setEnrolledActivities(prev =>
+      prev.includes(activityType)
         ? prev.filter(type => type !== activityType)
         : [...prev, activityType]
     );
   };
 
-  const handleAccessService = () => {
-    setActiveTab('physical');
-  };
+
 
   const physicalActivities = [
     {
@@ -220,11 +213,10 @@ const ExtraCurricular: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
-              activeTab === tab.id
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
+            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${activeTab === tab.id
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
           >
             <TranslatedText>{tab.label}</TranslatedText>
           </button>
@@ -314,16 +306,18 @@ const ExtraCurricular: React.FC = () => {
                         <Clock className="h-3 w-3 inline mr-1" />
                         <TranslatedText>{activity.schedule}</TranslatedText>
                       </span>
-                      <Button 
+                      <Button
                         size="sm"
-                        className={enrolledActivities.includes(activity.type) 
+                        className={enrolledActivities.includes(activity.type)
                           ? "bg-green-600 hover:bg-green-700 text-white"
                           : ""}
                         onClick={() => handleEnroll(activity.type)}
                       >
-                        <TranslatedText>
-                          {enrolledActivities.includes(activity.type) ? "Enrolled" : "Enroll"}
-                        </TranslatedText>
+                        {enrolledActivities.includes(activity.type) ? (
+                          <TranslatedText>Enrolled</TranslatedText>
+                        ) : (
+                          <TranslatedText>Enroll</TranslatedText>
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -380,18 +374,20 @@ const ExtraCurricular: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button 
+                        <Button
                           size="sm"
-                          className={enrolledActivities.includes(activity.agentType) 
+                          className={enrolledActivities.includes(activity.agentType)
                             ? "bg-green-600 hover:bg-green-700 text-white"
                             : ""}
                           onClick={() => handleEnroll(activity.agentType)}
                         >
-                                                  <TranslatedText>
-                          {enrolledActivities.includes(activity.agentType) ? "Enrolled" : "Enroll"}
-                        </TranslatedText>
+                          {enrolledActivities.includes(activity.agentType) ? (
+                            <TranslatedText>Enrolled</TranslatedText>
+                          ) : (
+                            <TranslatedText>Enroll</TranslatedText>
+                          )}
                         </Button>
-                        <Button 
+                        <Button
                           size="sm"
                           className="bg-red-600 hover:bg-red-700 text-white"
                           onClick={() => handleStartOnlineSession(activity.agentType)}
@@ -425,4 +421,4 @@ const ExtraCurricular: React.FC = () => {
   );
 };
 
-export default ExtraCurricular; 
+export default ExtraCurricular;

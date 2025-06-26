@@ -1492,7 +1492,8 @@ export const spanishTranslations: Record<string, string> = {
   "Chess Coaching Session": "Sesión de Clases de Ajedrez",
   "Math Tutoring Session": "Sesión de Tutoría de Matemáticas",
   "Back to Activities": "Volver a Actividades",
-  "Enroll Now": "Apuntar",
+  "Enroll Now": "Matricularse Ahora",
+  "Enroll": "Matricularse",
 
   // Storytelling Adventure Building
   "Storytelling Session": "Sesión de Narración",
