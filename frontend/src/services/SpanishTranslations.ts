@@ -1654,6 +1654,7 @@ export const spanishTranslations: Record<string, string> = {
   "View and manage your absence records and justifications": "Ve y gestiona tus registros de ausencias y justificaciones",
   "Track your academic activities, grades, and evaluations": "Rastrea tus actividades académicas, calificaciones y evaluaciones",
   "View detailed student information and academic records": "Ve información detallada del estudiante y registros académicos",
+  "Meet your dedicated teacher and access tutoring resources": "Conoce a tu profesor dedicado y accede a recursos de tutoría",
   "Filter Announcements": "Filtrar Anuncios",
   "Filter Grades": "Filtrar Calificaciones",
 
