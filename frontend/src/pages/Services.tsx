@@ -263,7 +263,7 @@ const Services = () => {
   }, [searchQuery, activeCategory]);
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 pb-8">
       <motion.div
         className="flex flex-col gap-2"
         initial={{ opacity: 0, y: -20 }}

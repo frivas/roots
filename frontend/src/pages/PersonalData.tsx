@@ -6,24 +6,24 @@ import TranslatedText from '../components/TranslatedText';
 import { getSpanishTranslation } from '../services/SpanishTranslations';
 import { useAuth } from '../contexts/AuthContext';
 import { useUser } from '@clerk/clerk-react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle,
   CardFooter
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { 
-  Bell, 
-  Globe, 
-  Mail, 
-  Phone, 
-  User, 
-  Shield, 
-  Info, 
+import {
+  Bell,
+  Globe,
+  Mail,
+  Phone,
+  User,
+  Shield,
+  Info,
   AlertTriangle,
   Upload,
   Save,
@@ -31,8 +31,8 @@ import {
 } from 'lucide-react';
 
 // Switch component (since we don't have one in the project yet)
-const Switch = ({ checked, onCheckedChange, id }: { 
-  checked: boolean; 
+const Switch = ({ checked, onCheckedChange, id }: {
+  checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   id?: string;
 }) => {
@@ -43,7 +43,7 @@ const Switch = ({ checked, onCheckedChange, id }: {
       aria-checked={checked}
       onClick={() => onCheckedChange(!checked)}
       className={`
-        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent 
+        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent
         transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
         ${checked ? 'bg-primary' : 'bg-input'}
       `}
@@ -72,7 +72,7 @@ interface TabsContextType {
 
 const Tabs = ({ defaultValue, className, children }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
-  
+
   return (
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
@@ -119,8 +119,8 @@ const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: Ta
     <button
       onClick={() => setActiveTab?.(value)}
       className={`
-        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
-        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 
+        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium
+        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2
         focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         ${isActive ? 'bg-background text-foreground shadow-sm' : 'hover:bg-muted/50'}
         ${className || ''}
@@ -151,12 +151,12 @@ const PersonalData = () => {
   const { language: currentLanguage, translateText } = useLingoTranslation();
   const { userEmail } = useAuth();
   const { user } = useUser();
-  
+
   // Helper function to get placeholder text based on current language
   const getPlaceholderText = (text: string) => {
     return currentLanguage === 'es-ES' ? getSpanishTranslation(text) : text;
   };
-  
+
   // Helper function to get localized example data
   const getLocalizedExamples = () => {
     if (currentLanguage === 'es-ES') {
@@ -168,15 +168,15 @@ const PersonalData = () => {
       };
     }
     return {
-      email: userEmail || 'john.doe@example.com', 
+      email: userEmail || 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
       timezone: 'UTC-5',
       dateFormat: 'MM/DD/YYYY'
     };
   };
-  
+
   const localizedExamples = getLocalizedExamples();
-  
+
   const [settings, setSettings] = useState({
     email: localizedExamples.email,
     phone: localizedExamples.phone,
@@ -200,7 +200,7 @@ const PersonalData = () => {
       language: currentLanguage === 'es-ES' ? 'Spanish' : 'English'
     }));
   }, [currentLanguage, userEmail]);
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setSettings(prev => ({
@@ -208,20 +208,20 @@ const PersonalData = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
   };
-  
+
   const handleSwitchChange = (name: string, checked: boolean) => {
     setSettings(prev => ({
       ...prev,
       [name]: checked
     }));
   };
-  
+
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     // Save profile logic would go here
     alert('Profile settings saved');
   };
-  
+
   const handleSaveNotifications = (e: React.FormEvent) => {
     e.preventDefault();
     // Save notification settings logic would go here
@@ -230,30 +230,30 @@ const PersonalData = () => {
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.4 }
     }
   };
 
   return (
-    <motion.div 
-      className="container max-w-6xl py-8 space-y-8"
+    <motion.div
+      className="space-y-6 pb-8"
       initial="hidden"
       animate="visible"
       variants={{
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
           opacity: 1,
-          transition: { 
+          transition: {
             staggerChildren: 0.1,
             delayChildren: 0.1
           }
         }
       }}
     >
-      <motion.div 
+      <motion.div
         className="flex flex-col gap-2"
         variants={fadeIn}
       >
@@ -264,7 +264,7 @@ const PersonalData = () => {
           <TranslatedText>Manage your personal information and account preferences</TranslatedText>
         </p>
       </motion.div>
-      
+
       <motion.div variants={fadeIn}>
         <Tabs defaultValue="profile" className="w-full">
           <TabsList className="grid grid-cols-3 mb-8">
@@ -287,7 +287,7 @@ const PersonalData = () => {
               </span>
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="profile" className="space-y-6">
             <motion.div
               variants={fadeIn}
@@ -326,7 +326,7 @@ const PersonalData = () => {
                         <TranslatedText>Your email is used for educational notifications and account recovery</TranslatedText>
                       </p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <label htmlFor="phone" className="block text-sm font-medium text-foreground">
                         <TranslatedText>Phone Number</TranslatedText>
@@ -346,7 +346,7 @@ const PersonalData = () => {
                         <TranslatedText>Used for SMS notifications and emergency communications</TranslatedText>
                       </p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <label htmlFor="profilePhoto" className="block text-sm font-medium text-foreground">
                         <TranslatedText>Profile Photo</TranslatedText>
@@ -354,9 +354,9 @@ const PersonalData = () => {
                       <div className="flex items-center gap-4">
                         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
                           {user?.imageUrl ? (
-                            <img 
-                              src={user.imageUrl} 
-                              alt={user.fullName || 'Profile'} 
+                            <img
+                              src={user.imageUrl}
+                              alt={user.fullName || 'Profile'}
                               className="w-full h-full object-cover rounded-full"
                             />
                           ) : (
@@ -386,7 +386,7 @@ const PersonalData = () => {
                   </Button>
                 </div>
               </Card>
-              
+
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
@@ -413,7 +413,7 @@ const PersonalData = () => {
                       <TranslatedText>This name will be visible to instructors and classmates</TranslatedText>
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label htmlFor="bio" className="block text-sm font-medium text-foreground">
                       <TranslatedText>Bio</TranslatedText>
@@ -438,7 +438,7 @@ const PersonalData = () => {
               </Card>
             </motion.div>
           </TabsContent>
-          
+
           <TabsContent value="notifications" className="space-y-6">
             <motion.div
               variants={fadeIn}
@@ -474,7 +474,7 @@ const PersonalData = () => {
                           onCheckedChange={(checked) => handleSwitchChange('emailNotifications', checked)}
                         />
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <label htmlFor="smsNotifications" className="text-base font-medium">
@@ -490,7 +490,7 @@ const PersonalData = () => {
                           onCheckedChange={(checked) => handleSwitchChange('smsNotifications', checked)}
                         />
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <label htmlFor="pushNotifications" className="text-base font-medium">
@@ -516,7 +516,7 @@ const PersonalData = () => {
                   </Button>
                 </div>
               </Card>
-              
+
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
@@ -555,7 +555,7 @@ const PersonalData = () => {
                       <TranslatedText>Choose how frequently you want to receive course and assignment summaries</TranslatedText>
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-foreground">
                       <TranslatedText>Study Hours (No Notifications)</TranslatedText>
@@ -596,7 +596,7 @@ const PersonalData = () => {
               </Card>
             </motion.div>
           </TabsContent>
-          
+
           <TabsContent value="preferences" className="space-y-6">
             <motion.div
               variants={fadeIn}
@@ -626,7 +626,7 @@ const PersonalData = () => {
                       onChange={(e) => {
                         const selectedLanguage = e.target.value;
                         const languageCode = selectedLanguage === 'Spanish' ? 'es-ES' : 'en-US';
-                        
+
                         // Update all language-dependent settings
                         const newExamples = languageCode === 'es-ES' ? {
                           email: userEmail || 'maria.garcia@ejemplo.es',
@@ -634,21 +634,21 @@ const PersonalData = () => {
                           timezone: 'UTC+1',
                           dateFormat: 'DD/MM/YYYY'
                         } : {
-                          email: userEmail || 'john.doe@example.com', 
+                          email: userEmail || 'john.doe@example.com',
                           phone: '+1 (555) 123-4567',
                           timezone: 'UTC-5',
                           dateFormat: 'MM/DD/YYYY'
                         };
-                        
-                        setSettings(prev => ({ 
-                          ...prev, 
+
+                        setSettings(prev => ({
+                          ...prev,
                           language: selectedLanguage,
                           email: newExamples.email,
                           phone: newExamples.phone,
                           timezone: newExamples.timezone,
                           dateFormat: newExamples.dateFormat
                         }));
-                        
+
                         // Dispatch the language change event that the context listens for
                         window.dispatchEvent(new CustomEvent('languageChanged', {
                           detail: { language: languageCode }
@@ -663,7 +663,7 @@ const PersonalData = () => {
                       <TranslatedText>This will change the language throughout the educational platform</TranslatedText>
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label htmlFor="timezone" className="block text-sm font-medium text-foreground">
                       <TranslatedText>Time Zone</TranslatedText>
@@ -695,7 +695,7 @@ const PersonalData = () => {
                       <TranslatedText>All class times and deadlines will be displayed in your selected time zone</TranslatedText>
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label htmlFor="dateFormat" className="block text-sm font-medium text-foreground">
                       <TranslatedText>Date Format</TranslatedText>
@@ -717,7 +717,7 @@ const PersonalData = () => {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
@@ -740,9 +740,9 @@ const PersonalData = () => {
                         <TranslatedText>Display more course content with reduced spacing</TranslatedText>
                       </p>
                     </div>
-                    <Switch id="compactMode" checked={false} onCheckedChange={() => {}} />
+                    <Switch id="compactMode" checked={false} onCheckedChange={() => { }} />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <label htmlFor="reducedMotion" className="text-base font-medium">
@@ -752,9 +752,9 @@ const PersonalData = () => {
                         <TranslatedText>Minimize animations for better focus and accessibility</TranslatedText>
                       </p>
                     </div>
-                    <Switch id="reducedMotion" checked={false} onCheckedChange={() => {}} />
+                    <Switch id="reducedMotion" checked={false} onCheckedChange={() => { }} />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label htmlFor="fontSize" className="block text-sm font-medium text-foreground">
                       <TranslatedText>Font Size</TranslatedText>
@@ -787,7 +787,7 @@ const PersonalData = () => {
               </Card>
             </motion.div>
           </TabsContent>
-          
+
 
         </Tabs>
       </motion.div>
