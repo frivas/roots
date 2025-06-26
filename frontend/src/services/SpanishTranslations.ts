@@ -97,10 +97,10 @@ export const spanishTranslations: Record<string, string> = {
   "Assessment Design": "Diseño de Evaluaciones",
 
   // Tutor Education & Course Data
-  "Maestría en Inglés": "Maestría en Inglés",
-  "Master en Educación Primaria": "Máster en Educación Primaria",
-  "Licenciatura en Educación Primaria - Magisterio": "Licenciatura en Educación Primaria - Magisterio",
-  "Universidad de Granada": "Universidad de Granada",
+  "Master's in English": "Maestría en Inglés",
+  "Master's in Primary Education": "Máster en Educación Primaria",
+  "Bachelor's in Primary Education - Teaching": "Licenciatura en Educación Primaria - Magisterio",
+  "University of Granada": "Universidad de Granada",
   "4° de E.S.O.": "4° de E.S.O.",
   "No student delegate": "Sin delegado estudiantil",
   "No student subdelegate": "Sin subdelegado estudiantil",
@@ -1035,6 +1035,7 @@ export const spanishTranslations: Record<string, string> = {
 
   // Personal Calendar
   "Manage your personal events and appointments": "Gestiona tus eventos personales y citas",
+  "Create Event": "Crear Evento",
   "Priority Levels": "Niveles de Prioridad",
   "Events are color-coded by priority level": "Los eventos están codificados por colores según el nivel de prioridad",
   "High Priority": "Prioridad Alta",
@@ -1340,6 +1341,61 @@ export const spanishTranslations: Record<string, string> = {
   "Forgot password?": "¿Olvidaste tu contraseña?",
   "or": "o",
 
+  // Schedule Page - Missing translations
+  "Math Group": "Grupo de Matemáticas",
+  "Advanced Mathematics": "Matemáticas Avanzadas",
+  "Carlos Mendoza Rivera": "Carlos Mendoza Rivera",
+  "Ana Jiménez Torres": "Ana Jiménez Torres",
+
+  // Teacher names - keeping Spanish names as they are
+  "Elena García Ruiz": "Elena García Ruiz",
+  "Carlos Rodríguez Martín": "Carlos Rodríguez Martín",
+  "Dr. Ana López Fernández": "Dr. Ana López Fernández",
+  "María Martínez González": "María Martínez González",
+  "Dr. Miguel Johnson Pérez": "Dr. Miguel Johnson Pérez",
+  "Entrenador Luis Williams": "Coach Luis Williams",
+  "Javier Davis Sánchez": "Javier Davis Sánchez",
+
+  // Room names - translate to Spanish
+  "A101": "A101",
+  "B205": "B205",
+  "C301": "C301",
+  "D102": "D102",
+  "E203": "E203",
+  "F104": "F104",
+
+  // Activities Page - Missing translations
+  "Projects": "Proyectos",
+  "Exams": "Exámenes",
+
+  // School Data - Missing translations
+  "CENTRO PÚBLICO": "Public School",
+  "Public School": "Centro Público",
+
+  // Documents Page - English document names with Spanish translations
+  "Report Card - 2nd Evaluation": "Boletín de Calificaciones - 2ª Evaluación",
+  "Enrollment Certificate 2024-2025": "Certificado de Matrícula 2024-2025",
+  "Extracurricular Activities Authorization": "Autorización Actividades Extraescolares",
+  "Psychopedagogical Evaluation Report": "Informe de Evaluación Psicopedagógica",
+  "Medical Certificate - March 2025": "Justificante Médico - Marzo 2025",
+  "Final Project - Natural Sciences": "Proyecto Final - Ciencias Naturales",
+  "Educational Trip Authorization - Museum": "Autorización Salida Educativa - Museo",
+  "Report Card - 1st Evaluation": "Boletín de Calificaciones - 1ª Evaluación",
+  "School Insurance 2024-2025": "Seguro Escolar 2024-2025",
+  "Tutorial Report - 1st Quarter": "Informe Tutorial - 1er Trimestre",
+
+  // Document descriptions - English to Spanish
+  "Official report card with second quarter grades": "Boletín oficial con calificaciones del segundo trimestre",
+  "Official enrollment certificate for the current academic year": "Certificado oficial de matrícula para el curso académico actual",
+  "Authorization document to participate in extracurricular activities": "Documento de autorización para participar en actividades extraescolares",
+  "Psychopedagogical evaluation conducted by the guidance department": "Evaluación psicopedagógica realizada por el departamento de orientación",
+  "Medical certificate for March absences": "Justificante médico para ausencias del mes de marzo",
+  "Final project on the solar system presented in March": "Proyecto final sobre el sistema solar presentado en marzo",
+  "Authorization to participate in the educational visit to the Science Museum": "Autorización para participar en la visita educativa al Museo de Ciencias",
+  "Official report card with first quarter grades": "Boletín oficial con calificaciones del primer trimestre",
+  "School insurance policy for the current academic year": "Póliza de seguro escolar para el curso académico actual",
+  "Tutor report on academic and personal development of the first quarter": "Informe del tutor sobre el desarrollo académico y personal del primer trimestre",
+
   // Sample message content
   "Weekly Department Meeting": "Reunión Semanal del Departamento",
   "New Cafeteria Menu Items": "Nuevos Elementos del Menú de Cafetería",
@@ -1584,7 +1640,6 @@ export const spanishTranslations: Record<string, string> = {
   "high": "alta",
   "medium": "media",
   "low": "baja",
-
 } as const;
 
 // Function to get Spanish translation with fallback
