@@ -222,7 +222,7 @@ const SchoolCalendar: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 p-6"
+      className="space-y-6 pb-8"
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
