@@ -164,6 +164,8 @@ export const spanishTranslations: Record<string, string> = {
   "Progress Interpretation": "Interpretación de Progreso",
   "Parent Wellness": "Bienestar de Padres",
   "Extra-Curricular": "Extracurricular",
+  "Draw your story": "Dibuja tu cuento",
+  "Generating...": "Generando...",
 
   // Dashboard - Recent Courses
   "Recent Courses": "Cursos Recientes",
