@@ -1,11 +1,11 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -13,16 +13,16 @@ import TranslatedText from '../components/TranslatedText';
 import { useAuth } from '../contexts/AuthContext';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import { useUser } from '@clerk/clerk-react';
-import { 
+import {
   Award,
   BookOpen,
-  Calendar, 
+  Calendar,
   Clock,
   Edit,
   GraduationCap,
-  Mail, 
-  MapPin, 
-  Phone, 
+  Mail,
+  MapPin,
+  Phone,
   School,
   UserCircle,
   Users,
@@ -31,9 +31,9 @@ import {
 } from 'lucide-react';
 
 // Simple Badge component
-const Badge = ({ children, variant = 'default', className = '' }: { 
-  children: React.ReactNode; 
-  variant?: 'default' | 'secondary' | 'outline'; 
+const Badge = ({ children, variant = 'default', className = '' }: {
+  children: React.ReactNode;
+  variant?: 'default' | 'secondary' | 'outline';
   className?: string;
 }) => {
   const baseStyles = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium";
@@ -42,7 +42,7 @@ const Badge = ({ children, variant = 'default', className = '' }: {
     secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
     outline: "border border-border text-foreground"
   };
-  
+
   return (
     <span className={`${baseStyles} ${variants[variant]} ${className}`}>
       {children}
@@ -54,7 +54,7 @@ const Badge = ({ children, variant = 'default', className = '' }: {
 const Progress = ({ value, className = '' }: { value: number; className?: string }) => {
   return (
     <div className={`w-full bg-secondary rounded-full ${className}`}>
-      <div 
+      <div
         className="bg-primary h-full rounded-full transition-all duration-300 ease-in-out"
         style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
       />
@@ -77,12 +77,12 @@ interface TabsProps {
 
 const Tabs = ({ defaultValue, className, children, onValueChange }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
-  
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     onValueChange?.(tab);
   };
-  
+
   return (
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
@@ -114,8 +114,8 @@ const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: an
     <button
       onClick={() => setActiveTab?.(value)}
       className={`
-        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
-        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 
+        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium
+        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2
         focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         ${isActive ? 'bg-background text-foreground shadow-sm' : 'hover:bg-muted/50'}
         ${className || ''}
@@ -140,7 +140,7 @@ const Profile = () => {
   const { language } = useLingoTranslation();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Helper function to get localized profile data
   const getLocalizedProfileData = () => {
     const baseData = {
@@ -149,7 +149,7 @@ const Profile = () => {
       email: userEmail || 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
     };
-    
+
     // Use Spanish examples when in Spanish locale
     if (language === 'es-ES') {
       return {
@@ -160,7 +160,7 @@ const Profile = () => {
         phone: '+34 666 123 456',
       };
     }
-    
+
     return baseData;
   };
 
@@ -201,9 +201,9 @@ const Profile = () => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.1,
         delayChildren: 0.1
       }
@@ -212,10 +212,10 @@ const Profile = () => {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { 
+      transition: {
         type: "spring",
         stiffness: 300,
         damping: 24
@@ -224,7 +224,7 @@ const Profile = () => {
   };
 
   const getActivityIcon = (type: string) => {
-    switch(type) {
+    switch (type) {
       case 'class': return <BookOpen className="h-4 w-4" /> as any;
       case 'meeting': return <Users className="h-4 w-4" /> as any;
       case 'workshop': return <Briefcase className="h-4 w-4" /> as any;
@@ -233,28 +233,32 @@ const Profile = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="space-y-6"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      <motion.div variants={itemVariants} className="flex flex-col gap-2">
-        <TranslatedText element="h1" className="text-4xl font-bold tracking-tight">Profile</TranslatedText>
-        <TranslatedText element="p" className="text-muted-foreground text-lg">
-          View and manage your professional profile
-        </TranslatedText>
+      <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Profile</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>View and manage your professional profile</TranslatedText>
+          </p>
+        </div>
       </motion.div>
-      
+
       <div className="grid gap-6 md:grid-cols-3">
         <motion.div variants={itemVariants} className="md:col-span-1 space-y-6">
           <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
-                            <CardHeader className="text-center pb-2 bg-muted/30">
+            <CardHeader className="text-center pb-2 bg-muted/30">
               <div className="mx-auto rounded-full bg-muted w-32 h-32 flex items-center justify-center relative group overflow-hidden">
                 {user?.imageUrl ? (
-                  <img 
-                    src={user.imageUrl} 
-                    alt={user.fullName || 'Profile'} 
+                  <img
+                    src={user.imageUrl}
+                    alt={user.fullName || 'Profile'}
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
@@ -307,7 +311,7 @@ const Profile = () => {
               </Button>
             </div>
           </Card>
-          
+
           <motion.div variants={itemVariants}>
             <Card className="border-border hover:shadow-lg transition-all duration-300">
               <CardHeader>
@@ -339,7 +343,7 @@ const Profile = () => {
             </Card>
           </motion.div>
         </motion.div>
-        
+
         <motion.div variants={itemVariants} className="md:col-span-2 space-y-6">
           <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 mb-4">
@@ -353,7 +357,7 @@ const Profile = () => {
                 <TranslatedText>Recent Activity</TranslatedText>
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="overview" className="space-y-6 mt-0">
               <Card className="border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader>
@@ -368,7 +372,7 @@ const Profile = () => {
                   </p>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center">
@@ -386,7 +390,7 @@ const Profile = () => {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center">
@@ -405,7 +409,7 @@ const Profile = () => {
                       </div>
                       <Progress value={Math.min((profileData.stats.classesTaught / 200) * 100, 100)} className="h-2" />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
@@ -415,7 +419,7 @@ const Profile = () => {
                       </div>
                       <Progress value={Math.min((profileData.stats.studentsMentored / 50) * 100, 100)} className="h-2" />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
@@ -425,7 +429,7 @@ const Profile = () => {
                       </div>
                       <Progress value={Math.min((profileData.stats.eventsOrganized / 20) * 100, 100)} className="h-2" />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
@@ -439,7 +443,7 @@ const Profile = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="achievements" className="space-y-6 mt-0">
               <Card className="border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader>
@@ -477,7 +481,7 @@ const Profile = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="activity" className="space-y-6 mt-0">
               <Card className="border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader>

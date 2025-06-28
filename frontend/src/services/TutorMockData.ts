@@ -26,9 +26,9 @@ const tutorMockData = {
         studentSatisfaction: 92
     },
     education: [
-        { degree: 'Maestría en Inglés', institution: 'Universidad de Granada', year: '2016' },
-        { degree: 'Master en Educación Primaria', institution: 'Universidad de Granada', year: '2014' },
-        { degree: 'Licenciatura en Educación Primaria - Magisterio', institution: 'Universidad de Granada', year: '2012' }
+        { degree: 'Master\'s in English', institution: 'University of Granada', year: '2016' },
+        { degree: 'Master\'s in Primary Education', institution: 'University of Granada', year: '2014' },
+        { degree: 'Bachelor\'s in Primary Education - Teaching', institution: 'University of Granada', year: '2012' }
     ],
     currentCourse: {
         course: '4° de E.S.O.',

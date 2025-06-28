@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-import { 
-  Building, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Globe, 
-  Users, 
+import {
+  Building,
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
+  Users,
   Calendar,
   Info,
   ChevronDown
@@ -30,8 +30,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -50,7 +50,7 @@ const schoolData = {
   basicData: {
     centerCode: "28045131",
     genericDenomination: "CP INF-PRI",
-    centerType: "CENTRO PÚBLICO",
+    centerType: "Public School",
     centerName: "SAN JUAN DE LA CRUZ",
     titular: "",
     province: "Madrid",
@@ -66,7 +66,7 @@ const schoolData = {
   },
   geolocation: {
     centerCode: "28045131",
-    centerType: "CENTRO PÚBLICO", 
+    centerType: "Public School",
     centerName: "RAYUELA",
     municipality: "Fuenlabrada",
     address: "de Murcia, 15",
@@ -97,7 +97,7 @@ interface TabsProps {
 
 const Tabs = ({ defaultValue, className, children }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
-  
+
   return (
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
@@ -144,8 +144,8 @@ const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: Ta
     <button
       onClick={() => setActiveTab?.(value)}
       className={`
-        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
-        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 
+        inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium
+        ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2
         focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         ${isActive ? 'bg-background text-foreground shadow-sm' : 'hover:bg-muted/50'}
         ${className || ''}
@@ -184,7 +184,7 @@ const SchoolData: React.FC = () => {
           <TranslatedText>{label}</TranslatedText>
         </div>
         <div className="text-sm text-foreground break-words">
-          {value || <span className="text-muted-foreground italic">-</span>}
+          {value ? <TranslatedText>{value}</TranslatedText> : <span className="text-muted-foreground italic">-</span>}
         </div>
       </div>
     </div>
@@ -195,31 +195,17 @@ const SchoolData: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 p-6"
+      className="space-y-6 pb-8"
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
-        <div className="bg-muted/50 rounded-lg p-6 mb-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
-              <div className="bg-white p-3 rounded-lg shadow-sm">
-                <Building className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">
-                  <TranslatedText>School Information</TranslatedText>
-                </h1>
-                <div className="space-y-1">
-                  <div className="text-lg font-medium text-foreground">
-                    {schoolData.basicData.centerName}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {schoolData.basicData.centerType} - <TranslatedText>Center Code</TranslatedText>: {schoolData.basicData.centerCode}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>School Information</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>Complete information about the educational center</TranslatedText>
+          </p>
         </div>
       </motion.div>
 
@@ -249,73 +235,73 @@ const SchoolData: React.FC = () => {
               {/* Basic Data Tab */}
               <TabsContent value="basic" className="mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <DataRow 
-                    label="Center Code" 
+                  <DataRow
+                    label="Center Code"
                     value={schoolData.basicData.centerCode}
                     icon={<Building className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Center Type" 
+                  <DataRow
+                    label="Center Type"
                     value={schoolData.basicData.centerType}
                     icon={<Users className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Generic Denomination" 
+                  <DataRow
+                    label="Generic Denomination"
                     value={schoolData.basicData.genericDenomination}
                     icon={<Info className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Center Name" 
+                  <DataRow
+                    label="Center Name"
                     value={schoolData.basicData.centerName}
                     icon={<Building className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Province" 
+                  <DataRow
+                    label="Province"
                     value={schoolData.basicData.province}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Municipality" 
+                  <DataRow
+                    label="Municipality"
                     value={schoolData.basicData.municipality}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Locality" 
+                  <DataRow
+                    label="Locality"
                     value={schoolData.basicData.locality}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Address" 
+                  <DataRow
+                    label="Address"
                     value={schoolData.basicData.address}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Postal Code" 
+                  <DataRow
+                    label="Postal Code"
                     value={schoolData.basicData.postalCode}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Email" 
+                  <DataRow
+                    label="Email"
                     value={schoolData.basicData.email}
                     icon={<Mail className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Phone" 
+                  <DataRow
+                    label="Phone"
                     value={schoolData.basicData.phone}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Fax" 
+                  <DataRow
+                    label="Fax"
                     value={schoolData.basicData.fax}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Corporate Phone" 
+                  <DataRow
+                    label="Corporate Phone"
                     value={schoolData.basicData.corporatePhone}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Account" 
+                  <DataRow
+                    label="Account"
                     value={schoolData.basicData.account}
                     icon={<Info className="h-4 w-4" />}
                   />
@@ -325,58 +311,58 @@ const SchoolData: React.FC = () => {
               {/* Geolocation Tab */}
               <TabsContent value="geolocation" className="mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <DataRow 
-                    label="Center Code" 
+                  <DataRow
+                    label="Center Code"
                     value={schoolData.geolocation.centerCode}
                     icon={<Building className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Center Type" 
+                  <DataRow
+                    label="Center Type"
                     value={schoolData.geolocation.centerType}
                     icon={<Users className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Center Name" 
+                  <DataRow
+                    label="Center Name"
                     value={schoolData.geolocation.centerName}
                     icon={<Building className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Municipality" 
+                  <DataRow
+                    label="Municipality"
                     value={schoolData.geolocation.municipality}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Address" 
+                  <DataRow
+                    label="Address"
                     value={schoolData.geolocation.address}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Postal Code" 
+                  <DataRow
+                    label="Postal Code"
                     value={schoolData.geolocation.postalCode}
                     icon={<MapPin className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Email" 
+                  <DataRow
+                    label="Email"
                     value={schoolData.geolocation.email}
                     icon={<Mail className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Phone" 
+                  <DataRow
+                    label="Phone"
                     value={schoolData.geolocation.phone}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Corporate Phone" 
+                  <DataRow
+                    label="Corporate Phone"
                     value={schoolData.geolocation.corporatePhone}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Fax" 
+                  <DataRow
+                    label="Fax"
                     value={schoolData.geolocation.fax}
                     icon={<Phone className="h-4 w-4" />}
                   />
-                  <DataRow 
-                    label="Coordinates" 
+                  <DataRow
+                    label="Coordinates"
                     value={`${schoolData.geolocation.coordinates.latitude}, ${schoolData.geolocation.coordinates.longitude}`}
                     icon={<Globe className="h-4 w-4" />}
                   />
@@ -442,4 +428,4 @@ const SchoolData: React.FC = () => {
   );
 };
 
-export default SchoolData; 
+export default SchoolData;

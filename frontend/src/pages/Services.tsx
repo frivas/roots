@@ -263,7 +263,7 @@ const Services = () => {
   }, [searchQuery, activeCategory]);
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 pb-8">
       <motion.div
         className="flex flex-col gap-2"
         initial={{ opacity: 0, y: -20 }}
@@ -344,10 +344,11 @@ const Services = () => {
               transition={{ duration: 0.3 }}
             >
               <SearchIcon className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-medium mb-2">No services found</h3>
+              <h3 className="text-xl font-medium mb-2">
+                <TranslatedText>No services found</TranslatedText>
+              </h3>
               <p className="text-muted-foreground max-w-md">
-                We couldn't find any services matching your search criteria.
-                Try adjusting your search or browse all services.
+                <TranslatedText>We couldn't find any services matching your search criteria. Try adjusting your search or browse all services.</TranslatedText>
               </p>
               <Button
                 variant="outline"
@@ -357,7 +358,7 @@ const Services = () => {
                   setActiveCategory('all');
                 }}
               >
-                View all services
+                <TranslatedText>View all services</TranslatedText>
               </Button>
             </motion.div>
           )}

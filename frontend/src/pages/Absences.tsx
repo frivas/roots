@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -67,7 +67,7 @@ const absenceData = {
     {
       id: 3,
       date: new Date(2025, 2, 26), // March 26, 2025
-      timeSlot: "Full day", 
+      timeSlot: "Full day",
       absenceType: "Full day",
       status: "justified",
       hasAttachment: false,
@@ -77,7 +77,7 @@ const absenceData = {
       id: 4,
       date: new Date(2025, 2, 25), // March 25, 2025
       timeSlot: "Full day",
-      absenceType: "Full day", 
+      absenceType: "Full day",
       status: "justified",
       hasAttachment: false,
       reason: "Personal reasons"
@@ -261,7 +261,7 @@ const Absences: React.FC = () => {
   const selectedFilterLabel = filterOptions.find(option => option.value === selectedFilter)?.label || 'All';
 
   return (
-    <motion.div 
+    <motion.div
       className="space-y-6 pb-8"
       initial="hidden"
       animate="visible"
@@ -269,26 +269,33 @@ const Absences: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Student Absences</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>View and manage your absence records and justifications</TranslatedText>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Student Info and Filter Section */}
+      <motion.div variants={itemVariants}>
         <Card className="bg-muted/70">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <FileCheck className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Student Absences</TranslatedText>
-                  </CardTitle>
-                  <div className="mt-2">
-                    <div className="text-lg font-medium text-foreground">
-                      {absenceData.student.name}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      <TranslatedText>{absenceData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {absenceData.student.group}
-                    </div>
+                  <div className="text-lg font-medium text-foreground">
+                    {absenceData.student.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <TranslatedText>{absenceData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {absenceData.student.group}
                   </div>
                 </div>
               </div>
-              
+
               {/* Filter Dropdown */}
               <div className="relative">
                 <button
@@ -301,7 +308,7 @@ const Absences: React.FC = () => {
                   </span>
                   <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isFilterOpen && "rotate-180")} />
                 </button>
-                
+
                 {isFilterOpen && (
                   <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                     {filterOptions.map((option) => (
@@ -369,7 +376,7 @@ const Absences: React.FC = () => {
                     paginatedAbsences.map((absence, index) => {
                       const statusDisplay = getStatusDisplay(absence.status);
                       const StatusIcon = statusDisplay.icon;
-                      
+
                       return (
                         <div
                           key={absence.id}
@@ -449,22 +456,22 @@ const Absences: React.FC = () => {
                 <div className="text-sm text-muted-foreground">
                   <TranslatedText>Showing</TranslatedText> {startIndex + 1} <TranslatedText>to</TranslatedText> {Math.min(endIndex, filteredAbsences.length)} <TranslatedText>of</TranslatedText> {filteredAbsences.length} <TranslatedText>absences</TranslatedText>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={cn(
                       "flex items-center gap-1 px-3 py-1 text-sm rounded-lg border transition-colors",
-                      currentPage === 1 
-                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed" 
+                      currentPage === 1
+                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     )}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <TranslatedText>Previous</TranslatedText>
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
                       <button
@@ -481,7 +488,7 @@ const Absences: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
@@ -556,4 +563,4 @@ const Absences: React.FC = () => {
   );
 };
 
-export default Absences; 
+export default Absences;

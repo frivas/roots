@@ -264,74 +264,14 @@ const Schedule: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-muted/70">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Calendar className="h-8 w-8 text-muted-foreground" />
-                <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Student Schedule</TranslatedText>
-                  </CardTitle>
-                  <div className="mt-2 space-y-1">
-                    <div className="text-lg font-medium text-foreground">
-                      {scheduleData.student.name}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      <TranslatedText>{scheduleData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {scheduleData.student.group}
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>
-                          <span className="font-bold"><TranslatedText>Unit:</TranslatedText></span> {scheduleData.student.delegated}
-                        </span>
-                        <span>•</span>
-                        <span>
-                          <span className="font-bold"><TranslatedText>Group:</TranslatedText></span> {scheduleData.student.subcategory}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>
-                          <span className="font-bold"><TranslatedText>Delegate:</TranslatedText></span> {scheduleData.student.delegate}
-                        </span>
-                        <span>•</span>
-                        <span>
-                          <span className="font-bold"><TranslatedText>Subdelegate:</TranslatedText></span> {scheduleData.student.subdelegate}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Week Navigator */}
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <div className="text-sm font-medium text-foreground">
-                    {formatDate(weekDates[0])} - {formatDate(weekDates[4])}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    <TranslatedText>Week</TranslatedText> {getWeekNumber(weekDates[0])}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setSelectedWeek(Math.max(0, selectedWeek - 1))}
-                    className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
-                  >
-                    <ChevronLeft className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedWeek(Math.min(3, selectedWeek + 1))}
-                    className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
-                  >
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Student Schedule</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>View your weekly class schedule and timetable</TranslatedText>
+          </p>
+        </div>
       </motion.div>
 
       {/* Schedule Grid */}
@@ -396,7 +336,7 @@ const Schedule: React.FC = () => {
                                   {subject}
                                 </div>
                                 <div className="text-xs opacity-80 mt-1">
-                                  {scheduleData.subjects[subject]?.teacher}
+                                  <TranslatedText>{scheduleData.subjects[subject]?.teacher}</TranslatedText>
                                 </div>
                               </div>
                             )}
@@ -448,7 +388,7 @@ const Schedule: React.FC = () => {
                       <TranslatedText>Teacher</TranslatedText>
                     </div>
                     <div className="text-gray-600">
-                      {scheduleData.subjects[selectedSubject]?.teacher}
+                      <TranslatedText>{scheduleData.subjects[selectedSubject]?.teacher}</TranslatedText>
                     </div>
                   </div>
                 </div>
@@ -460,7 +400,7 @@ const Schedule: React.FC = () => {
                       <TranslatedText>Room</TranslatedText>
                     </div>
                     <div className="text-gray-600">
-                      {scheduleData.subjects[selectedSubject]?.room}
+                      <TranslatedText>{scheduleData.subjects[selectedSubject]?.room}</TranslatedText>
                     </div>
                   </div>
                 </div>

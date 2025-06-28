@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -296,7 +296,7 @@ const Activities: React.FC = () => {
   const selectedEvaluationLabel = evaluationOptions.find(option => option.value === selectedEvaluation)?.label || 'All Evaluations';
 
   return (
-    <motion.div 
+    <motion.div
       className="space-y-6 pb-8"
       initial="hidden"
       animate="visible"
@@ -304,26 +304,33 @@ const Activities: React.FC = () => {
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Assessable Activities</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>Track your academic activities, grades, and evaluations</TranslatedText>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Student Info and Filter Section */}
+      <motion.div variants={itemVariants}>
         <Card className="bg-muted/70">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Award className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Assessable Activities</TranslatedText>
-                  </CardTitle>
-                  <div className="mt-2">
-                    <div className="text-lg font-medium text-foreground">
-                      {activityData.student.name}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      <TranslatedText>{activityData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {activityData.student.group}
-                    </div>
+                  <div className="text-lg font-medium text-foreground">
+                    {activityData.student.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <TranslatedText>{activityData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {activityData.student.group}
                   </div>
                 </div>
               </div>
-              
+
               {/* Filter Dropdowns */}
               <div className="flex items-center gap-3">
                 {/* Subject Filter */}
@@ -338,7 +345,7 @@ const Activities: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isSubjectFilterOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isSubjectFilterOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px] max-h-60 overflow-y-auto">
                       {subjectOptions.map((option) => (
@@ -372,7 +379,7 @@ const Activities: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isEvaluationFilterOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isEvaluationFilterOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                       {evaluationOptions.map((option) => (
@@ -448,7 +455,7 @@ const Activities: React.FC = () => {
                       const categoryDisplay = getCategoryDisplay(activity.category);
                       const CategoryIcon = categoryDisplay.icon;
                       const gradeColor = getGradeColor(activity.grade, activity.maxGrade);
-                      
+
                       return (
                         <div
                           key={activity.id}
@@ -478,8 +485,8 @@ const Activities: React.FC = () => {
                           <div className="text-sm">
                             <span className={cn(
                               "px-2 py-1 rounded-full text-xs font-medium",
-                              activity.isDaily 
-                                ? "bg-green-100 text-green-700" 
+                              activity.isDaily
+                                ? "bg-green-100 text-green-700"
                                 : "bg-gray-100 text-gray-600"
                             )}>
                               <TranslatedText>{activity.isDaily ? 'Yes' : 'No'}</TranslatedText>
@@ -539,22 +546,22 @@ const Activities: React.FC = () => {
                 <div className="text-sm text-muted-foreground">
                   <TranslatedText>Showing</TranslatedText> {startIndex + 1} <TranslatedText>to</TranslatedText> {Math.min(endIndex, filteredActivities.length)} <TranslatedText>of</TranslatedText> {filteredActivities.length} <TranslatedText>activities</TranslatedText>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={cn(
                       "flex items-center gap-1 px-3 py-1 text-sm rounded-lg border transition-colors",
-                      currentPage === 1 
-                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed" 
+                      currentPage === 1
+                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     )}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <TranslatedText>Previous</TranslatedText>
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
                       <button
@@ -571,7 +578,7 @@ const Activities: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
@@ -662,4 +669,4 @@ const Activities: React.FC = () => {
   );
 };
 
-export default Activities; 
+export default Activities;

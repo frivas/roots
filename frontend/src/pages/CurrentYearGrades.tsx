@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -50,14 +50,14 @@ const currentYearGradesData = {
       period: "September - December 2024",
       published: true,
       grades: [
-            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 8 },
-    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 7 },
-    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 8 },
-    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 7 },
-    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 8 },
-    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 6 },
-    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 7 },
-    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 8 }
+        { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+        { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 7 },
+        { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 8 },
+        { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 7 },
+        { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+        { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 6 },
+        { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 7 },
+        { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 8 }
       ]
     },
     {
@@ -66,14 +66,14 @@ const currentYearGradesData = {
       period: "January - March 2025",
       published: true,
       grades: [
-            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 9 },
-    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 8 },
-    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 9 },
-    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 8 },
-    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 9 },
-    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 7 },
-    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 8 },
-    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 9 }
+        { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: 9 },
+        { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: 8 },
+        { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: 9 },
+        { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: 8 },
+        { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: 9 },
+        { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: 7 },
+        { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: 8 },
+        { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: 9 }
       ]
     },
     {
@@ -82,14 +82,14 @@ const currentYearGradesData = {
       period: "April - June 2025",
       published: false,
       grades: [
-            { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: null },
-    { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: null },
-    { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: null },
-    { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: null },
-    { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: null },
-    { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: null },
-    { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: null },
-    { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: null }
+        { subject: "Biology and Geology", course: "4°", type: "Core General", adaptation: "", grade: null },
+        { subject: "Sports", course: "4°", type: "Optional Specific/LCA", adaptation: "", grade: null },
+        { subject: "Visual and Audiovisual Arts", course: "4°", type: "Mandatory Specific", adaptation: "", grade: null },
+        { subject: "Geography and History", course: "4°", type: "Core General", adaptation: "", grade: null },
+        { subject: "Spanish Language and Literature", course: "4°", type: "Core General", adaptation: "", grade: null },
+        { subject: "Mathematics", course: "4°", type: "Core General", adaptation: "", grade: null },
+        { subject: "First Foreign Language (English)", course: "4°", type: "Core Languages", adaptation: "", grade: null },
+        { subject: "Ethical Values", course: "4°", type: "Religion and Alternative", adaptation: "", grade: null }
       ]
     }
   ]
@@ -139,12 +139,12 @@ const CurrentYearGrades: React.FC = () => {
   const itemsPerPage = 10;
 
   // Filter evaluations based on selected evaluation
-  const filteredEvaluations = selectedEvaluation === 'all' 
-    ? currentYearGradesData.evaluations 
+  const filteredEvaluations = selectedEvaluation === 'all'
+    ? currentYearGradesData.evaluations
     : currentYearGradesData.evaluations.filter(evaluation => evaluation.name === selectedEvaluation);
 
   // Get all grades from filtered evaluations
-  const allGrades = filteredEvaluations.flatMap(evaluation => 
+  const allGrades = filteredEvaluations.flatMap(evaluation =>
     evaluation.grades.map(grade => ({
       ...grade,
       evaluationName: evaluation.name,
@@ -169,7 +169,7 @@ const CurrentYearGrades: React.FC = () => {
   // Calculate statistics
   const publishedGrades = allGrades.filter(grade => grade.evaluationPublished && grade.grade !== null);
   const totalSubjects = new Set(allGrades.map(grade => grade.subject)).size;
-  const averageGrade = publishedGrades.length > 0 
+  const averageGrade = publishedGrades.length > 0
     ? (publishedGrades.reduce((sum, grade) => sum + (grade.grade || 0), 0) / publishedGrades.length).toFixed(1)
     : '0.0';
 
@@ -178,9 +178,21 @@ const CurrentYearGrades: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 p-6"
+      className="space-y-6 pb-8"
     >
       {/* Header Section */}
+      <motion.div variants={itemVariants}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>Current Year Grades</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>View your current academic year grades and evaluations</TranslatedText>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Filter Section */}
       <motion.div variants={itemVariants}>
         <Card className="bg-muted/70">
           <CardHeader>
@@ -188,20 +200,17 @@ const CurrentYearGrades: React.FC = () => {
               <div className="flex items-center gap-4">
                 <BookOpen className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <CardTitle className="text-2xl font-semibold">
-                    <TranslatedText>Current Year Grades</TranslatedText>
+                  <CardTitle className="text-xl font-semibold">
+                    <TranslatedText>Filter Grades</TranslatedText>
                   </CardTitle>
-                  <div className="mt-2">
-                    <div className="text-lg font-medium text-foreground">
-                      {currentYearGradesData.student.name}
-                    </div>
+                  <div className="mt-1">
                     <div className="text-sm text-muted-foreground">
-                      <TranslatedText>{currentYearGradesData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {currentYearGradesData.student.group}
+                      {currentYearGradesData.student.name} - <TranslatedText>{currentYearGradesData.student.course}</TranslatedText> - <TranslatedText>Group</TranslatedText> {currentYearGradesData.student.group}
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               {/* Filter Dropdown */}
               <div className="flex items-center gap-3">
                 {/* Evaluation Filter */}
@@ -216,7 +225,7 @@ const CurrentYearGrades: React.FC = () => {
                     </span>
                     <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isEvaluationFilterOpen && "rotate-180")} />
                   </button>
-                  
+
                   {isEvaluationFilterOpen && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg z-10 min-w-[200px]">
                       {evaluationOptions.map((option) => (
@@ -242,8 +251,6 @@ const CurrentYearGrades: React.FC = () => {
           </CardHeader>
         </Card>
       </motion.div>
-
-
 
       {/* Grades Table */}
       <motion.div variants={itemVariants}>
@@ -290,7 +297,7 @@ const CurrentYearGrades: React.FC = () => {
                     paginatedGrades.map((grade, index) => {
                       const gradeColor = getGradeColor(grade.grade);
                       const typeColor = getSubjectTypeColor(grade.type);
-                      
+
                       return (
                         <div
                           key={`${grade.subject}-${grade.evaluationName}-${index}`}
@@ -373,22 +380,22 @@ const CurrentYearGrades: React.FC = () => {
                 <div className="text-sm text-muted-foreground">
                   <TranslatedText>Showing</TranslatedText> {startIndex + 1} <TranslatedText>to</TranslatedText> {Math.min(endIndex, allGrades.length)} <TranslatedText>of</TranslatedText> {allGrades.length} <TranslatedText>grades</TranslatedText>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={cn(
                       "flex items-center gap-1 px-3 py-1 text-sm rounded-lg border transition-colors",
-                      currentPage === 1 
-                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed" 
+                      currentPage === 1
+                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     )}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <TranslatedText>Previous</TranslatedText>
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
                       <button
@@ -405,7 +412,7 @@ const CurrentYearGrades: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
@@ -492,4 +499,4 @@ const CurrentYearGrades: React.FC = () => {
   );
 };
 
-export default CurrentYearGrades; 
+export default CurrentYearGrades;

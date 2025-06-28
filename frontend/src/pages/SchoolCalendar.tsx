@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-import { 
+import {
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -31,8 +31,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
   },
   visible: {
@@ -81,46 +81,46 @@ const schoolCalendarData = {
     // January 2025
     "2025-01-01": { type: 'national', name: 'New Year\'s Day', description: 'First day of the year' },
     "2025-01-06": { type: 'national', name: 'Epiphany', description: 'Three Kings Day - when children receive gifts' },
-    
+
     // February 2025
     "2025-02-14": { type: 'school', name: 'Valentine\'s Day', description: 'Day of love and friendship' },
-    
+
     // March 2025
     "2025-03-19": { type: 'local', name: 'Father\'s Day', description: 'San José - Father\'s Day celebration in Spain' },
-    
+
     // April 2025
     "2025-04-17": { type: 'community', name: 'Holy Thursday', description: 'Maundy Thursday - Thursday during Holy Week' },
     "2025-04-18": { type: 'national', name: 'Good Friday', description: 'Global Christian observance before Easter' },
     "2025-04-20": { type: 'school', name: 'Easter Sunday', description: 'Easter celebration' },
     "2025-04-21": { type: 'community', name: 'Easter Monday', description: 'Day after Easter Sunday' },
-    
+
     // May 2025
     "2025-05-01": { type: 'national', name: 'Labor Day', description: 'International Workers\' Day' },
     "2025-05-02": { type: 'community', name: 'Community Festival of Madrid', description: 'Madrid Community Day - commemorates uprising against French troops' },
     "2025-05-04": { type: 'school', name: 'Mother\'s Day', description: 'First Sunday in May - celebrates mothers' },
     "2025-05-15": { type: 'local', name: 'Feast of St. Isidro', description: 'Patron Saint of Madrid - Madrid\'s most important local festival' },
-    
+
     // June 2025
     "2025-06-13": { type: 'school', name: 'Summer Break Begins', description: 'Last day of school before summer holidays' },
     "2025-06-24": { type: 'community', name: 'Saint John the Baptist Day', description: 'San Juan - Midsummer celebration' },
-    
+
     // July 2025
     "2025-07-25": { type: 'community', name: 'St. James\' Day', description: 'Santiago Apostol - Patron saint of Spain' },
-    
+
     // August 2025
     "2025-08-15": { type: 'national', name: 'Assumption Day', description: 'Assumption of Mary - Christian feast' },
-    
+
     // September 2025
     "2025-09-08": { type: 'school', name: 'Back to School', description: 'First day of new academic year' },
-    
+
     // October 2025
     "2025-10-12": { type: 'national', name: 'Hispanic Day', description: 'National Day of Spain - commemorates Columbus arrival in Americas' },
     "2025-10-31": { type: 'school', name: 'Halloween', description: 'International celebration popular with children' },
-    
+
     // November 2025
     "2025-11-01": { type: 'national', name: 'All Saints\' Day', description: 'Day to honor all saints and remember the deceased' },
     "2025-11-10": { type: 'local', name: 'Our Lady of the Almudena', description: 'Patron Saint of Madrid - celebrates discovery of statue after Moorish occupation' },
-    
+
     // December 2025
     "2025-12-06": { type: 'national', name: 'Constitution Day', description: 'Celebrates Spanish Constitution and democracy established in 1978' },
     "2025-12-08": { type: 'national', name: 'Immaculate Conception', description: 'Catholic feast day celebrating Virgin Mary' },
@@ -155,10 +155,10 @@ const SchoolCalendar: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const currentLocale = language === 'es-ES' ? 'es-ES' : 'en-US';
-  
+
   // Get calendar data for current year
   const getCurrentYearHolidays = () => {
-    return Object.entries(schoolCalendarData.holidays).filter(([date]) => 
+    return Object.entries(schoolCalendarData.holidays).filter(([date]) =>
       date.startsWith(currentYear.toString())
     );
   };
@@ -186,17 +186,17 @@ const SchoolCalendar: React.FC = () => {
     const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
+
     const calendar = [];
     const currentDate = new Date(startDate);
-    
+
     for (let week = 0; week < 6; week++) {
       const weekDays = [];
       for (let day = 0; day < 7; day++) {
         const dateString = currentDate.toISOString().split('T')[0];
         const isCurrentMonth = currentDate.getMonth() === month;
         const holiday = schoolCalendarData.holidays[dateString];
-        
+
         weekDays.push({
           date: new Date(currentDate),
           dateString,
@@ -204,14 +204,14 @@ const SchoolCalendar: React.FC = () => {
           isCurrentMonth,
           holiday
         });
-        
+
         currentDate.setDate(currentDate.getDate() + 1);
       }
       calendar.push(weekDays);
-      
+
       if (currentDate > lastDay && week > 3) break;
     }
-    
+
     return calendar;
   };
 
@@ -222,57 +222,17 @@ const SchoolCalendar: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6 p-6"
+      className="space-y-6 pb-8"
     >
       {/* Header Section */}
       <motion.div variants={itemVariants}>
-        <div className="bg-muted/50 rounded-lg p-6 mb-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
-              <div className="bg-white p-3 rounded-lg shadow-sm">
-                <Calendar className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">
-                  <TranslatedText>School Calendar</TranslatedText>
-                </h1>
-                <div className="space-y-1">
-                  <div className="text-lg font-medium text-foreground">
-                    <TranslatedText>Academic Year</TranslatedText> {schoolCalendarData.academicYear}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    <TranslatedText>Holiday schedule and important school events</TranslatedText>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Year Navigator */}
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <div className="text-sm font-medium text-foreground">
-                  {currentYear}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  <TranslatedText>Academic Year</TranslatedText>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <button 
-                  onClick={() => setCurrentYear(currentYear - 1)}
-                  className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
-                >
-                  <ChevronLeft className="h-4 w-4 text-muted-foreground" />
-                </button>
-                <button 
-                  onClick={() => setCurrentYear(currentYear + 1)}
-                  className="p-2 hover:bg-muted rounded-lg transition-colors border border-border"
-                >
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold tracking-tight">
+            <TranslatedText>School Calendar</TranslatedText>
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            <TranslatedText>Holiday schedule and important school events</TranslatedText>
+          </p>
         </div>
       </motion.div>
 
@@ -317,7 +277,7 @@ const SchoolCalendar: React.FC = () => {
               {Array.from({ length: 12 }, (_, monthIndex) => {
                 const calendar = generateCalendarMonth(currentYear, monthIndex);
                 const monthName = monthNames[currentLocale][monthIndex];
-                
+
                 return (
                   <div key={monthIndex} className="bg-muted/30 rounded-lg p-4">
                     <div className="text-center mb-4">
@@ -328,7 +288,7 @@ const SchoolCalendar: React.FC = () => {
                         {currentYear}
                       </div>
                     </div>
-                    
+
                     {/* Day headers */}
                     <div className="grid grid-cols-7 gap-1 mb-2">
                       {dayNames[currentLocale].map((day, index) => (
@@ -337,7 +297,7 @@ const SchoolCalendar: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    
+
                     {/* Calendar days */}
                     <div className="space-y-1">
                       {calendar.map((week, weekIndex) => (
@@ -345,20 +305,20 @@ const SchoolCalendar: React.FC = () => {
                           {week.map((day, dayIndex) => {
                             const holiday = day.holiday;
                             const holidayType = holiday ? holidayTypes[holiday.type as keyof typeof holidayTypes] : null;
-                            
+
                             return (
                               <button
                                 key={dayIndex}
                                 onClick={() => holiday ? setSelectedHoliday(day.dateString) : null}
                                 className={cn(
                                   "aspect-square text-xs p-1 rounded transition-all relative",
-                                  day.isCurrentMonth 
-                                    ? "text-foreground hover:bg-muted" 
+                                  day.isCurrentMonth
+                                    ? "text-foreground hover:bg-muted"
                                     : "text-muted-foreground/50",
                                   holiday && holidayType && day.isCurrentMonth
                                     ? `${holidayType.bgColor} text-white font-medium hover:scale-110 shadow-sm`
                                     : "",
-                                  !holiday && day.isCurrentMonth 
+                                  !holiday && day.isCurrentMonth
                                     ? "hover:bg-muted border border-transparent hover:border-border"
                                     : ""
                                 )}
@@ -411,7 +371,7 @@ const SchoolCalendar: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <div className={cn("w-4 h-4 rounded", holidayTypes[selectedHolidayData.type as keyof typeof holidayTypes].bgColor)} />
                   <div>
@@ -423,7 +383,7 @@ const SchoolCalendar: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <Info className="h-4 w-4 text-gray-400" />
                   <div>
@@ -436,13 +396,13 @@ const SchoolCalendar: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-4 p-3 bg-muted/30 rounded-lg">
                 <div className="text-sm text-muted-foreground">
                   <TranslatedText>{selectedHolidayData.description}</TranslatedText>
                 </div>
               </div>
-              
+
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => setSelectedHoliday(null)}
@@ -475,7 +435,7 @@ const SchoolCalendar: React.FC = () => {
                 .slice(0, 5)
                 .map(([date, holiday]) => {
                   const holidayType = holidayTypes[holiday.type as keyof typeof holidayTypes];
-                  
+
                   return (
                     <div
                       key={date}
@@ -523,4 +483,4 @@ const SchoolCalendar: React.FC = () => {
   );
 };
 
-export default SchoolCalendar; 
+export default SchoolCalendar;

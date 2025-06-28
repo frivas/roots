@@ -38,9 +38,12 @@ export const spanishTranslations: Record<string, string> = {
   "Student Profile": "Perfil del Estudiante",
   "School data": "Datos del Centro",
   "School calendar": "Calendario Escolar",
+  "School Calendar": "Calendario Escolar",
   "School elections": "Elecciones Escolares",
   "Bulletin board": "Tablón de Anuncios",
-  "Personal Calendar": "Calendario Personal",
+  "Personal Calendar": "Agenda Personal",
+  "Personal Agenda": "Agenda Personal",
+  "Upcoming Events": "Próximos Eventos",
   "Monthly calendar": "Calendario Mensual",
   "My Data": "Mis Datos",
   "User personal information": "Información Personal del Usuario",
@@ -94,10 +97,10 @@ export const spanishTranslations: Record<string, string> = {
   "Assessment Design": "Diseño de Evaluaciones",
 
   // Tutor Education & Course Data
-  "Maestría en Inglés": "Maestría en Inglés",
-  "Master en Educación Primaria": "Máster en Educación Primaria",
-  "Licenciatura en Educación Primaria - Magisterio": "Licenciatura en Educación Primaria - Magisterio",
-  "Universidad de Granada": "Universidad de Granada",
+  "Master's in English": "Maestría en Inglés",
+  "Master's in Primary Education": "Máster en Educación Primaria",
+  "Bachelor's in Primary Education - Teaching": "Licenciatura en Educación Primaria - Magisterio",
+  "University of Granada": "Universidad de Granada",
   "4° de E.S.O.": "4° de E.S.O.",
   "No student delegate": "Sin delegado estudiantil",
   "No student subdelegate": "Sin subdelegado estudiantil",
@@ -122,6 +125,8 @@ export const spanishTranslations: Record<string, string> = {
   "same as last month": "igual que el mes pasado",
   "require attention": "requieren atención",
   "since last quarter": "desde el último trimestre",
+  "Enrolled Activities": "Actividades Inscritas",
+  "Active Notifications": "Notificaciones Activas",
 
   // Home - Learning Activity
   "Learning Activity": "Actividad de Aprendizaje",
@@ -137,6 +142,28 @@ export const spanishTranslations: Record<string, string> = {
   "Schedule Class": "Programar Clase",
   "Find Mentor": "Buscar Mentor",
   "My Courses": "Mis Cursos",
+
+  // Dashboard - Recent Activity
+  "Recent Activity": "Actividad Reciente",
+  "All": "Todo",
+  "New Message from Teacher": "Nuevo Mensaje del Profesor",
+  "Your child's progress report is now available": "El informe de progreso de tu hijo ya está disponible",
+  "Bus Route Update": "Actualización de Ruta de Autobús",
+  "Route 12 will be delayed by 15 minutes today": "La Ruta 12 se retrasará 15 minutos hoy",
+  "Registration Confirmed": "Inscripción Confirmada",
+  "Successfully enrolled in Parent Wellness program": "Inscrito exitosamente en el programa de Bienestar para Padres",
+  "Principal García": "Director García",
+  "Staff Meeting Update": "Actualización de Reunión de Personal",
+  "The weekly staff meeting has been moved to Thursday at 3:00 PM due to a scheduling conflict.": "La reunión semanal de personal se ha trasladado al jueves a las 3:00 PM debido a un conflicto de horario.",
+  "Transportation Dept": "Departamento de Transporte",
+  "Bus Route Changes": "Cambios en Rutas de Autobús",
+  "Due to road construction on Main Street, bus route #12 will be temporarily modified.": "Debido a construcción en la Calle Principal, la ruta de autobús #12 será temporalmente modificada.",
+  "All caught up!": "¡Todo al día!",
+
+  // Dashboard - Progress Interpretation & Services
+  "Progress Interpretation": "Interpretación de Progreso",
+  "Parent Wellness": "Bienestar de Padres",
+  "Extra-Curricular": "Extracurricular",
 
   // Dashboard - Recent Courses
   "Recent Courses": "Cursos Recientes",
@@ -373,8 +400,6 @@ export const spanishTranslations: Record<string, string> = {
   "Send Message": "Enviar Mensaje",
   "View": "Ver",
   // Message Content Translations
-  "Principal García": "Director García",
-  "Transportation Dept": "Departamento de Transporte",
   "Cafeteria Services": "Servicios de Cafetería",
   "IT Department": "Departamento de TI",
   "Extracurricular Coordinator": "Coordinador de Actividades Extraescolares",
@@ -468,7 +493,6 @@ export const spanishTranslations: Record<string, string> = {
   "Head of Studies": "Jefa de Estudios",
 
   "Staff Meeting Schedule Update": "Actualización de Horario de Reunión de Personal",
-  "Bus Route Changes": "Cambios de Ruta de Autobús",
   "New Menu Options": "Nuevas Opciones de Menú",
   "System Maintenance": "Mantenimiento del Sistema",
   "Summer Program Registration": "Registro de Programa de Verano",
@@ -492,7 +516,6 @@ export const spanishTranslations: Record<string, string> = {
   "Parent Wellness and Self-Care": "Bienestar y Autocuidado Parental",
   "Support your family by taking care of yourself first": "Apoya a tu familia cuidándote primero",
   "Programs": "Programas",
-  "Upcoming Events": "Próximos Eventos",
 
   // Error handling
   "AI-generated content may contain inaccuracies. Use at your own discretion.": "El contenido generado por IA puede contener inexactitudes. Úsalo bajo tu propia discreción.",
@@ -506,6 +529,7 @@ export const spanishTranslations: Record<string, string> = {
   "Senior English Teacher": "Profesor Senior de Inglés",
   "teacher": "profesor",
   "user": "usuario",
+  "User": "Usuario",
   "Edit Profile": "Editar Perfil",
   "Master of Arts in English Literature": "Maestría en Literatura Inglesa",
   "University of Michigan": "Universidad de Michigan",
@@ -515,7 +539,6 @@ export const spanishTranslations: Record<string, string> = {
   "Michigan Board of Education": "Junta de Educación de Michigan",
   "Profile Overview": "Vista General",
   "Achievements": "Logros",
-  "Recent Activity": "Actividad Reciente",
   "Professional Achievements & Recognition": "Logros Profesionales y Reconocimientos",
   "Teacher of the Year": "Maestro del Año",
   "Recognized for excellence in teaching and exceptional student engagement across all grade levels": "Reconocido por la excelencia en la enseñanza y el compromiso estudiantil excepcional en todos los niveles de grado",
@@ -533,7 +556,6 @@ export const spanishTranslations: Record<string, string> = {
 
   // Notifications Page
   "Stay updated with important announcements and alerts.": "Mantente actualizado con anuncios y alertas importantes.",
-  "All": "Todas",
   "All Notifications": "Todas las Notificaciones",
   "Unread": "No leídas",
   "Mark all as read": "Marcar todas como leídas",
@@ -792,8 +814,8 @@ export const spanishTranslations: Record<string, string> = {
   "Election of representatives from the Parents/Legal Guardians sector": "Elección de representantes del sector de Madres/Padres/Tutores",
   "Administrative Staff Representative Election": "Elección de representante del Personal de Administración",
   "Replacement due to end of mandate": "Sustitución por finalización de mandato",
-  "Constitución/Renovación": "Constitución/Renovación",
-  "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.": "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.",
+  "Constitution/Renewal": "Constitución/Renovación",
+  "School Council renewal process for the academic year 2024-2025. All regulatory commissions have been established.": "Proceso de renovación del Consejo Escolar para el año académico 2024-2025. Se han constituido todas las comisiones reglamentarias.",
   "The school council is one of the most important bodies in the educational structure. From this option in Roots you can consult the dates of constitution of the electoral board and the council itself, as well as the type of formation process and its composition.": "El consejo escolar es uno de los organismos más importantes de la estructura educativa. Desde esta opción de Raíces podrás consultar las fechas de constitución de la junta electoral y del propio consejo, así como el tipo de proceso de formación y su composición.",
   "Faculty Directory": "Directorio de Profesores",
 
@@ -895,7 +917,7 @@ export const spanishTranslations: Record<string, string> = {
   "parent wellness and self-care": "bienestar y autocuidado para padres",
   "Five Years": "Cinco Años",
   "Select recipient": "Seleccionar destinatario",
-  "Enrolled": "Apuntado",
+  "Enrolled": "Matriculado",
   "Preview": "Probar",
 
   // Evaluation periods
@@ -989,13 +1011,24 @@ export const spanishTranslations: Record<string, string> = {
   "January - March 2025": "Enero - Marzo 2025",
   "April - June 2025": "Abril - Junio 2025",
 
-  // Subject names
-  "Biology and Geology": "Biología y Geología",
+  // Subject names - Academic History specific
+  "Natural Sciences": "Ciencias de la Naturaleza",
+  "Social Sciences, Geography and History": "Ciencias Sociales, Geografía e Historia",
+  "Arts and Visual Education": "Educación Plástica y Visual",
+  "First Foreign Language (French)": "Primera Lengua Extranjera (Francés)",
+  "Second Foreign Language (English)": "Segunda Lengua Extranjera (Inglés)",
+  "Catholic Religion": "Religión Católica",
+  "Citizenship and Human Rights Education": "Educación para la Ciudadanía y los Derechos Humanos",
+  "Artistic Education": "Educación Artística",
+
+  // Record types
+  "Compulsory Secondary Education": "Escuela Secundaria Obligatoria",
+  "Primary Education": "Educación Primaria",
+
+  // Enrollment status
   "Sports": "Deporte",
   "Visual and Audiovisual Arts": "Educación Plástica, Visual y Audiovisual",
   "Geography and History": "Geografía e Historia",
-  "Spanish Language and Literature": "Lengua Castellana y Literatura",
-  "First Foreign Language (English)": "Primera Lengua Extranjera (Inglés)",
   "Ethical Values": "Valores Éticos",
 
   // Subject types
@@ -1013,8 +1046,8 @@ export const spanishTranslations: Record<string, string> = {
   "Try adjusting your search terms": "Intenta ajustar tus términos de búsqueda",
 
   // Personal Calendar
-  "Personal Agenda": "Agenda personal",
   "Manage your personal events and appointments": "Gestiona tus eventos personales y citas",
+  "Create Event": "Crear Evento",
   "Priority Levels": "Niveles de Prioridad",
   "Events are color-coded by priority level": "Los eventos están codificados por colores según el nivel de prioridad",
   "High Priority": "Prioridad Alta",
@@ -1122,7 +1155,6 @@ export const spanishTranslations: Record<string, string> = {
   "All Years": "Todos los Años",
   "All Types": "Todos los Tipos",
   "Secondary Education": "Educación Secundaria",
-  "Primary Education": "Educación Primaria",
   "Entry Date": "Fecha de Ingreso",
   "Subject Group": "Grupo de Materias",
   "Academic Summary": "Resumen Académico",
@@ -1141,7 +1173,6 @@ export const spanishTranslations: Record<string, string> = {
   "3rd Evaluation": "3ª Evaluación",
   "Final Evaluation": "Evaluación Final",
   "Spanish Language": "Lengua Castellana",
-  "Natural Sciences": "Ciencias Naturales",
   "History Subject": "Historia",
   "English Subject": "Inglés",
   "Art Subject": "Arte",
@@ -1218,7 +1249,7 @@ export const spanishTranslations: Record<string, string> = {
   "This applies to all AI-powered services including voice conversations, story illustrations, and educational content.": "Esto se aplica a todos los servicios con IA incluyendo conversaciones de voz, ilustraciones de cuentos y contenido educativo.",
   "Terms of Service": "Términos de Servicio",
   "Cookie Policy": "Política de Cookies",
-  "Comunidad de Madrid. All rights reserved.": "Comunidad de Madrid. Todos los derechos reservados.",
+  "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
 
   // Story Illustration Feature
   "Story Illustration": "Ilustración del Cuento",
@@ -1286,7 +1317,6 @@ export const spanishTranslations: Record<string, string> = {
   "Educational Monitoring": "Seguimiento Educativo",
   "Virtual Secretary": "Secretaría Virtual",
   "Educational Platform": "Plataforma Educativa",
-  "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
   "Privacy Policy": "Política de Privacidad",
   "Data Protection": "Protección de Datos",
 
@@ -1298,12 +1328,12 @@ export const spanishTranslations: Record<string, string> = {
   "Click the chat widget to begin your wellness journey": "Haz clic en el widget de chat para comenzar tu viaje de bienestar",
 
   // Legacy auth translations (keeping for compatibility)
-  "Bienvenido a la plataforma educativa": "Welcome to the educational platform",
-  "de la Comunidad de Madrid": "of the Madrid Community",
-  "Cursos y programas formativos especializados": "Specialized training courses and programs",
-  "Seguimiento personalizado de tu progreso": "Personalized progress tracking",
-  "Recursos y materiales de calidad": "Quality resources and materials",
-  "Soporte y acompañamiento continuo": "Continuous support and guidance",
+  "Welcome to the educational platform": "Bienvenido a la plataforma educativa",
+  "of the Madrid Community": "de la Comunidad de Madrid",
+  "Specialized training courses and programs": "Cursos y programas formativos especializados",
+  "Personalized progress tracking": "Seguimiento personalizado de tu progreso",
+  "Quality resources and materials": "Recursos y materiales de calidad",
+  "Continuous support and guidance": "Soporte y acompañamiento continuo",
 
   // Additional Clerk form translations
   "Sign in": "Iniciar sesión",
@@ -1319,6 +1349,61 @@ export const spanishTranslations: Record<string, string> = {
   "Already have an account?": "¿Ya tienes una cuenta?",
   "Forgot password?": "¿Olvidaste tu contraseña?",
   "or": "o",
+
+  // Schedule Page - Missing translations
+  "Math Group": "Grupo de Matemáticas",
+  "Advanced Mathematics": "Matemáticas Avanzadas",
+  "Carlos Mendoza Rivera": "Carlos Mendoza Rivera",
+  "Ana Jiménez Torres": "Ana Jiménez Torres",
+
+  // Teacher names - keeping Spanish names as they are
+  "Elena García Ruiz": "Elena García Ruiz",
+  "Carlos Rodríguez Martín": "Carlos Rodríguez Martín",
+  "Dr. Ana López Fernández": "Dr. Ana López Fernández",
+  "María Martínez González": "María Martínez González",
+  "Dr. Miguel Johnson Pérez": "Dr. Miguel Johnson Pérez",
+  "Entrenador Luis Williams": "Coach Luis Williams",
+  "Javier Davis Sánchez": "Javier Davis Sánchez",
+
+  // Room names - translate to Spanish
+  "A101": "A101",
+  "B205": "B205",
+  "C301": "C301",
+  "D102": "D102",
+  "E203": "E203",
+  "F104": "F104",
+
+  // Activities Page - Missing translations
+  "Projects": "Proyectos",
+  "Exams": "Exámenes",
+
+  // School Data - Missing translations
+  "CENTRO PÚBLICO": "Public School",
+  "Public School": "Centro Público",
+
+  // Documents Page - English document names with Spanish translations
+  "Report Card - 2nd Evaluation": "Boletín de Calificaciones - 2ª Evaluación",
+  "Enrollment Certificate 2024-2025": "Certificado de Matrícula 2024-2025",
+  "Extracurricular Activities Authorization": "Autorización Actividades Extraescolares",
+  "Psychopedagogical Evaluation Report": "Informe de Evaluación Psicopedagógica",
+  "Medical Certificate - March 2025": "Justificante Médico - Marzo 2025",
+  "Final Project - Natural Sciences": "Proyecto Final - Ciencias Naturales",
+  "Educational Trip Authorization - Museum": "Autorización Salida Educativa - Museo",
+  "Report Card - 1st Evaluation": "Boletín de Calificaciones - 1ª Evaluación",
+  "School Insurance 2024-2025": "Seguro Escolar 2024-2025",
+  "Tutorial Report - 1st Quarter": "Informe Tutorial - 1er Trimestre",
+
+  // Document descriptions - English to Spanish
+  "Official report card with second quarter grades": "Boletín oficial con calificaciones del segundo trimestre",
+  "Official enrollment certificate for the current academic year": "Certificado oficial de matrícula para el curso académico actual",
+  "Authorization document to participate in extracurricular activities": "Documento de autorización para participar en actividades extraescolares",
+  "Psychopedagogical evaluation conducted by the guidance department": "Evaluación psicopedagógica realizada por el departamento de orientación",
+  "Medical certificate for March absences": "Justificante médico para ausencias del mes de marzo",
+  "Final project on the solar system presented in March": "Proyecto final sobre el sistema solar presentado en marzo",
+  "Authorization to participate in the educational visit to the Science Museum": "Autorización para participar en la visita educativa al Museo de Ciencias",
+  "Official report card with first quarter grades": "Boletín oficial con calificaciones del primer trimestre",
+  "School insurance policy for the current academic year": "Póliza de seguro escolar para el curso académico actual",
+  "Tutor report on academic and personal development of the first quarter": "Informe del tutor sobre el desarrollo académico y personal del primer trimestre",
 
   // Sample message content
   "Weekly Department Meeting": "Reunión Semanal del Departamento",
@@ -1339,7 +1424,6 @@ export const spanishTranslations: Record<string, string> = {
   "All Categories": "Todas las Categorías",
   "All Docs": "Todos los Documentos",
   "Category:": "Categoría:",
-  "Todas las Categorías": "Todas las Categorías",
   "Classroom Management": "Gestión de Aulas",
   "Manage morning classroom activities, attendance, and student participation": "Gestiona las actividades matutinas del aula, asistencia y participación estudiantil",
   "Transportation": "Transporte",
@@ -1409,7 +1493,8 @@ export const spanishTranslations: Record<string, string> = {
   "Chess Coaching Session": "Sesión de Clases de Ajedrez",
   "Math Tutoring Session": "Sesión de Tutoría de Matemáticas",
   "Back to Activities": "Volver a Actividades",
-  "Enroll Now": "Apuntar",
+  "Enroll Now": "Matricularse Ahora",
+  "Enroll": "Matricularse",
 
   // Storytelling Adventure Building
   "Storytelling Session": "Sesión de Narración",
@@ -1557,21 +1642,26 @@ export const spanishTranslations: Record<string, string> = {
   "View All": "Ver Todo",
   "Open Calendar": "Abrir Calendario",
   "View Full Calendar": "Ver Calendario Completo",
-  "New Message from Teacher": "Nuevo Mensaje del Profesor",
-  "Your child's progress report is now available": "El informe de progreso de tu hijo ya está disponible",
-  "Bus Route Update": "Actualización de Ruta de Autobús",
-  "Route 12 will be delayed by 15 minutes today": "La ruta 12 se retrasará 15 minutos hoy",
-  "Registration Confirmed": "Registro Confirmado",
-  "Successfully enrolled in Parent Wellness program": "Inscrito exitosamente en el programa de Bienestar de Padres",
-  "School Board Meeting": "Reunión de la Junta Escolar",
-  "Student Performance Review": "Revisión de Rendimiento Estudiantil",
-  "Staff Meeting Update": "Actualización de Reunión de Personal",
-  "The weekly staff meeting has been moved to Thursday at 3:00 PM...": "La reunión semanal de personal se ha trasladado al jueves a las 3:00 PM...",
-  "Due to road construction, bus route #12 will be temporarily...": "Debido a construcción vial, la ruta de autobús #12 será temporalmente...",
-  "We are excited to announce new vegetarian and gluten-free...": "Nos complace anunciar nuevas opciones vegetarianas y sin gluten...",
+  "School Data": "Datos del Centro",
+  "Spring Break": "Vacaciones de Primavera",
+  "Final Exams Week": "Semana de Exámenes Finales",
+  "Graduation Ceremony": "Ceremonia de Graduación",
   "high": "alta",
   "medium": "media",
   "low": "baja",
+
+  // Page Header Subtitles
+  "View your current academic year grades and evaluations": "Ve las calificaciones y evaluaciones de tu año académico actual",
+  "View your weekly class schedule and timetable": "Ve tu horario semanal de clases y calendario",
+  "View and manage your absence records and justifications": "Ve y gestiona tus registros de ausencias y justificaciones",
+  "Track your academic activities, grades, and evaluations": "Rastrea tus actividades académicas, calificaciones y evaluaciones",
+  "View detailed student information and academic records": "Ve información detallada del estudiante y registros académicos",
+  "Meet your dedicated teacher and access tutoring resources": "Conoce a tu profesor dedicado y accede a recursos de tutoría",
+  "No services found": "No se encontraron servicios",
+  "We couldn't find any services matching your search criteria. Try adjusting your search or browse all services.": "No pudimos encontrar servicios que coincidan con tus criterios de búsqueda. Intenta ajustar tu búsqueda o navega por todos los servicios.",
+  "View all services": "Ver todos los servicios",
+  "Filter Announcements": "Filtrar Anuncios",
+  "Filter Grades": "Filtrar Calificaciones",
 
 } as const;
 
