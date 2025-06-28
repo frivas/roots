@@ -8,35 +8,35 @@
     --madrid-red: 0 100% 50%;
     --madrid-black: 0 0% 0%;
     --madrid-white: 0 0% 100%;
-    
+
     /* System Colors using Madrid Brand */
     --color-primary: var(--madrid-red);
     --color-primary-foreground: var(--madrid-white);
-    
+
     --color-secondary: 0 0% 15%;
     --color-secondary-foreground: var(--madrid-white);
-    
+
     --color-accent: var(--madrid-red);
     --color-accent-foreground: var(--madrid-white);
-    
+
     --color-success: 158 64% 40%;
     --color-success-foreground: var(--madrid-white);
-    
+
     --color-warning: 38 92% 56%;
     --color-warning-foreground: var(--madrid-black);
-    
+
     --color-error: var(--madrid-red);
     --color-error-foreground: var(--madrid-white);
-    
+
     --color-background: var(--madrid-white);
     --color-foreground: var(--madrid-black);
-    
+
     --color-muted: 0 0% 96%;
     --color-muted-foreground: 0 0% 46%;
-    
+
     --color-card: var(--madrid-white);
     --color-card-foreground: var(--madrid-black);
-    
+
     --color-border: 0 0% 91%;
   }
 
@@ -44,13 +44,13 @@
     /* Dark mode using Madrid branding - minimal dark theme */
     --color-background: 0 0% 4%;
     --color-foreground: var(--madrid-white);
-    
+
     --color-muted: 0 0% 16%;
     --color-muted-foreground: 0 0% 64%;
-    
+
     --color-card: 0 0% 8%;
     --color-card-foreground: var(--madrid-white);
-    
+
     --color-border: 0 0% 17%;
   }
 }
@@ -59,18 +59,18 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     font-family: Arial, Helvetica, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
   }
-  
+
   .font-bold {
     font-family: "Arial Black", Arial, sans-serif;
   }
@@ -82,6 +82,13 @@
 
 .animate-slide-in {
   animation: slideIn 0.3s ease-in-out;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Clerk Auth Madrid Styling */

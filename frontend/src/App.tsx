@@ -1,10 +1,7 @@
-// @ts-nocheck
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import {
-  SignIn,
-  SignUp,
   RedirectToSignIn,
   SignedIn,
   SignedOut
@@ -21,10 +18,8 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Services = lazy(() => import('./pages/Services'));
 const Messages = lazy(() => import('./pages/Messages'));
 const Notifications = lazy(() => import('./pages/Notifications'));
-const Settings = lazy(() => import('./pages/Settings'));
 const PersonalData = lazy(() => import('./pages/PersonalData'));
 const PasswordChange = lazy(() => import('./pages/PasswordChange'));
-const Profile = lazy(() => import('./pages/Profile'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -71,6 +66,13 @@ const Loading = () => (
       <div className="animate-spin rounded-full h-12 w-12 border-2 border-muted border-t-primary"></div>
       <p className="text-sm text-muted-foreground animate-pulse">Loading...</p>
     </div>
+  </div>
+);
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[50vh]">
+    <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
   </div>
 );
 
@@ -127,72 +129,236 @@ function App() {
             <Route path="/dashboard" element={<Navigate to="/home" replace />} />
 
             {/* Home section */}
-            <Route path="/home" element={<Dashboard />} />
-            <Route path="/home/schedule" element={<Schedule />} />
-            <Route path="/home/absences" element={<Absences />} />
-            <Route path="/home/activities" element={<Activities />} />
-            <Route path="/home/history" element={<AcademicHistory />} />
-            <Route path="/home/documents" element={<Documents />} />
-            <Route path="/home/grades" element={<CurrentYearGrades />} />
-            <Route path="/home/profile" element={<StudentProfile />} />
-            <Route path="/home/tutoring" element={<TutorInfo />} />
-            <Route path="/home/*" element={<HomePlaceholder />} />
+            <Route path="/home" element={
+              <Suspense fallback={<PageLoader />}>
+                <Dashboard />
+              </Suspense>
+            } />
+            <Route path="/home/schedule" element={
+              <Suspense fallback={<PageLoader />}>
+                <Schedule />
+              </Suspense>
+            } />
+            <Route path="/home/absences" element={
+              <Suspense fallback={<PageLoader />}>
+                <Absences />
+              </Suspense>
+            } />
+            <Route path="/home/activities" element={
+              <Suspense fallback={<PageLoader />}>
+                <Activities />
+              </Suspense>
+            } />
+            <Route path="/home/history" element={
+              <Suspense fallback={<PageLoader />}>
+                <AcademicHistory />
+              </Suspense>
+            } />
+            <Route path="/home/documents" element={
+              <Suspense fallback={<PageLoader />}>
+                <Documents />
+              </Suspense>
+            } />
+            <Route path="/home/grades" element={
+              <Suspense fallback={<PageLoader />}>
+                <CurrentYearGrades />
+              </Suspense>
+            } />
+            <Route path="/home/profile" element={
+              <Suspense fallback={<PageLoader />}>
+                <StudentProfile />
+              </Suspense>
+            } />
+            <Route path="/home/tutoring" element={
+              <Suspense fallback={<PageLoader />}>
+                <TutorInfo />
+              </Suspense>
+            } />
+            <Route path="/home/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <HomePlaceholder />
+              </Suspense>
+            } />
 
             {/* Our School section */}
-            <Route path="/school/data" element={<SchoolData />} />
-            <Route path="/school/calendar" element={<SchoolCalendar />} />
-            <Route path="/school/services" element={<Services />} />
-            <Route path="/school/elections" element={<SchoolElections />} />
-            <Route path="/school/*" element={<SchoolPlaceholder />} />
+            <Route path="/school/data" element={
+              <Suspense fallback={<PageLoader />}>
+                <SchoolData />
+              </Suspense>
+            } />
+            <Route path="/school/calendar" element={
+              <Suspense fallback={<PageLoader />}>
+                <SchoolCalendar />
+              </Suspense>
+            } />
+            <Route path="/school/services" element={
+              <Suspense fallback={<PageLoader />}>
+                <Services />
+              </Suspense>
+            } />
+            <Route path="/school/elections" element={
+              <Suspense fallback={<PageLoader />}>
+                <SchoolElections />
+              </Suspense>
+            } />
+            <Route path="/school/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <SchoolPlaceholder />
+              </Suspense>
+            } />
 
             {/* Services section */}
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/parent-wellness" element={<ParentWellness />} />
-            <Route path="/services/parent-wellness-chat" element={<ParentWellnessChat />} />
-            <Route path="/services/extra-curricular" element={<ExtraCurricular />} />
-            <Route path="/services/extra-curricular-session/:activityType" element={<ExtraCurricularSession />} />
-            <Route path="/services/chess-coaching-session" element={<ChessCoachingSession />} />
-            <Route path="/services/math-tutoring-session" element={<MathTutoringSession />} />
-            <Route path="/services/storytelling-session" element={<StorytellingSession />} />
-            <Route path="/services/language-lesson-session" element={<LanguageLessonSession />} />
-            <Route path="/services/progress-interpretation" element={<ProgressInterpretationService />} />
-            <Route path="/services/progress-interpretation-chat" element={<ProgressInterpretationChat />} />
-            <Route path="/services/morning-classroom" element={<MorningClassroom />} />
-            <Route path="/services/*" element={<Services />} />
+            <Route path="/services" element={
+              <Suspense fallback={<PageLoader />}>
+                <Services />
+              </Suspense>
+            } />
+            <Route path="/services/parent-wellness" element={
+              <Suspense fallback={<PageLoader />}>
+                <ParentWellness />
+              </Suspense>
+            } />
+            <Route path="/services/parent-wellness-chat" element={
+              <Suspense fallback={<PageLoader />}>
+                <ParentWellnessChat />
+              </Suspense>
+            } />
+            <Route path="/services/extra-curricular" element={
+              <Suspense fallback={<PageLoader />}>
+                <ExtraCurricular />
+              </Suspense>
+            } />
+            <Route path="/services/extra-curricular-session/:activityType" element={
+              <Suspense fallback={<PageLoader />}>
+                <ExtraCurricularSession />
+              </Suspense>
+            } />
+            <Route path="/services/chess-coaching-session" element={
+              <Suspense fallback={<PageLoader />}>
+                <ChessCoachingSession />
+              </Suspense>
+            } />
+            <Route path="/services/math-tutoring-session" element={
+              <Suspense fallback={<PageLoader />}>
+                <MathTutoringSession />
+              </Suspense>
+            } />
+            <Route path="/services/storytelling-session" element={
+              <Suspense fallback={<PageLoader />}>
+                <StorytellingSession />
+              </Suspense>
+            } />
+            <Route path="/services/language-lesson-session" element={
+              <Suspense fallback={<PageLoader />}>
+                <LanguageLessonSession />
+              </Suspense>
+            } />
+            <Route path="/services/progress-interpretation" element={
+              <Suspense fallback={<PageLoader />}>
+                <ProgressInterpretationService />
+              </Suspense>
+            } />
+            <Route path="/services/progress-interpretation-chat" element={
+              <Suspense fallback={<PageLoader />}>
+                <ProgressInterpretationChat />
+              </Suspense>
+            } />
+            <Route path="/services/morning-classroom" element={
+              <Suspense fallback={<PageLoader />}>
+                <MorningClassroom />
+              </Suspense>
+            } />
+            <Route path="/services/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <Services />
+              </Suspense>
+            } />
 
             {/* Communications section */}
-            <Route path="/communications" element={<CommunicationsPlaceholder />} />
-            <Route path="/communications/messages" element={<Messages />} />
-            <Route path="/communications/messages/*" element={<Messages />} />
-            <Route path="/communications/bulletin" element={<Bulletin />} />
-            <Route path="/communications/notifications" element={<Notifications />} />
-            <Route path="/communications/notifications/*" element={<Notifications />} />
-            <Route path="/communications/*" element={<CommunicationsPlaceholder />} />
+            <Route path="/communications" element={
+              <Suspense fallback={<PageLoader />}>
+                <CommunicationsPlaceholder />
+              </Suspense>
+            } />
+            <Route path="/communications/messages" element={
+              <Suspense fallback={<PageLoader />}>
+                <Messages />
+              </Suspense>
+            } />
+            <Route path="/communications/messages/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <Messages />
+              </Suspense>
+            } />
+            <Route path="/communications/bulletin" element={
+              <Suspense fallback={<PageLoader />}>
+                <Bulletin />
+              </Suspense>
+            } />
+            <Route path="/communications/notifications" element={
+              <Suspense fallback={<PageLoader />}>
+                <Notifications />
+              </Suspense>
+            } />
+            <Route path="/communications/notifications/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <Notifications />
+              </Suspense>
+            } />
+            <Route path="/communications/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <CommunicationsPlaceholder />
+              </Suspense>
+            } />
 
             {/* Personal Calendar section */}
-            <Route path="/calendar/monthly" element={<PersonalCalendar />} />
-            <Route path="/calendar/create" element={<PersonalCalendar />} />
-            <Route path="/calendar/*" element={<CalendarPlaceholder />} />
+            <Route path="/calendar/monthly" element={
+              <Suspense fallback={<PageLoader />}>
+                <PersonalCalendar />
+              </Suspense>
+            } />
+            <Route path="/calendar/create" element={
+              <Suspense fallback={<PageLoader />}>
+                <PersonalCalendar />
+              </Suspense>
+            } />
+            <Route path="/calendar/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <CalendarPlaceholder />
+              </Suspense>
+            } />
 
             {/* My Data section */}
-            <Route path="/data/personal" element={<PersonalData />} />
-            <Route path="/data/password" element={<PasswordChange />} />
-            <Route path="/data/*" element={<MyDataPlaceholder />} />
+            <Route path="/data/personal" element={
+              <Suspense fallback={<PageLoader />}>
+                <PersonalData />
+              </Suspense>
+            } />
+            <Route path="/data/password" element={
+              <Suspense fallback={<PageLoader />}>
+                <PasswordChange />
+              </Suspense>
+            } />
+            <Route path="/data/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <MyDataPlaceholder />
+              </Suspense>
+            } />
 
             {/* Legacy routes - redirect to new structure */}
             <Route path="/messages/*" element={<Navigate to="/communications/messages" replace />} />
-            <Route path="/notifications" element={<Navigate to="/communications/notifications" replace />} />
-            <Route path="/settings/*" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/notifications/*" element={<Navigate to="/communications/notifications" replace />} />
+            <Route path="/settings" element={<Navigate to="/data/personal" replace />} />
+            <Route path="/profile" element={<Navigate to="/home/profile" replace />} />
           </Route>
 
           {/* Public legal pages */}
           <Route
             path="/privacy-policy"
             element={
-              <MainLayout>
+              <Suspense fallback={<PageLoader />}>
                 <PrivacyPolicy />
-              </MainLayout>
+              </Suspense>
             }
           />
 

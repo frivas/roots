@@ -2,24 +2,24 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import TranslatedText from '../components/TranslatedText';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { 
-  Shield, 
+import {
+  Shield,
   AlertTriangle,
   Save
 } from 'lucide-react';
 
 // Switch component
-const Switch = ({ checked, onCheckedChange, id }: { 
-  checked: boolean; 
+const Switch = ({ checked, onCheckedChange, id }: {
+  checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   id?: string;
 }) => {
@@ -30,7 +30,7 @@ const Switch = ({ checked, onCheckedChange, id }: {
       aria-checked={checked}
       onClick={() => onCheckedChange(!checked)}
       className={`
-        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent 
+        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent
         transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
         ${checked ? 'bg-primary' : 'bg-input'}
       `}
@@ -56,30 +56,30 @@ const PasswordChange = () => {
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.4 }
     }
   };
 
   return (
-    <motion.div 
-      className="container max-w-6xl py-8 space-y-8"
+    <motion.div
+      className="space-y-6 pb-8"
       initial="hidden"
       animate="visible"
       variants={{
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
           opacity: 1,
-          transition: { 
+          transition: {
             staggerChildren: 0.1,
             delayChildren: 0.1
           }
         }
       }}
     >
-      <motion.div 
+      <motion.div
         className="flex flex-col gap-2"
         variants={fadeIn}
       >
@@ -90,7 +90,7 @@ const PasswordChange = () => {
           <TranslatedText>Manage your account security and privacy preferences</TranslatedText>
         </p>
       </motion.div>
-      
+
       <motion.div
         variants={fadeIn}
         className="grid gap-6 md:grid-cols-2"
@@ -118,13 +118,13 @@ const PasswordChange = () => {
                     <TranslatedText>Add an extra layer of security to protect your educational data</TranslatedText>
                   </p>
                 </div>
-                <Switch 
-                  id="twoFactor" 
-                  checked={twoFactorEnabled} 
-                  onCheckedChange={setTwoFactorEnabled} 
+                <Switch
+                  id="twoFactor"
+                  checked={twoFactorEnabled}
+                  onCheckedChange={setTwoFactorEnabled}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="currentPassword" className="block text-sm font-medium text-foreground">
                   <TranslatedText>Current Password</TranslatedText>
@@ -135,7 +135,7 @@ const PasswordChange = () => {
                   placeholder="••••••••"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="newPassword" className="block text-sm font-medium text-foreground">
                   <TranslatedText>New Password</TranslatedText>
@@ -149,7 +149,7 @@ const PasswordChange = () => {
                   <TranslatedText>Password must be at least 8 characters with a mix of letters, numbers, and symbols</TranslatedText>
                 </p>
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground">
                   <TranslatedText>Confirm New Password</TranslatedText>
@@ -169,7 +169,7 @@ const PasswordChange = () => {
             </Button>
           </div>
         </Card>
-        
+
         <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
           <CardHeader className="bg-muted/30">
             <div className="flex items-center space-x-2">
@@ -198,7 +198,7 @@ const PasswordChange = () => {
                 <TranslatedText>Reset Preferences</TranslatedText>
               </Button>
             </div>
-            
+
             <div className="space-y-2 border-b border-border pb-4">
               <h4 className="text-sm font-medium">
                 <TranslatedText>Download Your Data</TranslatedText>
@@ -214,7 +214,7 @@ const PasswordChange = () => {
                 <TranslatedText>Request Data Export</TranslatedText>
               </Button>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-destructive">
                 <TranslatedText>Delete Account</TranslatedText>
@@ -237,4 +237,4 @@ const PasswordChange = () => {
   );
 };
 
-export default PasswordChange; 
+export default PasswordChange;

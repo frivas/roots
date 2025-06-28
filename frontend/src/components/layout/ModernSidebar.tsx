@@ -23,6 +23,8 @@ interface ModernSidebarProps {
   hideBottomBorder?: boolean;
 }
 
+
+
 const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBottomBorder = false }) => {
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [isHovered, setIsHovered] = useState(false);
@@ -99,11 +101,21 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     });
   };
 
-
-
   const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
     const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
     return <IconElement className={cn("h-6 w-6", className)} />;
+  };
+
+  // Helper function to check if a menu item should be active
+  const isMenuItemActive = (item: MenuItem): boolean => {
+    // If item has direct href, check if current path matches
+    if (item.href) {
+      return location.pathname === item.href;
+    }
+
+    // For items with children but no href, they should never be highlighted
+    // Only the specific selected child should be highlighted
+    return false;
   };
 
   const Link = RouterLink as unknown as React.ComponentType<{
@@ -131,20 +143,29 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
       {/* Header Section */}
       <div className={cn(
         "flex h-16 items-center border-b flex-shrink-0",
-        // Mobile: responsive padding based on hover, Desktop: always px-6
-        "px-0 justify-center md:px-6",
-        isExpanded && "px-6"
+        // Mobile: responsive padding to match menu items, Desktop: always px-4
+        "px-1 md:px-4",
+        isExpanded && "px-4"
       )}>
-        <Link to="/" className={cn(
+        <Link to="/home" className={cn(
           "flex items-center gap-3 font-semibold",
-          // Mobile: center when collapsed, Desktop: always left-aligned
-          "justify-center w-full md:justify-start md:w-auto",
-          isExpanded && "justify-start w-auto"
+          // Always left-aligned to match menu items
+          "justify-start w-full",
+          // Add padding to match menu item alignment
+          "px-0 py-3 md:px-4 md:py-3",
+          isExpanded && "px-4 py-3"
         )}>
-          <MadridLogo size="sm" variant="positive" />
+          <div className={cn(
+            "flex items-center justify-center",
+            // Match menu item icon container sizing
+            "w-6 h-6 md:w-6 md:min-w-[24px]",
+            isExpanded && "w-6 min-w-[24px]"
+          )}>
+            <MadridLogo size="sm" variant="positive" />
+          </div>
           {/* Mobile: show text on hover, Desktop: always show */}
           <span className={cn(
-            "text-lg font-semibold text-foreground",
+            "text-lg font-semibold text-foreground ml-3",
             "hidden md:block",
             isExpanded && "block"
           )}>
@@ -173,7 +194,9 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                       // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
                       "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
                       isExpanded && "px-4 py-3 justify-start",
-                      "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                      isMenuItemActive(item)
+                        ? "bg-red-500/20 text-red-700 font-semibold"
+                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                     )}
                   >
                     <div className={cn(
@@ -214,7 +237,9 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                               onClick={() => toggleMenu(child.name)}
                               className={cn(
                                 "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                isMenuItemActive(child)
+                                  ? "bg-red-500/20 text-red-700 font-semibold"
+                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
                               )}
                             >
                               <div className="flex items-center justify-center w-6 min-w-[24px]">
@@ -227,45 +252,70 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                             {expandedMenus.has(child.name) && (
                               <div className="ml-6 mt-2 space-y-2">
                                 {child.children.map((grandchild) => (
-                                  <Link
-                                    key={grandchild.name}
-                                    to={grandchild.href || '#'}
-                                    className={cn(
-                                      "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                      location.pathname === grandchild.href
-                                        ? "bg-red-500/20 text-red-700 font-semibold"
-                                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
-                                    )}
-                                  >
-                                    <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                      <IconComponent icon={grandchild.icon} />
+                                  grandchild.href ? (
+                                    <Link
+                                      key={grandchild.name}
+                                      to={grandchild.href}
+                                      className={cn(
+                                        "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                        location.pathname === grandchild.href
+                                          ? "bg-red-500/20 text-red-700 font-semibold"
+                                          : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                      )}
+                                    >
+                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                        <IconComponent icon={grandchild.icon} />
+                                      </div>
+                                      <span className="text-sm font-medium ml-3">
+                                        <TranslatedText>{grandchild.name}</TranslatedText>
+                                      </span>
+                                    </Link>
+                                  ) : (
+                                    <div
+                                      key={grandchild.name}
+                                      className="group flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-default"
+                                    >
+                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                        <IconComponent icon={grandchild.icon} />
+                                      </div>
+                                      <span className="text-sm font-medium ml-3">
+                                        <TranslatedText>{grandchild.name}</TranslatedText>
+                                      </span>
                                     </div>
-                                    <span className="text-sm font-medium ml-3">
-                                      <TranslatedText>{grandchild.name}</TranslatedText>
-                                    </span>
-                                  </Link>
+                                  )
                                 ))}
                               </div>
                             )}
                           </>
                         ) : (
                           // Child with href - simple clickable link
-                          <Link
-                            to={child.href || '#'}
-                            className={cn(
-                              "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                              location.pathname === child.href
-                                ? "bg-red-500/20 text-red-700 font-semibold"
-                                : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
-                            )}
-                          >
-                            <div className="flex items-center justify-center w-6 min-w-[24px]">
-                              <IconComponent icon={child.icon} />
+                          child.href ? (
+                            <Link
+                              to={child.href}
+                              className={cn(
+                                "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
+                                location.pathname === child.href
+                                  ? "bg-red-500/20 text-red-700 font-semibold"
+                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                              )}
+                            >
+                              <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                <IconComponent icon={child.icon} />
+                              </div>
+                              <span className="text-sm font-medium ml-3">
+                                <TranslatedText>{child.name}</TranslatedText>
+                              </span>
+                            </Link>
+                          ) : (
+                            <div className="group flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-default">
+                              <div className="flex items-center justify-center w-6 min-w-[24px]">
+                                <IconComponent icon={child.icon} />
+                              </div>
+                              <span className="text-sm font-medium ml-3">
+                                <TranslatedText>{child.name}</TranslatedText>
+                              </span>
                             </div>
-                            <span className="text-sm font-medium ml-3">
-                              <TranslatedText>{child.name}</TranslatedText>
-                            </span>
-                          </Link>
+                          )
                         )}
                       </div>
                     ))}
@@ -273,35 +323,56 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 </>
               ) : (
                 // Item with href - simple clickable link
-                <Link
-                  to={item.href || '#'}
-                  className={cn(
-                    "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
-                    // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
-                    "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
-                    isExpanded && "px-4 py-3 justify-start",
-                    location.pathname === item.href
-                      ? "bg-red-500/20 text-red-700 font-semibold"
-                      : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
-                  )}
-                >
-                  <div className={cn(
-                    "flex items-center justify-center",
-                    // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
-                    "w-6 h-6 md:w-6 md:min-w-[24px]",
-                    isExpanded && "w-6 min-w-[24px]"
-                  )}>
-                    <IconComponent icon={item.icon} />
+                item.href ? (
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
+                      // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
+                      "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
+                      isExpanded && "px-4 py-3 justify-start",
+                      location.pathname === item.href
+                        ? "bg-red-500/20 text-red-700 font-semibold"
+                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex items-center justify-center",
+                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
+                      "w-6 h-6 md:w-6 md:min-w-[24px]",
+                      isExpanded && "w-6 min-w-[24px]"
+                    )}>
+                      <IconComponent icon={item.icon} />
+                    </div>
+                    {/* Mobile: show text on hover, Desktop: always show */}
+                    <span className={cn(
+                      "text-sm font-medium ml-3",
+                      "hidden md:block",
+                      isExpanded && "block"
+                    )}>
+                      <TranslatedText>{item.name}</TranslatedText>
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="group flex w-full items-center rounded-md text-sm font-medium text-muted-foreground cursor-default px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start">
+                    <div className={cn(
+                      "flex items-center justify-center",
+                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
+                      "w-6 h-6 md:w-6 md:min-w-[24px]",
+                      isExpanded && "w-6 min-w-[24px]"
+                    )}>
+                      <IconComponent icon={item.icon} />
+                    </div>
+                    {/* Mobile: show text on hover, Desktop: always show */}
+                    <span className={cn(
+                      "text-sm font-medium ml-3",
+                      "hidden md:block",
+                      isExpanded && "block"
+                    )}>
+                      <TranslatedText>{item.name}</TranslatedText>
+                    </span>
                   </div>
-                  {/* Mobile: show text on hover, Desktop: always show */}
-                  <span className={cn(
-                    "text-sm font-medium ml-3",
-                    "hidden md:block",
-                    isExpanded && "block"
-                  )}>
-                    <TranslatedText>{item.name}</TranslatedText>
-                  </span>
-                </Link>
+                )
               )}
             </div>
           ))}
@@ -342,7 +413,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 <p className="text-sm font-medium truncate w-full text-center text-foreground">
                   {user.firstName && user.lastName
                     ? `${user.firstName} ${user.lastName}`
-                    : user.firstName || user.lastName || 'User'
+                    : user.firstName || user.lastName || <TranslatedText>User</TranslatedText>
                   }
                 </p>
                 <p className="text-xs text-muted-foreground truncate w-full text-center">

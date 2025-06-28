@@ -10,12 +10,12 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, helperText, type, ...props }, ref) => {
     const id = props.id || props.name;
-    
+
     return (
       <div className="w-full">
         {label && (
-          <label 
-            htmlFor={id} 
+          <label
+            htmlFor={id}
             className="block text-sm font-medium text-foreground mb-1"
           >
             {label}
