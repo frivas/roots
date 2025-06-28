@@ -715,7 +715,7 @@ const StorytellingSession: React.FC = () => {
             onClick={() => handleGenerateIllustration()}
             size="md"
             disabled={isGeneratingImage}
-            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
           >
             <ImageIcon className="h-5 w-5" />
             {isGeneratingImage ? <TranslatedText>Generating...</TranslatedText> : <TranslatedText>Draw your story</TranslatedText>}
