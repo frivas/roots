@@ -314,29 +314,6 @@ const ProgressInterpretationService: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* AI Voice Session CTA */}
-          <Card className="border-border bg-gradient-to-r from-primary/5 to-primary/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mic className="h-5 w-5" />
-                <TranslatedText>Start Your Progress Review</TranslatedText>
-              </CardTitle>
-              <CardDescription>
-                <TranslatedText>Have a personalized conversation with our AI progress advisor about your child's academic development</TranslatedText>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={handleStartVoiceSession}
-                className="w-full md:w-auto"
-                size="lg"
-              >
-                <Mic className="h-4 w-4 mr-2" />
-                <TranslatedText>Begin Voice Consultation</TranslatedText>
-              </Button>
-            </CardContent>
-          </Card>
         </motion.div>
       )}
 
