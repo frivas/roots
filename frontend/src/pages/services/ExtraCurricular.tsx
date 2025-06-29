@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
+import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import {
   ArrowLeft,
   CheckCircle,
@@ -17,7 +18,8 @@ import {
   Trophy,
   Footprints,
   Swords,
-  Mic
+  Mic,
+  Star
 } from 'lucide-react';
 
 const ExtraCurricular: React.FC = () => {
@@ -25,6 +27,21 @@ const ExtraCurricular: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [enrolledActivities, setEnrolledActivities] = useState<string[]>([]);
+  const [favoriteActivities, setFavoriteActivities] = useState<string[]>([]);
+  const { translateText } = useLingoTranslation();
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('extracurricular-favorites');
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites);
+        setFavoriteActivities(parsedFavorites);
+      } catch (error) {
+        console.error('Error parsing favorites from localStorage:', error);
+      }
+    }
+  }, []);
 
   // Update active tab when URL params change
   useEffect(() => {
@@ -55,6 +72,21 @@ const ExtraCurricular: React.FC = () => {
         : [...prev, activityType]
     );
   };
+
+  const handleToggleFavorite = (activityType: string) => {
+    setFavoriteActivities(prev => {
+      const updatedFavorites = prev.includes(activityType)
+        ? prev.filter(type => type !== activityType)
+        : [...prev, activityType];
+      
+      // Save to localStorage
+      localStorage.setItem('extracurricular-favorites', JSON.stringify(updatedFavorites));
+      
+      return updatedFavorites;
+    });
+  };
+
+
 
 
 
@@ -339,8 +371,21 @@ const ExtraCurricular: React.FC = () => {
           <div className="grid gap-6 md:grid-cols-2">
             {onlineActivities.map((activity, index) => (
               <Card key={index} className="border-border hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                <CardHeader className="relative">
+                  <button
+                    onClick={() => handleToggleFavorite(activity.agentType)}
+                    className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    title={favoriteActivities.includes(activity.agentType) ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <Star 
+                      className={`h-5 w-5 ${
+                        favoriteActivities.includes(activity.agentType)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-400 hover:text-yellow-400'
+                      } transition-colors`}
+                    />
+                  </button>
+                  <CardTitle className="flex items-center gap-2 pr-8">
                     <activity.icon className="h-5 w-5 text-primary" />
                     <TranslatedText>{activity.title}</TranslatedText>
                     <Mic className="h-4 w-4 text-red-600" />
@@ -403,20 +448,6 @@ const ExtraCurricular: React.FC = () => {
           </div>
         </motion.div>
       )}
-
-      {/* Quick Actions */}
-      <motion.div variants={itemVariants} className="border-t border-border pt-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button variant="outline" className="flex-1" onClick={() => setActiveTab('online')}>
-            <Globe className="h-4 w-4 mr-2" />
-            <TranslatedText>Online Activities</TranslatedText>
-          </Button>
-          <Button variant="outline" className="flex-1" onClick={() => setActiveTab('physical')}>
-            <Dumbbell className="h-4 w-4 mr-2" />
-            <TranslatedText>Physical Activities</TranslatedText>
-          </Button>
-        </div>
-      </motion.div>
     </motion.div>
   );
 };

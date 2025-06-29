@@ -433,7 +433,7 @@ const Dashboard = () => {
                  },
                  {
                    icon: <Users className="h-5 w-5" />,
-                   label: "Extra-Curricular",
+                   label: "Storytelling Adventure",
                    color: "bg-green-500/10 text-green-600",
                    route: "/services/extra-curricular?tab=online"
                  },
@@ -457,9 +457,9 @@ const Dashboard = () => {
                   <div className={`p-2 rounded-lg ${item.color}`}>
                     {item.icon}
                   </div>
-                  <TranslatedText className="text-sm font-medium">
-                    {item.label}
-                  </TranslatedText>
+                  <div className="text-sm font-medium">
+                    <TranslatedText>{item.label}</TranslatedText>
+                  </div>
                   <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
                 </motion.button>
               ))}
