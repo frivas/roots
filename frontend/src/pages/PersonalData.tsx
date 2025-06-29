@@ -161,14 +161,14 @@ const PersonalData = () => {
   const getLocalizedExamples = () => {
     if (currentLanguage === 'es-ES') {
       return {
-        email: userEmail || 'maria.garcia@ejemplo.es',
+        email: 'juangonzalez@gmail.com',
         phone: '+34 666 123 456',
         timezone: 'UTC+1',
         dateFormat: 'DD/MM/YYYY'
       };
     }
     return {
-      email: userEmail || 'john.doe@example.com',
+      email: 'juangonzalez@gmail.com',
       phone: '+1 (555) 123-4567',
       timezone: 'UTC-5',
       dateFormat: 'MM/DD/YYYY'
@@ -199,7 +199,7 @@ const PersonalData = () => {
       dateFormat: newExamples.dateFormat,
       language: currentLanguage === 'es-ES' ? 'Spanish' : 'English'
     }));
-  }, [currentLanguage, userEmail]);
+  }, [currentLanguage]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
