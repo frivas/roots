@@ -166,7 +166,7 @@ export const spanishTranslations: Record<string, string> = {
   "Extra-Curricular": "Extracurricular",
   "Extra-Curricular Activities": "Actividades Extracurriculares",
   "Enrich your child's education with diverse activities": "Enriquece la educación de tu hijo con actividades diversas",
-  "Storytelling Adventure": "Construcción de Aventuras",
+  "Storytelling Adventure": "Desarrollo de Aventuras",
 
   // Extra-Curricular Activities - Physical Activities
   // Extra-Curricular Activities - Physical Activities (new additions)
@@ -1317,7 +1317,7 @@ export const spanishTranslations: Record<string, string> = {
   "Problem solving": "Resolución de problemas",
   "Concept explanation": "Explicación de conceptos",
   "Practice exercises": "Ejercicios prácticos",
-  "Storytelling Adventure Building": "Construcción de Aventuras Narrativas",
+  "Storytelling Adventure Building": "Desarrollo de Aventuras Narrativas",
   "Character development": "Desarrollo de personajes",
   "Plot building": "Construcción de tramas",
   "Interactive storytelling": "Narración interactiva",
