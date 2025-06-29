@@ -390,49 +390,88 @@ const PersonalData = () => {
               <Card className="overflow-hidden border-border hover:shadow-lg transition-all duration-300">
                 <CardHeader className="bg-muted/30">
                   <div className="flex items-center space-x-2">
-                    <Info className="h-5 w-5 text-primary" />
+                    <Shield className="h-5 w-5 text-primary" />
                     <CardTitle className="text-xl">
-                      <TranslatedText>Educational Information</TranslatedText>
+                      <TranslatedText>Family Information</TranslatedText>
                     </CardTitle>
                   </div>
                   <CardDescription>
-                    <TranslatedText>Complete your educational profile with additional details</TranslatedText>
+                    <TranslatedText>Manage your family details and guardian preferences</TranslatedText>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="displayName" className="block text-sm font-medium text-foreground">
-                      <TranslatedText>Display Name</TranslatedText>
+                    <label htmlFor="relationshipType" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Relationship to Student</TranslatedText>
                     </label>
-                    <Input
-                      id="displayName"
-                      type="text"
-                      placeholder={getPlaceholderText("How you want to be addressed in class")}
-                    />
+                    <select
+                      id="relationshipType"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      defaultValue="parent"
+                    >
+                      <option value="parent">
+                        <TranslatedText>Parent</TranslatedText>
+                      </option>
+                      <option value="legal-guardian">
+                        <TranslatedText>Legal Guardian</TranslatedText>
+                      </option>
+                      <option value="grandparent">
+                        <TranslatedText>Grandparent</TranslatedText>
+                      </option>
+                      <option value="other-family">
+                        <TranslatedText>Other Family Member</TranslatedText>
+                      </option>
+                    </select>
                     <p className="text-xs text-muted-foreground">
-                      <TranslatedText>This name will be visible to instructors and classmates</TranslatedText>
+                      <TranslatedText>Your relationship to the student in the educational system</TranslatedText>
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="bio" className="block text-sm font-medium text-foreground">
-                      <TranslatedText>Bio</TranslatedText>
+                    <label htmlFor="emergencyContact" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Emergency Contact</TranslatedText>
                     </label>
-                    <textarea
-                      id="bio"
-                      rows={3}
-                      className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder={getPlaceholderText("Tell us about your educational goals and interests")}
+                    <Input
+                      id="emergencyContact"
+                      type="tel"
+                      placeholder={getPlaceholderText("Alternative phone number for emergencies")}
                     />
                     <p className="text-xs text-muted-foreground">
-                      <TranslatedText>A brief description that will appear on your student profile</TranslatedText>
+                      <TranslatedText>Secondary contact number for school emergencies</TranslatedText>
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="communicationPreference" className="block text-sm font-medium text-foreground">
+                      <TranslatedText>Preferred Communication Method</TranslatedText>
+                    </label>
+                    <select
+                      id="communicationPreference"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      defaultValue="email"
+                    >
+                      <option value="email">
+                        <TranslatedText>Email</TranslatedText>
+                      </option>
+                      <option value="phone">
+                        <TranslatedText>Phone Call</TranslatedText>
+                      </option>
+                      <option value="sms">
+                        <TranslatedText>Text Message</TranslatedText>
+                      </option>
+                      <option value="app">
+                        <TranslatedText>App Notification</TranslatedText>
+                      </option>
+                    </select>
+                    <p className="text-xs text-muted-foreground">
+                      <TranslatedText>How you prefer to receive updates about your child's education</TranslatedText>
                     </p>
                   </div>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
                   <Button type="submit" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    <TranslatedText>Save Information</TranslatedText>
+                    <TranslatedText>Save Family Information</TranslatedText>
                   </Button>
                 </div>
               </Card>
