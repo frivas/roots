@@ -448,20 +448,6 @@ const ExtraCurricular: React.FC = () => {
           </div>
         </motion.div>
       )}
-
-      {/* Quick Actions */}
-      <motion.div variants={itemVariants} className="border-t border-border pt-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button variant="outline" className="flex-1" onClick={() => setActiveTab('online')}>
-            <Globe className="h-4 w-4 mr-2" />
-            <TranslatedText>Online Activities</TranslatedText>
-          </Button>
-          <Button variant="outline" className="flex-1" onClick={() => setActiveTab('physical')}>
-            <Dumbbell className="h-4 w-4 mr-2" />
-            <TranslatedText>Physical Activities</TranslatedText>
-          </Button>
-        </div>
-      </motion.div>
     </motion.div>
   );
 };
