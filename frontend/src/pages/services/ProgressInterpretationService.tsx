@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
@@ -25,16 +25,44 @@ import {
   FileText,
   AlertTriangle,
   ThumbsUp,
-  ChevronRight
+  ChevronRight,
+  Star
 } from 'lucide-react';
 
 const ProgressInterpretationService: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [favoriteSupport, setFavoriteSupport] = useState<string[]>([]);
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('progress-interpretation-favorites');
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites);
+        setFavoriteSupport(parsedFavorites);
+      } catch (error) {
+        console.error('Error parsing favorites from localStorage:', error);
+      }
+    }
+  }, []);
   
   const handleStartVoiceSession = () => {
     // Navigate to dedicated progress interpretation chat page
     navigate('/services/progress-interpretation-chat');
+  };
+
+  const handleToggleFavorite = (supportType: string) => {
+    setFavoriteSupport(prev => {
+      const updatedFavorites = prev.includes(supportType)
+        ? prev.filter(type => type !== supportType)
+        : [...prev, supportType];
+      
+      // Save to localStorage
+      localStorage.setItem('progress-interpretation-favorites', JSON.stringify(updatedFavorites));
+      
+      return updatedFavorites;
+    });
   };
 
   const analysisAreas = [
@@ -70,25 +98,29 @@ const ProgressInterpretationService: React.FC = () => {
       title: 'AI Progress Advisor',
       description: 'One-on-one consultation with our AI academic progress specialist',
       availability: 'Available 24/7',
-      isVoiceAgent: true
+      isVoiceAgent: true,
+      type: 'ai-advisor'
     },
     {
       icon: FileText,
       title: 'Progress Reports',
       description: 'Detailed written analysis of your child\'s academic journey',
-      availability: 'Weekly updates'
+      availability: 'Weekly updates',
+      type: 'progress-reports'
     },
     {
       icon: BookOpen,
       title: 'Resource Library',
       description: 'Access study guides, learning strategies, and parent support materials',
-      availability: 'Always accessible'
+      availability: 'Always accessible',
+      type: 'resource-library'
     },
     {
       icon: Phone,
       title: 'Academic Counseling',
       description: 'Direct connection with academic counselors for complex concerns',
-      availability: 'By appointment'
+      availability: 'By appointment',
+      type: 'academic-counseling'
     }
   ];
 
@@ -282,29 +314,6 @@ const ProgressInterpretationService: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* AI Voice Session CTA */}
-          <Card className="border-border bg-gradient-to-r from-primary/5 to-primary/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mic className="h-5 w-5" />
-                <TranslatedText>Start Your Progress Review</TranslatedText>
-              </CardTitle>
-              <CardDescription>
-                <TranslatedText>Have a personalized conversation with our AI progress advisor about your child's academic development</TranslatedText>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={handleStartVoiceSession}
-                className="w-full md:w-auto"
-                size="lg"
-              >
-                <Mic className="h-4 w-4 mr-2" />
-                <TranslatedText>Begin Voice Consultation</TranslatedText>
-              </Button>
-            </CardContent>
-          </Card>
         </motion.div>
       )}
 
@@ -410,8 +419,21 @@ const ProgressInterpretationService: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {supportOptions.map((option, index) => (
               <Card key={index} className="border-border">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                <CardHeader className="relative">
+                  <button
+                    onClick={() => handleToggleFavorite(option.type)}
+                    className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    title={favoriteSupport.includes(option.type) ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <Star 
+                      className={`h-5 w-5 ${
+                        favoriteSupport.includes(option.type)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-400 hover:text-yellow-400'
+                      } transition-colors`}
+                    />
+                  </button>
+                  <CardTitle className="flex items-center gap-2 pr-8">
                     <option.icon className="h-5 w-5" />
                     <TranslatedText>{option.title}</TranslatedText>
                   </CardTitle>
