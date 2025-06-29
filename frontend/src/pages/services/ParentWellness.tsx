@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
@@ -20,15 +20,44 @@ import {
   MessageCircle,
   Video,
   User,
-  Mic
+  Mic,
+  Star
 } from 'lucide-react';
 
 const ParentWellness: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [favoriteSupport, setFavoriteSupport] = useState<string[]>([]);
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('parent-wellness-favorites');
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites);
+        setFavoriteSupport(parsedFavorites);
+      } catch (error) {
+        console.error('Error parsing favorites from localStorage:', error);
+      }
+    }
+  }, []);
+
   const handleStartVoiceSession = () => {
     // Navigate to dedicated parent wellness chat page
     navigate('/services/parent-wellness-chat');
+  };
+
+  const handleToggleFavorite = (supportType: string) => {
+    setFavoriteSupport(prev => {
+      const updatedFavorites = prev.includes(supportType)
+        ? prev.filter(type => type !== supportType)
+        : [...prev, supportType];
+      
+      // Save to localStorage
+      localStorage.setItem('parent-wellness-favorites', JSON.stringify(updatedFavorites));
+      
+      return updatedFavorites;
+    });
   };
 
 
@@ -63,28 +92,32 @@ const ParentWellness: React.FC = () => {
   const supportOptions = [
     {
       icon: Mic,
-              title: 'Parent Mindfulness Sessions',
+      title: 'Parent Mindfulness Sessions',
       description: 'One-on-one guidance with our AI voice agent specialist',
       availability: 'Available 24/7',
-      isVoiceAgent: true
+      isVoiceAgent: true,
+      type: 'mindfulness'
     },
     {
       icon: MessageCircle,
       title: 'Peer Support Groups',
       description: 'Connect with other parents facing similar challenges',
-      availability: 'Weekly sessions'
+      availability: 'Weekly sessions',
+      type: 'peer-support'
     },
     {
       icon: BookOpen,
       title: 'Resource Library',
       description: 'Access articles, videos, and tools for parent wellness',
-      availability: 'Always accessible'
+      availability: 'Always accessible',
+      type: 'resources'
     },
     {
       icon: Phone,
       title: 'Crisis Support',
       description: '24/7 emergency support for urgent wellness concerns',
-      availability: 'Emergency line'
+      availability: 'Emergency line',
+      type: 'crisis'
     }
   ];
 
@@ -315,8 +348,21 @@ const ParentWellness: React.FC = () => {
           <div className="grid gap-6 md:grid-cols-2">
             {supportOptions.map((option, index) => (
               <Card key={index} className="border-border hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                <CardHeader className="relative">
+                  <button
+                    onClick={() => handleToggleFavorite(option.type)}
+                    className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    title={favoriteSupport.includes(option.type) ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <Star 
+                      className={`h-5 w-5 ${
+                        favoriteSupport.includes(option.type)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-400 hover:text-yellow-400'
+                      } transition-colors`}
+                    />
+                  </button>
+                  <CardTitle className="flex items-center gap-2 pr-8">
                     <option.icon className="h-5 w-5 text-primary" />
                     <TranslatedText>{option.title}</TranslatedText>
                   </CardTitle>
