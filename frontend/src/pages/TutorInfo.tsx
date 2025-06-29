@@ -49,8 +49,8 @@ const TutorInfo: React.FC = () => {
                 {/* Profile Card */}
                 <Card className="md:col-span-1 flex flex-col items-center p-6">
                     <div className="relative mb-4">
-                        <div className="w-24 h-32 rounded-xl overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
-                            <div className="w-full h-full rounded-lg overflow-hidden bg-white">
+                        <div className="w-24 h-32 overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
+                            <div className="w-full h-full overflow-hidden bg-white">
                                 <img
                                     src={tutor.avatar}
                                     alt={tutor.name}
