@@ -457,9 +457,9 @@ const Dashboard = () => {
                   <div className={`p-2 rounded-lg ${item.color}`}>
                     {item.icon}
                   </div>
-                  <TranslatedText className="text-sm font-medium">
-                    {item.label}
-                  </TranslatedText>
+                  <div className="text-sm font-medium">
+                    <TranslatedText>{item.label}</TranslatedText>
+                  </div>
                   <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
                 </motion.button>
               ))}

@@ -164,6 +164,32 @@ export const spanishTranslations: Record<string, string> = {
   "Progress Interpretation": "Interpretación de Progreso",
   "Parent Wellness": "Bienestar de Padres",
   "Extra-Curricular": "Extracurricular",
+  "Extra-Curricular Activities": "Actividades Extracurriculares",
+  "Enrich your child's education with diverse activities": "Enriquece la educación de tu hijo con actividades diversas",
+  "Storytelling Adventure": "Construcción de Aventuras",
+
+  // Extra-Curricular Activities - Physical Activities
+  // Extra-Curricular Activities - Physical Activities (new additions)
+  "Mon/Wed/Fri 4PM-6PM": "Lun/Mié/Vie 16:00-18:00",
+  "Tue/Thu 3PM-5PM": "Mar/Jue 15:00-17:00",
+  "Mon/Wed 5PM-7PM": "Lun/Mié 17:00-19:00",
+  "Sat 10AM-12PM": "Sáb 10:00-12:00",
+
+
+
+  // Extra-Curricular Activities - Benefits (new additions)
+  "Set and accomplish personal goals": "Establece y logra objetivos personales",
+
+  // Extra-Curricular Activities - Benefits
+  "Physical Development": "Desarrollo Físico",
+  "Cognitive Growth": "Crecimiento Cognitivo", 
+  "Social Skills": "Habilidades Sociales",
+  "Personal Achievement": "Logros Personales",
+  "Build teamwork and communication abilities": "Desarrolla trabajo en equipo y habilidades de comunicación",
+
+  // Extra-Curricular Activities - UI Elements
+  "Remove from favorites": "Quitar de favoritos",
+  "Add to favorites": "Agregar a favoritos",
 
   // Dashboard - Recent Courses
   "Recent Courses": "Cursos Recientes",
@@ -1284,17 +1310,14 @@ export const spanishTranslations: Record<string, string> = {
   "Grammar lessons": "Lecciones de gramática",
   "Cultural exchange": "Intercambio cultural",
   "Chess Coaching": "Entrenamiento de Ajedrez",
-  "Learn chess strategies with AI grandmaster": "Aprende estrategias de ajedrez con un gran maestro de IA",
   "Opening theory": "Teoría de aperturas",
   "Tactical patterns": "Patrones tácticos",
   "Endgame techniques": "Técnicas de final de juego",
   "Math Tutoring": "Tutoría de Matemáticas",
-  "Personalized math help with AI tutor": "Ayuda personalizada en matemáticas con tutor de IA",
   "Problem solving": "Resolución de problemas",
   "Concept explanation": "Explicación de conceptos",
   "Practice exercises": "Ejercicios prácticos",
   "Storytelling Adventure Building": "Construcción de Aventuras Narrativas",
-  "Create amazing stories with an AI storytelling coach": "Crea historias increíbles con un coach de narración de IA",
   "Character development": "Desarrollo de personajes",
   "Plot building": "Construcción de tramas",
   "Interactive storytelling": "Narración interactiva",
