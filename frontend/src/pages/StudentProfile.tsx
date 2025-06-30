@@ -169,14 +169,15 @@ const StudentProfile: React.FC = () => {
                   <div className="w-24 h-32 overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
                     <div className="w-full h-full overflow-hidden bg-white">
                       <img
-                        src="/images/sofia-profile.jpg"
+                        src="/images/sofia-profile.png"
                         alt="Sofía Hernández López"
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                         onError={(e) => {
-                          // Fallback to illustration avatar if local image fails
+                          // Fallback to reliable avatar options if local image fails
                           const fallbackImages = [
-                            "https://api.dicebear.com/7.x/personas/svg?seed=Sofia&backgroundColor=b6e3f4&hair=long01,long02&hairColor=brown&eyes=normal&mouth=smile&skinColor=f4d1ad",
-                            "https://ui-avatars.com/api/?name=Sofia+H&size=200&background=e3f2fd&color=1976d2&font-size=0.6&bold=true"
+                            "https://ui-avatars.com/api/?name=SH&size=200&background=fce4ec&color=c2185b&font-size=0.7&bold=true&rounded=true",
+                            "https://ui-avatars.com/api/?name=Student&size=200&background=f3e5f5&color=7b1fa2&font-size=0.6&bold=true",
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23e3f2fd'/%3E%3Ccircle cx='100' cy='75' r='25' fill='%231976d2'/%3E%3Ccircle cx='100' cy='135' r='35' fill='%231976d2'/%3E%3Ctext x='100' y='170' text-anchor='middle' font-family='Arial' font-size='12' fill='%23ffffff'%3ESH%3C/text%3E%3C/svg%3E"
                           ];
                           const randomIndex = Math.floor(Math.random() * fallbackImages.length);
                           e.currentTarget.src = fallbackImages[randomIndex];
