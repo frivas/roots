@@ -7,7 +7,7 @@ const tutorMockData = {
     phone: '+34 612 345 678',
     school: 'CP INF-PRI San Juan de la Cruz',
     joinDate: '2018-09-01',
-    avatar: '/images/lucia-profile.jpg',
+    avatar: '/images/lucia-profile.png',
     bio: 'Experienced English teacher with a passion for helping students develop strong literacy skills. Specialized in contemporary literature and creative writing, with a focus on engaging students through innovative teaching methods and technology integration.',
     specializations: [
         'Literary Analysis',
