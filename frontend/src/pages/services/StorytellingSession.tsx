@@ -27,8 +27,17 @@ const StorytellingSession: React.FC = () => {
   const [imageError, setImageError] = useState<string | null>(null);
   const [storyImages, setStoryImages] = useState<string[]>([]); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [storyContent, setStoryContent] = useState<string>('');
-  const [storyContext, setStoryContext] = useState({
-    characters: [] as string[],
+
+  // Define the story context type
+  type StoryContext = {
+    characters: string[];
+    setting: string;
+    currentScene: string;
+    mood: string;
+  };
+
+  const [storyContext, setStoryContext] = useState<StoryContext>({ // eslint-disable-line @typescript-eslint/no-unused-vars
+    characters: [],
     setting: '',
     currentScene: '',
     mood: 'cheerful'
@@ -51,9 +60,13 @@ const StorytellingSession: React.FC = () => {
   const storyContentRef = useRef(storyContent);
   const isWaitingForDrawingResponseRef = useRef(isWaitingForDrawingResponse);
 
+  // Local variable to track current story content in real-time
+  let currentStoryContent = '';
+
   // Update refs when values change
   useEffect(() => {
     storyContentRef.current = storyContent;
+    currentStoryContent = storyContent; // Update local variable as well
   }, [storyContent]);
 
   useEffect(() => {
@@ -78,6 +91,14 @@ const StorytellingSession: React.FC = () => {
       error: imageError
     });
   }, [generatedImage, isGeneratingImage, imageError]);
+
+  // Track generatedImage specifically for debugging
+  useEffect(() => {
+    if (generatedImage) {
+      console.log('🎯 Generated image set successfully:', generatedImage);
+      console.log('🔗 Full image URL:', generatedImage);
+    }
+  }, [generatedImage]);
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
@@ -162,7 +183,7 @@ const StorytellingSession: React.FC = () => {
   };
 
   // Function to generate contextual illustration prompt
-  const generateContextualPrompt = useCallback((context: typeof storyContext, customPrompt?: string) => {
+  const generateContextualPrompt = useCallback((context: StoryContext, customPrompt?: string) => {
     if (customPrompt) return customPrompt;
 
     const { characters, setting, currentScene, mood } = context;
@@ -199,8 +220,8 @@ const StorytellingSession: React.FC = () => {
   }, []);
 
   // Function to generate illustration
-  const handleGenerateIllustration = useCallback(async (customPrompt?: string) => {
-    console.log('🎨 Starting image generation...', { customPrompt, storyContext });
+  const handleGenerateIllustration = useCallback(async (customPrompt?: string, storyContentParam?: string) => {
+    console.log('🎨 Starting image generation...', { customPrompt, storyContentParam, storyContent: storyContentRef.current });
     setIsGeneratingImage(true);
     setImageError(null);
 
@@ -208,16 +229,31 @@ const StorytellingSession: React.FC = () => {
       const token = await getToken();
       console.log('🔑 Token obtained:', !!token);
 
-      // Generate contextual prompt based on story analysis
-      const contextualPrompt = generateContextualPrompt(storyContext, customPrompt);
-      console.log('📝 Generated prompt:', contextualPrompt);
+      // Use the provided story content or fall back to the ref
+      const currentStoryContent = storyContentParam || storyContentRef.current;
+      console.log('📖 Current story content for analysis:', currentStoryContent);
+
+      let contextualPrompt: string;
+
+      if (customPrompt) {
+        contextualPrompt = customPrompt;
+        console.log('📝 Using custom prompt:', contextualPrompt);
+      } else {
+        // Analyze the story content to extract context
+        const analyzedContext = analyzeStoryContent(currentStoryContent);
+        console.log('🔍 Analyzed story context:', analyzedContext);
+
+        // Generate contextual prompt based on the analyzed content
+        contextualPrompt = generateContextualPrompt(analyzedContext);
+        console.log('📝 Generated contextual prompt:', contextualPrompt);
+      }
 
       console.log('🌐 Making API call to /api/images/generate...');
       console.log('🔗 API URL:', '/api/images/generate');
       console.log('🔑 Has Token:', !!token);
       console.log('📝 Prompt length:', contextualPrompt.length);
 
-      const response = await fetch('/api/images/generate', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/images/generate-for-story`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -243,10 +279,42 @@ const StorytellingSession: React.FC = () => {
 
       const data = await response.json();
       console.log('✅ API Success response:', data);
-      console.log('🖼️ Image URL received:', data.imageUrl);
+      console.log('🔍 Full response structure:', JSON.stringify(data, null, 2));
 
-      setGeneratedImage(data.imageUrl);
-      setStoryImages(prev => [...prev, data.imageUrl]);
+      // Handle multiple possible response formats:
+      // 1. Direct API response: { imageUrl: "..." }
+      // 2. SSE-style response: { data: { imageUrl: "..." } }
+      // 3. Full SSE event: { type: "story-illustration", data: { imageUrl: "..." } }
+      let imageUrl = null;
+
+      if (data.type === 'story-illustration' && data.data?.imageUrl) {
+        // Full SSE event format
+        imageUrl = data.data.imageUrl;
+        console.log('🎯 Found image URL in SSE event format');
+      } else if (data.data?.imageUrl) {
+        // SSE-style response format
+        imageUrl = data.data.imageUrl;
+        console.log('🎯 Found image URL in SSE-style format');
+      } else if (data.imageUrl) {
+        // Direct API response format (camelCase)
+        imageUrl = data.imageUrl;
+        console.log('🎯 Found image URL in direct API format (camelCase)');
+      } else if (data.image_url) {
+        // Direct API response format (snake_case)
+        imageUrl = data.image_url;
+        console.log('🎯 Found image URL in direct API format (snake_case)');
+      }
+
+      console.log('🖼️ Final image URL:', imageUrl);
+
+      if (!imageUrl) {
+        console.error('❌ No image URL found in response structure');
+        console.error('🔍 Available keys in response:', Object.keys(data));
+        throw new Error('No image URL received from the API');
+      }
+
+      setGeneratedImage(imageUrl);
+      setStoryImages(prev => [...prev, imageUrl]);
       console.log('🎯 Image state updated successfully');
     } catch (error) {
       console.error('💥 Image generation error:', error);
@@ -255,7 +323,7 @@ const StorytellingSession: React.FC = () => {
       setIsGeneratingImage(false);
       console.log('🏁 Image generation process completed');
     }
-  }, [getToken, storyContext, generateContextualPrompt]);
+  }, [getToken, generateContextualPrompt]);
 
   // Ref for handleGenerateIllustration to use in event listeners
   const handleGenerateIllustrationRef = useRef(handleGenerateIllustration);
@@ -284,7 +352,7 @@ const StorytellingSession: React.FC = () => {
 
     const connectSSE = () => {
       try {
-        eventSource = new EventSource('/api/events/story-illustrations');
+        eventSource = new EventSource('/events/story-illustrations');
         setSseConnection(eventSource);
 
         eventSource.onopen = () => {
@@ -485,17 +553,17 @@ const StorytellingSession: React.FC = () => {
       });
 
       widget.addEventListener('conversation-end', () => {
-        console.log('🎬 Conversation ended, story length:', storyContentRef.current.length);
+        console.log('🎬 Conversation ended, story length:', currentStoryContent.length);
         // Analyze the complete story and generate a final illustration
-        if (storyContentRef.current.length > 50) {
-          const finalContext = analyzeStoryContent(storyContentRef.current);
+        if (currentStoryContent.length > 50) {
+          const finalContext = analyzeStoryContent(currentStoryContent);
           console.log('📖 Final story context:', finalContext);
           setStoryContext(finalContext);
 
           // Auto-generate final illustration
           setTimeout(() => {
             console.log('🎨 Auto-generating final illustration after conversation end');
-            handleGenerateIllustrationRef.current();
+            handleGenerateIllustrationRef.current(undefined, currentStoryContent);
           }, 1000);
         }
       });
@@ -506,12 +574,13 @@ const StorytellingSession: React.FC = () => {
         console.log('🤖 Agent response received:', response.substring(0, 100) + '...');
 
         // Accumulate story content
-        setStoryContent(prev => prev + ' ' + response);
+        const newStoryContent = currentStoryContent + ' ' + response;
+        currentStoryContent = newStoryContent; // Update local variable immediately
+        setStoryContent(newStoryContent);
 
         // Continuously analyze story context
-        const updatedContent = storyContentRef.current + ' ' + response;
-        if (updatedContent.length > 100) {
-          const newContext = analyzeStoryContent(updatedContent);
+        if (newStoryContent.length > 100) {
+          const newContext = analyzeStoryContent(newStoryContent);
           console.log('📊 Updated story context:', newContext);
           setStoryContext(newContext);
         }
@@ -531,11 +600,12 @@ const StorytellingSession: React.FC = () => {
         if (mentionsIllustration && !isGeneratingImage) {
           console.log('🎨 Agent mentioned creating illustration, triggering DIRECT API call');
           console.log('🤖 Agent response that triggered illustration:', response);
+          console.log('📖 Current story content for illustration:', newStoryContent);
 
-          // Trigger direct API call after a short delay
+          // Trigger direct API call after a short delay with the current story content
           setTimeout(() => {
             console.log('🚀 Executing delayed illustration generation...');
-            handleGenerateIllustrationRef.current();
+            handleGenerateIllustrationRef.current(undefined, newStoryContent);
           }, 1000);
         }
       });
@@ -546,7 +616,9 @@ const StorytellingSession: React.FC = () => {
         console.log('👤 User response received:', userText.substring(0, 100) + '...');
 
         // Accumulate story content from user as well
-        setStoryContent(prev => prev + ' ' + userText);
+        const newStoryContent = currentStoryContent + ' ' + userText;
+        currentStoryContent = newStoryContent; // Update local variable immediately
+        setStoryContent(newStoryContent);
 
         const lowerUserText = userText.toLowerCase();
 
@@ -603,7 +675,7 @@ const StorytellingSession: React.FC = () => {
             console.log('✅ User said YES to drawing request, triggering DIRECT illustration API call');
             setIsWaitingForDrawingResponse(false);
             // Force direct API call instead of relying on webhook
-            setTimeout(() => handleGenerateIllustrationRef.current(), 500);
+            setTimeout(() => handleGenerateIllustrationRef.current(undefined, newStoryContent), 500);
             return; // Don't process other patterns
           } else if (negativeResponses.some(response => lowerUserText.includes(response))) {
             console.log('❌ User said NO to drawing request');
@@ -619,7 +691,7 @@ const StorytellingSession: React.FC = () => {
             lowerUserText.includes('draw') ||
             lowerUserText.includes('show me'))) {
           console.log('🎯 User explicitly requested illustration (yes/please + keyword)');
-          handleGenerateIllustrationRef.current();
+          handleGenerateIllustrationRef.current(undefined, newStoryContent);
           return;
         }
 
@@ -650,7 +722,7 @@ const StorytellingSession: React.FC = () => {
         if (matchedRequest) {
           console.log('🎨 Direct drawing request detected, calling DIRECT API:', matchedRequest);
           // Force direct API call instead of relying on webhook
-          setTimeout(() => handleGenerateIllustrationRef.current(), 500);
+          setTimeout(() => handleGenerateIllustrationRef.current(undefined, newStoryContent), 500);
         }
       });
 
@@ -712,7 +784,7 @@ const StorytellingSession: React.FC = () => {
         {/* Draw Your Story Button */}
         <div className="flex justify-center">
           <Button
-            onClick={() => handleGenerateIllustration()}
+            onClick={() => handleGenerateIllustration(undefined, currentStoryContent)}
             size="md"
             disabled={isGeneratingImage}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
@@ -764,7 +836,8 @@ const StorytellingSession: React.FC = () => {
             imageError: !!imageError,
             sseStatus,
             sseConnection: !!sseConnection,
-            imageUrl: generatedImage ? 'present' : 'null'
+            imageUrl: generatedImage ? 'present' : 'null',
+            actualImageUrl: generatedImage
           };
 
           console.log('🔍 Image section render check:', debugInfo);
@@ -782,6 +855,16 @@ const StorytellingSession: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="w-full"
             >
+              {/* Debug info - remove in production */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
+                  <strong>Debug:</strong> Image: {generatedImage ? '✅' : '❌'} |
+                  Loading: {isGeneratingImage ? '✅' : '❌'} |
+                  Error: {imageError ? '✅' : '❌'} |
+                  URL: {generatedImage ? generatedImage.substring(0, 50) + '...' : 'none'}
+                </div>
+              )}
+
               {(() => {
                 // Priority 1: Show the image if we have one (regardless of loading state)
                 if (generatedImage) {

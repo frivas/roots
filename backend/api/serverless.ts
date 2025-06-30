@@ -1,17 +1,20 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import 'dotenv/config';
-import Fastify from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import { clerkPlugin } from '@clerk/fastify';
 
+// Define proper type for SSE connection
+type SSEConnection = NodeJS.WritableStream;
+
 // Routes
-import authRoutes from '../src/routes/auth';
-import messagesRoutes from '../src/routes/messages';
-import notificationsRoutes from '../src/routes/notifications';
-import servicesRoutes from '../src/routes/services';
-import settingsRoutes from '../src/routes/settings';
-import imagesRoutes from '../src/routes/images';
+import authRoutes from '../src/routes/auth.js';
+import messagesRoutes from '../src/routes/messages.js';
+import notificationsRoutes from '../src/routes/notifications.js';
+import servicesRoutes from '../src/routes/services.js';
+import settingsRoutes from '../src/routes/settings.js';
+import imagesRoutes from '../src/routes/images.js';
 
 // Validate environment variables
 function validateEnv() {
@@ -34,7 +37,7 @@ const createApp = async () => {
     const app = Fastify({ logger: false }); // Disable logging for serverless
 
     // Store SSE connections
-    const sseConnections = new Set<any>();
+    const sseConnections = new Set<SSEConnection>();
     app.decorate('sseConnections', sseConnections);
 
     // Public health endpoint
@@ -77,7 +80,13 @@ const createApp = async () => {
                     setting,
                     mood,
                     current_scene
-                } = request.body as any;
+                } = request.body as {
+                    story_content?: string;
+                    characters?: string;
+                    setting?: string;
+                    mood?: string;
+                    current_scene?: string;
+                };
 
                 const startEventData = JSON.stringify({
                     type: 'generation-started',
@@ -112,8 +121,10 @@ const createApp = async () => {
                     style: "vivid"
                 });
 
-                const imageUrl = response.data[0]?.url;
-                if (!imageUrl) throw new Error('No image URL returned');
+                if (!response.data || !response.data[0]?.url) {
+                    throw new Error('No image URL returned from OpenAI');
+                }
+                const imageUrl = response.data[0].url;
 
                 const eventData = JSON.stringify({
                     type: 'story-illustration',
@@ -185,7 +196,7 @@ const createApp = async () => {
     return app;
 };
 
-let app: any = null;
+let app: FastifyInstance | null = null;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!app) {
