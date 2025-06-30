@@ -2,10 +2,13 @@ import { FastifyPluginAsync } from 'fastify';
 import { getAuth } from '@clerk/fastify';
 import OpenAI from 'openai';
 
+// Define proper type for SSE connection
+type SSEConnection = NodeJS.WritableStream;
+
 // Extend Fastify instance type to include our decorated properties
 declare module 'fastify' {
   interface FastifyInstance {
-    sseConnections: Set<any>;
+    sseConnections: Set<SSEConnection>;
   }
 }
 
@@ -16,10 +19,10 @@ const openai = new OpenAI({
 const images: FastifyPluginAsync = async (fastify) => {
   // Test endpoint to verify webhook connectivity
   fastify.get('/test', async (request, reply) => {
-    reply.send({ 
-      message: 'Images API is working!', 
+    reply.send({
+      message: 'Images API is working!',
       timestamp: new Date().toISOString(),
-      ngrok_working: true 
+      ngrok_working: true
     });
   });
 
@@ -32,7 +35,7 @@ const images: FastifyPluginAsync = async (fastify) => {
 
     try {
       const { prompt } = request.body as { prompt: string };
-      
+
       if (!prompt) {
         return reply.status(400).send({ error: 'Prompt is required' });
       }
@@ -54,8 +57,8 @@ const images: FastifyPluginAsync = async (fastify) => {
       reply.send({ imageUrl });
     } catch (error) {
       console.error('Image generation error:', error);
-      reply.status(500).send({ 
-        error: error instanceof Error ? error.message : 'Failed to generate image' 
+      reply.status(500).send({
+        error: error instanceof Error ? error.message : 'Failed to generate image'
       });
     }
   });
@@ -63,13 +66,13 @@ const images: FastifyPluginAsync = async (fastify) => {
   // New webhook endpoint for ElevenLabs agent tool calls (no auth required for webhooks)
   fastify.post('/generate-for-story', async (request, reply) => {
     try {
-      const { 
-        story_content, 
-        characters, 
-        setting, 
-        mood, 
-        current_scene 
-      } = request.body as { 
+      const {
+        story_content,
+        characters,
+        setting,
+        mood,
+        current_scene
+      } = request.body as {
         story_content?: string;
         characters?: string;
         setting?: string;
@@ -87,10 +90,11 @@ const images: FastifyPluginAsync = async (fastify) => {
         }
       });
 
-      sseConnections.forEach((connection: any) => {
+      sseConnections.forEach((connection: SSEConnection) => {
         try {
           connection.write(`data: ${startEventData}\n\n`);
-        } catch (error) {
+        } catch (writeError) {
+          console.error('Error sending generation-started SSE:', writeError);
           sseConnections.delete(connection);
         }
       });
@@ -99,7 +103,7 @@ const images: FastifyPluginAsync = async (fastify) => {
       const generateContextualPrompt = () => {
         // Base style for children's illustrations
         const baseStyle = "Children's book illustration, cartoon style, vibrant colors, friendly and approachable";
-        
+
         // Mood-based style modifiers
         const moodStyles = {
           happy: "bright and cheerful colors, sunny atmosphere, smiling characters",
@@ -111,12 +115,12 @@ const images: FastifyPluginAsync = async (fastify) => {
         };
 
         // Character description
-        const characterDesc = characters 
+        const characterDesc = characters
           ? `featuring ${characters}`
           : 'with charming storybook characters';
 
         // Scene description
-        const sceneDesc = current_scene 
+        const sceneDesc = current_scene
           ? `showing ${current_scene.substring(0, 100)}`
           : 'in an engaging story scene';
 
@@ -127,14 +131,15 @@ const images: FastifyPluginAsync = async (fastify) => {
         const selectedMoodStyle = moodStyles[mood as keyof typeof moodStyles] || moodStyles.cheerful;
 
         // Combine all elements
-        const prompt = `${baseStyle}, ${selectedMoodStyle}, 
-          set in ${settingDesc}, ${characterDesc}, ${sceneDesc}. 
+        const prompt = `${baseStyle}, ${selectedMoodStyle},
+          set in ${settingDesc}, ${characterDesc}, ${sceneDesc}.
           Perfect for children ages 4-10, safe and wholesome content, high quality digital art.`;
 
         return prompt.replace(/\s+/g, ' ').trim();
       };
 
       const contextualPrompt = generateContextualPrompt();
+      console.log('🔍 Contextual prompt:', contextualPrompt);
 
       const response = await openai.images.generate({
         model: "dall-e-3",
@@ -165,7 +170,11 @@ const images: FastifyPluginAsync = async (fastify) => {
         }
       });
 
-      sseConnections.forEach((connection: any) => {
+      console.log('🎨 Image generation completed');
+      console.log('🖼️ Image URL:', imageUrl);
+      console.log('🔗 Event data:', eventData);
+
+      sseConnections.forEach((connection: SSEConnection) => {
         try {
           connection.write(`data: ${eventData}\n\n`);
         } catch (error) {
@@ -175,14 +184,14 @@ const images: FastifyPluginAsync = async (fastify) => {
       });
 
       // Return response in format expected by ElevenLabs
-      reply.send({ 
+      reply.send({
         success: true,
         image_url: imageUrl,
         message: "I've created a beautiful illustration for your story! The image shows the scene with all the characters and details from our story."
       });
     } catch (error) {
       console.error('Image generation error:', error);
-      reply.status(500).send({ 
+      reply.status(500).send({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate image',
         message: "I'm sorry, I couldn't create the illustration right now. Let's continue with our story!"
@@ -191,4 +200,4 @@ const images: FastifyPluginAsync = async (fastify) => {
   });
 };
 
-export default images; 
+export default images;
