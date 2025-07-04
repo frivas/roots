@@ -1,3 +1,11 @@
+<!-- Badges: see .github/BADGES.md for more -->
+
+[![License](https://img.shields.io/github/license/frivas/roots)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/frivas/roots)](https://github.com/frivas/roots/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/frivas/roots)](https://github.com/frivas/roots/pulls)
+[![Contributors](https://img.shields.io/github/contributors/frivas/roots)](https://github.com/frivas/roots/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/frivas/roots)](https://github.com/frivas/roots/commits/main)
+
 # Roots - AI-Powered Educational Platform
 
 Roots is a next-generation educational platform that combines traditional educational services with cutting-edge AI technology. The platform features AI-powered tutoring, real-time illustration generation, multilingual support, and comprehensive family services.
@@ -5,6 +13,7 @@ Roots is a next-generation educational platform that combines traditional educat
 ## 🚀 Key Features
 
 ### AI-Powered Learning
+
 - **Interactive Storytelling** with real-time DALL-E 3 illustration generation
 - **Chess Coaching** with AI grandmaster
 - **Math Tutoring** with personalized AI assistance
@@ -12,18 +21,21 @@ Roots is a next-generation educational platform that combines traditional educat
 - **Parent Wellness Coaching** with 24/7 AI support
 
 ### Advanced Localization
+
 - **Hybrid Translation System** with 900+ local translations
 - **Real-time Language Switching** (English/Spanish)
 - **AI-Powered Dynamic Translation** via Lingo.dev
 - **Regional Customization** for Spanish users (dates, phones, timezone)
 
 ### Real-Time Communication
+
 - **Server-Sent Events (SSE)** for live updates
 - **WebHook Integration** with ElevenLabs
 - **Multi-language Voice Agents**
 - **Real-time Illustration Broadcasting**
 
 ### Comprehensive Services
+
 - Educational services management
 - Parent coaching and wellness programs
 - Extracurricular activities (physical and online)
@@ -33,6 +45,7 @@ Roots is a next-generation educational platform that combines traditional educat
 ## 🏗️ Architecture
 
 ### Project Structure
+
 ```
 roots/
 ├── frontend/                 # React 19 application
@@ -51,14 +64,13 @@ roots/
 │   │   ├── lib/             # Shared libraries
 │   │   └── types/           # TypeScript definitions
 │   └── package.json
-├── .documentation/          # Comprehensive documentation
-├── scripts/                 # Utility scripts
-└── supabase/               # Database migrations
+└── .documentation/          # Comprehensive documentation
 ```
 
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **React 19** with TypeScript
 - **Tailwind CSS** for styling
 - **Framer Motion** for animations
@@ -68,13 +80,14 @@ roots/
 - **Vite** for build tooling
 
 ### Backend
+
 - **Node.js** with **Fastify** framework
 - **TypeScript** for type safety
 - **Clerk Authentication** for server-side auth
-- **Supabase** for database management
 - **Server-Sent Events (SSE)** for real-time updates
 
 ### AI & External Services
+
 - **ElevenLabs Conversational AI** for voice agents
 - **OpenAI DALL-E 3** for image generation
 - **Lingo.dev** for dynamic translation
@@ -94,12 +107,14 @@ roots/
 Create `.env` files in both frontend and backend directories:
 
 #### Frontend (.env)
+
 ```bash
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 VITE_GROQ_API_KEY=your_groq_api_key
 ```
 
 #### Backend (.env)
+
 ```bash
 CLERK_SECRET_KEY=your_clerk_secret_key
 OPENAI_API_KEY=your_openai_api_key
@@ -111,17 +126,20 @@ PORT=3000
 ### Installation & Development
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd roots
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Run development servers**
+
 ```bash
 # Run both frontend and backend concurrently
 npm run dev
@@ -137,6 +155,7 @@ The project uses Supabase for PostgreSQL hosting:
 
 1. **Create a Supabase project**
 2. **Run migrations**
+
 ```bash
 cd supabase
 supabase db push
@@ -147,8 +166,10 @@ supabase db push
 ## 🎯 AI Services Setup
 
 ### ElevenLabs Configuration
+
 1. Create an ElevenLabs account
 2. Create conversational AI agents for each service:
+
    - Storytelling: `agent_YOUR_STORYTELLING_AGENT_ID`
    - Chess: `agent_YOUR_CHESS_AGENT_ID`
    - Math: `agent_YOUR_MATH_AGENT_ID`
@@ -156,18 +177,21 @@ supabase db push
    - Wellness: `agent_YOUR_WELLNESS_AGENT_ID`
 
 3. Update the agent IDs in `frontend/src/config/agentConfig.ts`:
+
 ```typescript
 export const AGENT_IDS = {
-  storytelling: 'agent_YOUR_STORYTELLING_AGENT_ID',
-  chess: 'agent_YOUR_CHESS_AGENT_ID',
-  math: 'agent_YOUR_MATH_AGENT_ID',
-  language: 'agent_YOUR_LANGUAGE_AGENT_ID',
-  wellness: 'agent_YOUR_WELLNESS_AGENT_ID'
+  storytelling: "agent_YOUR_STORYTELLING_AGENT_ID",
+  chess: "agent_YOUR_CHESS_AGENT_ID",
+  math: "agent_YOUR_MATH_AGENT_ID",
+  language: "agent_YOUR_LANGUAGE_AGENT_ID",
+  wellness: "agent_YOUR_WELLNESS_AGENT_ID"
 };
 ```
 
 ### Webhook Configuration
+
 For local development with ngrok:
+
 ```bash
 # Install and start ngrok
 npm install -g ngrok
@@ -191,6 +215,7 @@ ngrok http 3000
 ## 🧪 Quality Assurance
 
 ### Automated Checks
+
 ```bash
 # Check for untranslated strings
 npm run check-localization
@@ -203,6 +228,7 @@ npm run pre-commit
 ```
 
 ### Translation Testing
+
 - Use the Translation Debugger (available on Dashboard)
 - Test language switching between English and Spanish
 - Verify regional format changes (dates, phone numbers)
@@ -210,6 +236,7 @@ npm run pre-commit
 ## 🚀 Deployment
 
 ### Production Build
+
 ```bash
 # Build both frontend and backend
 npm run build
@@ -220,6 +247,7 @@ npm run build:backend
 ```
 
 ### Production Environment
+
 - Update webhook URLs from ngrok to production domain
 - Configure SSL certificates for HTTPS (required by ElevenLabs)
 - Set up rate limiting and monitoring
@@ -254,5 +282,5 @@ npm run build:backend
 
 ---
 
-**Built with ❤️ using React 19, Fastify, and AI technologies**  
-*Next-generation educational platform for the digital age*
+**Built with ❤️ using React 19, Fastify, and AI technologies**
+_Next-generation educational platform for the digital age_

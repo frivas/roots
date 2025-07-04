@@ -58,5 +58,19 @@
 i18n.cache
 .vercel
 
+# Ignore IDEs
+.idea/
+*.swp
+
+# Misc
+.vercel/
+netlify/
+
+# Local scripts
+*.local.js
+
+# Ignore vercel and netlify build logs
+vercel-dev.log
+
 # Local Netlify folder
 .netlify
