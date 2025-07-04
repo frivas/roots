@@ -74,3 +74,4 @@ vercel-dev.log
 
 # Local Netlify folder
 .netlify
+/frontend/.env.backup
