@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.27.2
+    hooks:
+      - id: gitleaks
+        name: gitleaks
+        entry: gitleaks dir .
+        language: system
+        args:
+          - --baseline-path=gitleaks-baseline.json
+          - --exit-code=1
+          - --redact
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        name: detect-secrets
+        entry: detect-secrets-hook
+        language: python
+        args:
+          - --baseline
+          - .secrets.baseline
+          - --exclude-files
+          - gitleaks-baseline.json
+  - repo: local
+    hooks:
+      - id: git-secrets
+        name: git-secrets
+        entry: git secrets --scan
+        language: system
