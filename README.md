@@ -168,21 +168,24 @@ The project uses Supabase for PostgreSQL hosting:
 
 1. Create an ElevenLabs account
 2. Create conversational AI agents for each service:
+
    - Storytelling: `agent_YOUR_STORYTELLING_AGENT_ID`
    - Chess: `agent_YOUR_CHESS_AGENT_ID`
    - Math: `agent_YOUR_MATH_AGENT_ID`
    - Language: `agent_YOUR_LANGUAGE_AGENT_ID`
    - Wellness: `agent_YOUR_WELLNESS_AGENT_ID`
+   - Progress Interpretation: `agent_YOUR_PROGRESS_INTERPRETATION_AGENT_ID`
 
 3. Update the agent IDs in `frontend/src/config/agentConfig.ts`:
 
 ```typescript
 export const AGENT_IDS = {
-  storytelling: 'agent_YOUR_STORYTELLING_AGENT_ID',
-  chess: 'agent_YOUR_CHESS_AGENT_ID',
-  math: 'agent_YOUR_MATH_AGENT_ID',
-  language: 'agent_YOUR_LANGUAGE_AGENT_ID',
-  wellness: 'agent_YOUR_WELLNESS_AGENT_ID'
+  storytelling: "agent_YOUR_STORYTELLING_AGENT_ID",
+  chess: "agent_YOUR_CHESS_AGENT_ID",
+  math: "agent_YOUR_MATH_AGENT_ID",
+  language: "agent_YOUR_LANGUAGE_AGENT_ID",
+  wellness: "agent_YOUR_WELLNESS_AGENT_ID",
+  progress_interpretation: "agent_YOUR_PROGRESS_INTERPRETATION_AGENT_ID"
 };
 ```
 
@@ -200,17 +203,19 @@ ngrok http 3000
 ```
 
 4. Configure each agent's webhook URL in ElevenLabs dashboard:
-   - Set webhook URL to: `https://your-domain.com/webhook/elevenlabs/story-illustration`
-   - For local development: `https://your-ngrok-url.ngrok-free.app/webhook/elevenlabs/story-illustration`
+   - Set webhook URL to: `https://your-domain.com/api/images/generate-for-story`
+   - For local development: `https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story`
 
 ## 📡 API Endpoints
 
 ### Public Endpoints
+
 - `GET /health` - Health check
 - `GET /events/story-illustrations` - SSE endpoint for real-time story illustrations
 - `POST /webhook/elevenlabs/story-illustration` - ElevenLabs webhook for story generation
 
 ### Protected Endpoints (require authentication)
+
 - `GET /api/auth/me` - Get current user profile
 - `GET /api/messages` - Get user messages
 - `POST /api/messages` - Send message
@@ -252,7 +257,9 @@ npm run pre-commit
 - Check for duplicate translation keys with the provided script
 
 ### Translation Utilities
+
 The project includes several utilities for managing translations:
+
 - **Localization Checker**: `npm run check-localization` - Scans for untranslated strings
 - **Duplicate Key Checker**: `./frontend/remove_duplicates_translations.sh` - Finds duplicate keys in SpanishTranslations.ts
 - **Translation Debugger Component**: Visual interface for testing translations in the browser
@@ -260,6 +267,7 @@ The project includes several utilities for managing translations:
 ## 🚀 Deployment
 
 ### Architecture
+
 - **Frontend**: Deployed on Netlify with automatic builds
 - **Backend**: Deployed on Vercel with serverless functions
 - **Database**: Hosted on Supabase
@@ -276,13 +284,15 @@ npm run build:frontend  # Creates dist/ folder
 npm run build:backend   # Creates dist/ folder with compiled TypeScript
 ```
 
-### Production Environment
+### Environment Configuration
+
 - Update webhook URLs from ngrok to production domain
 - Configure SSL certificates for HTTPS (required by ElevenLabs)
 - Set up rate limiting and monitoring
 - Configure proper environment variables for production
 
 ### Deployment Commands
+
 ```bash
 # Frontend (Netlify)
 netlify deploy --prod --dir=frontend/dist
