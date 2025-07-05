@@ -2,6 +2,10 @@
   "name": "roots-backend",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frivas/roots.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "npm run build && npm run start",
