@@ -57,12 +57,14 @@ roots/
 │   │   ├── services/        # Business logic services
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── config/          # Configuration files
+│   ├── netlify.toml        # Netlify deployment config
 │   └── package.json
 ├── backend/                 # Node.js API with Fastify
 │   ├── src/
 │   │   ├── routes/          # API endpoints
 │   │   ├── lib/             # Shared libraries
 │   │   └── types/           # TypeScript definitions
+│   ├── vercel.json         # Vercel deployment config
 │   └── package.json
 └── .documentation/          # Comprehensive documentation
 ```
@@ -78,6 +80,7 @@ roots/
 - **Clerk Authentication** for user management
 - **Lingo.dev SDK** for AI translation
 - **Vite** for build tooling
+- **Deployed on Netlify**
 
 ### Backend
 
@@ -85,6 +88,7 @@ roots/
 - **TypeScript** for type safety
 - **Clerk Authentication** for server-side auth
 - **Server-Sent Events (SSE)** for real-time updates
+- **Deployed on Vercel**
 
 ### AI & External Services
 
@@ -117,6 +121,7 @@ VITE_GROQ_API_KEY=your_groq_api_key
 
 ```bash
 CLERK_SECRET_KEY=your_clerk_secret_key
+CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 OPENAI_API_KEY=your_openai_api_key
 SUPABASE_URL=your_supabase_url
 SUPABASE_API_KEY=your_supabase_anon_key
@@ -128,7 +133,7 @@ PORT=3000
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/your-username/roots.git
 cd roots
 ```
 
@@ -145,8 +150,8 @@ npm install
 npm run dev
 
 # Or run individually
-npm run dev:frontend  # React app on port 5173
-npm run dev:backend   # API server on port 3000
+npm run dev:frontend  # React app on http://localhost:5173
+npm run dev:backend   # API server on http://localhost:3000
 ```
 
 ### Database Setup
@@ -154,13 +159,7 @@ npm run dev:backend   # API server on port 3000
 The project uses Supabase for PostgreSQL hosting:
 
 1. **Create a Supabase project**
-2. **Run migrations**
-
-```bash
-cd supabase
-supabase db push
-```
-
+2. **Apply database migrations** (migrations are included in `supabase/migrations/`)
 3. **Update environment variables** with your Supabase credentials
 
 ## 🎯 AI Services Setup
@@ -169,7 +168,6 @@ supabase db push
 
 1. Create an ElevenLabs account
 2. Create conversational AI agents for each service:
-
    - Storytelling: `agent_YOUR_STORYTELLING_AGENT_ID`
    - Chess: `agent_YOUR_CHESS_AGENT_ID`
    - Math: `agent_YOUR_MATH_AGENT_ID`
@@ -180,11 +178,11 @@ supabase db push
 
 ```typescript
 export const AGENT_IDS = {
-  storytelling: "agent_YOUR_STORYTELLING_AGENT_ID",
-  chess: "agent_YOUR_CHESS_AGENT_ID",
-  math: "agent_YOUR_MATH_AGENT_ID",
-  language: "agent_YOUR_LANGUAGE_AGENT_ID",
-  wellness: "agent_YOUR_WELLNESS_AGENT_ID"
+  storytelling: 'agent_YOUR_STORYTELLING_AGENT_ID',
+  chess: 'agent_YOUR_CHESS_AGENT_ID',
+  math: 'agent_YOUR_MATH_AGENT_ID',
+  language: 'agent_YOUR_LANGUAGE_AGENT_ID',
+  wellness: 'agent_YOUR_WELLNESS_AGENT_ID'
 };
 ```
 
@@ -198,12 +196,28 @@ npm install -g ngrok
 ngrok http 3000
 
 # Update ElevenLabs webhook URLs to:
-# https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story
+# https://your-ngrok-url.ngrok-free.app/webhook/elevenlabs/story-illustration
 ```
 
 4. Configure each agent's webhook URL in ElevenLabs dashboard:
-   - Set webhook URL to: `https://your-domain.com/api/images/generate-for-story`
-   - For local development: `https://your-ngrok-url.ngrok-free.app/api/images/generate-for-story`
+   - Set webhook URL to: `https://your-domain.com/webhook/elevenlabs/story-illustration`
+   - For local development: `https://your-ngrok-url.ngrok-free.app/webhook/elevenlabs/story-illustration`
+
+## 📡 API Endpoints
+
+### Public Endpoints
+- `GET /health` - Health check
+- `GET /events/story-illustrations` - SSE endpoint for real-time story illustrations
+- `POST /webhook/elevenlabs/story-illustration` - ElevenLabs webhook for story generation
+
+### Protected Endpoints (require authentication)
+- `GET /api/auth/me` - Get current user profile
+- `GET /api/messages` - Get user messages
+- `POST /api/messages` - Send message
+- `GET /api/notifications` - Get notifications
+- `GET /api/services` - Get available services
+- `GET /api/settings` - Get user settings
+- `PUT /api/settings` - Update user settings
 
 ## 📚 Key Features Documentation
 
@@ -225,6 +239,9 @@ npm run lint
 
 # Pre-commit validation
 npm run pre-commit
+
+# Check for duplicate translation keys
+./frontend/remove_duplicates_translations.sh
 ```
 
 ### Translation Testing
@@ -232,8 +249,21 @@ npm run pre-commit
 - Use the Translation Debugger (available on Dashboard)
 - Test language switching between English and Spanish
 - Verify regional format changes (dates, phone numbers)
+- Check for duplicate translation keys with the provided script
+
+### Translation Utilities
+The project includes several utilities for managing translations:
+- **Localization Checker**: `npm run check-localization` - Scans for untranslated strings
+- **Duplicate Key Checker**: `./frontend/remove_duplicates_translations.sh` - Finds duplicate keys in SpanishTranslations.ts
+- **Translation Debugger Component**: Visual interface for testing translations in the browser
 
 ## 🚀 Deployment
+
+### Architecture
+- **Frontend**: Deployed on Netlify with automatic builds
+- **Backend**: Deployed on Vercel with serverless functions
+- **Database**: Hosted on Supabase
+- **CDN**: Automatic via Netlify/Vercel
 
 ### Production Build
 
@@ -242,16 +272,24 @@ npm run pre-commit
 npm run build
 
 # Individual builds
-npm run build:frontend
-npm run build:backend
+npm run build:frontend  # Creates dist/ folder
+npm run build:backend   # Creates dist/ folder with compiled TypeScript
 ```
 
 ### Production Environment
-
 - Update webhook URLs from ngrok to production domain
 - Configure SSL certificates for HTTPS (required by ElevenLabs)
 - Set up rate limiting and monitoring
-- Configure CDN for static assets
+- Configure proper environment variables for production
+
+### Deployment Commands
+```bash
+# Frontend (Netlify)
+netlify deploy --prod --dir=frontend/dist
+
+# Backend (Vercel)
+vercel --prod
+```
 
 ## 🔧 Development Tools
 
@@ -260,21 +298,26 @@ npm run build:backend
 - **TypeScript**: Type safety across the stack
 - **ESLint**: Code quality enforcement
 - **Framer Motion**: Animation and transitions
+- **Custom Localization Checker**: Automated translation validation
 
-## 📱 Supported Platforms
+## 📱 Supported Features
 
-- **Web Browsers**: Chrome, Firefox, Safari, Edge
-- **Languages**: English (US), Spanish (ES)
-- **Voice Agents**: Support for 5+ languages
-- **Devices**: Desktop, tablet, mobile responsive
+- **Web Browsers**: Chrome, Firefox, Safari, Edge (modern versions)
+- **Languages**: English (US), Spanish (ES) with hybrid translation system
+- **Voice Agents**: Real-time conversational AI in multiple languages
+- **Devices**: Fully responsive design for desktop, tablet, and mobile
+- **Real-time Features**: SSE for live story illustrations
+- **Authentication**: Clerk-based user management
 
 ## 🤝 Contributing
 
 1. Follow the localization requirements in `.cursorrules`
 2. Wrap all user-facing text with `<TranslatedText>`
-3. Add Spanish translations to `SpanishTranslations.ts`
+3. Add Spanish translations to `frontend/src/services/SpanishTranslations.ts`
 4. Test with Translation Debugger before committing
 5. Run pre-commit checks: `npm run pre-commit`
+6. Ensure TypeScript types are properly defined
+7. Follow the existing code patterns and architecture
 
 ## 📄 License
 
