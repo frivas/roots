@@ -58,6 +58,7 @@ const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 const SchoolElections = lazy(() => import('./pages/SchoolElections'));
 const PersonalCalendar = lazy(() => import('./pages/PersonalCalendar'));
 const Bulletin = lazy(() => import('./pages/Bulletin'));
+const ContributionDashboard = lazy(() => import('./pages/ContributionDashboard'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -337,6 +338,11 @@ function App() {
             <Route path="/data/password" element={
               <Suspense fallback={<PageLoader />}>
                 <PasswordChange />
+              </Suspense>
+            } />
+            <Route path="/data/contributions" element={
+              <Suspense fallback={<PageLoader />}>
+                <ContributionDashboard />
               </Suspense>
             } />
             <Route path="/data/*" element={
