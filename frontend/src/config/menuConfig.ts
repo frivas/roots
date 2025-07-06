@@ -34,8 +34,11 @@ import {
     Shield,
     Phone,
     Key,
-    CalendarCheck
+    CalendarCheck,
+    BarChart3
 } from 'lucide-react';
+
+import { GitHubContributorsService } from '../services/GitHubContributorsService';
 
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
 
@@ -46,6 +49,7 @@ export interface MenuItem {
     children?: MenuItem[];
     roles?: Role[]; // If undefined, item is visible to all roles
     permissions?: string[]; // For fine-grained access control
+    restrictedEmails?: string[]; // For email-based access control
 }
 
 // Common menu items visible to all roles
@@ -167,6 +171,12 @@ const commonMenuItems: MenuItem[] = [
                 name: 'Password change',
                 href: '/data/password',
                 icon: Key
+            },
+            {
+                name: 'Developer Contribution',
+                href: '/data/contributions',
+                icon: BarChart3,
+                restrictedEmails: GitHubContributorsService.getAllContributorEmails()
             }
         ]
     }
@@ -276,10 +286,26 @@ const roleSpecificMenuItems: MenuItem[] = [
     },
 ];
 
-// Function to get menu items based on user roles
-export const getMenuItems = (userRoles: Role[] = []): MenuItem[] => {
-    // Start with common menu items
-    const menuItems = [...commonMenuItems];
+// Function to get menu items based on user roles and email
+export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuItem[] => {
+    // Start with common menu items and filter based on email access
+    const menuItems = commonMenuItems.map(item => {
+        if (item.children) {
+            // Filter children based on email restrictions
+            const filteredChildren = item.children.filter(child => {
+                if (child.restrictedEmails && userEmail) {
+                    return child.restrictedEmails.includes(userEmail);
+                }
+                return !child.restrictedEmails; // Show items without restrictions
+            });
+            
+            return {
+                ...item,
+                children: filteredChildren
+            };
+        }
+        return item;
+    });
 
     // Add role-specific items
     roleSpecificMenuItems.forEach(item => {
@@ -292,7 +318,13 @@ export const getMenuItems = (userRoles: Role[] = []): MenuItem[] => {
 };
 
 // Helper function to check if a user has access to a specific menu item
-export const hasMenuAccess = (item: MenuItem, userRoles: Role[] = []): boolean => {
-    if (!item.roles) return true; // No roles specified means accessible to all
+export const hasMenuAccess = (item: MenuItem, userRoles: Role[] = [], userEmail?: string): boolean => {
+    // Check email restrictions first
+    if (item.restrictedEmails && userEmail) {
+        return item.restrictedEmails.includes(userEmail);
+    }
+    
+    // If no email restrictions, check roles
+    if (!item.roles) return !item.restrictedEmails; // No roles specified means accessible to all (unless email-restricted)
     return item.roles.some(role => userRoles.includes(role));
 };

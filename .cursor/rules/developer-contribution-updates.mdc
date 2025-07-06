@@ -1,0 +1,170 @@
+# Developer Contribution Dashboard Update Rule
+
+## Overview
+This rule ensures that the Developer Contribution Dashboard (`/data/contributions`) always reflects the most current GitHub repository metrics for all contributors.
+
+## When to Apply This Rule
+**TRIGGER:** Every time any developer pushes commits to the GitHub repository
+
+## What Must Be Updated
+
+### 1. Contributor Statistics (`GitHubContributorsService.ts`)
+Update the following metrics for the contributing developer:
+
+#### Required Metrics to Update:
+- `totalCommits` - Count of all commits by the developer
+- `linesAdded` - Total lines added across all commits
+- `netLines` - Net lines after deletions (linesAdded - linesDeleted)
+- `developmentDays` - Number of days with active commits
+- `peakActivityDays` - Top 6 days with highest commit counts
+- `topModifiedFiles` - Most frequently modified files with change counts
+
+### 2. Timeline Data Updates
+- Add new timeline entries for significant development phases
+- Update existing timeline entries with new commit counts
+- Ensure timeline reflects the latest development milestones
+
+### 3. Files to Update After Each Push
+
+#### A. `frontend/src/services/GitHubContributorsService.ts`
+```typescript
+// Update contributor stats for the pusher
+GITHUB_CONTRIBUTORS['developer-email@domain.com'] = {
+  totalCommits: NEW_TOTAL_COUNT,
+  linesAdded: NEW_LINES_ADDED,
+  netLines: NEW_NET_LINES,
+  developmentDays: NEW_ACTIVE_DAYS,
+  peakActivityDays: [/* Updated array */],
+  topModifiedFiles: [/* Updated array */],
+  timelineData: [/* Updated timeline */]
+};
+```
+
+## Step-by-Step Update Process
+
+### Step 1: Gather Git Statistics
+Run these commands to get updated metrics:
+
+```bash
+# Get total commits by developer
+git log --author="developer-email@domain.com" --oneline | wc -l
+
+# Get lines added/deleted by developer
+git log --author="developer-email@domain.com" --pretty=tformat: --numstat | \
+awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s removed lines: %s total lines: %s\n", add, subs, loc }'
+
+# Get development days count
+git log --author="developer-email@domain.com" --format="%ad" --date=short | sort -u | wc -l
+
+# Get daily commit counts
+git log --author="developer-email@domain.com" --format="%ad" --date=short | \
+sort | uniq -c | sort -nr | head -6
+```
+
+### Step 2: Calculate Peak Activity Days
+```bash
+# Get top 6 days with most commits
+git log --author="developer-email@domain.com" --format="%ad" --date=short | \
+sort | uniq -c | sort -nr | head -6 | \
+awk '{print $2 " - " $1 " commits"}'
+```
+
+### Step 3: Identify Top Modified Files
+```bash
+# Get most modified files by developer
+git log --author="developer-email@domain.com" --name-only --pretty=format: | \
+sort | uniq -c | sort -nr | head -10
+```
+
+### Step 4: Update Service File
+1. Open `frontend/src/services/GitHubContributorsService.ts`
+2. Locate the contributor's entry in `GITHUB_CONTRIBUTORS`
+3. Update all statistical fields with new data
+4. Ensure timeline data reflects recent development phases
+
+### Step 5: Verify Dashboard Functionality
+1. Test both contributors can access their dashboards
+2. Verify all tabs (Overview, Technical Details, Impact Summary) show updated data
+3. Confirm timeline displays correctly with new data
+4. Check that metrics calculations are accurate
+
+## Timeline Data Guidelines
+
+### When to Add New Timeline Entries:
+- **Major feature completion** (10+ commits on related functionality)
+- **Significant architectural changes** (5+ files modified)
+- **New technology integration** (AI services, new libraries)
+- **Performance/optimization phases** (focused improvement cycles)
+- **Localization/internationalization work** (translation updates)
+
+### Timeline Entry Structure:
+```typescript
+{
+  date: "Month Day, Year",
+  title: "Phase Title",
+  description: "Brief description of work completed",
+  commits: NUMBER_OF_COMMITS_IN_PHASE,
+  type: "foundation" | "development" | "enhancement" | "optimization" | "finalization",
+  icon: null, // Set by component
+  achievements: ["Achievement 1", "Achievement 2", "Achievement 3"]
+}
+```
+
+## Quality Assurance Checklist
+
+### Before Committing Updates:
+- [ ] All commit counts are accurate and up-to-date
+- [ ] Lines added/deleted calculations are correct
+- [ ] Peak activity days reflect actual GitHub data
+- [ ] Top modified files list matches repository analysis
+- [ ] Timeline entries are chronologically ordered
+- [ ] All contributor emails are properly mapped
+- [ ] Dashboard loads without errors for all contributors
+- [ ] Metrics calculations produce reasonable results
+- [ ] New timeline entries have appropriate achievements listed
+
+## Automation Opportunities
+
+### Future Enhancements:
+1. **GitHub Webhooks** - Auto-update on push events
+2. **GitHub API Integration** - Real-time statistics fetching
+3. **Automated Git Analysis** - Script to parse repository data
+4. **CI/CD Integration** - Update dashboard as part of deployment pipeline
+
+## Contributor-Specific Notes
+
+### Juan González (juan294@gmail.com):
+- Focus on AI integration, localization, and frontend features
+- Timeline typically includes: Foundation → Development → AI Integration → Localization → Polish
+
+### Francisco Rivas (franciscojrivash@gmail.com):
+- Focus on backend services, API development, and infrastructure
+- Timeline typically includes: Backend Foundation → Service Implementation → Integration & Testing
+
+## Error Handling
+
+### Common Issues to Watch For:
+- **Duplicate timeline entries** - Ensure dates don't overlap
+- **Incorrect email matching** - Verify Git author emails match service mapping
+- **Statistics calculation errors** - Double-check arithmetic in complex calculations
+- **Timeline icon mismatches** - Ensure timeline types match available icons
+
+## Maintenance Schedule
+
+### Weekly Review:
+- Verify dashboard accuracy against actual GitHub data
+- Update any missing timeline entries
+- Refresh statistics for both contributors
+
+### After Major Releases:
+- Add significant milestone timeline entries
+- Update achievement lists with new features
+- Refresh all contributor statistics
+
+---
+
+**Remember:** This dashboard serves as a showcase of development contributions. Accuracy and up-to-date information are essential for maintaining credibility and providing valuable insights into project progress.
+description:
+globs:
+alwaysApply: false
+---
