@@ -331,7 +331,6 @@ vercel --prod
 
 ## Team
 
-- Juan González Ponce
 ![Chapa Badge](https://chapa.thecreativetoken.com/u/juan294/badge.svg)
 
 ## 📄 License
