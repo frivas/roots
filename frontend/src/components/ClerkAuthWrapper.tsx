@@ -6,14 +6,14 @@ interface ClerkAuthWrapperProps {
   type: 'signIn' | 'signUp';
   routing?: 'path' | 'virtual';
   path?: string;
-  redirectUrl: string;
+  forceRedirectUrl: string;
 }
 
 const ClerkAuthWrapper: React.FC<ClerkAuthWrapperProps> = ({
   type,
   routing = 'virtual',
   path,
-  redirectUrl
+  forceRedirectUrl
 }) => {
   // Use the improved localization hook that doesn't interfere with Google sign-in
   useClerkLocalization();
@@ -42,36 +42,45 @@ const ClerkAuthWrapper: React.FC<ClerkAuthWrapperProps> = ({
     }
   };
 
-  // Common props for both SignIn and SignUp
-  const commonProps = {
-    redirectUrl,
-    appearance,
-    // Prevent page reloads by using virtual routing
-    routing: routing as 'virtual' | 'path',
-    // Only include path if using path routing
-    ...(routing === 'path' && path ? { path } : {})
-  };
-
   if (type === 'signIn') {
+    if (routing === 'path' && path) {
+      return (
+        <SignIn
+          forceRedirectUrl={forceRedirectUrl}
+          appearance={appearance}
+          routing="path"
+          path={path}
+          initialValues={{ emailAddress: "" }}
+        />
+      );
+    }
     return (
       <SignIn
-        {...commonProps}
-        // Additional SignIn specific options to prevent reloads
-        initialValues={{
-          emailAddress: "",
-        }}
+        forceRedirectUrl={forceRedirectUrl}
+        appearance={appearance}
+        routing="virtual"
+        initialValues={{ emailAddress: "" }}
       />
     );
   }
 
+  if (routing === 'path' && path) {
+    return (
+      <SignUp
+        forceRedirectUrl={forceRedirectUrl}
+        appearance={appearance}
+        routing="path"
+        path={path}
+        initialValues={{ emailAddress: "", username: "" }}
+      />
+    );
+  }
   return (
     <SignUp
-      {...commonProps}
-      // Additional SignUp specific options
-      initialValues={{
-        emailAddress: "",
-        username: "",
-      }}
+      forceRedirectUrl={forceRedirectUrl}
+      appearance={appearance}
+      routing="virtual"
+      initialValues={{ emailAddress: "", username: "" }}
     />
   );
 };

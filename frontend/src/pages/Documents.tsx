@@ -27,7 +27,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     }
@@ -366,7 +366,7 @@ const Documents: React.FC = () => {
                       key={document.id}
                       variants={itemVariants}
                       whileHover={{ y: -2 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
                     >
                       <Card className="h-full hover:shadow-md transition-shadow border-l-4 border-l-blue-400">
                         <CardHeader className="pb-3">

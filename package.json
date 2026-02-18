@@ -29,5 +29,8 @@
     "concurrently": "^8.2.2",
     "glob": "^10.3.0"
   },
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
 }

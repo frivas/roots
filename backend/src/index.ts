@@ -210,7 +210,10 @@ server.register(async function publicWebhooks(fastify) {
 });
 
 // Public middleware
-await server.register(cors, { origin: process.env.FRONTEND_URL });
+await server.register(cors, {
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+});
 await server.register(rateLimit, { max: 100, timeWindow: '1 minute' });
 
 // Protected routes encapsulated as an async plugin

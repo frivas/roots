@@ -169,7 +169,8 @@ const createApp = async () => {
 
     // Middleware
     await app.register(cors, {
-        origin: process.env.FRONTEND_URL || true
+        origin: process.env.FRONTEND_URL || true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     });
 
     await app.register(rateLimit, {
