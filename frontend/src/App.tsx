@@ -98,7 +98,7 @@ function App() {
                   <ClerkAuthWrapper
                     type="signIn"
                     routing="virtual"
-                    redirectUrl="/home"
+                    forceRedirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>
@@ -113,7 +113,7 @@ function App() {
                   <ClerkAuthWrapper
                     type="signUp"
                     routing="virtual"
-                    redirectUrl="/home"
+                    forceRedirectUrl="/home"
                   />
                 </AuthLayout>
               </SignedOut>

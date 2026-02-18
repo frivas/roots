@@ -38,7 +38,7 @@ const itemVariants = {
         opacity: 1,
         y: 0,
         transition: {
-            type: "spring",
+            type: "spring" as const,
             stiffness: 400,
             damping: 25,
         }
@@ -757,7 +757,7 @@ const PersonalCalendar: React.FC = () => {
                                                 <motion.div
                                                     initial={{ scale: 0 }}
                                                     animate={{ scale: 1 }}
-                                                    transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                                                    transition={{ type: "spring" as const, stiffness: 500, damping: 25 }}
                                                     className="h-4 w-4 mr-2"
                                                 >
                                                     <Check className="h-4 w-4" />
