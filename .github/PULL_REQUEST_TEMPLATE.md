@@ -1,32 +1,47 @@
-# Pull Request Template
-
-Thank you for your contribution!
-
 ## Description
 
-Please include a summary of the change and which issue is fixed. Also include relevant motivation and context.
+Brief summary of the change and the issue it addresses.
 
-Fixes # (issue)
+Fixes #(issue)
 
 ## Type of change
 
 - [ ] Bug fix
 - [ ] New feature
-- [ ] Breaking change
+- [ ] Enhancement (improvement to existing feature)
+- [ ] Refactoring (no functional changes)
 - [ ] Documentation update
-- [ ] Other (please describe):
+- [ ] CI/CD or tooling
+- [ ] Dependency update
+- [ ] Breaking change
 
 ## Checklist
 
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published in downstream modules
+### Code quality
+- [ ] Self-reviewed my code
+- [ ] No `@ts-nocheck` or untyped `any` added without justification
+- [ ] No hardcoded secrets or API keys
+- [ ] TypeScript compiles with no errors
+
+### Localization (if UI changes)
+- [ ] All user-facing strings wrapped in `<TranslatedText>`
+- [ ] New phrases added to `SpanishTranslations.ts`
+- [ ] Tested with language switcher (EN <-> ES)
+- [ ] `npm run check-localization` passes
+
+### Testing
+- [ ] `npm test` passes
+- [ ] Added/updated tests for changed code
+- [ ] `npm run lint` passes
+
+### Security
+- [ ] No new dependencies with GPL-3.0 or AGPL-3.0 licenses
+- [ ] User input is properly escaped/validated
+
+## Screenshots (if UI changes)
+
+<!-- Add before/after screenshots -->
 
 ## Additional context
 
-Add any other context or screenshots about the pull request here.
+<!-- Any other context about the PR -->

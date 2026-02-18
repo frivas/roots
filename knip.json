@@ -1,0 +1,17 @@
+{
+  "workspaces": {
+    "frontend": {
+      "entry": ["src/main.tsx"],
+      "ignoreDependencies": [
+        "postcss",
+        "tailwindcss",
+        "autoprefixer",
+        "terser"
+      ]
+    },
+    "backend": {
+      "entry": ["src/index.ts", "api/serverless.ts"],
+      "ignoreDependencies": ["tsx"]
+    }
+  }
+}

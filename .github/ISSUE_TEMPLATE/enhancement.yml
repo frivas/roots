@@ -1,0 +1,45 @@
+name: Enhancement
+description: Suggest an improvement to an existing feature
+title: "[Enhancement]: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the platform would this enhance?
+      options:
+        - AI Tutoring (Math, Language, Chess)
+        - Storytelling / Illustrations
+        - Parent Dashboard / Wellness
+        - School Management
+        - Authentication / User Management
+        - Localization / Translations
+        - Performance
+        - Accessibility
+        - API / Backend
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behavior
+      description: Describe how the feature works today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Proposed improvement
+      description: How should it work instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other context, screenshots, or mockups.

@@ -1,0 +1,38 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+  schedule:
+    - cron: '0 9 * * 1' # Monday 9am UTC
+
+jobs:
+  npm-audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - name: Audit frontend
+        run: npm audit --workspace=frontend --audit-level=high
+      - name: Audit backend
+        run: npm audit --workspace=backend --audit-level=high
+
+  license-check:
+    name: License Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - name: Check licenses
+        run: npx license-checker --production --failOn "GPL-3.0;AGPL-3.0"

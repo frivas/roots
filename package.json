@@ -22,6 +22,11 @@
     "build:backend": "cd backend && npm run build",
     "build": "npm run build:frontend && npm run build:backend",
     "lint": "concurrently \"cd frontend && npm run lint\" \"cd backend && npm run lint\"",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm run test",
+    "test:backend": "cd backend && npm run test",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "test:coverage": "npm run test:frontend -- --coverage && npm run test:backend -- --coverage",
     "check-localization": "node scripts/check-localization.js",
     "pre-commit": "npm run check-localization && npm run lint"
   },

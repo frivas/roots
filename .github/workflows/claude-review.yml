@@ -1,0 +1,33 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: AI Code Review
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          review_prompt: |
+            You are reviewing a PR for the Roots educational platform.
+            Key things to check:
+            - All user-facing strings wrapped in <TranslatedText>
+            - New Spanish translations added to SpanishTranslations.ts
+            - No hardcoded secrets or API keys
+            - Tailwind CSS used for styling (no inline styles or CSS modules)
+            - TypeScript strict mode compliance
+            - Proper Clerk auth usage (getAuth pattern on backend)
+            - No @ts-nocheck or type: any without justification
+            - ESM imports (no require())

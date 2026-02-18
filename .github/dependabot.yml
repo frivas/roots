@@ -1,0 +1,47 @@
+version: 2
+
+updates:
+  # npm dependencies (workspaces resolve from root)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+          - "react-router-dom"
+      clerk:
+        patterns:
+          - "@clerk/*"
+      testing:
+        patterns:
+          - "vitest"
+          - "@testing-library/*"
+          - "@playwright/*"
+          - "jsdom"
+      linting:
+        patterns:
+          - "eslint*"
+          - "typescript-eslint"
+          - "@eslint/*"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(ci)"

@@ -76,3 +76,15 @@ vercel-dev.log
 .netlify
 /frontend/.env.backup
 /gitleaks-report.json
+
+# Worktrees (parallel development)
+.worktrees/
+
+# Claude local instructions (per-developer)
+CLAUDE.local.md
+
+# Playwright
+**/playwright-report/
+**/playwright/.cache/
+**/test-results/
+**/blob-report/

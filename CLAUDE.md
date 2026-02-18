@@ -141,3 +141,64 @@ Three-layer secret scanning is configured:
 1. **gitleaks** - Scans for secrets in git history
 2. **detect-secrets** - Baseline secret detection
 3. **git-secrets** - AWS-specific and custom secret patterns
+
+## Engineering Guardrails
+
+- **No secrets in code**: Use environment variables via `.env` files (see `.env.example` templates)
+- **No copyleft dependencies**: GPL-3.0 and AGPL-3.0 licenses are blocked by CI
+- **Escape user input**: Always sanitize before rendering or storing
+- **Health endpoint**: Backend exposes `GET /health` — do not remove
+- **No dead code**: `knip` runs on PRs to detect unused exports/dependencies
+- **Pure functions for business logic**: Keep side effects at the edges (route handlers, hooks)
+
+## Testing
+
+### Framework
+- **Unit tests**: Vitest (both frontend and backend)
+- **Component tests**: React Testing Library (`@testing-library/react`)
+- **E2E tests**: Playwright (Chromium only)
+
+### Conventions
+- Test files live alongside source: `Component.test.tsx` next to `Component.tsx`
+- Use `describe` / `it` blocks with clear descriptions
+- Frontend setup file: `frontend/src/test/setup.ts`
+
+### Commands
+```bash
+npm test                # Run all unit tests (frontend + backend)
+npm run test:frontend   # Frontend unit tests only
+npm run test:backend    # Backend unit tests only
+npm run test:e2e        # Playwright E2E tests
+npm run test:coverage   # Unit tests with coverage reports
+```
+
+## Git Workflow
+
+### Branch Strategy
+- `main` — production, protected, deploy target
+- `develop` — integration branch, PRs merge here first
+- Feature branches: `feat/issue-123-description`
+- Bug fix branches: `fix/issue-456-description`
+
+### Conventional Commits
+Use prefixes: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `ci:`
+
+### Branch Naming
+`<type>/issue-<number>-<short-description>` (e.g., `feat/issue-42-add-chess-tutor`)
+
+## CI/CD Pipeline
+
+### On push / PR to develop or main:
+1. **CI** (`ci.yml`): Lint -> Typecheck -> Unit Tests -> Build
+2. **Security** (`security.yml`): npm audit + license check
+3. **Gitleaks** (`gitleaks.yml`): Secret scanning (full history)
+
+### On PRs only:
+4. **Knip** (`knip.yml`): Dead code detection
+5. **Bundle Size** (`bundle-size.yml`): Reports JS/CSS bundle sizes as PR comment
+6. **Claude Review** (`claude-review.yml`): AI code review (requires `ANTHROPIC_API_KEY` secret)
+
+### Scheduled:
+- Security audit: Weekly (Monday 9am UTC)
+- Gitleaks: Daily (3am UTC)
+- Dependabot: Weekly updates with grouped PRs

@@ -1,0 +1,53 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  analyze:
+    name: Analyze Bundle
+    runs-on: ubuntu-latest
+    env:
+      VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
+      VITE_BACKEND_URL: http://localhost:3000
+      VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - name: Build frontend
+        run: npm run build:frontend
+      - name: Measure bundle size
+        id: size
+        run: |
+          TOTAL=$(du -sh frontend/dist/ | cut -f1)
+          JS_SIZE=$(find frontend/dist/assets -name '*.js' -exec du -ch {} + | tail -1 | cut -f1)
+          CSS_SIZE=$(find frontend/dist/assets -name '*.css' -exec du -ch {} + | tail -1 | cut -f1)
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "js=$JS_SIZE" >> "$GITHUB_OUTPUT"
+          echo "css=$CSS_SIZE" >> "$GITHUB_OUTPUT"
+
+          echo "### Bundle Size Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Size |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| JS | $JS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| CSS | $CSS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: bundle-size
+          message: |
+            ## Bundle Size Report
+            | Metric | Size |
+            |--------|------|
+            | Total | ${{ steps.size.outputs.total }} |
+            | JS | ${{ steps.size.outputs.js }} |
+            | CSS | ${{ steps.size.outputs.css }} |
