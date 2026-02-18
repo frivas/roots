@@ -28,14 +28,19 @@
     "test:e2e": "cd frontend && npm run test:e2e",
     "test:coverage": "npm run test:frontend -- --coverage && npm run test:backend -- --coverage",
     "check-localization": "node scripts/check-localization.js",
-    "pre-commit": "npm run check-localization && npm run lint"
+    "pre-commit": "npm run check-localization && npm run lint",
+    "prepare": "husky"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "glob": "^10.3.0"
+    "glob": "^10.3.0",
+    "husky": "^9.1.7"
   },
   "type": "module",
   "engines": {
     "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-darwin-x64": "^4.57.1"
   }
 }
