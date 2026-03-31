@@ -14,10 +14,10 @@ declare module 'lingo.dev/compiler' {
     };
   }
 
-  interface LingoViteOptions extends LingoConfig {}
+  type LingoViteOptions = LingoConfig;
 
-  export function vite(config: LingoViteOptions): (viteConfig: any) => any;
-  export function next(config: LingoConfig): (nextConfig: any) => any;
+  export function vite(config: LingoViteOptions): (viteConfig: unknown) => unknown;
+  export function next(config: LingoConfig): (nextConfig: unknown) => unknown;
 
   const lingoCompiler: {
     vite: typeof vite;

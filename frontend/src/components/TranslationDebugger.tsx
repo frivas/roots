@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { lingoTranslationService } from '../services/LingoTranslationService';
 
 const TranslationDebugger: React.FC = () => {
-  const { language, setLanguage, isTranslating, preloadingComplete } = useLingoTranslation();
+  const { language, isTranslating, preloadingComplete } = useLingoTranslation();
   const [stats, setStats] = useState<{ cacheSize: number; localTranslationsCount: number } | null>(null);
   const [testText, setTestText] = useState('Welcome to Raíces!');
   const [translatedResult, setTranslatedResult] = useState('');

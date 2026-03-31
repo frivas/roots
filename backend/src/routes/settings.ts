@@ -11,7 +11,7 @@ interface UserSettings {
   timezone: string;
 }
 
-const settingsRoutes: FastifyPluginAsync = async (fastify, opts) => {
+const settingsRoutes: FastifyPluginAsync = async (fastify) => {
   // Get user settings
   fastify.get('/', async (request, reply) => {
     const { userId } = getAuth(request);

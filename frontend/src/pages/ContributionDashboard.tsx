@@ -11,8 +11,6 @@ import {
   Users,
   Globe,
   Award,
-  Activity,
-  Clock,
   Target,
   Zap,
   Star,
@@ -23,8 +21,6 @@ import {
   Sparkles,
   CheckCircle2,
   BarChart3,
-  PieChart,
-  LineChart,
   MapPin
 } from 'lucide-react';
 import { cn } from '../lib/utils';

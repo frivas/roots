@@ -13,7 +13,7 @@ import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agen
 declare global {
   interface Window {
     ElevenLabs?: {
-      init?: (config: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
+      init?: (config: Record<string, unknown>) => void;
     };
   }
 }
@@ -59,19 +59,24 @@ const StorytellingSession: React.FC = () => {
   // Refs for accessing current values in event listeners
   const storyContentRef = useRef(storyContent);
   const isWaitingForDrawingResponseRef = useRef(isWaitingForDrawingResponse);
+  const isGeneratingImageRef = useRef(isGeneratingImage);
 
-  // Local variable to track current story content in real-time
-  let currentStoryContent = '';
+  // Ref to track current story content in real-time across renders
+  const currentStoryContentRef = useRef('');
 
   // Update refs when values change
   useEffect(() => {
     storyContentRef.current = storyContent;
-    currentStoryContent = storyContent; // Update local variable as well
+    currentStoryContentRef.current = storyContent;
   }, [storyContent]);
 
   useEffect(() => {
     isWaitingForDrawingResponseRef.current = isWaitingForDrawingResponse;
   }, [isWaitingForDrawingResponse]);
+
+  useEffect(() => {
+    isGeneratingImageRef.current = isGeneratingImage;
+  }, [isGeneratingImage]);
 
   // Clear story content on mount to ensure fresh start
   useEffect(() => {
@@ -230,8 +235,8 @@ const StorytellingSession: React.FC = () => {
       console.log('🔑 Token obtained:', !!token);
 
       // Use the provided story content or fall back to the ref
-      const currentStoryContent = storyContentParam || storyContentRef.current;
-      console.log('📖 Current story content for analysis:', currentStoryContent);
+      const contentForAnalysis = storyContentParam || storyContentRef.current;
+      console.log('📖 Current story content for analysis:', contentForAnalysis);
 
       let contextualPrompt: string;
 
@@ -240,7 +245,7 @@ const StorytellingSession: React.FC = () => {
         console.log('📝 Using custom prompt:', contextualPrompt);
       } else {
         // Analyze the story content to extract context
-        const analyzedContext = analyzeStoryContent(currentStoryContent);
+        const analyzedContext = analyzeStoryContent(contentForAnalysis);
         console.log('🔍 Analyzed story context:', analyzedContext);
 
         // Generate contextual prompt based on the analyzed content
@@ -553,17 +558,17 @@ const StorytellingSession: React.FC = () => {
       });
 
       widget.addEventListener('conversation-end', () => {
-        console.log('🎬 Conversation ended, story length:', currentStoryContent.length);
+        console.log('🎬 Conversation ended, story length:', currentStoryContentRef.current.length);
         // Analyze the complete story and generate a final illustration
-        if (currentStoryContent.length > 50) {
-          const finalContext = analyzeStoryContent(currentStoryContent);
+        if (currentStoryContentRef.current.length > 50) {
+          const finalContext = analyzeStoryContent(currentStoryContentRef.current);
           console.log('📖 Final story context:', finalContext);
           setStoryContext(finalContext);
 
           // Auto-generate final illustration
           setTimeout(() => {
             console.log('🎨 Auto-generating final illustration after conversation end');
-            handleGenerateIllustrationRef.current(undefined, currentStoryContent);
+            handleGenerateIllustrationRef.current(undefined, currentStoryContentRef.current);
           }, 1000);
         }
       });
@@ -574,8 +579,8 @@ const StorytellingSession: React.FC = () => {
         console.log('🤖 Agent response received:', response.substring(0, 100) + '...');
 
         // Accumulate story content
-        const newStoryContent = currentStoryContent + ' ' + response;
-        currentStoryContent = newStoryContent; // Update local variable immediately
+        const newStoryContent = currentStoryContentRef.current + ' ' + response;
+        currentStoryContentRef.current = newStoryContent; // Update local variable immediately
         setStoryContent(newStoryContent);
 
         // Continuously analyze story context
@@ -597,7 +602,7 @@ const StorytellingSession: React.FC = () => {
           lowerResponse.includes(keyword)
         );
 
-        if (mentionsIllustration && !isGeneratingImage) {
+        if (mentionsIllustration && !isGeneratingImageRef.current) {
           console.log('🎨 Agent mentioned creating illustration, triggering DIRECT API call');
           console.log('🤖 Agent response that triggered illustration:', response);
           console.log('📖 Current story content for illustration:', newStoryContent);
@@ -616,8 +621,8 @@ const StorytellingSession: React.FC = () => {
         console.log('👤 User response received:', userText.substring(0, 100) + '...');
 
         // Accumulate story content from user as well
-        const newStoryContent = currentStoryContent + ' ' + userText;
-        currentStoryContent = newStoryContent; // Update local variable immediately
+        const newStoryContent = currentStoryContentRef.current + ' ' + userText;
+        currentStoryContentRef.current = newStoryContent; // Update local variable immediately
         setStoryContent(newStoryContent);
 
         const lowerUserText = userText.toLowerCase();
@@ -784,7 +789,7 @@ const StorytellingSession: React.FC = () => {
         {/* Draw Your Story Button */}
         <div className="flex justify-center">
           <Button
-            onClick={() => handleGenerateIllustration(undefined, currentStoryContent)}
+            onClick={() => handleGenerateIllustration(undefined, currentStoryContentRef.current)}
             size="md"
             disabled={isGeneratingImage}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"

@@ -17,7 +17,7 @@ export interface TimelineItem {
   description: string;
   commits: number;
   type: 'foundation' | 'development' | 'enhancement' | 'optimization' | 'finalization';
-  icon: any;
+  icon: unknown;
   achievements: string[];
 }
 

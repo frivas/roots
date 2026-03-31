@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
-import { Newspaper, Filter, ChevronDown, Calendar, Clock, Eye, Pin, FileText, MessageSquare, Bell, Users, Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Newspaper, Filter, ChevronDown, Calendar, Eye, Pin, FileText, Bell, Users, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
@@ -233,15 +233,6 @@ const Bulletin: React.FC = () => {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    }).format(date);
-  };
-
-  const formatTime = (date: Date): string => {
-    const locale = language === 'es-ES' ? 'es-ES' : 'en-US';
-    return new Intl.DateTimeFormat(locale, {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
     }).format(date);
   };
 

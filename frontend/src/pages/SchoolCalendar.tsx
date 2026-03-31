@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
@@ -6,14 +5,11 @@ import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import {
   Calendar,
-  ChevronLeft,
-  ChevronRight,
   Info,
   MapPin,
   Clock,
   CalendarDays,
   Star,
-  Globe,
   Building
 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -75,7 +71,10 @@ const holidayTypes = {
 };
 
 // Real Spanish and Madrid calendar data for 2025
-const schoolCalendarData = {
+const schoolCalendarData: {
+  academicYear: string;
+  holidays: Record<string, { type: string; name: string; description: string }>;
+} = {
   academicYear: "2025-2026",
   holidays: {
     // January 2025
@@ -150,9 +149,8 @@ const dayNames = {
 
 const SchoolCalendar: React.FC = () => {
   const { language } = useLingoTranslation();
-  const [currentYear, setCurrentYear] = useState(2025);
+  const [currentYear] = useState(2025);
   const [selectedHoliday, setSelectedHoliday] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const currentLocale = language === 'es-ES' ? 'es-ES' : 'en-US';
 

@@ -14,7 +14,7 @@ interface Message {
   starred: boolean;
 }
 
-const messagesRoutes: FastifyPluginAsync = async (fastify, opts) => {
+const messagesRoutes: FastifyPluginAsync = async (fastify) => {
   // Get all messages for the current user
   fastify.get('/', async (request, reply) => {
     const { userId } = getAuth(request);
@@ -274,7 +274,7 @@ const messagesRoutes: FastifyPluginAsync = async (fastify, opts) => {
       return reply.code(401).send({ error: 'Unauthorized' });
     }
     
-    const { recipient, subject, body } = request.body as any;
+    const { recipient, subject, body } = request.body as { recipient: string; subject: string; body: string };
     
     if (!recipient || !subject || !body) {
       return reply.code(400).send({ error: 'Missing required fields' });
@@ -309,8 +309,7 @@ const messagesRoutes: FastifyPluginAsync = async (fastify, opts) => {
   // Mark a message as read
   fastify.patch('/:id/read', async (request, reply) => {
     const { userId } = getAuth(request);
-    const { id } = request.params as { id: string };
-    
+
     if (!userId) {
       return reply.code(401).send({ error: 'Unauthorized' });
     }
@@ -330,8 +329,7 @@ const messagesRoutes: FastifyPluginAsync = async (fastify, opts) => {
   // Delete a message
   fastify.delete('/:id', async (request, reply) => {
     const { userId } = getAuth(request);
-    const { id } = request.params as { id: string };
-    
+
     if (!userId) {
       return reply.code(401).send({ error: 'Unauthorized' });
     }

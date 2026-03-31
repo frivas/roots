@@ -122,7 +122,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
       mounted = false;
       window.removeEventListener('languageChanged', handleLanguageChange);
     };
-  }, [isProviderMounted]);
+  }, [isProviderMounted, language]);
 
   // Preload common translations when language changes
   useEffect(() => {
@@ -244,7 +244,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
   );
 };
 
-// Custom hook to use the translation context
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLingoTranslation = () => {
   const context = useContext(LingoTranslationContext);
 

@@ -1,29 +1,27 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import TranslatedText from '../components/TranslatedText';
 import { getSpanishTranslation } from '../services/SpanishTranslations';
 import { useAuth } from '../contexts/AuthContext';
 import { useUser } from '@clerk/clerk-react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle,
-  CardFooter
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { 
-  Bell, 
-  Globe, 
-  Mail, 
-  Phone, 
-  User, 
-  Shield, 
-  Info, 
+import {
+  Bell,
+  Globe,
+  Mail,
+  Phone,
+  User,
+  Shield,
+  Info,
   AlertTriangle,
   Upload,
   Save,
@@ -65,19 +63,14 @@ interface TabsProps {
   children: React.ReactNode;
 }
 
-interface TabsContextType {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}
-
 const Tabs = ({ defaultValue, className, children }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
-  
+
   return (
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -97,7 +90,7 @@ const TabsList = ({ children, className, activeTab, setActiveTab }: TabsListProp
     <div className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className || ''}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -148,7 +141,7 @@ const TabsContent = ({ value, children, className, activeTab }: TabsContentProps
 };
 
 const Settings = () => {
-  const { language: currentLanguage, translateText } = useLingoTranslation();
+  const { language: currentLanguage } = useLingoTranslation();
   const { userEmail } = useAuth();
   const { user } = useUser();
   
@@ -158,7 +151,7 @@ const Settings = () => {
   };
   
   // Helper function to get localized example data
-  const getLocalizedExamples = () => {
+  const getLocalizedExamples = useCallback(() => {
     if (currentLanguage === 'es-ES') {
       return {
         email: userEmail || 'maria.garcia@ejemplo.es',
@@ -168,12 +161,12 @@ const Settings = () => {
       };
     }
     return {
-      email: userEmail || 'john.doe@example.com', 
+      email: userEmail || 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
       timezone: 'UTC-5',
       dateFormat: 'MM/DD/YYYY'
     };
-  };
+  }, [currentLanguage, userEmail]);
   
   const localizedExamples = getLocalizedExamples();
   
@@ -199,8 +192,8 @@ const Settings = () => {
       dateFormat: newExamples.dateFormat,
       language: currentLanguage === 'es-ES' ? 'Spanish' : 'English'
     }));
-  }, [currentLanguage, userEmail]);
-  
+  }, [currentLanguage, userEmail, getLocalizedExamples]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setSettings(prev => ({

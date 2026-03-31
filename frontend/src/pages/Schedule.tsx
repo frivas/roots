@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
-import { Calendar, Clock, BookOpen, Users, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, BookOpen, Users, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
@@ -150,7 +150,7 @@ const subjectColors: Record<SubjectCode, string> = {
 };
 
 const Schedule: React.FC = () => {
-  const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedWeek] = useState(0);
   const [selectedSubject, setSelectedSubject] = useState<SubjectCode | null>(null);
   const { language } = useLingoTranslation();
 
@@ -172,12 +172,6 @@ const Schedule: React.FC = () => {
         day: 'numeric'
       });
     }
-  };
-
-  const getWeekNumber = (date: Date) => {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
-    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
   };
 
   const getWeekDates = (weekOffset: number) => {

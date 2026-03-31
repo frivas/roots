@@ -1,7 +1,6 @@
 "use client";
-// @ts-nocheck
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
@@ -22,9 +21,19 @@ import {
 } from 'lucide-react';
 
 // Type assertion for Lucide icons
-const BookmarkIcon = Bookmark as any;
-const SearchIcon = Search as any;
+const BookmarkIcon = Bookmark as React.ElementType;
+const SearchIcon = Search as React.ElementType;
 import { cn } from '../lib/utils';
+
+interface ServiceItem {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+  parentVisible: boolean;
+  isActive: boolean;
+}
 
 interface ServiceCardProps {
   icon: React.ElementType;
@@ -111,141 +120,139 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   );
 };
 
+const categories = [
+  { id: 'all', label: 'All Services' },
+  { id: 'academic', label: 'Academic' },
+  { id: 'support', label: 'Support' },
+  { id: 'extracurricular', label: 'Extracurricular' }
+];
+
+const services: ServiceItem[] = [
+  {
+    icon: BookOpen,
+    title: 'Classroom Management',
+    description: 'Manage morning classroom activities, attendance, and student participation',
+    href: '/services/classroom',
+    category: 'academic',
+    parentVisible: false, // Hidden for demo - teacher/faculty service
+    isActive: false
+  },
+  {
+    icon: Bus,
+    title: 'Transportation',
+    description: 'Track school transportation routes, schedules, and manage student pickup/dropoff',
+    href: '/services/transportation',
+    category: 'support',
+    parentVisible: false, // Hidden for demo - teacher/faculty service
+    isActive: false
+  },
+  {
+    icon: Coffee,
+    title: 'Cafeteria Services',
+    description: 'Meal planning, nutrition management, and cafeteria service scheduling',
+    href: '/services/cafeteria',
+    category: 'support',
+    parentVisible: true, // Parent service - meal management for children
+    isActive: false
+  },
+  {
+    icon: Calendar,
+    title: 'Morning Classroom',
+    description: 'Early morning childcare and educational activities before regular school hours',
+    href: '/services/morning-classroom',
+    category: 'support',
+    parentVisible: true, // Parent service - before-school care
+    isActive: false
+  },
+  {
+    icon: Users,
+    title: 'Parent Coaching Assistant',
+    description: 'Guidance for supporting children\'s academic development and effective communication strategies',
+    href: '/services/parent-coaching',
+    category: 'academic',
+    parentVisible: true, // Parent service - parenting support
+    isActive: false
+  },
+  {
+    icon: GraduationCap,
+    title: 'Progress Interpretation Service',
+    description: 'Comprehensive academic progress analysis and personalized guidance for parents to understand their child\'s educational journey',
+    href: '/services/progress-interpretation',
+    category: 'academic',
+    parentVisible: true, // Parent service - academic progress support
+    isActive: true
+  },
+  {
+    icon: Users,
+    title: 'Parent Wellness and Self-Care',
+    description: 'Stress management, work-life balance coaching, and family relationship support for parents',
+    href: '/services/parent-wellness',
+    category: 'support',
+    parentVisible: true, // Parent service - wellness and family support
+    isActive: true
+  },
+  {
+    icon: Sparkles,
+    title: 'Extracurricular Activities',
+    description: 'Register and manage after-school programs, clubs, and special events',
+    href: '/services/extra-curricular',
+    category: 'extracurricular',
+    parentVisible: true, // Parent service
+    isActive: true
+  },
+  {
+    icon: Globe,
+    title: 'Language Support',
+    description: 'Language assistance programs and resources for multilingual students',
+    href: '/services/language',
+    category: 'academic',
+    parentVisible: true, // Parent service
+    isActive: false
+  },
+  {
+    icon: Users,
+    title: 'Mentorship Program',
+    description: 'Connect with mentors and manage student-mentor relationships',
+    href: '/services/mentorship',
+    category: 'academic',
+    parentVisible: true, // Parent service
+    isActive: false
+  },
+  {
+    icon: Calendar,
+    title: 'Event Planning',
+    description: 'Schedule and organize school events, parent-teacher conferences, and assemblies',
+    href: '/services/events',
+    category: 'support',
+    parentVisible: false, // Hidden for demo - teacher/faculty service
+    isActive: false
+  },
+  {
+    icon: GraduationCap,
+    title: 'Academic Counseling',
+    description: 'Academic guidance, course selection, and college preparation resources',
+    href: '/services/counseling',
+    category: 'academic',
+    parentVisible: true, // Parent service
+    isActive: false
+  },
+  {
+    icon: School,
+    title: 'Field Trips',
+    description: 'Plan, schedule, and manage educational field trips and excursions',
+    href: '/services/fieldtrips',
+    category: 'extracurricular',
+    parentVisible: false, // Hidden for demo - teacher/faculty service
+    isActive: false
+  }
+];
+
 const Services = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [filteredServices, setFilteredServices] = useState<any[]>([]);
-  const navigate = useNavigate();
 
-  const categories = [
-    { id: 'all', label: 'All Services' },
-    { id: 'academic', label: 'Academic' },
-    { id: 'support', label: 'Support' },
-    { id: 'extracurricular', label: 'Extracurricular' }
-  ];
-
-  const services = [
-    {
-      icon: BookOpen,
-      title: 'Classroom Management',
-      description: 'Manage morning classroom activities, attendance, and student participation',
-      href: '/services/classroom',
-      category: 'academic',
-      parentVisible: false, // Hidden for demo - teacher/faculty service
-      isActive: false
-    },
-    {
-      icon: Bus,
-      title: 'Transportation',
-      description: 'Track school transportation routes, schedules, and manage student pickup/dropoff',
-      href: '/services/transportation',
-      category: 'support',
-      parentVisible: false, // Hidden for demo - teacher/faculty service
-      isActive: false
-    },
-    {
-      icon: Coffee,
-      title: 'Cafeteria Services',
-      description: 'Meal planning, nutrition management, and cafeteria service scheduling',
-      href: '/services/cafeteria',
-      category: 'support',
-      parentVisible: true, // Parent service - meal management for children
-      isActive: false
-    },
-    {
-      icon: Calendar,
-      title: 'Morning Classroom',
-      description: 'Early morning childcare and educational activities before regular school hours',
-      href: '/services/morning-classroom',
-      category: 'support',
-      parentVisible: true, // Parent service - before-school care
-      isActive: false
-    },
-    {
-      icon: Users,
-      title: 'Parent Coaching Assistant',
-      description: 'Guidance for supporting children\'s academic development and effective communication strategies',
-      href: '/services/parent-coaching',
-      category: 'academic',
-      parentVisible: true, // Parent service - parenting support
-      isActive: false
-    },
-    {
-      icon: GraduationCap,
-      title: 'Progress Interpretation Service',
-      description: 'Comprehensive academic progress analysis and personalized guidance for parents to understand their child\'s educational journey',
-      href: '/services/progress-interpretation',
-      category: 'academic',
-      parentVisible: true, // Parent service - academic progress support
-      isActive: true
-    },
-    {
-      icon: Users,
-      title: 'Parent Wellness and Self-Care',
-      description: 'Stress management, work-life balance coaching, and family relationship support for parents',
-      href: '/services/parent-wellness',
-      category: 'support',
-      parentVisible: true, // Parent service - wellness and family support
-      isActive: true
-    },
-    {
-      icon: Sparkles,
-      title: 'Extracurricular Activities',
-      description: 'Register and manage after-school programs, clubs, and special events',
-      href: '/services/extra-curricular',
-      category: 'extracurricular',
-      parentVisible: true, // Parent service
-      isActive: true
-    },
-    {
-      icon: Globe,
-      title: 'Language Support',
-      description: 'Language assistance programs and resources for multilingual students',
-      href: '/services/language',
-      category: 'academic',
-      parentVisible: true, // Parent service
-      isActive: false
-    },
-    {
-      icon: Users,
-      title: 'Mentorship Program',
-      description: 'Connect with mentors and manage student-mentor relationships',
-      href: '/services/mentorship',
-      category: 'academic',
-      parentVisible: true, // Parent service
-      isActive: false
-    },
-    {
-      icon: Calendar,
-      title: 'Event Planning',
-      description: 'Schedule and organize school events, parent-teacher conferences, and assemblies',
-      href: '/services/events',
-      category: 'support',
-      parentVisible: false, // Hidden for demo - teacher/faculty service
-      isActive: false
-    },
-    {
-      icon: GraduationCap,
-      title: 'Academic Counseling',
-      description: 'Academic guidance, course selection, and college preparation resources',
-      href: '/services/counseling',
-      category: 'academic',
-      parentVisible: true, // Parent service
-      isActive: false
-    },
-    {
-      icon: School,
-      title: 'Field Trips',
-      description: 'Plan, schedule, and manage educational field trips and excursions',
-      href: '/services/fieldtrips',
-      category: 'extracurricular',
-      parentVisible: false, // Hidden for demo - teacher/faculty service
-      isActive: false
-    }
-  ];
-
-  useEffect(() => {
-    const filtered = services.filter(service => {
+  const filteredServices = useMemo(() => {
+    return services.filter(service => {
       // Only show parent-visible services for now
       const isParentVisible = service.parentVisible;
 
@@ -258,8 +265,6 @@ const Services = () => {
 
       return isParentVisible && matchesSearch && matchesCategory;
     });
-
-    setFilteredServices(filtered);
   }, [searchQuery, activeCategory]);
 
   return (

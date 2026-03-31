@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
@@ -11,11 +10,8 @@ import {
   Mail,
   Globe,
   Users,
-  Calendar,
   Info,
-  ChevronDown
 } from 'lucide-react';
-import { cn } from '../lib/utils';
 
 // Animation variants
 const containerVariants = {
@@ -102,7 +98,7 @@ const Tabs = ({ defaultValue, className, children }: TabsProps) => {
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -122,7 +118,7 @@ const TabsList = ({ children, className, activeTab, setActiveTab }: TabsListProp
     <div className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className || ''}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -173,7 +169,7 @@ const TabsContent = ({ value, children, className, activeTab }: TabsContentProps
 };
 
 const SchoolData: React.FC = () => {
-  const { language } = useLingoTranslation();
+  useLingoTranslation();
 
   // Data row component for consistent styling
   const DataRow = ({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) => (

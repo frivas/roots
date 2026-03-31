@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';

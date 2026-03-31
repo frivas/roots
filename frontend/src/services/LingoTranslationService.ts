@@ -6,7 +6,7 @@ class LingoTranslationService {
   private cache: Map<string, string> = new Map();
 
   constructor() {
-    const apiKey = (import.meta as any).env.VITE_GROQ_API_KEY;
+    const apiKey = (import.meta as unknown as { env: Record<string, string> }).env.VITE_GROQ_API_KEY;
     if (!apiKey) {
       throw new Error(' [VITE_GROQ_API_KEY_REMOVED]environment variable is required');
     }
@@ -77,20 +77,20 @@ class LingoTranslationService {
     }
   }
 
-  async translateObject(obj: Record<string, any>, targetLocale: string): Promise<Record<string, any>> {
+  async translateObject(obj: Record<string, unknown>, targetLocale: string): Promise<Record<string, unknown>> {
     if (targetLocale === 'en-US') {
       return obj;
     }
 
     // For Spanish, try to translate individual properties using our dictionary first
     if (targetLocale === 'es-ES') {
-      const translatedObj: Record<string, any> = {};
+      const translatedObj: Record<string, unknown> = {};
 
       for (const [key, value] of Object.entries(obj)) {
         if (typeof value === 'string') {
           translatedObj[key] = await this.translateText(value, targetLocale);
         } else if (typeof value === 'object' && value !== null) {
-          translatedObj[key] = await this.translateObject(value, targetLocale);
+          translatedObj[key] = await this.translateObject(value as Record<string, unknown>, targetLocale);
         } else {
           translatedObj[key] = value;
         }

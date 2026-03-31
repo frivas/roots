@@ -9,7 +9,6 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
-    Plus,
     Clock,
     AlertCircle,
     X,

@@ -11,7 +11,7 @@ import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agen
 declare global {
   interface Window {
     ElevenLabs?: {
-      init?: (config: any) => void;
+      init?: (config: Record<string, unknown>) => void;
     };
   }
 }
