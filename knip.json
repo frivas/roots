@@ -1,17 +1,34 @@
 {
+  "ignore": ["eslint.config.js"],
+  "ignoreBinaries": ["du", "knip", "license-checker", "AGPL-3.0"],
   "workspaces": {
     "frontend": {
-      "entry": ["src/main.tsx"],
+      "entry": ["lingo.config.js"],
+      "project": ["src/**/*.{ts,tsx}"],
       "ignoreDependencies": [
-        "postcss",
-        "tailwindcss",
-        "autoprefixer",
-        "terser"
+        "@eslint/js",
+        "eslint-plugin-react-hooks",
+        "eslint-plugin-react-refresh",
+        "globals",
+        "typescript-eslint",
+        "@testing-library/react",
+        "@testing-library/user-event",
+        "@vitest/coverage-v8"
       ]
     },
     "backend": {
-      "entry": ["src/index.ts", "api/serverless.ts"],
-      "ignoreDependencies": ["tsx"]
+      "entry": ["src/index.ts", "api/serverless.ts", "api/health.ts", "api/webhook-test.ts"],
+      "project": ["src/**/*.ts", "api/**/*.ts"],
+      "ignoreDependencies": [
+        "tsx",
+        "typescript-eslint",
+        "@vitest/coverage-v8",
+        "@supabase/supabase-js"
+      ],
+      "ignore": [
+        "src/lib/supabase.ts",
+        "src/types/supabase.ts"
+      ]
     }
   }
 }

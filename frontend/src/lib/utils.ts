@@ -31,33 +31,3 @@ export function formatDate(date: Date | string | number, language: string = 'en'
   }
 }
 
-/**
- * Format a time based on current language/locale
- */
-export function formatTime(date: Date | string | number, language: string = 'en'): string {
-  const d = new Date(date);
-  
-  if (language === 'es' || language === 'es-ES') {
-    // Spanish time format (24-hour)
-    return d.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-  } else {
-    // English time format (12-hour)
-    return d.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  }
-}
-
-/**
- * Truncate text to a maximum length with ellipsis
- */
-export function truncateText(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + '...';
-}
