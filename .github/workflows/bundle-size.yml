@@ -41,7 +41,7 @@ jobs:
           echo "| JS | $JS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
           echo "| CSS | $CSS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: bundle-size
           message: |
