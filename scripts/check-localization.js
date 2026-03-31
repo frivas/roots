@@ -2,14 +2,18 @@
 
 /**
  * Localization Checker for Roots Project
- * 
+ *
  * This script scans the frontend codebase for potentially untranslated strings
  * and provides suggestions for proper localization.
  */
 
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import { globSync } from 'glob';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const FRONTEND_DIR = path.join(__dirname, '../frontend/src');
 const PATTERNS_TO_CHECK = [
@@ -70,11 +74,11 @@ function checkFile(filePath) {
   lines.forEach((line, index) => {
     const lineNumber = index + 1;
     const trimmedLine = line.trim();
-    
+
     // Skip empty lines, comments, and ignored patterns
-    if (!trimmedLine || 
-        trimmedLine.startsWith('//') || 
-        trimmedLine.startsWith('/*') || 
+    if (!trimmedLine ||
+        trimmedLine.startsWith('//') ||
+        trimmedLine.startsWith('/*') ||
         trimmedLine.startsWith('*') ||
         shouldIgnoreLine(trimmedLine)) {
       return;
@@ -86,8 +90,8 @@ function checkFile(filePath) {
       if (matches) {
         matches.forEach(match => {
           // Additional filtering to reduce false positives
-          if (match.length > 10 && 
-              /[A-Za-z]/.test(match) && 
+          if (match.length > 10 &&
+              /[A-Za-z]/.test(match) &&
               !shouldIgnoreLine(match)) {
             issues.push({
               line: lineNumber,
@@ -117,49 +121,44 @@ function getSuggestion(text) {
 }
 
 function main() {
-  console.log('🌍 Checking localization compliance...\n');
-  
-  const files = glob.sync(PATTERNS_TO_CHECK, { cwd: FRONTEND_DIR });
+  console.log('Checking localization compliance...\n');
+
+  const files = globSync(PATTERNS_TO_CHECK, { cwd: FRONTEND_DIR });
   let totalIssues = 0;
   let filesWithIssues = 0;
 
   files.forEach(file => {
     const fullPath = path.join(FRONTEND_DIR, file);
     const issues = checkFile(fullPath);
-    
+
     if (issues.length > 0) {
       filesWithIssues++;
       totalIssues += issues.length;
-      
-      console.log(`❌ ${file}`);
+
+      console.log(`  ${file}`);
       issues.forEach(issue => {
         console.log(`   Line ${issue.line}: ${issue.match}`);
         if (issue.suggestion) {
-          console.log(`   💡 Suggestion: ${issue.suggestion}`);
+          console.log(`   Suggestion: ${issue.suggestion}`);
         }
         console.log('');
       });
     }
   });
 
-  console.log(`\n📊 Summary:`);
+  console.log(`\nSummary:`);
   console.log(`   Files checked: ${files.length}`);
   console.log(`   Files with issues: ${filesWithIssues}`);
   console.log(`   Total potential issues: ${totalIssues}`);
-  
+
   if (totalIssues === 0) {
-    console.log(`   ✅ Great! No obvious untranslated strings found.`);
+    console.log(`   Great! No obvious untranslated strings found.`);
   } else {
-    console.log(`   ⚠️  Please review the issues above and wrap strings with TranslatedText`);
-    console.log(`   📚 See .cursorrules for detailed localization guidelines`);
+    console.log(`   Please review the issues above and wrap strings with TranslatedText`);
   }
 
   // Exit with error code if issues found (for CI/CD)
   process.exit(totalIssues > 0 ? 1 : 0);
 }
 
-if (require.main === module) {
-  main();
-}
-
-module.exports = { checkFile, shouldIgnoreLine }; 
+main();

@@ -84,6 +84,10 @@ vercel-dev.log
 CLAUDE.local.md
 .claude/
 
+# Agent operational output (never committed — Rule #70)
+docs/agents/
+scripts/agents/
+
 # Playwright
 **/playwright-report/
 **/playwright/.cache/

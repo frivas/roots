@@ -4,6 +4,18 @@
 
 Roots is a bilingual (English/Spanish) AI-powered educational platform for parents and students. It provides AI tutoring services (math, language, chess, storytelling), parent wellness chat, progress interpretation, and school management features. The platform uses conversational AI (ElevenLabs) with real-time story illustration generation (OpenAI DALL-E 3).
 
+## RPI Workflow
+
+This project follows Research-Plan-Implement (RPI).
+
+1. /research -- Understand the codebase as-is
+2. /plan -- Create a phased implementation spec
+3. /implement -- Execute one phase at a time with review gates
+4. /validate -- Verify implementation against the plan
+
+Each phase is its own conversation. STOP after each phase.
+Use /clear between tasks, /compact when context is heavy.
+
 ## Architecture
 
 - **Frontend**: React 19 + TypeScript + Vite, deployed on **Netlify**
@@ -180,6 +192,16 @@ npm run test:coverage   # Unit tests with coverage reports
 - Feature branches: `feat/issue-123-description`
 - Bug fix branches: `fix/issue-456-description`
 
+### Push Sequence
+
+```bash
+# Commit before pulling (hook enforced)
+git add <files> && git commit -m "msg"
+git pull --rebase && git push
+```
+
+Run verification sequentially with `;` or `&&`, never as parallel Bash calls.
+
 ### Conventional Commits
 Use prefixes: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `ci:`
 
@@ -202,3 +224,22 @@ Use prefixes: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `ci:`
 - Security audit: Weekly (Monday 9am UTC)
 - Gitleaks: Daily (3am UTC)
 - Dependabot: Weekly updates with grouped PRs
+
+## Agent Behavior
+
+Exhaust tools before asking the user. Production actions need human authorization.
+Save operational lessons to auto memory immediately. Don't wait to be asked.
+
+Rules load from `.claude/rules/` and `.claude/skills/` automatically.
+
+## Project File Locations
+
+Go directly to these paths -- never search for them.
+
+| Topic | Path | Notes |
+|-------|------|-------|
+| Agent reports | `docs/agents/*-report.md` | Gitignored |
+| Research | `docs/research/YYYY-MM-DD-*.md` | |
+| Plans | `docs/plans/YYYY-MM-DD-*.md` | `-phases/` subdirs |
+| ADRs | `docs/decisions/` | |
+| Feature docs | `.documentation/` | Legacy location |
