@@ -1,7 +1,6 @@
 <!-- Badges: see .github/BADGES.md for more -->
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Pull Requests](https://img.shields.io/github/issues-pr/frivas/roots)](https://github.com/frivas/roots/pulls)
 [![Contributors](https://img.shields.io/github/contributors/frivas/roots)](https://github.com/frivas/roots/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/frivas/roots)](https://github.com/frivas/roots/commits/main)
 [![CI](https://github.com/frivas/roots/actions/workflows/ci.yml/badge.svg)](https://github.com/frivas/roots/actions/workflows/ci.yml)
