@@ -3,6 +3,7 @@ import Fastify, { FastifyPluginAsync } from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import { clerkPlugin } from '@clerk/fastify';
+import type { ServerResponse } from 'http';
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -32,7 +33,7 @@ validateEnv();
 const server = Fastify({ logger: true });
 
 // Store SSE connections and make them accessible to routes
-const sseConnections = new Set<unknown>();
+const sseConnections = new Set<ServerResponse>();
 server.decorate('sseConnections', sseConnections);
 
 // Public health endpoint
