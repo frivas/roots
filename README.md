@@ -5,6 +5,9 @@
 [![Pull Requests](https://img.shields.io/github/issues-pr/frivas/roots)](https://github.com/frivas/roots/pulls)
 [![Contributors](https://img.shields.io/github/contributors/frivas/roots)](https://github.com/frivas/roots/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/frivas/roots)](https://github.com/frivas/roots/commits/main)
+[![CI](https://github.com/frivas/roots/actions/workflows/ci.yml/badge.svg)](https://github.com/frivas/roots/actions/workflows/ci.yml)
+[![Security Audit](https://github.com/frivas/roots/actions/workflows/security.yml/badge.svg)](https://github.com/frivas/roots/actions/workflows/security.yml)
+[![Gitleaks](https://github.com/frivas/roots/actions/workflows/gitleaks.yml/badge.svg)](https://github.com/frivas/roots/actions/workflows/gitleaks.yml)
 
 # Roots - AI-Powered Educational Platform
 
@@ -335,7 +338,7 @@ vercel --prod
 
 ## 📄 License
 
-[MIT](LICENSE)
+[Apache-2.0](LICENSE)
 
 ---
 

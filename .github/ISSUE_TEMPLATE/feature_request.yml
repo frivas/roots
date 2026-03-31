@@ -1,0 +1,51 @@
+name: Feature Request
+description: Suggest a new feature for the Roots platform
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the platform would this feature affect?
+      options:
+        - AI Tutoring (Math, Language, Chess)
+        - Storytelling / Illustrations
+        - Parent Dashboard / Wellness
+        - School Management
+        - Authentication / User Management
+        - Localization / Translations
+        - API / Backend
+        - CI/CD / Tooling
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem does this feature solve?
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the solution you'd like.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative solutions or features you've considered.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other context or screenshots about the feature request.

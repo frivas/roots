@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import TranslatedText from '../components/TranslatedText';
@@ -12,7 +11,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -24,7 +22,6 @@ import {
   User,
   Shield,
   Info,
-  AlertTriangle,
   Upload,
   Save,
   Settings as SettingsIcon
@@ -65,11 +62,6 @@ interface TabsProps {
   children: React.ReactNode;
 }
 
-interface TabsContextType {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}
-
 const Tabs = ({ defaultValue, className, children }: TabsProps) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
 
@@ -77,7 +69,7 @@ const Tabs = ({ defaultValue, className, children }: TabsProps) => {
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -97,7 +89,7 @@ const TabsList = ({ children, className, activeTab, setActiveTab }: TabsListProp
     <div className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className || ''}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -148,7 +140,7 @@ const TabsContent = ({ value, children, className, activeTab }: TabsContentProps
 };
 
 const PersonalData = () => {
-  const { language: currentLanguage, translateText } = useLingoTranslation();
+  const { language: currentLanguage } = useLingoTranslation();
   const { userEmail } = useAuth();
   const { user } = useUser();
 
@@ -158,7 +150,7 @@ const PersonalData = () => {
   };
 
   // Helper function to get localized example data
-  const getLocalizedExamples = () => {
+  const getLocalizedExamples = useCallback(() => {
     if (currentLanguage === 'es-ES') {
       return {
         email: 'juangonzalez@gmail.com',
@@ -173,7 +165,7 @@ const PersonalData = () => {
       timezone: 'UTC-5',
       dateFormat: 'MM/DD/YYYY'
     };
-  };
+  }, [currentLanguage]);
 
   const localizedExamples = getLocalizedExamples();
 
@@ -199,7 +191,7 @@ const PersonalData = () => {
       dateFormat: newExamples.dateFormat,
       language: currentLanguage === 'es-ES' ? 'Spanish' : 'English'
     }));
-  }, [currentLanguage]);
+  }, [currentLanguage, getLocalizedExamples]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;

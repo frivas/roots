@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import { getAuth } from '@clerk/fastify';
 
-const servicesRoutes: FastifyPluginAsync = async (fastify, opts) => {
+const servicesRoutes: FastifyPluginAsync = async (fastify) => {
   // Get all services
   fastify.get('/', async (request, reply) => {
     const { userId } = getAuth(request);

@@ -4,12 +4,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
-import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import {
   ArrowLeft,
   CheckCircle,
   Dumbbell,
-  Globe,
   Clock,
   School,
   Languages,
@@ -28,7 +26,6 @@ const ExtraCurricular: React.FC = () => {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [enrolledActivities, setEnrolledActivities] = useState<string[]>([]);
   const [favoriteActivities, setFavoriteActivities] = useState<string[]>([]);
-  const { translateText } = useLingoTranslation();
 
   // Load favorites from localStorage on component mount
   useEffect(() => {
@@ -195,7 +192,7 @@ const ExtraCurricular: React.FC = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
     }
   };
 

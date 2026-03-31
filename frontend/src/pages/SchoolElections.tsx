@@ -10,7 +10,6 @@ import {
   Info,
   CheckCircle,
   Clock,
-  User,
   UserCheck,
   Building,
   GraduationCap,
@@ -42,7 +41,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     }
@@ -153,7 +152,7 @@ const Tabs = ({ defaultValue, className, children }: TabsProps) => {
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -173,7 +172,7 @@ const TabsList = ({ children, className, activeTab, setActiveTab }: TabsListProp
     <div className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className || ''}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}

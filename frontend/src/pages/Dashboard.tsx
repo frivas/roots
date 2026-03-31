@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { useNavigate } from 'react-router-dom';
@@ -11,18 +11,12 @@ import {
   Users,
   Heart,
   GraduationCap,
-  Globe,
   BookOpen,
   Clock,
-  MessageCircle,
   AlertTriangle,
   CheckCircle2,
   Info,
   Mail,
-  Check,
-  TrendingUp,
-  TrendingDown,
-  Minus,
   Activity
 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -51,7 +45,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     }
@@ -158,182 +152,6 @@ const mockSchoolCalendarEvents = [
   }
 ];
 
-// Import actual message data for consistency
-const ACTUAL_INBOX_MESSAGES = [
-  {
-    id: '1',
-    sender: 'Principal García',
-    subject: 'Staff Meeting Schedule Update',
-    read: true,
-  },
-  {
-    id: '2',
-    sender: 'Transportation Dept',
-    subject: 'Bus Route Changes',
-    read: false,
-  },
-  {
-    id: '3',
-    sender: 'Cafeteria Services',
-    subject: 'New Menu Options',
-    read: false,
-  },
-  {
-    id: '4',
-    sender: 'IT Department',
-    subject: 'System Maintenance',
-    read: true,
-  },
-  {
-    id: '5',
-    sender: 'Extracurricular Coordinator',
-    subject: 'Summer Program Registration',
-    read: true,
-  },
-  {
-    id: '6',
-    sender: 'Nurse Martinez',
-    subject: 'Health Screening Reminder',
-    read: false,
-  },
-  {
-    id: '7',
-    sender: 'Library Services',
-    subject: 'New Books Available',
-    read: true,
-  },
-  {
-    id: '8',
-    sender: 'Parent Association',
-    subject: 'Volunteer Opportunities',
-    read: false,
-  },
-  {
-    id: '9',
-    sender: 'Art Department',
-    subject: 'Art Exhibition Invitation',
-    read: true,
-  },
-  {
-    id: '10',
-    sender: 'Security Office',
-    subject: 'Updated Security Protocols',
-    read: false,
-  },
-  {
-    id: '11',
-    sender: 'Music Department',
-    subject: 'Winter Concert Rehearsal',
-    read: true,
-  },
-  {
-    id: '12',
-    sender: 'Guidance Counselor',
-    subject: 'Academic Planning Session',
-    read: false,
-  },
-  {
-    id: '13',
-    sender: 'Sports Coordinator',
-    subject: 'Basketball Season Schedule',
-    read: true,
-  },
-  {
-    id: '14',
-    sender: 'Administrative Office',
-    subject: 'Document Submission Deadline',
-    read: false,
-  },
-  {
-    id: '15',
-    sender: 'Technology Support',
-    subject: 'New Educational Software',
-    read: true,
-  }
-];
-
-// Import actual notification data for consistency
-const ACTUAL_NOTIFICATIONS = [
-  {
-    id: '1',
-    title: 'System Maintenance',
-    read: false,
-  },
-  {
-    id: '2',
-    title: 'New Message Received',
-    read: true,
-  },
-  {
-    id: '3',
-    title: 'Transportation Alert',
-    read: false,
-  },
-  {
-    id: '4',
-    title: 'Successful Registration',
-    read: true,
-  },
-  {
-    id: '5',
-    title: 'Emergency Drill',
-    read: false,
-  },
-  {
-    id: '6',
-    title: 'Course Completion',
-    read: false,
-  }
-];
-
-// Quick stats data - using actual data from Messages and Notifications pages
-const quickStats = [
-  {
-    label: 'Unread Messages',
-    value: ACTUAL_INBOX_MESSAGES.filter(m => !m.read).length, // Should be 7 unread messages
-    icon: Mail,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-    trend: '+3',
-    trendType: 'up',
-    trendText: 'require attention',
-    route: '/messages'
-  },
-  {
-    label: 'Personal Calendar',
-    value: mockCalendarEvents.length,
-    icon: Calendar,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
-    trend: '+2',
-    trendType: 'up',
-    trendText: 'from last week',
-    route: '/personal-calendar'
-  },
-  {
-    label: 'Active Notifications',
-    value: ACTUAL_NOTIFICATIONS.filter(n => !n.read).length, // Should be 4 unread notifications
-    icon: Bell,
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-50',
-    trend: '0',
-    trendType: 'steady',
-    trendText: 'same as last month',
-    route: '/notifications'
-  },
-  {
-    label: 'Enrolled Activities',
-    value: 2,
-    icon: Activity,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
-    trend: '-1',
-    trendType: 'down',
-    trendText: 'since last quarter',
-    route: '/services'
-  }
-];
-
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'info':
@@ -351,17 +169,8 @@ const Dashboard = () => {
   const { isInitialized, preloadingComplete } = useLingoTranslation();
   const navigate = useNavigate();
 
-  // State to track which messages have been marked as read on the dashboard
-  const [hiddenMessageIds, setHiddenMessageIds] = useState<string[]>([]);
-
-  // Function to mark a message as read and hide it from dashboard
-  const markAsRead = (messageId: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent navigation when clicking the button
-    setHiddenMessageIds(prev => [...prev, messageId]);
-  };
-
-  // Filter out hidden messages for display
-  const visibleMessages = mockMessages.filter(message => !hiddenMessageIds.includes(message.id));
+  // Filter messages for display
+  const visibleMessages = mockMessages;
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {

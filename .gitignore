@@ -76,3 +76,32 @@ vercel-dev.log
 .netlify
 /frontend/.env.backup
 /gitleaks-report.json
+
+# Worktrees (parallel development)
+.worktrees/
+
+# Claude local instructions and settings (per-developer)
+CLAUDE.local.md
+.claude/
+
+# Cursor IDE rules (per-developer)
+.cursor/
+.cursorrules
+
+# Agent operational output (never committed — Rule #70)
+docs/agents/
+scripts/agents/
+
+# Internal documentation (not for public repo)
+.documentation/
+docs/plans/*
+!docs/plans/.gitkeep
+docs/research/*
+!docs/research/.gitkeep
+docs/engineering-best-practices.md
+
+# Playwright
+**/playwright-report/
+**/playwright/.cache/
+**/test-results/
+**/blob-report/

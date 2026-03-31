@@ -1,0 +1,1 @@
+arch -arm64 npm run check-localization && arch -arm64 npm run lint && arch -arm64 npm test

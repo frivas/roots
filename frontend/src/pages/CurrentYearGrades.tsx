@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
-import { BookOpen, Filter, ChevronDown, Calendar, Award, GraduationCap, ChevronLeft, ChevronRight, TrendingUp, Target } from 'lucide-react';
+import { BookOpen, Filter, ChevronDown, Award, ChevronLeft, ChevronRight, TrendingUp, Target } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
@@ -27,7 +27,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     }
@@ -134,7 +134,8 @@ const CurrentYearGrades: React.FC = () => {
   const [selectedEvaluation, setSelectedEvaluation] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isEvaluationFilterOpen, setIsEvaluationFilterOpen] = useState(false);
-  const { language } = useLingoTranslation();
+  // Translation context available via useLingoTranslation() if needed
+  void useLingoTranslation();
 
   const itemsPerPage = 10;
 

@@ -17,7 +17,7 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   showLoader = false,
   fallback
 }) => {
-  const { language, translateText, isTranslating } = useLingoTranslation();
+  const { language, translateText } = useLingoTranslation();
 
   // Initialize with immediate translation if available
   const [translatedText, setTranslatedText] = useState(() => {
@@ -31,11 +31,8 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const performTranslation = useCallback(async () => {
-    setError(null);
-
     if (language === 'en-US') {
       setTranslatedText(children); // Show English text as-is
       return;
@@ -61,7 +58,6 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
       setTranslatedText(translated || children);
     } catch (error) {
       console.error('Translation failed:', error);
-      setError('Translation failed');
       setTranslatedText(fallback || children);
     } finally {
       setIsLoading(false);

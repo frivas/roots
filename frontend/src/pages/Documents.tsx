@@ -27,7 +27,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     }
@@ -154,7 +154,7 @@ const categoryOptions = [
 ];
 
 // Document type colors and icons
-const getDocumentDisplay = (type: string, category: string) => {
+const getDocumentDisplay = (type: string) => {
   switch (type) {
     case 'report_card':
       return {
@@ -218,7 +218,7 @@ const Documents: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(8);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
-  const { translateText, language } = useLingoTranslation();
+  const { language } = useLingoTranslation();
 
   // Format date based on user's language preference
   const formatDate = (date: Date): string => {
@@ -252,13 +252,13 @@ const Documents: React.FC = () => {
   const currentDocuments = filteredDocuments.slice(startIndex, endIndex);
 
   // Handle download (mock function)
-  const handleDownload = (document: any) => {
+  const handleDownload = (document: { name: string }) => {
     console.log(`Downloading ${document.name}`);
     // In a real application, this would trigger a file download
   };
 
   // Handle view (mock function)
-  const handleView = (document: any) => {
+  const handleView = (document: { name: string }) => {
     console.log(`Viewing ${document.name}`);
     // In a real application, this would open the document in a viewer
   };
@@ -359,14 +359,14 @@ const Documents: React.FC = () => {
             {currentDocuments.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {currentDocuments.map((document) => {
-                  const { color, icon: Icon, label } = getDocumentDisplay(document.type, document.category);
+                  const { color, icon: Icon, label } = getDocumentDisplay(document.type);
 
                   return (
                     <motion.div
                       key={document.id}
                       variants={itemVariants}
                       whileHover={{ y: -2 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
                     >
                       <Card className="h-full hover:shadow-md transition-shadow border-l-4 border-l-blue-400">
                         <CardHeader className="pb-3">

@@ -2,7 +2,8 @@ import 'dotenv/config';
 import Fastify, { FastifyPluginAsync } from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
-import { clerkPlugin, getAuth } from '@clerk/fastify';
+import { clerkPlugin } from '@clerk/fastify';
+import type { ServerResponse } from 'http';
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -32,7 +33,7 @@ validateEnv();
 const server = Fastify({ logger: true });
 
 // Store SSE connections and make them accessible to routes
-const sseConnections = new Set<any>();
+const sseConnections = new Set<ServerResponse>();
 server.decorate('sseConnections', sseConnections);
 
 // Public health endpoint
@@ -210,7 +211,10 @@ server.register(async function publicWebhooks(fastify) {
 });
 
 // Public middleware
-await server.register(cors, { origin: process.env.FRONTEND_URL });
+await server.register(cors, {
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+});
 await server.register(rateLimit, { max: 100, timeWindow: '1 minute' });
 
 // Protected routes encapsulated as an async plugin

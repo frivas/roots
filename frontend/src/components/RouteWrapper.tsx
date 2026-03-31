@@ -7,7 +7,7 @@ interface RouteWrapperProps {
   routeName?: string;
 }
 
-const RouteWrapper: React.FC<RouteWrapperProps> = ({ children, routeName }) => {
+const RouteWrapper: React.FC<RouteWrapperProps> = ({ children }) => {
   const { isInitialized, preloadingComplete } = useLingoTranslation();
   const [isReady, setIsReady] = useState(false);
 

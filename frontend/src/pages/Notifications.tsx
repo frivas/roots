@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';
-import { formatDate, formatTime, cn } from '../lib/utils';
+import { formatDate, cn } from '../lib/utils';
 import { 
   AlertTriangle, 
   BellRing, 
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 // Type assertion to fix Lucide React compatibility
-const LucideIcon = (Component: any) => Component as React.ComponentType<any>;
+const LucideIcon = (Component: unknown) => Component as React.ComponentType<Record<string, unknown>>;
 
 interface Notification {
   id: string;
@@ -153,8 +153,6 @@ const NotificationItem = ({
   countdown: number;
   index: number;
 }) => {
-  const categoryColor = getCategoryColor(notification.category);
-  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -319,10 +317,12 @@ const Notifications = () => {
           setShowUndo(prevShow => ({ ...prevShow, [id]: false }));
           clearInterval(countdownInterval);
           setUndoTimers(prevTimers => {
-            const { [id]: _, ...rest } = prevTimers;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [id]: _timer, ...rest } = prevTimers;
             return rest;
           });
-          const { [id]: __, ...rest } = prev;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [id]: _count, ...rest } = prev;
           return rest;
         }
         return { ...prev, [id]: currentCount - 1 };
@@ -350,11 +350,13 @@ const Notifications = () => {
     // Hide undo button and clear countdown
     setShowUndo(prev => ({ ...prev, [id]: false }));
     setUndoCountdown(prev => {
-      const { [id]: _, ...rest } = prev;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [id]: _count, ...rest } = prev;
       return rest;
     });
     setUndoTimers(prev => {
-      const { [id]: _, ...rest } = prev;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [id]: _timer, ...rest } = prev;
       return rest;
     });
   };

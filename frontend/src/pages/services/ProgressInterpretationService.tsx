@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -17,9 +16,6 @@ import {
   Lightbulb,
   BookOpen,
   Phone,
-  MessageCircle,
-  Video,
-  User,
   Mic,
   BarChart3,
   FileText,
@@ -193,7 +189,7 @@ const ProgressInterpretationService: React.FC = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
     }
   };
 

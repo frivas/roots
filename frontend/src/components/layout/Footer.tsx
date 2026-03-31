@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
-import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
-import { Mail, Phone, MapPin, ExternalLink, Bot } from 'lucide-react';
+import { ExternalLink, Bot } from 'lucide-react';
 
 interface FooterProps {
   className?: string;

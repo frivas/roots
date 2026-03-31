@@ -32,7 +32,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
   const { user } = useUser();
   const { signOut } = useClerk();
 
-  const navigation = useMemo(() => getMenuItems(userRoles), [userRoles]);
+  const navigation = useMemo(() => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress), [userRoles, user?.primaryEmailAddress?.emailAddress]);
 
   // Auto-expand menus that contain the current page (only for specific routes, not root)
   useEffect(() => {

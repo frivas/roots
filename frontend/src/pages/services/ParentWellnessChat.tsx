@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
@@ -7,7 +7,6 @@ import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 
 const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
 const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-const WIDGET_STYLE_ID = 'elevenlabs-widget-style';
 
 // Static translations for widget UI
 const widgetTranslations = {
@@ -33,7 +32,7 @@ const widgetTranslations = {
 declare global {
   interface Window {
     ElevenLabs?: {
-      init?: (config: any) => void;
+      init?: (config: Record<string, unknown>) => void;
     };
   }
 }

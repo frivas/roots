@@ -11,7 +11,7 @@ interface Notification {
   userId: string;
 }
 
-const notificationsRoutes: FastifyPluginAsync = async (fastify, opts) => {
+const notificationsRoutes: FastifyPluginAsync = async (fastify) => {
   // Get all notifications for the current user
   fastify.get('/', async (request, reply) => {
     const { userId } = getAuth(request);
@@ -80,8 +80,7 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify, opts) => {
   // Mark a notification as read
   fastify.patch('/:id/read', async (request, reply) => {
     const { userId } = getAuth(request);
-    const { id } = request.params as { id: string };
-    
+
     if (!userId) {
       return reply.code(401).send({ error: 'Unauthorized' });
     }
@@ -128,7 +127,7 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify, opts) => {
       return reply.code(401).send({ error: 'Unauthorized' });
     }
     
-    const { title, message, type, recipientId } = request.body as any;
+    const { title, message, type, recipientId } = request.body as { title: string; message: string; type: string; recipientId: string };
     
     if (!title || !message || !type || !recipientId) {
       return reply.code(400).send({ error: 'Missing required fields' });

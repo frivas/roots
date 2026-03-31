@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -87,7 +86,7 @@ const Tabs = ({ defaultValue, className, children, onValueChange }: TabsProps) =
     <div className={className} data-active-tab={activeTab}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab: handleTabChange });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab: handleTabChange });
         }
         return child;
       })}
@@ -95,12 +94,19 @@ const Tabs = ({ defaultValue, className, children, onValueChange }: TabsProps) =
   );
 };
 
-const TabsList = ({ children, className, activeTab, setActiveTab }: any) => {
+interface TabsListProps {
+  children: React.ReactNode;
+  className?: string;
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void;
+}
+
+const TabsList = ({ children, className, activeTab, setActiveTab }: TabsListProps) => {
   return (
     <div className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className || ''}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { activeTab, setActiveTab });
+          return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { activeTab, setActiveTab });
         }
         return child;
       })}
@@ -108,7 +114,15 @@ const TabsList = ({ children, className, activeTab, setActiveTab }: any) => {
   );
 };
 
-const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: any) => {
+interface TabsTriggerProps {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void;
+}
+
+const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: TabsTriggerProps) => {
   const isActive = activeTab === value;
   return (
     <button
@@ -126,7 +140,14 @@ const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }: an
   );
 };
 
-const TabsContent = ({ value, children, className, activeTab }: any) => {
+interface TabsContentProps {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+  activeTab?: string;
+}
+
+const TabsContent = ({ value, children, className, activeTab }: TabsContentProps) => {
   if (activeTab !== value) return null;
   return (
     <div className={`mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className || ''}`}>
@@ -139,7 +160,7 @@ const Profile = () => {
   const { userEmail, userRole } = useAuth();
   const { language } = useLingoTranslation();
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [, setActiveTab] = useState('overview');
 
   // Helper function to get localized profile data
   const getLocalizedProfileData = () => {
@@ -216,19 +237,19 @@ const Profile = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 24
       }
     }
   };
 
-  const getActivityIcon = (type: string) => {
+  const getActivityIcon = (type: string): React.ReactNode => {
     switch (type) {
-      case 'class': return <BookOpen className="h-4 w-4" /> as any;
-      case 'meeting': return <Users className="h-4 w-4" /> as any;
-      case 'workshop': return <Briefcase className="h-4 w-4" /> as any;
-      default: return <Clock className="h-4 w-4" /> as any;
+      case 'class': return <BookOpen className="h-4 w-4" />;
+      case 'meeting': return <Users className="h-4 w-4" />;
+      case 'workshop': return <Briefcase className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
     }
   };
 

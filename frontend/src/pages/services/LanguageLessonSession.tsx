@@ -33,7 +33,7 @@ const widgetTranslations = {
 declare global {
   interface Window {
     ElevenLabs?: {
-      init?: (config: any) => void;
+      init?: (config: Record<string, unknown>) => void;
     };
   }
 }
