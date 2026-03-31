@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import TranslatedText from './TranslatedText';
+import useTranslatedString from '../hooks/useTranslatedString';
 import Button from './ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { lingoTranslationService } from '../services/LingoTranslationService';
@@ -10,6 +11,7 @@ const TranslationDebugger: React.FC = () => {
   const [stats, setStats] = useState<{ cacheSize: number; localTranslationsCount: number } | null>(null);
   const [testText, setTestText] = useState('Welcome to Raíces!');
   const [translatedResult, setTranslatedResult] = useState('');
+  const inputPlaceholder = useTranslatedString("Enter text to translate...");
 
   const sampleTexts = [
     'Home',
@@ -121,7 +123,7 @@ const TranslationDebugger: React.FC = () => {
                 type="text"
                 value={testText}
                 onChange={(e) => setTestText(e.target.value)}
-                placeholder="Enter text to translate..."
+                placeholder={inputPlaceholder}
                 className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <Button onClick={testTranslation}>

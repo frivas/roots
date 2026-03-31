@@ -6,6 +6,7 @@ import { useAuth } from '@clerk/clerk-react';
 import Button from '../../components/ui/Button';
 import PaintingSpinner from '../../components/ui/PaintingSpinner';
 import TranslatedText from '../../components/TranslatedText';
+import useTranslatedString from '../../hooks/useTranslatedString';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from '../../config/agentConfig';
 
@@ -21,6 +22,8 @@ declare global {
 const StorytellingSession: React.FC = () => {
   const navigate = useNavigate();
   const { getToken } = useAuth();
+  const storyIllustrationAlt = useTranslatedString("Story illustration");
+  const downloadIllustrationTitle = useTranslatedString("Download Illustration");
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -880,7 +883,7 @@ const StorytellingSession: React.FC = () => {
                       <div className="relative w-full">
                         <img
                           src={generatedImage}
-                          alt="Story illustration"
+                          alt={storyIllustrationAlt}
                           className="w-full h-auto rounded-lg shadow-lg"
                           onLoad={() => {
                             console.log('✅ Image loaded successfully:', generatedImage);
@@ -903,7 +906,7 @@ const StorytellingSession: React.FC = () => {
                             link.click();
                           }}
                           className="absolute top-4 right-4 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all duration-200 hover:scale-110"
-                          title="Download Illustration"
+                          title={downloadIllustrationTitle}
                         >
                           <Download className="h-5 w-5 text-gray-700" />
                         </button>

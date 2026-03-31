@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import TranslatedText from '../components/TranslatedText';
+import useTranslatedString from '../hooks/useTranslatedString';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import {
     Calendar,
@@ -124,6 +125,9 @@ const dayNames = {
 
 const PersonalCalendar: React.FC = () => {
     const { language } = useLingoTranslation();
+    const titlePlaceholder = useTranslatedString("Parents meetup");
+    const descriptionPlaceholder = useTranslatedString("Meetup with the class parents");
+    const notesPlaceholder = useTranslatedString("Meeting point or notes");
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -606,7 +610,7 @@ const PersonalCalendar: React.FC = () => {
                                         type="text"
                                         value={formData.title}
                                         onChange={(e) => handleInputChange('title', e.target.value)}
-                                        placeholder="Quedada padres de 1ª"
+                                        placeholder={titlePlaceholder}
                                         required
                                     />
                                 </div>
@@ -666,7 +670,7 @@ const PersonalCalendar: React.FC = () => {
                                         rows={3}
                                         value={formData.description}
                                         onChange={(e) => handleInputChange('description', e.target.value)}
-                                        placeholder="Quedada con los padres de la clase de Juanito"
+                                        placeholder={descriptionPlaceholder}
                                     />
                                 </div>
 
@@ -680,7 +684,7 @@ const PersonalCalendar: React.FC = () => {
                                         rows={3}
                                         value={formData.notes}
                                         onChange={(e) => handleInputChange('notes', e.target.value)}
-                                        placeholder="Bar La Carreta"
+                                        placeholder={notesPlaceholder}
                                     />
                                 </div>
 

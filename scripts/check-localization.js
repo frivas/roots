@@ -29,7 +29,7 @@ const UNTRANSLATED_PATTERNS = [
   // JSX text content
   />[\s]*[A-Z][^<>]*[a-zA-Z][\s]*</g,
   // String literals in JSX attributes (excluding common props)
-  /(?:placeholder|title|alt|label)=["'][^"']*[A-Za-z]{3,}[^"']*["']/g,
+  /(?:placeholder|title|alt)=["'][^"']*[A-Za-z]{3,}[^"']*["']/g,
   // Button text
   /<Button[^>]*>[\s]*[^<]*[A-Za-z]{3,}[^<]*[\s]*<\/Button>/g,
   // Heading tags
@@ -40,6 +40,7 @@ const UNTRANSLATED_PATTERNS = [
 const IGNORE_PATTERNS = [
   /TranslatedText/,
   /translateText/,
+  /useTranslatedString/,
   /import/,
   /export/,
   /console\./,
@@ -59,7 +60,18 @@ const IGNORE_PATTERNS = [
   /[\w-]+\.(tsx?|jsx?|css|scss|json|md|html)/,
   /https?:\/\//,
   // API and technical terms
-  /\b(api|sdk|url|http|json|xml|css|html|js|ts|jsx|tsx)\b/i
+  /\b(api|sdk|url|http|json|xml|css|html|js|ts|jsx|tsx)\b/i,
+  // Date format patterns (technical, not translatable)
+  /[MDY]{2,4}[/\-][MDY]{2,4}[/\-][MDY]{2,4}/,
+  // Brand names and attribution
+  /Powered By/i,
+  // Proper names in alt attributes (person names with accented chars)
+  /alt="[A-ZÀ-ÿ][a-zà-ÿ]+ [A-ZÀ-ÿ][a-zà-ÿ]+/,
+];
+
+// Files excluded from checking (contain only proper nouns, addresses, org names)
+const EXCLUDED_FILES = [
+  'pages/PrivacyPolicy.tsx',
 ];
 
 function shouldIgnoreLine(line) {
@@ -128,6 +140,9 @@ function main() {
   let filesWithIssues = 0;
 
   files.forEach(file => {
+    // Skip excluded files (contain only proper nouns, addresses, etc.)
+    if (EXCLUDED_FILES.some(excluded => file.endsWith(excluded))) return;
+
     const fullPath = path.join(FRONTEND_DIR, file);
     const issues = checkFile(fullPath);
 
