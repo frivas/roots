@@ -80,8 +80,9 @@ vercel-dev.log
 # Worktrees (parallel development)
 .worktrees/
 
-# Claude local instructions (per-developer)
+# Claude local instructions and settings (per-developer)
 CLAUDE.local.md
+.claude/
 
 # Playwright
 **/playwright-report/

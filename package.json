@@ -42,5 +42,25 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-darwin-x64": "^4.57.1"
+  },
+  "overrides": {
+    "undici": "6.24.1",
+    "fast-xml-parser": "5.5.9",
+    "next": "15.5.14",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "diff": "8.0.4",
+    "yaml": "2.8.3",
+    "tmp": "0.2.5",
+    "lodash": "4.17.23",
+    "smol-toml": "1.6.1",
+    "@vercel/node": {
+      "path-to-regexp": "6.3.0"
+    },
+    "@vercel/static-config": {
+      "ajv": "8.18.0"
+    },
+    "@vercel/python-analysis": {
+      "minimatch": "10.2.5"
+    }
   }
 }
