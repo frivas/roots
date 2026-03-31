@@ -332,6 +332,10 @@ vercel --prod
 6. Ensure TypeScript types are properly defined
 7. Follow the existing code patterns and architecture
 
+## Team
+
+![Chapa Badge](https://chapa.thecreativetoken.com/u/juan294/badge.svg)
+
 ## 📄 License
 
 [Apache-2.0](LICENSE)
