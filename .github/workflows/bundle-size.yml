@@ -16,8 +16,8 @@ jobs:
       VITE_BACKEND_URL: http://localhost:3000
       VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -41,7 +41,7 @@ jobs:
           echo "| JS | $JS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
           echo "| CSS | $CSS_SIZE |" >> "$GITHUB_STEP_SUMMARY"
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: bundle-size
           message: |
