@@ -31,7 +31,7 @@ import { GitHubContributorsService } from '../services/GitHubContributorsService
 
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
 
-export interface MenuItem {
+interface MenuItem {
     name: string;
     href?: string;
     icon: LucideIcon;
@@ -306,14 +306,3 @@ export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuIt
     return menuItems;
 };
 
-// Helper function to check if a user has access to a specific menu item
-export const hasMenuAccess = (item: MenuItem, userRoles: Role[] = [], userEmail?: string): boolean => {
-    // Check email restrictions first
-    if (item.restrictedEmails && userEmail) {
-        return item.restrictedEmails.includes(userEmail);
-    }
-    
-    // If no email restrictions, check roles
-    if (!item.roles) return !item.restrictedEmails; // No roles specified means accessible to all (unless email-restricted)
-    return item.roles.some(role => userRoles.includes(role));
-};
