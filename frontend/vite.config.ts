@@ -11,13 +11,13 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3005',
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxy for SSE
       },
       '/webhook': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3005',
         changeOrigin: true,
         secure: false,
       },
