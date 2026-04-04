@@ -105,3 +105,6 @@ docs/engineering-best-practices.md
 **/playwright/.cache/
 **/test-results/
 **/blob-report/
+
+# Summon
+.summon
