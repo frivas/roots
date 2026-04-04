@@ -1,0 +1,236 @@
+<mxfile host="app.diagrams.net" agent="Claude" version="26.0.0">
+  <diagram id="roots-architecture" name="Roots Architecture">
+    <mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Roots — Bilingual AI-Powered Educational Platform" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="900" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="frontend-lane" value="Frontend (React 19 + Vite)" style="shape=swimlane;startSize=30;fillColor=#FFF9C4;strokeColor=#F9A825;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="520" height="320" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-dashboard" value="Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="20" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-messages" value="Messages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="145" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-services" value="Services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="270" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-settings" value="Settings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="395" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-auth-ctx" value="Auth Context&#xa;(Clerk)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=11;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="20" y="120" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-trans-ctx" value="Translation Context&#xa;(900+ ES strings)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=11;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="180" y="120" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-hooks" value="Custom Hooks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=11;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="360" y="120" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-api-services" value="API Services Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=11;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="20" y="190" width="230" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-tailwind" value="Tailwind CSS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=11;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="270" y="190" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fe-deploy" value="Netlify&#xa;(Static Deploy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F9A825;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="frontend-lane">
+          <mxGeometry x="160" y="260" width="200" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="backend-lane" value="Backend (Fastify API)" style="shape=swimlane;startSize=30;fillColor=#BBDEFB;strokeColor=#1565C0;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="80" width="520" height="320" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-auth-routes" value="Auth Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="20" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-msg-routes" value="Message Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="145" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-svc-routes" value="Service Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="280" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-settings-routes" value="Settings Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="400" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-notif-routes" value="Notification&#xa;Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="20" y="120" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-img-routes" value="Image Gen&#xa;Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="145" y="120" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-webhook" value="ElevenLabs&#xa;Webhook Handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="280" y="120" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-supabase-client" value="Supabase Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#1565C0;fontSize=11;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="20" y="195" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-openai-client" value="OpenAI Client&#xa;(DALL-E 3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#1565C0;fontSize=11;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="200" y="195" width="140" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="be-deploy" value="Vercel&#xa;(Serverless Adapter)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64B5F6;strokeColor=#1565C0;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="backend-lane">
+          <mxGeometry x="160" y="265" width="200" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="realtime-lane" value="Real-time Layer" style="shape=swimlane;startSize=30;fillColor=#C8E6C9;strokeColor=#2E7D32;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="430" width="520" height="160" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rt-sse" value="SSE Stream&#xa;(Story Illustrations)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="realtime-lane">
+          <mxGeometry x="20" y="50" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rt-webhook-flow" value="ElevenLabs Webhook&#xa;&#x2192; DALL-E 3 Trigger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="realtime-lane">
+          <mxGeometry x="260" y="50" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rt-proxy" value="Vite Dev Proxy (5173 &#x2192; 3000)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#2E7D32;fontSize=11;shadow=1;" vertex="1" parent="realtime-lane">
+          <mxGeometry x="100" y="110" width="300" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="translation-lane" value="Translation Layer" style="shape=swimlane;startSize=30;fillColor=#C8E6C9;strokeColor=#2E7D32;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="430" width="520" height="160" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-dict" value="Local Dictionary&#xa;(900+ strings)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
+          <mxGeometry x="20" y="50" width="140" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-cache" value="Translation&#xa;Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
+          <mxGeometry x="190" y="50" width="130" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-api" value="Lingo.dev API&#xa;(Groq Fallback)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
+          <mxGeometry x="350" y="50" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;" edge="1" source="tl-dict" target="tl-cache" parent="translation-lane">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;" edge="1" source="tl-cache" target="tl-api" parent="translation-lane">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-label" value="miss &#x2192;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#2E7D32;" vertex="1" parent="translation-lane">
+          <mxGeometry x="160" y="85" width="35" height="15" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="tl-label2" value="miss &#x2192;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#2E7D32;" vertex="1" parent="translation-lane">
+          <mxGeometry x="320" y="85" width="35" height="15" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="data-lane" value="Data Layer" style="shape=swimlane;startSize=30;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="520" height="160" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="dl-supabase" value="Supabase&#xa;PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=12;shadow=1;" vertex="1" parent="data-lane">
+          <mxGeometry x="60" y="45" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="dl-auth-store" value="User Auth&#xa;(Clerk Sessions)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=12;shadow=1;" vertex="1" parent="data-lane">
+          <mxGeometry x="260" y="45" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="external-lane" value="External Services" style="shape=swimlane;startSize=30;fillColor=#FFCDD2;strokeColor=#C62828;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="620" width="520" height="160" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-clerk" value="Clerk&#xa;(Auth)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
+          <mxGeometry x="15" y="50" width="90" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-supabase" value="Supabase&#xa;(Database)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
+          <mxGeometry x="115" y="50" width="90" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-openai" value="OpenAI&#xa;DALL-E 3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
+          <mxGeometry x="215" y="50" width="90" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-eleven" value="ElevenLabs&#xa;ConvAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
+          <mxGeometry x="315" y="50" width="90" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-lingo" value="Lingo.dev&#xa;/ Groq" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
+          <mxGeometry x="415" y="50" width="90" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-fe-be" value="REST API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#455A64;strokeWidth=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="fe-api-services" target="be-auth-routes" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-fe-rt" value="SSE" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;dashed=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="fe-api-services" target="rt-sse" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-be-rt" value="Webhook" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;dashed=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="be-webhook" target="rt-webhook-flow" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-be-db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="be-supabase-client" target="data-lane" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-be-openai" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="be-openai-client" target="external-lane" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-fe-trans" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="fe-trans-ctx" target="translation-lane" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-dl-ext-supa" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dl-supabase" target="ext-supabase" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-dl-ext-clerk" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;dashed=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dl-auth-store" target="ext-clerk" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-tl-ext-lingo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" source="tl-api" target="external-lane" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="edge-rt-be-img" value="DALL-E 3&#xa;trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=2;dashed=1;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="rt-webhook-flow" target="be-img-routes" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="505"/>
+              <mxPoint x="570" y="220"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-fe-auth-clerk" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=1;dashed=1;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;" edge="1" source="fe-auth-ctx" target="data-lane" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
