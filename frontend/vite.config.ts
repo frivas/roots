@@ -11,13 +11,13 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3005',
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxy for SSE
       },
       '/webhook': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3005',
         changeOrigin: true,
         secure: false,
       },
@@ -29,11 +29,11 @@ export default defineConfig({
     minify: 'terser',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          clerk: ['@clerk/clerk-react'],
-          ui: ['lucide-react', 'framer-motion'],
+        manualChunks(id) {
+          if (id.includes('react-dom') || (id.includes('/react/') && !id.includes('react-router'))) return 'vendor';
+          if (id.includes('react-router-dom')) return 'router';
+          if (id.includes('@clerk/clerk-react')) return 'clerk';
+          if (id.includes('lucide-react') || id.includes('framer-motion')) return 'ui';
         },
       },
       external: (id) => {
