@@ -25,7 +25,7 @@
     "@supabase/supabase-js": "^2.96.0",
     "dotenv": "^17.4.1",
     "fastify": "^5.7.4",
-    "openai": "^5.23.2"
+    "openai": "^6.33.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
