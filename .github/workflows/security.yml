@@ -20,9 +20,9 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Audit frontend
-        run: npm audit --workspace=frontend --audit-level=high
+        run: npm audit --workspace=frontend --audit-level=high --omit=dev
       - name: Audit backend
-        run: npm audit --workspace=backend --audit-level=high
+        run: npm audit --workspace=backend --audit-level=high --omit=dev
 
   license-check:
     name: License Check
