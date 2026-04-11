@@ -35,7 +35,8 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "glob": "^13.0.6",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "next": "15.5.15"
   },
   "type": "module",
   "engines": {
