@@ -13,8 +13,8 @@
     "build": "tsc --project tsconfig.json",
     "start": "node dist/index.js",
     "vercel-build": "npm run build",
-    "lint": "eslint . --ext .ts --report-unused-disable-directives --max-warnings 0",
-    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src/ --report-unused-disable-directives --max-warnings 0",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },

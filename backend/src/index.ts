@@ -245,6 +245,7 @@ export const buildServer = async (opts: BuildServerOptions = {} as BuildServerOp
 // Main entry — only when run as a script
 const isMain = process.argv[1] != null &&
   (process.argv[1].endsWith('index.js') || process.argv[1].endsWith('index.ts'));
+/* c8 ignore next 4 */
 if (isMain) {
   const server = await buildServer();
   const PORT = Number(process.env.PORT ?? 3000);
