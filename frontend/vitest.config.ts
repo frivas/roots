@@ -4,6 +4,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    // Make import.meta.env.VITE_GROQ_API_KEY available in tests
+    'import.meta.env.VITE_GROQ_API_KEY': JSON.stringify('test-groq-key'),
+  },
   test: {
     globals: true,
     environment: 'jsdom',
