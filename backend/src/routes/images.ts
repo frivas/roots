@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { getAuth } from '@clerk/fastify';
-import OpenAI from 'openai';
+import type OpenAI from 'openai';
 
 // Define proper type for SSE connection
 type SSEConnection = NodeJS.WritableStream;
@@ -12,9 +12,17 @@ declare module 'fastify' {
   }
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let _openai: OpenAI | null = null;
+
+const getOpenAI = async (): Promise<OpenAI> => {
+  if (!_openai) {
+    const { default: OpenAIClass } = await import('openai');
+    _openai = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+};
+
+export const __resetOpenAI = () => { _openai = null; };
 
 const images: FastifyPluginAsync = async (fastify) => {
   // Test endpoint to verify webhook connectivity
@@ -40,7 +48,8 @@ const images: FastifyPluginAsync = async (fastify) => {
         return reply.status(400).send({ error: 'Prompt is required' });
       }
 
-      const response = await openai.images.generate({
+      const client = await getOpenAI();
+      const response = await client.images.generate({
         model: "dall-e-3",
         prompt: prompt,
         n: 1,
@@ -80,7 +89,7 @@ const images: FastifyPluginAsync = async (fastify) => {
         current_scene?: string;
       };
 
-      // 🎯 SEND GENERATION START EVENT FIRST
+      // SEND GENERATION START EVENT FIRST
       const sseConnections = fastify.sseConnections;
       const startEventData = JSON.stringify({
         type: 'generation-started',
@@ -139,9 +148,10 @@ const images: FastifyPluginAsync = async (fastify) => {
       };
 
       const contextualPrompt = generateContextualPrompt();
-      console.log('🔍 Contextual prompt:', contextualPrompt);
+      console.log('Contextual prompt:', contextualPrompt);
 
-      const response = await openai.images.generate({
+      const client = await getOpenAI();
+      const response = await client.images.generate({
         model: "dall-e-3",
         prompt: contextualPrompt,
         n: 1,
@@ -170,9 +180,8 @@ const images: FastifyPluginAsync = async (fastify) => {
         }
       });
 
-      console.log('🎨 Image generation completed');
-      console.log('🖼️ Image URL:', imageUrl);
-      console.log('🔗 Event data:', eventData);
+      console.log('Image generation completed');
+      console.log('Image URL:', imageUrl);
 
       sseConnections.forEach((connection: SSEConnection) => {
         try {
