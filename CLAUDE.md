@@ -166,21 +166,27 @@ Three-layer secret scanning is configured:
 ## Testing
 
 ### Framework
-- **Unit tests**: Vitest (both frontend and backend)
+- **Unit tests**: Vitest v8 (both frontend and backend)
 - **Component tests**: React Testing Library (`@testing-library/react`)
-- **E2E tests**: Playwright (Chromium only)
+- **E2E tests**: Playwright (Chromium only) — page-level verification
+
+### Setup Files
+- Frontend: `frontend/src/test/setup.ts` — stubs `VITE_*` env vars via `vi.stubEnv`
+- Backend: `backend/src/test/setup.ts` — stubs `process.env.*` before any module loads
+- Frontend `vitest.config.ts` has `define` block to resolve `import.meta.env.VITE_*` at transform time
 
 ### Conventions
 - Test files live alongside source: `Component.test.tsx` next to `Component.tsx`
 - Use `describe` / `it` blocks with clear descriptions
-- Frontend setup file: `frontend/src/test/setup.ts`
+- Pages (`src/pages/**`) are excluded from unit coverage — use Playwright e2e for those
+- Use `/* c8 ignore next N */` on untestable runtime-only branches (e.g. `if (isMain)`)
 
 ### Commands
 ```bash
 npm test                # Run all unit tests (frontend + backend)
 npm run test:frontend   # Frontend unit tests only
 npm run test:backend    # Backend unit tests only
-npm run test:e2e        # Playwright E2E tests
+npm run test:e2e        # Playwright E2E tests (pages, auth flows)
 npm run test:coverage   # Unit tests with coverage reports
 ```
 
