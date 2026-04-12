@@ -12,6 +12,7 @@ export const createSupabase = (env: NodeJS.ProcessEnv = process.env): SupabaseCl
 
 // Lazy default — re-uses module-level ergonomics for route files
 let _default: SupabaseClient<Database> | null = null;
+/** @public */
 export const supabase = new Proxy({} as SupabaseClient<Database>, {
   get(_, prop) {
     _default ??= createSupabase();
