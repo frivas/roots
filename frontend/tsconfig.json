@@ -19,6 +19,9 @@
       "@/*": ["./src/*"]
     },
 
+    /* Node.js types for process, NodeJS namespace */
+    "types": ["node"],
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": false,

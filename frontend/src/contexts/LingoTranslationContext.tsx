@@ -124,47 +124,10 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
     };
   }, [isProviderMounted, language]);
 
-  // Preload common translations when language changes
+  // Mark preloading complete when language changes (dictionary lookups are synchronous)
   useEffect(() => {
     if (!isInitialized || !isProviderMounted) return;
-
-    let mounted = true;
-
-    const preloadTranslations = async () => {
-      if (language === 'es-ES') {
-        setPreloadingComplete(false);
-        console.log('🚀 Starting translation preload for Spanish...');
-        try {
-          // Clear any existing translations to force reload
-          lingoTranslationService.clearCache();
-          await lingoTranslationService.preloadCommonTranslations(language);
-          console.log('✅ Translation preload completed');
-
-          // Force a small delay to ensure all components get the updated context
-          if (mounted && isProviderMounted) {
-            setTimeout(() => {
-              setPreloadingComplete(true);
-            }, 100);
-          }
-        } catch (error) {
-          console.error('❌ Translation preload failed:', error);
-          if (mounted && isProviderMounted) {
-            setPreloadingComplete(true);
-          }
-        }
-      } else {
-        lingoTranslationService.clearCache(); // Clear cache for English too
-        if (mounted && isProviderMounted) {
-          setPreloadingComplete(true);
-        }
-      }
-    };
-
-    preloadTranslations();
-
-    return () => {
-      mounted = false;
-    };
+    setPreloadingComplete(true);
   }, [language, isInitialized, isProviderMounted]);
 
   const translateText = async (text: string): Promise<string> => {
