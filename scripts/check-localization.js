@@ -16,12 +16,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const FRONTEND_DIR = path.join(__dirname, '../frontend/src');
-const PATTERNS_TO_CHECK = [
-  '**/*.tsx',
-  '**/*.ts',
-  '!**/*.d.ts',
-  '!**/node_modules/**',
-  '!**/dist/**'
+const PATTERNS_TO_CHECK = ['**/*.tsx', '**/*.ts'];
+const PATTERNS_TO_IGNORE = [
+  '**/*.d.ts',
+  '**/*.test.ts',
+  '**/*.test.tsx',
+  '**/*.spec.ts',
+  '**/*.spec.tsx',
+  '**/test/**',
+  '**/node_modules/**',
+  '**/dist/**',
 ];
 
 // Common patterns that indicate untranslated strings
@@ -135,7 +139,7 @@ function getSuggestion(text) {
 function main() {
   console.log('Checking localization compliance...\n');
 
-  const files = globSync(PATTERNS_TO_CHECK, { cwd: FRONTEND_DIR });
+  const files = globSync(PATTERNS_TO_CHECK, { cwd: FRONTEND_DIR, ignore: PATTERNS_TO_IGNORE });
   let totalIssues = 0;
   let filesWithIssues = 0;
 

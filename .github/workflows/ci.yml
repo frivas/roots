@@ -80,3 +80,32 @@ jobs:
             frontend/dist/
             backend/dist/
           retention-days: 3
+
+  e2e:
+    name: Playwright smoke
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [lint-typecheck]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: cd frontend && npx playwright install --with-deps chromium
+      - run: cd frontend && npm run build
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
+          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
+          VITE_BACKEND_URL: http://localhost:3000
+      - run: cd frontend && npm run test:e2e
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
+          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7
