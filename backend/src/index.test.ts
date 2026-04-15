@@ -120,7 +120,7 @@ describe('buildServer()', () => {
   });
 
   it('returns 500 when OpenAI does not return an image URL', async () => {
-    mockGenerateImage.mockResolvedValueOnce({ data: [{}] });
+    mockGenerateImage.mockResolvedValueOnce({ data: [{ url: '' }] });
     const app = await buildServer();
 
     const res = await app.inject({
