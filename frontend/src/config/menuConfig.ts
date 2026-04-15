@@ -278,7 +278,7 @@ const roleSpecificMenuItems: MenuItem[] = [
 // Function to get menu items based on user roles and email
 export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuItem[] => {
     // Start with common menu items and filter based on email access
-    const menuItems = commonMenuItems.map(item => ({
+    const menuItems: MenuItem[] = commonMenuItems.map(item => ({
         ...item,
         children: item.children?.filter(child => {
                 if (child.restrictedEmails && userEmail) {

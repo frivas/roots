@@ -107,7 +107,10 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
   };
 
   // Expandable group rows are containers only; active styling belongs to their links.
-  const isMenuItemActive = (): boolean => false;
+  const isMenuItemActive = (item: MenuItem): boolean => {
+    void item;
+    return false;
+  };
 
   const Link = RouterLink as unknown as React.ComponentType<{
     to: string;
