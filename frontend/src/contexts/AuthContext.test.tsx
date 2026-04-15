@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ vi.mock('react-router-dom', async (orig) => ({
 }));
 
 import { AuthProvider, useAuth } from './AuthContext';
-import { useAuth as useClerkAuth } from '@clerk/clerk-react';
+import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 
 const renderAuthProvider = (children: React.ReactNode = <div data-testid="child">ok</div>) =>
   render(
@@ -130,6 +130,111 @@ describe('AuthProvider', () => {
       </MemoryRouter>
     );
     expect(screen.getByTestId('role').textContent).toBe('teacher');
+  });
+
+  it('falls back to user role and null email when Clerk metadata is missing', () => {
+    vi.mocked(useUser).mockReturnValueOnce({
+      user: {
+        id: 'u2',
+        publicMetadata: {},
+      },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    const Consumer = () => {
+      const auth = useAuth();
+      return (
+        <>
+          <span data-testid="role">{auth.userRole}</span>
+          <span data-testid="email">{String(auth.userEmail)}</span>
+        </>
+      );
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Consumer />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('role').textContent).toBe('user');
+    expect(screen.getByTestId('email').textContent).toBe('null');
+  });
+
+  it('exposes isLoading while Clerk auth is not loaded yet', () => {
+    vi.mocked(useClerkAuth).mockReturnValueOnce({
+      isLoaded: false,
+      isSignedIn: false,
+      getToken: vi.fn(async () => null),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    const Consumer = () => {
+      const auth = useAuth();
+      return <span data-testid="loading">{String(auth.isLoading)}</span>;
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Consumer />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('loading').textContent).toBe('true');
+  });
+
+  it('returns null from getToken when Clerk token retrieval fails', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(useClerkAuth).mockReturnValueOnce({
+      isLoaded: true,
+      isSignedIn: true,
+      getToken: vi.fn(async () => {
+        throw new Error('token failed');
+      }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    const Consumer = () => {
+      const auth = useAuth();
+      const [token, setToken] = React.useState('unset');
+      return (
+        <>
+          <span data-testid="token">{token}</span>
+          <button data-testid="get-token" onClick={async () => setToken(String(await auth.getToken()))}>
+            get-token
+          </button>
+        </>
+      );
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Consumer />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByTestId('get-token'));
+
+    await waitFor(() => expect(screen.getByTestId('token').textContent).toBe('null'));
+    expect(errorSpy).toHaveBeenCalledWith('Failed to get token:', expect.any(Error));
+  });
+
+  it('ignores invalid authSelectedLanguage values after sign-in', async () => {
+    vi.useFakeTimers();
+    window.localStorage.setItem('authSelectedLanguage', 'fr-FR');
+
+    renderAuthProvider();
+
+    vi.advanceTimersByTime(600);
+
+    expect(window.localStorage.getItem('selectedLanguage')).toBeNull();
+    expect(window.localStorage.getItem('authSelectedLanguage')).toBe('fr-FR');
   });
 });
 

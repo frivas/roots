@@ -24,4 +24,15 @@ describe('createSupabase', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(() => createSupabase({ SUPABASE_URL: 'https://u.co' } as any)).toThrow();
   });
+
+  it('lazily creates and proxies the default client', async () => {
+    const fromSpy = vi.fn();
+    vi.doMock('@supabase/supabase-js', () => ({
+      createClient: vi.fn(() => ({ from: fromSpy })),
+    }));
+
+    const { supabase } = await import('./supabase.js');
+
+    expect(supabase.from).toBe(fromSpy);
+  });
 });

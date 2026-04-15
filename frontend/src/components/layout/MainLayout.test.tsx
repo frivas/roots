@@ -1,7 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+
+const mockUseUser = vi.fn();
+const mockSidebar = vi.fn(({ userRoles, hideBottomBorder }: { userRoles: string[]; hideBottomBorder: boolean }) => (
+  <div
+    data-testid="sidebar"
+    data-roles={userRoles.join(',')}
+    data-hide-border={String(hideBottomBorder)}
+  />
+));
 
 vi.mock('../../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
@@ -17,18 +26,7 @@ vi.mock('../../contexts/LingoTranslationContext', () => ({
 }));
 
 vi.mock('@clerk/clerk-react', () => ({
-  useUser: vi.fn(() => ({
-    user: {
-      publicMetadata: { roles: ['teacher'] },
-      imageUrl: '',
-      firstName: 'Test',
-      lastName: 'User',
-      fullName: 'Test User',
-      emailAddresses: [{ emailAddress: 'test@example.com' }],
-      primaryEmailAddress: { emailAddress: 'test@example.com' },
-    },
-    isLoaded: true,
-  })),
+  useUser: () => mockUseUser(),
   useClerk: vi.fn(() => ({ signOut: vi.fn() })),
   UserButton: () => <div data-testid="user-btn" />,
 }));
@@ -38,7 +36,7 @@ vi.mock('./SimpleHeader', () => ({
 }));
 
 vi.mock('./ModernSidebar', () => ({
-  default: () => <div data-testid="sidebar" />,
+  default: (props: { userRoles: string[]; hideBottomBorder: boolean }) => mockSidebar(props),
 }));
 
 vi.mock('./Footer', () => ({
@@ -83,6 +81,23 @@ import MainLayout from './MainLayout';
 import { useLocation } from 'react-router-dom';
 
 describe('MainLayout', () => {
+  beforeEach(() => {
+    mockUseUser.mockReset();
+    mockSidebar.mockClear();
+    mockUseUser.mockReturnValue({
+      user: {
+        publicMetadata: { roles: ['teacher'] },
+        imageUrl: '',
+        firstName: 'Test',
+        lastName: 'User',
+        fullName: 'Test User',
+        emailAddresses: [{ emailAddress: 'test@example.com' }],
+        primaryEmailAddress: { emailAddress: 'test@example.com' },
+      },
+      isLoaded: true,
+    });
+  });
+
   it('renders without crashing', () => {
     render(
       <MemoryRouter>
@@ -135,5 +150,46 @@ describe('MainLayout', () => {
     );
 
     expect(screen.queryByTestId('footer')).not.toBeInTheDocument();
+  });
+
+  it('passes filtered user roles to the sidebar and hides the border on agent pages', () => {
+    mockUseUser.mockReturnValue({
+      user: {
+        publicMetadata: { roles: ['teacher', 'invalid-role', 'administrator'] },
+      },
+      isLoaded: true,
+    });
+
+    vi.mocked(useLocation).mockReturnValueOnce({
+      pathname: '/services/progress-interpretation-chat/session',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'default',
+    });
+
+    render(
+      <MemoryRouter>
+        <MainLayout />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-roles', 'teacher,administrator');
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-hide-border', 'true');
+  });
+
+  it('passes no roles to the sidebar until Clerk is loaded', () => {
+    mockUseUser.mockReturnValue({
+      user: null,
+      isLoaded: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <MainLayout />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-roles', '');
   });
 });

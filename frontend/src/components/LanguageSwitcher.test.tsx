@@ -4,10 +4,11 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
 const mockSetLanguage = vi.fn();
+let mockLanguage = 'en-US';
 
 vi.mock('../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
-    language: 'en-US',
+    language: mockLanguage,
     setLanguage: mockSetLanguage,
     isTranslating: false,
     translateText: vi.fn(async (t: string) => t),
@@ -24,6 +25,7 @@ describe('LanguageSwitcher', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    mockLanguage = 'en-US';
   });
 
   it('renders a language toggle button', () => {
@@ -42,6 +44,27 @@ describe('LanguageSwitcher', () => {
       </MemoryRouter>
     );
     expect(screen.getByText('EN')).toBeInTheDocument();
+  });
+
+  it('shows ES label and toggles back to English when language is es-ES', () => {
+    mockLanguage = 'es-ES';
+    const events: CustomEvent[] = [];
+    const listener = (event: Event) => events.push(event as CustomEvent);
+    window.addEventListener('languageChanged', listener);
+
+    render(
+      <MemoryRouter>
+        <LanguageSwitcher />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('ES')).toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveAttribute('title', 'Switch to English');
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(events[0]?.detail?.language).toBe('en-US');
+    window.removeEventListener('languageChanged', listener);
   });
 
   it('dispatches languageChanged CustomEvent on click', () => {

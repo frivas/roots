@@ -51,6 +51,29 @@ describe('LingoTranslationService', () => {
       expect(result.active).toBe(true);
       expect(result.title).toBe('Inicio');
     });
+
+    it('recursively translates nested objects', async () => {
+      const obj = { section: { title: 'Home', label: 'Settings' } };
+      const result = await lingoTranslationService.translateObject(obj, 'es-ES');
+      expect(result).toEqual({
+        section: {
+          title: 'Inicio',
+          label: 'Configuración',
+        },
+      });
+    });
+  });
+
+  describe('translateHtml', () => {
+    it('returns HTML unchanged for English target', async () => {
+      const html = '<p>Hello</p>';
+      await expect(lingoTranslationService.translateHtml(html, 'en-US')).resolves.toBe(html);
+    });
+
+    it('returns HTML unchanged for Spanish target', async () => {
+      const html = '<p>Hello</p>';
+      await expect(lingoTranslationService.translateHtml(html, 'es-ES')).resolves.toBe(html);
+    });
   });
 
   describe('clearCache / getStats', () => {
@@ -71,7 +94,7 @@ describe('LingoTranslationService', () => {
 
   describe('preloadCommonTranslations', () => {
     it('resolves without error', async () => {
-      await expect(lingoTranslationService.preloadCommonTranslations('es-ES')).resolves.toBeUndefined();
+      await expect(lingoTranslationService.preloadCommonTranslations()).resolves.toBeUndefined();
     });
   });
 });

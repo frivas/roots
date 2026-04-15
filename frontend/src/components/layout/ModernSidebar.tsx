@@ -106,17 +106,8 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     return <IconElement className={cn("h-6 w-6", className)} />;
   };
 
-  // Helper function to check if a menu item should be active
-  const isMenuItemActive = (item: MenuItem): boolean => {
-    // If item has direct href, check if current path matches
-    if (item.href) {
-      return location.pathname === item.href;
-    }
-
-    // For items with children but no href, they should never be highlighted
-    // Only the specific selected child should be highlighted
-    return false;
-  };
+  // Expandable group rows are containers only; active styling belongs to their links.
+  const isMenuItemActive = (): boolean => false;
 
   const Link = RouterLink as unknown as React.ComponentType<{
     to: string;

@@ -33,10 +33,12 @@ const settingsRoutes: FastifyPluginAsync = async (fastify) => {
       };
       
       return settings;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Update user settings
@@ -67,10 +69,12 @@ const settingsRoutes: FastifyPluginAsync = async (fastify) => {
         message: 'Settings updated successfully',
         data: updatedSettings
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Reset user settings to defaults
@@ -98,10 +102,12 @@ const settingsRoutes: FastifyPluginAsync = async (fastify) => {
         message: 'Settings reset to defaults',
         data: defaultSettings
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
 };
 

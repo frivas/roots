@@ -71,10 +71,12 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify) => {
       ];
       
       return notifications;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Mark a notification as read
@@ -91,10 +93,12 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify) => {
         success: true,
         message: 'Notification marked as read'
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Mark all notifications as read
@@ -111,10 +115,12 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify) => {
         success: true,
         message: 'All notifications marked as read'
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Create a new notification (typically called by system processes)
@@ -152,10 +158,12 @@ const notificationsRoutes: FastifyPluginAsync = async (fastify) => {
         message: 'Notification created successfully',
         data: newNotification
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
 };
 

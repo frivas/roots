@@ -278,23 +278,15 @@ const roleSpecificMenuItems: MenuItem[] = [
 // Function to get menu items based on user roles and email
 export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuItem[] => {
     // Start with common menu items and filter based on email access
-    const menuItems = commonMenuItems.map(item => {
-        if (item.children) {
-            // Filter children based on email restrictions
-            const filteredChildren = item.children.filter(child => {
+    const menuItems = commonMenuItems.map(item => ({
+        ...item,
+        children: item.children?.filter(child => {
                 if (child.restrictedEmails && userEmail) {
                     return child.restrictedEmails.includes(userEmail);
                 }
                 return !child.restrictedEmails; // Show items without restrictions
-            });
-            
-            return {
-                ...item,
-                children: filteredChildren
-            };
-        }
-        return item;
-    });
+            })
+    }));
 
     // Add role-specific items
     roleSpecificMenuItems.forEach(item => {
@@ -305,4 +297,3 @@ export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuIt
 
     return menuItems;
 };
-

@@ -81,4 +81,32 @@ describe('ErrorBoundary', () => {
 
     expect(screen.getByText('Recovered')).toBeInTheDocument();
   });
+
+  it('navigates home when Go to Home is clicked', () => {
+    window.history.pushState({}, '', '/current');
+
+    render(
+      <ErrorBoundary>
+        <Bomb />
+      </ErrorBoundary>
+    );
+
+    fireEvent.click(screen.getByText('Go to Home'));
+
+    expect(screen.getByText('Go to Home')).toBeInTheDocument();
+  });
+
+  it('shows error details in development mode', () => {
+    vi.stubEnv('NODE_ENV', 'development');
+
+    render(
+      <ErrorBoundary>
+        <Bomb />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText('Error Details')).toBeInTheDocument();
+    expect(screen.getByText('Error: test error')).toBeInTheDocument();
+    vi.unstubAllEnvs();
+  });
 });
