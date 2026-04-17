@@ -1,5 +1,16 @@
 {
-  "lastSyncCommit": "0baad91b90f8b0ecd7fa26338dca5107260b8d36",
-  "lastSyncDate": "2026-04-04",
-  "blueprintVersion": "v1.14.4"
+  "lastSyncCommit": "5e1fae2d26af416b208e0e78dfd78c4217e13694",
+  "lastSyncDate": "2026-04-15",
+  "blueprintVersion": "v1.16.0",
+  "agentsTemplateSynced": true,
+  "rulesSynced": [
+    "deployment-safety.md",
+    "push-accountability.md",
+    "rpi-details.md",
+    "supabase.md",
+    "testing.md"
+  ],
+  "rulesCustom": [
+    "elevenlabs-agent-testing.md"
+  ]
 }
