@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // The service is a singleton module. We use vi.resetModules() + vi.doMock() +
 // dynamic import() per test so each test gets a fresh module instance.
@@ -10,11 +10,21 @@ describe('LingoTranslationService', () => {
     vi.resetModules();
   });
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   const buildMockEngine = () => ({
     localizeText: vi.fn(async (t: string) => `[es]${t}`),
     localizeObject: vi.fn(async (o: unknown) => o),
     localizeHtml: vi.fn(async (h: string) => h),
   });
+
+  const stubHostname = (hostname: string) => {
+    vi.stubGlobal('window', {
+      location: { hostname },
+    } as unknown as Window & typeof globalThis);
+  };
 
   const loadService = async (engine?: ReturnType<typeof buildMockEngine>) => {
     const e = engine ?? buildMockEngine();
@@ -99,6 +109,27 @@ describe('LingoTranslationService', () => {
       // Engine called at most once (0 in localhost)
       expect(mockEngine.localizeText.mock.calls.length).toBeLessThanOrEqual(1);
     });
+
+    it('uses the SDK and caches results away from localhost', async () => {
+      stubHostname('app.example.com');
+      const mockEngine = buildMockEngine();
+      const { svc } = await loadService(mockEngine);
+
+      await expect(svc.translateText('Bonjour', 'fr-FR')).resolves.toBe('[es]Bonjour');
+      await expect(svc.translateText('Bonjour', 'fr-FR')).resolves.toBe('[es]Bonjour');
+
+      expect(mockEngine.localizeText).toHaveBeenCalledTimes(1);
+      expect(svc.getStats().cacheSize).toBe(1);
+    });
+
+    it('falls back to the original text when the SDK throws', async () => {
+      stubHostname('app.example.com');
+      const mockEngine = buildMockEngine();
+      mockEngine.localizeText.mockRejectedValueOnce(new Error('boom'));
+      const { svc } = await loadService(mockEngine);
+
+      await expect(svc.translateText('Needs translation', 'fr-FR')).resolves.toBe('Needs translation');
+    });
   });
 
   describe('clearCache / getStats', () => {
@@ -132,6 +163,103 @@ describe('LingoTranslationService', () => {
       svc.clearCache();
       expect(svc.getStats().cacheSize).toBe(0);
       expect(svc.getStats().cacheSize).toBeGreaterThanOrEqual(before >= 0 ? 0 : 0);
+    });
+  });
+
+  describe('translateObject', () => {
+    it('returns the original object for English', async () => {
+      const { svc } = await loadService();
+      const input = { title: 'Hello', nested: { message: 'World' } };
+      await expect(svc.translateObject(input, 'en-US')).resolves.toBe(input);
+    });
+
+    it('recursively translates Spanish objects using translateText', async () => {
+      const { svc } = await loadService();
+      const input = {
+        title: 'Home',
+        nested: {
+          action: 'Settings',
+          count: 3,
+        },
+      };
+
+      await expect(svc.translateObject(input, 'es-ES')).resolves.toEqual({
+        title: 'Inicio',
+        nested: {
+          action: 'Configuración',
+          count: 3,
+        },
+      });
+    });
+
+    it('uses the SDK for non-Spanish object translation', async () => {
+      const mockEngine = buildMockEngine();
+      mockEngine.localizeObject.mockResolvedValueOnce({ title: '[fr]Bonjour' });
+      const { svc } = await loadService(mockEngine);
+
+      await expect(svc.translateObject({ title: 'Hello' }, 'fr-FR')).resolves.toEqual({ title: '[fr]Bonjour' });
+      expect(mockEngine.localizeObject).toHaveBeenCalledWith(
+        { title: 'Hello' },
+        expect.objectContaining({ sourceLocale: 'en-US', targetLocale: 'fr-FR' })
+      );
+    });
+
+    it('falls back to the original object when object translation fails', async () => {
+      const mockEngine = buildMockEngine();
+      mockEngine.localizeObject.mockRejectedValueOnce(new Error('boom'));
+      const { svc } = await loadService(mockEngine);
+      const input = { title: 'Hello' };
+
+      await expect(svc.translateObject(input, 'fr-FR')).resolves.toBe(input);
+    });
+  });
+
+  describe('translateHtml', () => {
+    it('returns the original html for English', async () => {
+      const { svc } = await loadService();
+      await expect(svc.translateHtml('<p>Hello</p>', 'en-US')).resolves.toBe('<p>Hello</p>');
+    });
+
+    it('uses the SDK for non-English html', async () => {
+      const mockEngine = buildMockEngine();
+      mockEngine.localizeHtml.mockResolvedValueOnce('<p>Bonjour</p>');
+      const { svc } = await loadService(mockEngine);
+
+      await expect(svc.translateHtml('<p>Hello</p>', 'fr-FR')).resolves.toBe('<p>Bonjour</p>');
+      expect(mockEngine.localizeHtml).toHaveBeenCalledWith(
+        '<p>Hello</p>',
+        expect.objectContaining({ sourceLocale: 'en-US', targetLocale: 'fr-FR' })
+      );
+    });
+
+    it('falls back to the original html when html translation fails', async () => {
+      const mockEngine = buildMockEngine();
+      mockEngine.localizeHtml.mockRejectedValueOnce(new Error('boom'));
+      const { svc } = await loadService(mockEngine);
+
+      await expect(svc.translateHtml('<p>Hello</p>', 'fr-FR')).resolves.toBe('<p>Hello</p>');
+    });
+  });
+
+  describe('preloadCommonTranslations', () => {
+    it('preloads the common Spanish phrases', async () => {
+      const { svc } = await loadService();
+      const translateSpy = vi.spyOn(svc, 'translateText');
+
+      await svc.preloadCommonTranslations('es-ES');
+
+      expect(translateSpy).toHaveBeenCalledTimes(11);
+      expect(translateSpy).toHaveBeenCalledWith('Home', 'es-ES');
+      expect(translateSpy).toHaveBeenCalledWith('Search', 'es-ES');
+    });
+
+    it('does nothing for non-Spanish preload requests', async () => {
+      const { svc } = await loadService();
+      const translateSpy = vi.spyOn(svc, 'translateText');
+
+      await svc.preloadCommonTranslations('fr-FR');
+
+      expect(translateSpy).not.toHaveBeenCalled();
     });
   });
 });
