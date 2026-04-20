@@ -37,7 +37,7 @@
     "concurrently": "^9.2.1",
     "glob": "^13.0.6",
     "husky": "^9.1.7",
-    "next": "15.5.15"
+    "next": "16.2.4"
   },
   "type": "module",
   "engines": {
@@ -48,7 +48,7 @@
   },
   "overrides": {
     "fast-xml-parser": "5.5.9",
-    "next": "15.5.15",
+    "next": "16.2.4",
     "@modelcontextprotocol/sdk": "1.29.0",
     "diff": "8.0.4",
     "yaml": "2.8.3",
