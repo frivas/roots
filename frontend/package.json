@@ -19,7 +19,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.60.2",
+    "@clerk/clerk-react": "^5.61.5",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.0",
     "framer-motion": "^12.34.1",
