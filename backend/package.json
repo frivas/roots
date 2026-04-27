@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
-    "@vercel/node": "^5.7.11",
+    "@vercel/node": "^5.7.13",
     "@vitest/coverage-v8": "^4.1.4",
     "eslint": "^10.2.1",
     "tsx": "^4.21.0",
