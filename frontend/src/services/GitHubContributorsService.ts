@@ -11,7 +11,7 @@ export interface ContributorStats {
   timelineData: TimelineItem[];
 }
 
-export interface TimelineItem {
+interface TimelineItem {
   date: string;
   title: string;
   description: string;
