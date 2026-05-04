@@ -1,10 +1,8 @@
 {
   "ignore": ["eslint.config.js"],
   "ignoreBinaries": ["du", "knip", "license-checker", "AGPL-3.0", "playwright"],
-  "ignoreDependencies": ["next"],
   "workspaces": {
     "frontend": {
-      "entry": ["lingo.config.js"],
       "project": ["src/**/*.{ts,tsx}"],
       "ignore": ["src/test/**"],
       "ignoreDependencies": [
