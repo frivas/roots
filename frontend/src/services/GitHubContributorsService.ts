@@ -11,7 +11,7 @@ export interface ContributorStats {
   timelineData: TimelineItem[];
 }
 
-export interface TimelineItem {
+interface TimelineItem {
   date: string;
   title: string;
   description: string;
@@ -226,4 +226,4 @@ export class GitHubContributorsService {
   static addContributor(email: string, stats: ContributorStats): void {
     GITHUB_CONTRIBUTORS[email] = stats;
   }
-} 
+}
