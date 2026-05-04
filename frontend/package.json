@@ -46,7 +46,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
     "jsdom": "^29.0.2",
-    "lingo.dev": "^0.133.7",
+    "lingo.dev": "^0.133.11",
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.14",
     "terser": "^5.46.0",
