@@ -28,6 +28,7 @@
     "test:backend": "cd backend && npm run test",
     "test:e2e": "cd frontend && npm run test:e2e",
     "test:coverage": "cd frontend && npm run test:coverage && cd ../backend && npm run test:coverage",
+    "report:portfolio-coverage": "bash scripts/report-portfolio-coverage.sh",
     "check-localization": "node scripts/check-localization.js",
     "pre-commit": "npm run check-localization && npm run lint",
     "prepare": "husky"
@@ -36,17 +37,22 @@
     "concurrently": "^9.2.1",
     "fast-uri": "^3.1.2",
     "glob": "^13.0.6",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "next": "16.2.4"
   },
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "optionalDependencies": {
-    "@rollup/rollup-darwin-x64": "^4.57.1"
+    "@rollup/rollup-darwin-x64": "^4.60.2"
   },
   "overrides": {
     "fast-xml-parser": "5.5.9",
+    "next": "16.2.4",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "diff": "8.0.4",
+    "yaml": "2.8.3",
     "tmp": "0.2.5",
     "@vercel/node": {
       "undici": "^6.24.1",
@@ -58,6 +64,18 @@
     },
     "@vercel/static-config": {
       "ajv": "^8.18.0"
+    },
+    "@clerk/clerk-react": {
+      "@clerk/shared": "3.47.4"
+    },
+    "@lingo.dev/_react": {
+      "next": "15.5.15",
+      "lodash": "4.18.1"
+    },
+    "lingo.dev": {
+      "@modelcontextprotocol/sdk": "1.29.0",
+      "diff": "8.0.4",
+      "yaml": "2.8.3"
     }
   }
 }

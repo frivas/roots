@@ -41,10 +41,16 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      - name: Run frontend tests
-        run: npm run test:frontend
-      - name: Run backend tests
-        run: npm run test:backend
+      - name: Run frontend tests with coverage
+        run: cd frontend && npm run test:coverage -- --reporter=json --outputFile=coverage/test-results.json
+      - name: Run backend tests with coverage
+        run: cd backend && npm run test:coverage -- --reporter=json --outputFile=coverage/test-results.json
+      - name: Report coverage to Portfolio
+        if: github.event_name == 'push'
+        env:
+          COVERAGE_SECRET: ${{ secrets.COVERAGE_SECRET }}
+          PORTFOLIO_COVERAGE_URL: https://portfolio.thecreativetoken.com/api/coverage
+        run: npm run report:portfolio-coverage
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v7
