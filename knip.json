@@ -21,7 +21,6 @@
       "ignore": ["src/test/**"],
       "ignoreDependencies": [
         "tsx",
-        "@eslint/js",
         "globals"
       ]
     }
