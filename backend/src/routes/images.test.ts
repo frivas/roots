@@ -71,6 +71,19 @@ describe('images routes', () => {
     expect(res.statusCode).toBe(500);
   });
 
+  it('POST /api/images/generate returns 500 when OpenAI omits the image URL', async () => {
+    mockGenerate.mockResolvedValueOnce({ data: [{}] } as never);
+    __resetOpenAI();
+    const app = await buildServer();
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/images/generate',
+      payload: { prompt: 'test' },
+    });
+    expect(res.statusCode).toBe(500);
+    expect(res.json()).toEqual({ error: 'No image URL returned from OpenAI' });
+  });
+
   describe('POST /api/images/generate-for-story', () => {
     it('returns 200 with success and image_url', async () => {
       const app = await buildServer();
@@ -95,6 +108,20 @@ describe('images routes', () => {
       expect(fakeConn.write).toHaveBeenCalledWith(expect.stringContaining('generation-started'));
     });
 
+    it('drops broken SSE connections during the generation-started broadcast', async () => {
+      const app = await buildServer();
+      const brokenConn = { write: vi.fn(() => { throw new Error('start failed'); }), end: vi.fn() };
+      (app as any).sseConnections.add(brokenConn); // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      await app.inject({
+        method: 'POST',
+        url: '/api/images/generate-for-story',
+        payload: { mood: 'happy' },
+      });
+
+      expect((app as any).sseConnections.has(brokenConn)).toBe(false); // eslint-disable-line @typescript-eslint/no-explicit-any
+    });
+
     it('broadcasts story-illustration event after image generation', async () => {
       const app = await buildServer();
       const fakeConn = { write: vi.fn(), end: vi.fn() };
@@ -106,6 +133,25 @@ describe('images routes', () => {
       });
       const allWrites = fakeConn.write.mock.calls.map((c: string[]) => c[0]).join('');
       expect(allWrites).toContain('story-illustration');
+    });
+
+    it('drops broken SSE connections during the final illustration broadcast', async () => {
+      const app = await buildServer();
+      const brokenConn = {
+        write: vi.fn()
+          .mockImplementationOnce(() => undefined)
+          .mockImplementationOnce(() => { throw new Error('illustration failed'); }),
+        end: vi.fn(),
+      };
+      (app as any).sseConnections.add(brokenConn); // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      await app.inject({
+        method: 'POST',
+        url: '/api/images/generate-for-story',
+        payload: { mood: 'cheerful' },
+      });
+
+      expect((app as any).sseConnections.has(brokenConn)).toBe(false); // eslint-disable-line @typescript-eslint/no-explicit-any
     });
 
     it.each(['happy', 'scary', 'sad', 'magical', 'adventurous', 'cheerful', 'unknown_mood'])(
@@ -129,6 +175,23 @@ describe('images routes', () => {
         payload: {},
       });
       expect(res.statusCode).toBe(200);
+    });
+
+    it('returns 500 when story generation does not produce an image URL', async () => {
+      mockGenerate.mockResolvedValueOnce({ data: [{}] } as never);
+      __resetOpenAI();
+      const app = await buildServer();
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/images/generate-for-story',
+        payload: { mood: 'magical' },
+      });
+
+      expect(res.statusCode).toBe(500);
+      expect(res.json()).toMatchObject({
+        success: false,
+        error: 'No image URL returned from OpenAI',
+      });
     });
   });
 });

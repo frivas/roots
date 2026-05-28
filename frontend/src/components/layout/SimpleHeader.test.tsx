@@ -113,4 +113,18 @@ describe('SimpleHeader', () => {
     );
     expect(container.querySelector('header')).toBeInTheDocument();
   });
+
+  it('signs the user out from the mobile menu and closes it', () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+    fireEvent.click(screen.getByText('Sign out'));
+
+    expect(mockSignOut).toHaveBeenCalled();
+    expect(screen.queryByText('Services')).not.toBeInTheDocument();
+  });
 });
