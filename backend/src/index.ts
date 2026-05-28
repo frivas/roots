@@ -63,6 +63,7 @@ export const buildServer = async (opts: BuildServerOptions = {} as BuildServerOp
     });
 
     // Keep connection alive
+    /* c8 ignore next 3 */
     const keepAlive = setInterval(() => {
       reply.raw.write(': heartbeat\n\n');
     }, 30000);

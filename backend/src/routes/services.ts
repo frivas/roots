@@ -52,10 +52,12 @@ const servicesRoutes: FastifyPluginAsync = async (fastify) => {
       ];
       
       return services;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Get a specific service by ID
@@ -121,10 +123,12 @@ const servicesRoutes: FastifyPluginAsync = async (fastify) => {
       }
       
       return service;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
 };
 

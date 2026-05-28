@@ -1,253 +1,188 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { Bell, BookOpen, Calendar, Home, Mail, Megaphone, School, User } from 'lucide-react';
 
-type Role = 'student' | 'parent' | 'teacher' | 'administrator';
+const mockSignOut = vi.fn();
+const mockGetMenuItems = vi.fn();
+const mockUseLocation = vi.fn();
+const mockUseUser = vi.fn();
 
-const mocks = vi.hoisted(() => {
-  const MockIcon = () => null;
-
-  return {
-    pathname: '/home',
-    signOut: vi.fn(),
-    user: {
-      id: 'u1',
-      imageUrl: '',
-      firstName: 'Test',
-      lastName: 'User',
-      primaryEmailAddress: { emailAddress: 'test@example.com' },
-      emailAddresses: [{ emailAddress: 'test@example.com' }],
-    },
-    menuItems: [
-      {
-        name: 'Home',
-        icon: MockIcon,
-        children: [
-          { name: 'Dashboard', href: '/dashboard', icon: MockIcon },
-          {
-            name: 'Group',
-            icon: MockIcon,
-            children: [
-              { name: 'Nested Link', href: '/nested', icon: MockIcon },
-              { name: 'Nested Label', icon: MockIcon },
-            ],
-          },
-          { name: 'Placeholder', icon: MockIcon },
-        ],
-      },
-      {
-        name: 'Direct Item',
-        href: '/direct',
-        icon: MockIcon,
-      },
-    ] as Array<Record<string, unknown>>,
-  };
-});
-
-vi.mock('../../contexts/LingoTranslationContext', () => ({
-  useLingoTranslation: vi.fn(() => ({
-    language: 'en-US',
-    setLanguage: vi.fn(),
-    isTranslating: false,
-    translateText: vi.fn(async (text: string) => text),
-    preloadingComplete: true,
-    isInitialized: true,
-    isProviderMounted: true,
-  })),
-  LingoTranslationProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+vi.mock('../TranslatedText', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
 }));
 
-vi.mock('../../services/SpanishTranslations', () => ({
-  getSpanishTranslation: vi.fn((text: string) => text),
+vi.mock('../ui/MadridLogo', () => ({
+  default: () => <div data-testid="madrid-logo" />,
 }));
 
 vi.mock('../../config/menuConfig', () => ({
-  getMenuItems: vi.fn(() => mocks.menuItems),
+  getMenuItems: (...args: unknown[]) => mockGetMenuItems(...args),
 }));
 
 vi.mock('@clerk/clerk-react', () => ({
-  useUser: vi.fn(() => ({
-    user: mocks.user,
-  })),
-  useClerk: vi.fn(() => ({ signOut: mocks.signOut })),
+  useUser: () => mockUseUser(),
+  useClerk: () => ({ signOut: mockSignOut }),
 }));
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
-  return {
-    ...actual,
-    useLocation: vi.fn(() => ({ pathname: mocks.pathname })),
-    Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string; className?: string }) => (
-      <a href={to} {...rest}>
-        {children}
-      </a>
-    ),
-  };
-});
+vi.mock('react-router-dom', () => ({
+  Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string; className?: string }) => (
+    <a href={to} {...rest}>
+      {children}
+    </a>
+  ),
+  useLocation: () => mockUseLocation(),
+}));
 
 import ModernSidebar from './ModernSidebar';
+import type { Role } from '../../config/menuConfig';
 
-const defaultProps = {
-  userRoles: ['teacher'] as Role[],
-};
+const TestIcon = Home;
+const testNavigation = [
+  {
+    name: 'Section',
+    icon: TestIcon,
+    children: [
+      {
+        name: 'Nested',
+        icon: BookOpen,
+        children: [
+          { name: 'Leaf Link', href: '/nested/leaf', icon: Mail },
+          { name: 'Leaf Static', icon: Bell },
+        ],
+      },
+      { name: 'Direct Child', href: '/direct-child', icon: User },
+      { name: 'Static Child', icon: School },
+    ],
+  },
+  {
+    name: 'Hybrid Section',
+    href: '/hybrid',
+    icon: Home,
+    children: [
+      { name: 'Hybrid Child', href: '/hybrid/child', icon: Mail },
+    ],
+  },
+  { name: 'Top Link', href: '/top-link', icon: Calendar },
+  { name: 'Top Static', icon: Megaphone },
+];
 
-const renderSidebar = (props?: Partial<React.ComponentProps<typeof ModernSidebar>>) =>
+const renderSidebar = (props: Partial<{ userRoles: Role[]; hideBottomBorder: boolean }> = {}) =>
   render(
-    <MemoryRouter>
-      <ModernSidebar {...defaultProps} {...props} />
-    </MemoryRouter>
+    <ModernSidebar
+      userRoles={props.userRoles ?? (['teacher'] as Role[])}
+      hideBottomBorder={props.hideBottomBorder ?? false}
+    />
   );
 
 describe('ModernSidebar', () => {
   beforeEach(() => {
-    mocks.pathname = '/home';
-    mocks.signOut.mockReset();
-    mocks.user = {
-      id: 'u1',
-      imageUrl: '',
-      firstName: 'Test',
-      lastName: 'User',
-      primaryEmailAddress: { emailAddress: 'test@example.com' },
-      emailAddresses: [{ emailAddress: 'test@example.com' }],
-    };
-    mocks.menuItems = [
-      {
-        name: 'Home',
-        icon: (() => null) as () => null,
-        children: [
-          { name: 'Dashboard', href: '/dashboard', icon: (() => null) as () => null },
-          {
-            name: 'Group',
-            icon: (() => null) as () => null,
-            children: [
-              { name: 'Nested Link', href: '/nested', icon: (() => null) as () => null },
-              { name: 'Nested Label', icon: (() => null) as () => null },
-            ],
-          },
-          { name: 'Placeholder', icon: (() => null) as () => null },
-        ],
+    mockSignOut.mockReset();
+    mockGetMenuItems.mockReset();
+    mockGetMenuItems.mockReturnValue(testNavigation);
+    mockUseLocation.mockReset();
+    mockUseLocation.mockReturnValue({ pathname: '/' });
+    mockUseUser.mockReset();
+    mockUseUser.mockReturnValue({
+      user: {
+        id: 'u1',
+        imageUrl: '',
+        firstName: 'Test',
+        lastName: 'User',
+        primaryEmailAddress: { emailAddress: 'test@example.com' },
+        emailAddresses: [{ emailAddress: 'test@example.com' }],
       },
-      {
-        name: 'Direct Item',
-        href: '/direct',
-        icon: (() => null) as () => null,
-      },
-    ];
+    });
   });
 
-  it('renders without crashing for teacher role', () => {
-    renderSidebar();
-    expect(document.body).toBeTruthy();
-  });
-
-  it('renders without crashing for other role combinations', () => {
-    renderSidebar({ userRoles: ['administrator'] as Role[] });
-    renderSidebar({ userRoles: ['parent'] as Role[] });
-    renderSidebar({ userRoles: ['student'] as Role[] });
-    renderSidebar({ userRoles: [] });
-    expect(document.body).toBeTruthy();
-  });
-
-  it('renders the sign out button and calls signOut when clicked', () => {
+  it('renders direct links, static items, branding, and sign out affordances', () => {
     renderSidebar();
 
+    expect(screen.getByText('Raíces')).toBeInTheDocument();
+    expect(screen.getByText('Top Link').closest('a')).toHaveAttribute('href', '/top-link');
+    expect(screen.getByText('Top Static')).toBeInTheDocument();
+    expect(screen.getByText('Sign Out')).toBeInTheDocument();
+    expect(screen.getByText('Test User')).toBeInTheDocument();
+  });
+
+  it('auto-expands nested menus for active grandchild routes and renders static descendants', () => {
+    mockUseLocation.mockReturnValue({ pathname: '/nested/leaf' });
+
+    renderSidebar();
+
+    expect(screen.getByText('Leaf Link').closest('a')).toHaveAttribute('href', '/nested/leaf');
+    expect(screen.getByText('Leaf Static')).toBeInTheDocument();
+    expect(screen.getByText('Static Child')).toBeInTheDocument();
+  });
+
+  it('toggles expandable menus and signs the user out', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    renderSidebar();
+
+    fireEvent.click(screen.getByRole('button', { name: /section/i }));
+    fireEvent.click(screen.getByRole('button', { name: /section/i }));
     fireEvent.click(screen.getByText('Sign Out'));
 
-    expect(mocks.signOut).toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith('Expanded:', 'Section');
+    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Section');
+    expect(mockSignOut).toHaveBeenCalled();
   });
 
-  it('renders the Raices brand link', () => {
-    renderSidebar();
-    expect(screen.getByText('Raíces')).toBeInTheDocument();
-  });
+  it('toggles nested child menus and responds to hover expansion', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    mockUseLocation.mockReturnValue({ pathname: '/nested/leaf' });
 
-  it('auto-expands nested menus for the active route', async () => {
-    mocks.pathname = '/nested';
-
-    renderSidebar();
-
-    await waitFor(() => expect(screen.getByText('Nested Link')).toBeInTheDocument());
-    expect(screen.getByText('Nested Label')).toBeInTheDocument();
-  });
-
-  it('toggles top-level and nested menus when clicked', async () => {
-    renderSidebar();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Home' }));
-    expect(await screen.findByText('Dashboard')).toBeInTheDocument();
-    expect(screen.queryByText('Nested Link')).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Group' }));
-    expect(await screen.findByText('Nested Link')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Group' }));
-    await waitFor(() => expect(screen.queryByText('Nested Link')).not.toBeInTheDocument());
-  });
-
-  it('renders placeholder child items without links', async () => {
-    renderSidebar();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Home' }));
-
-    const placeholder = await screen.findByText('Placeholder');
-    expect(placeholder.closest('a')).toBeNull();
-  });
-
-  it('marks direct links as active when the route matches', () => {
-    mocks.pathname = '/direct';
-
-    renderSidebar();
-
-    expect(screen.getByRole('link', { name: 'Direct Item' }).className).toContain('bg-red-500/20');
-  });
-
-  it('updates the mobile state on hover', () => {
     const { container } = renderSidebar();
-    const sidebar = container.firstElementChild as HTMLElement;
+    const root = container.firstElementChild as HTMLElement;
 
-    fireEvent.mouseEnter(sidebar);
-    expect(sidebar.className).toContain('w-72');
+    fireEvent.mouseEnter(root);
+    fireEvent.click(screen.getByRole('button', { name: /nested/i }));
+    fireEvent.mouseLeave(root);
 
-    fireEvent.mouseLeave(sidebar);
-    expect(sidebar.className).toContain('w-16');
+    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Nested');
   });
 
-  it('renders the user avatar image when one exists', () => {
-    mocks.user = {
-      ...mocks.user,
-      imageUrl: 'https://example.com/avatar.png',
-    };
+  it('renders user image avatars and respects the hideBottomBorder variant', () => {
+    mockUseLocation.mockReturnValue({ pathname: '/top-link' });
+    mockUseUser.mockReturnValue({
+      user: {
+        id: 'u2',
+        imageUrl: 'https://img.test/avatar.png',
+        firstName: 'Image',
+        lastName: 'User',
+        primaryEmailAddress: { emailAddress: 'image@example.com' },
+        emailAddresses: [{ emailAddress: 'image@example.com' }],
+      },
+    });
 
-    renderSidebar();
-
-    expect(screen.getByAltText('Test User')).toBeInTheDocument();
-  });
-
-  it('falls back to the email initial and translated user label when profile details are missing', () => {
-    mocks.user = {
-      id: 'u2',
-      imageUrl: '',
-      firstName: '',
-      lastName: '',
-      primaryEmailAddress: { emailAddress: 'alpha@example.com' },
-      emailAddresses: [{ emailAddress: 'alpha@example.com' }],
-    };
-
-    renderSidebar();
-
-    expect(screen.getByText('a')).toBeInTheDocument();
-    const profileSection = screen.getByText('alpha@example.com').closest('div');
-    if (!profileSection) {
-      throw new Error('Expected profile section');
-    }
-    expect(within(profileSection.parentElement as HTMLElement).getByText('User')).toBeInTheDocument();
-  });
-
-  it('removes the bottom border when hideBottomBorder is enabled', () => {
     const { container } = renderSidebar({ hideBottomBorder: true });
-    const footer = container.querySelector('button')?.closest('div')?.parentElement;
 
-    expect(footer?.className).not.toContain('border-t');
+    expect(screen.getByAltText('Image User')).toBeInTheDocument();
+    expect(screen.getByText('Top Link').closest('a')?.className).toContain('bg-red-500/20');
+    expect(container.querySelector('.border-t')).not.toBeInTheDocument();
+  });
+
+  it('marks hybrid items with href as active when their path matches', () => {
+    mockUseLocation.mockReturnValue({ pathname: '/hybrid' });
+
+    renderSidebar();
+
+    expect(screen.getByText('Hybrid Section').closest('a')?.className).toContain('bg-red-500/20');
+  });
+
+  it('falls back to a generic user label when names are unavailable', () => {
+    mockUseUser.mockReturnValue({
+      user: {
+        id: 'u3',
+        imageUrl: '',
+        primaryEmailAddress: { emailAddress: 'fallback@example.com' },
+        emailAddresses: [{ emailAddress: 'fallback@example.com' }],
+      },
+    });
+
+    renderSidebar();
+
+    expect(screen.getByText('User')).toBeInTheDocument();
   });
 });
