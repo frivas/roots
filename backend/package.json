@@ -22,19 +22,20 @@
     "@clerk/fastify": "^3.1.31",
     "@fastify/cors": "^11.2.0",
     "@fastify/rate-limit": "^10.3.0",
-    "@supabase/supabase-js": "^2.103.3",
+    "@supabase/supabase-js": "^2.105.4",
     "dotenv": "^17.4.2",
     "fastify": "^5.7.4",
-    "openai": "^6.34.0"
+    "openai": "^6.37.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
-    "@vercel/node": "^5.7.11",
-    "@vitest/coverage-v8": "^4.1.4",
+    "@vercel/node": "^5.7.13",
+    "@vitest/coverage-v8": "^4.1.6",
     "eslint": "^10.2.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.58.2",
-    "vitest": "^4.1.2"
+    "typescript-eslint": "^8.59.2",
+    "vitest": "^4.1.6"
   }
 }

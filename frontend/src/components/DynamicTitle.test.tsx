@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -23,6 +23,19 @@ vi.mock('../contexts/LingoTranslationContext', () => ({
 import DynamicTitle from './DynamicTitle';
 
 describe('DynamicTitle', () => {
+  beforeEach(() => {
+    mockUseLingoTranslation.mockReset();
+    mockUseLingoTranslation.mockReturnValue({
+      language: 'en-US',
+      setLanguage: vi.fn(),
+      isTranslating: false,
+      translateText: vi.fn(async (t: string) => t),
+      preloadingComplete: true,
+      isInitialized: true,
+      isProviderMounted: true,
+    });
+  });
+
   it('renders null (returns nothing visible)', () => {
     const { container } = render(
       <MemoryRouter>
@@ -66,5 +79,31 @@ describe('DynamicTitle', () => {
     // Give it a moment; title should remain unchanged
     await new Promise((r) => setTimeout(r, 100));
     expect(document.title).toBe('unchanged');
+  });
+
+  it('falls back to the original title when translation fails', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockUseLingoTranslation.mockReturnValueOnce({
+      language: 'es-ES',
+      setLanguage: vi.fn(),
+      isTranslating: false,
+      translateText: vi.fn(async () => {
+        throw new Error('translate failed');
+      }),
+      preloadingComplete: true,
+      isInitialized: true,
+      isProviderMounted: true,
+    });
+
+    render(
+      <MemoryRouter>
+        <DynamicTitle />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(document.title).toBe('Raíces - Educational Management System for Madrid Community');
+    });
+    expect(errorSpy).toHaveBeenCalledWith('Failed to translate title:', expect.any(Error));
   });
 });
