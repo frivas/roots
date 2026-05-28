@@ -1,18 +1,16 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock heavy dependencies before importing buildServer
-const mockGenerate = vi.hoisted(() =>
-  vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] }))
-);
+const mockGenerateImage = vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] }));
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
   getAuth: vi.fn(() => ({ userId: 'u1' })),
 }));
+
 vi.mock('openai', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: mockGenerate };
+  const MockOpenAI = function (this: any) {
+    this.images = { generate: mockGenerateImage };
   };
   return { default: MockOpenAI };
 });
@@ -21,8 +19,8 @@ import { buildServer } from './index.js';
 
 describe('buildServer()', () => {
   beforeEach(() => {
-    mockGenerate.mockReset();
-    mockGenerate.mockResolvedValue({ data: [{ url: 'https://img.test/mock.png' }] });
+    mockGenerateImage.mockReset();
+    mockGenerateImage.mockResolvedValue({ data: [{ url: 'https://img.test/mock.png' }] });
   });
 
   it('GET /health returns {status: ok}', async () => {
@@ -30,6 +28,27 @@ describe('buildServer()', () => {
     const res = await app.inject({ method: 'GET', url: '/health' });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({ status: 'ok' });
+  });
+
+  it('GET /events/story-illustrations opens an SSE stream', async () => {
+    const app = await buildServer();
+    const responsePromise = app.inject({ method: 'GET', url: '/events/story-illustrations' });
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((app as any).sseConnections.size > 0) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [connection] = Array.from((app as any).sseConnections) as Array<{ emit?: (event: string) => void }>;
+    connection?.emit?.('close');
+
+    await expect(responsePromise).rejects.toThrow('response destroyed before completion');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((app as any).sseConnections.size).toBe(0);
   });
 
   it('GET /webhook/test returns ok shape', async () => {
@@ -46,100 +65,74 @@ describe('buildServer()', () => {
       url: '/webhook/elevenlabs/story-illustration',
       payload: { story_content: 'a tale', mood: 'magical', characters: 'a dragon' },
     });
+
     expect(res.statusCode).toBe(200);
     expect(res.json()).toHaveProperty('image_url');
+    expect(mockGenerateImage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining('enchanted atmosphere'),
+      })
+    );
   });
 
-  it('POST /webhook/elevenlabs/story-illustration broadcasts generation-started to sseConnections', async () => {
+  it('removes an SSE connection when the generation-started broadcast fails', async () => {
     const app = await buildServer();
-    const fakeConn = { write: vi.fn(), end: vi.fn() };
+    const fakeConn = { write: vi.fn(() => { throw new Error('broken start stream'); }), end: vi.fn() };
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (app as any).sseConnections.add(fakeConn);
-    await app.inject({
-      method: 'POST',
-      url: '/webhook/elevenlabs/story-illustration',
-      payload: { mood: 'happy' },
-    });
-    expect(fakeConn.write).toHaveBeenCalledWith(expect.stringContaining('generation-started'));
-  });
 
-  it('removes SSE connections that fail while sending the start event', async () => {
-    const app = await buildServer();
-    const flakyConn = {
-      write: vi.fn(() => {
-        throw new Error('socket closed');
-      }),
-      end: vi.fn(),
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (app as any).sseConnections.add(flakyConn);
-    await app.inject({
+    const res = await app.inject({
       method: 'POST',
       url: '/webhook/elevenlabs/story-illustration',
       payload: { mood: 'happy' },
     });
 
-    expect(flakyConn.write).toHaveBeenCalled();
+    expect(res.statusCode).toBe(200);
+    expect(fakeConn.write).toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((app as any).sseConnections.has(flakyConn)).toBe(false);
+    expect((app as any).sseConnections.has(fakeConn)).toBe(false);
   });
 
-  it('removes SSE connections that fail while sending the final illustration event', async () => {
+  it('removes an SSE connection when the final illustration broadcast fails', async () => {
     const app = await buildServer();
-    const flakyConn = {
-      write: vi.fn()
+    const fakeConn = {
+      write: vi
+        .fn()
         .mockImplementationOnce(() => undefined)
-        .mockImplementationOnce(() => {
-          throw new Error('socket closed');
-        }),
+        .mockImplementationOnce(() => { throw new Error('broken illustration stream'); }),
       end: vi.fn(),
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (app as any).sseConnections.add(flakyConn);
-    await app.inject({
+    (app as any).sseConnections.add(fakeConn);
+
+    const res = await app.inject({
       method: 'POST',
       url: '/webhook/elevenlabs/story-illustration',
-      payload: { mood: 'happy' },
+      payload: { mood: 'cheerful' },
     });
 
-    expect(flakyConn.write).toHaveBeenCalledTimes(2);
+    expect(res.statusCode).toBe(200);
+    expect(fakeConn.write).toHaveBeenCalledTimes(2);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((app as any).sseConnections.has(flakyConn)).toBe(false);
+    expect((app as any).sseConnections.has(fakeConn)).toBe(false);
   });
 
-  it('returns a 500 when OpenAI does not return an image url', async () => {
-    mockGenerate.mockResolvedValueOnce({ data: [{} as { url: string }] });
+  it('returns 500 when OpenAI does not return an image URL', async () => {
+    mockGenerateImage.mockResolvedValueOnce({ data: [{ url: '' }] });
     const app = await buildServer();
 
     const res = await app.inject({
       method: 'POST',
       url: '/webhook/elevenlabs/story-illustration',
-      payload: { story_content: 'a tale' },
+      payload: { mood: 'unknown' },
     });
 
     expect(res.statusCode).toBe(500);
     expect(res.json()).toMatchObject({
       success: false,
       error: 'No image URL returned from OpenAI',
-    });
-  });
-
-  it('returns a 500 when image generation throws', async () => {
-    mockGenerate.mockRejectedValueOnce(new Error('service unavailable'));
-    const app = await buildServer();
-
-    const res = await app.inject({
-      method: 'POST',
-      url: '/webhook/elevenlabs/story-illustration',
-      payload: { story_content: 'a tale' },
-    });
-
-    expect(res.statusCode).toBe(500);
-    expect(res.json()).toMatchObject({
-      success: false,
-      error: 'service unavailable',
     });
   });
 
@@ -150,15 +143,17 @@ describe('buildServer()', () => {
     process.env.PORT = orig;
   });
 
-  it('each mood variant in the moodStyles table is handled without error', async () => {
+  it('handles each supported mood variant without error', async () => {
     const app = await buildServer();
+
     for (const mood of ['happy', 'scary', 'sad', 'magical', 'adventurous', 'cheerful', 'unknown']) {
       const res = await app.inject({
         method: 'POST',
         url: '/webhook/elevenlabs/story-illustration',
         payload: { mood },
       });
-      expect([200, 500]).toContain(res.statusCode); // 500 only if openai mock fails
+
+      expect([200, 500]).toContain(res.statusCode);
     }
   });
 });

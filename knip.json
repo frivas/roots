@@ -1,10 +1,9 @@
 {
   "ignore": ["eslint.config.js"],
+  "ignoreDependencies": ["fast-uri"],
   "ignoreBinaries": ["du", "knip", "license-checker", "AGPL-3.0", "playwright"],
-  "ignoreDependencies": ["next"],
   "workspaces": {
     "frontend": {
-      "entry": ["lingo.config.js"],
       "project": ["src/**/*.{ts,tsx}"],
       "ignore": ["src/test/**"],
       "ignoreDependencies": [
@@ -22,7 +21,6 @@
       "ignore": ["src/test/**"],
       "ignoreDependencies": [
         "tsx",
-        "@eslint/js",
         "globals"
       ]
     }

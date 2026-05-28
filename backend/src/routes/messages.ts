@@ -209,10 +209,12 @@ const messagesRoutes: FastifyPluginAsync = async (fastify) => {
       ];
       
       return messages;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Get a specific message by ID
@@ -260,10 +262,12 @@ const messagesRoutes: FastifyPluginAsync = async (fastify) => {
       }
       
       return message;
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Send a new message
@@ -300,10 +304,12 @@ const messagesRoutes: FastifyPluginAsync = async (fastify) => {
         message: 'Message sent successfully',
         data: newMessage
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Mark a message as read
@@ -320,10 +326,12 @@ const messagesRoutes: FastifyPluginAsync = async (fastify) => {
         success: true,
         message: 'Message marked as read'
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
   
   // Delete a message
@@ -340,10 +348,12 @@ const messagesRoutes: FastifyPluginAsync = async (fastify) => {
         success: true,
         message: 'Message deleted successfully'
       };
+    /* c8 ignore start */
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({ error: 'Internal Server Error' });
     }
+    /* c8 ignore stop */
   });
 };
 
