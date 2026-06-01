@@ -25,7 +25,7 @@
     "@supabase/supabase-js": "^2.105.4",
     "dotenv": "^17.4.2",
     "fastify": "^5.7.4",
-    "openai": "^6.37.0"
+    "openai": "^6.39.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
