@@ -31,7 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.2",
     "@vercel/node": "^5.8.12",
-    "@vitest/coverage-v8": "^4.1.6",
+    "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^10.4.1",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
