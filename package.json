@@ -43,6 +43,10 @@
   "engines": {
     "node": ">=18"
   },
+  "supportedArchitectures": {
+    "os": ["darwin", "linux", "win32"],
+    "cpu": ["x64", "arm64"]
+  },
   "optionalDependencies": {
     "@rollup/rollup-darwin-x64": "^4.60.4"
   },
