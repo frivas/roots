@@ -51,6 +51,7 @@
     "@rollup/rollup-darwin-x64": "^4.62.0"
   },
   "overrides": {
+    "undici": ">=7.28.0",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
     "next": "16.2.4",
@@ -58,6 +59,9 @@
     "diff": "8.0.4",
     "yaml": "2.8.3",
     "tmp": "0.2.5",
+    "jsdom": {
+      "undici": ">=7.28.0"
+    },
     "@vercel/node": {
       "undici": "^6.24.1",
       "path-to-regexp": "^6.3.0"
