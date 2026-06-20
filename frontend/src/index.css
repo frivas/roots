@@ -226,3 +226,14 @@
   from { transform: translateY(10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* ElevenLabs widget — center within the main content column, not the full viewport */
+.widget-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.widget-container > * {
+  max-width: 100%;
+}

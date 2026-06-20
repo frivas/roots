@@ -123,8 +123,8 @@ const ProgressInterpretationChat: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-8">
-      {/* Back Button */}
-      <div className="flex items-center">
+      {/* Header with Back Button and Title */}
+      <div className="flex items-center justify-between">
         <Button
           variant="outline"
           size="sm"
@@ -134,6 +134,13 @@ const ProgressInterpretationChat: React.FC = () => {
           <ArrowLeft className="h-4 w-4" />
           <TranslatedText>Back to Progress Service</TranslatedText>
         </Button>
+
+        <h1 className="text-xl font-semibold text-foreground">
+          <TranslatedText>Progress Review</TranslatedText>
+        </h1>
+
+        {/* Spacer to keep title centered */}
+        <div className="w-32" />
       </div>
 
       {/* Widget Container */}
