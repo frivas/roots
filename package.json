@@ -44,8 +44,15 @@
     "node": ">=18"
   },
   "supportedArchitectures": {
-    "os": ["darwin", "linux", "win32"],
-    "cpu": ["x64", "arm64"]
+    "os": [
+      "darwin",
+      "linux",
+      "win32"
+    ],
+    "cpu": [
+      "x64",
+      "arm64"
+    ]
   },
   "optionalDependencies": {
     "@rollup/rollup-darwin-x64": "^4.62.0"
@@ -74,7 +81,7 @@
       "ajv": "^8.18.0"
     },
     "@clerk/clerk-react": {
-      "@clerk/shared": "3.47.4"
+      "@clerk/shared": "3.47.7"
     },
     "@lingo.dev/_react": {
       "next": "15.5.15",
