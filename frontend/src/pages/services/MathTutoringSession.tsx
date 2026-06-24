@@ -111,7 +111,7 @@ const MathTutoringSession: React.FC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Header with Back Button and AI Notice */}
+      {/* Header with Back Button, Title, and AI Notice */}
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
@@ -122,6 +122,10 @@ const MathTutoringSession: React.FC = () => {
           <ArrowLeft className="h-4 w-4" />
           <TranslatedText>Back to Online Learning</TranslatedText>
         </Button>
+
+        <h1 className="text-xl font-semibold text-foreground">
+          <TranslatedText>Math Tutoring</TranslatedText>
+        </h1>
 
         {/* AI Notice Icon with Tooltip */}
         <div className="relative group">

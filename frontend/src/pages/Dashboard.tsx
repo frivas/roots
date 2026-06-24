@@ -244,7 +244,7 @@ const Dashboard = () => {
                    icon: <Users className="h-5 w-5" />,
                    label: "Storytelling Adventure",
                    color: "bg-green-500/10 text-green-600",
-                   route: "/services/extra-curricular?tab=online"
+                   route: "/services/storytelling-session"
                  },
                  {
                    icon: <Calendar className="h-5 w-5" />,

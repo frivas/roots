@@ -763,7 +763,7 @@ const StorytellingSession: React.FC = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        {/* Header with Back Button and AI Notice */}
+        {/* Header with Back Button, Title, and AI Notice */}
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
@@ -774,6 +774,10 @@ const StorytellingSession: React.FC = () => {
             <ArrowLeft className="h-4 w-4" />
             <TranslatedText>Back to Online Learning</TranslatedText>
           </Button>
+
+          <h1 className="text-xl font-semibold text-foreground">
+            <TranslatedText>Storytelling Adventure</TranslatedText>
+          </h1>
 
           {/* AI Notice Icon with Tooltip */}
           <div className="relative group">
@@ -789,20 +793,20 @@ const StorytellingSession: React.FC = () => {
           </div>
         </div>
 
-        {/* Draw Your Story Button */}
-        <div className="flex justify-center">
-          <Button
-            onClick={() => handleGenerateIllustration(undefined, currentStoryContentRef.current)}
-            size="md"
-            disabled={isGeneratingImage}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
-          >
-            <ImageIcon className="h-5 w-5" />
-            {isGeneratingImage ? <TranslatedText>Generating...</TranslatedText> : <TranslatedText>Draw your story</TranslatedText>}
-          </Button>
-        </div>
-
-
+        {/* Draw Your Story Button — only shown once story content exists */}
+        {storyContent && (
+          <div className="flex justify-center">
+            <Button
+              onClick={() => handleGenerateIllustration(undefined, currentStoryContentRef.current)}
+              size="md"
+              disabled={isGeneratingImage}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
+            >
+              <ImageIcon className="h-5 w-5" />
+              {isGeneratingImage ? <TranslatedText>Generating...</TranslatedText> : <TranslatedText>Draw your story</TranslatedText>}
+            </Button>
+          </div>
+        )}
 
         {/* Widget Container */}
         <div

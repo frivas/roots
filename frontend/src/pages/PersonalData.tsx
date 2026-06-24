@@ -14,6 +14,7 @@ import {
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Switch from '../components/ui/Switch';
 import {
   Bell,
   Globe,
@@ -26,34 +27,6 @@ import {
   Save,
   Settings as SettingsIcon
 } from 'lucide-react';
-
-// Switch component (since we don't have one in the project yet)
-const Switch = ({ checked, onCheckedChange, id }: {
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-  id?: string;
-}) => {
-  return (
-    <button
-      id={id}
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onCheckedChange(!checked)}
-      className={`
-        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent
-        transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
-        ${checked ? 'bg-primary' : 'bg-input'}
-      `}
-    >
-      <span
-        className={`
-          inline-block h-4 w-4 transform rounded-full bg-background transition-transform
-          ${checked ? 'translate-x-6' : 'translate-x-1'}
-        `}
-      />
-    </button>
-  );
-};
 
 // Tabs components (simple implementation)
 interface TabsProps {
