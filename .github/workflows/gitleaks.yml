@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '0 3 * * *' # Daily 3am UTC
 
+permissions:
+  contents: read
+
 jobs:
   scan:
     name: Secret Scanning

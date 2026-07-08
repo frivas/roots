@@ -126,10 +126,13 @@ function checkFile(filePath) {
 
 function getSuggestion(text) {
   // Extract the actual text content
-  let cleanText = text
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/["']/g, '') // Remove quotes
-    .trim();
+  let cleanText = text;
+  let previous;
+  do {
+    previous = cleanText;
+    cleanText = previous.replace(/<[^>]*>/g, ''); // Remove HTML tags (loop handles nested/overlapping tags)
+  } while (cleanText !== previous);
+  cleanText = cleanText.replace(/["']/g, '').trim(); // Remove quotes
 
   if (cleanText.length < 3) return null;
 
