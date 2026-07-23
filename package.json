@@ -35,7 +35,6 @@
   },
   "devDependencies": {
     "concurrently": "^10.0.3",
-    "fast-uri": "^4.0.0",
     "glob": "^13.0.6",
     "husky": "^9.1.7"
   },
@@ -58,6 +57,7 @@
     "@rollup/rollup-darwin-x64": "^4.62.0"
   },
   "overrides": {
+    "fast-uri": "3.1.4",
     "undici": ">=7.28.0",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
