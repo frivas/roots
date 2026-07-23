@@ -1,6 +1,5 @@
 {
   "ignore": ["eslint.config.js"],
-  "ignoreDependencies": ["fast-uri"],
   "ignoreBinaries": ["du", "knip", "license-checker", "AGPL-3.0", "playwright"],
   "workspaces": {
     "frontend": {
