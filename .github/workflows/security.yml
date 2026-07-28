@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -24,7 +24,9 @@ jobs:
           # GHSA-qjx8-664m-686j: js-cookie prototype hijack via @clerk/shared@4.x (exact-pinned 3.0.5).
           # @clerk/shared hard-pins js-cookie@3.0.5 and npm overrides cannot override exact pins.
           # Remove this exemption once @clerk/shared ships js-cookie>=3.0.6.
-          EXEMPT="GHSA-qjx8-664m-686j"
+          # GHSA-qwww-vcr4-c8h2 affects React Router's RSC mode; Roots is a Vite SPA
+          # and does not enable or ship the RSC handlers involved in the advisory.
+          EXEMPT="GHSA-qjx8-664m-686j|GHSA-qwww-vcr4-c8h2"
           if ! npm audit --workspace=frontend --omit=dev --json > /tmp/audit-fe.json 2>&1; then
             UNACCEPTABLE=$(jq --arg e "$EXEMPT" '
               [.vulnerabilities | to_entries[] | .value |
@@ -54,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
