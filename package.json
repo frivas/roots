@@ -20,14 +20,36 @@
     "dev:backend": "cd backend && npm run dev",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build:frontend": "cd frontend && npm run build",
+    "build:frontend:release": "cd frontend && npm run build:release",
     "build:backend": "cd backend && npm run build",
     "build": "npm run build:frontend && npm run build:backend",
+    "typecheck": "npm run typecheck:frontend && npm run typecheck:backend",
+    "typecheck:frontend": "npm --workspace frontend run typecheck",
+    "typecheck:backend": "npm --workspace backend run typecheck",
+    "dead-code": "knip",
+    "license-check": "node scripts/check-production-licenses.mjs",
+    "audit:rsc-scope": "node scripts/check-react-router-rsc-scope.mjs",
+    "audit:frontend": "node scripts/check-npm-audit.mjs --workspace frontend",
+    "audit:backend": "node scripts/check-npm-audit.mjs --workspace backend",
+    "audit:production": "npm run audit:rsc-scope && npm run audit:frontend && npm run audit:backend",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
+    "check:performance-slo": "node scripts/check-performance-slo.mjs",
+    "check:performance-slo:config": "node scripts/check-performance-slo.mjs --config-only",
+    "validate:release-config": "node scripts/validate-release-config.mjs",
+    "validate:ci-config": "node scripts/validate-ci-config.mjs",
     "lint": "concurrently \"cd frontend && npm run lint\" \"cd backend && npm run lint\"",
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "cd frontend && npm run test",
     "test:backend": "cd backend && npm run test",
     "test:e2e": "cd frontend && npm run test:e2e",
+    "install:e2e-browsers": "npm exec --workspace frontend -- playwright install --with-deps chromium webkit",
+    "test:serverless": "npm --workspace backend run test:serverless",
+    "test:contracts": "npm --workspace backend run test:contracts",
+    "supabase:start": "supabase start",
+    "supabase:reset": "supabase db reset --local",
+    "test:rls:local": "supabase test db --local supabase/tests/clerk_rls.test.sql",
     "test:coverage": "cd frontend && npm run test:coverage && cd ../backend && npm run test:coverage",
+    "test:tooling": "node --test scripts/*.test.mjs",
     "report:portfolio-coverage": "bash scripts/report-portfolio-coverage.sh",
     "check-localization": "node scripts/check-localization.js",
     "pre-commit": "npm run check-localization && npm run lint",
@@ -37,12 +59,14 @@
     "concurrently": "^10.0.4",
     "glob": "^13.0.6",
     "husky": "^9.1.7",
+    "knip": "6.29.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "yaml": "2.9.0"
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.22.2 <23"
   },
   "supportedArchitectures": {
     "os": [
@@ -59,16 +83,16 @@
     "@rollup/rollup-darwin-x64": "^4.62.0"
   },
   "overrides": {
-    "fast-uri": "3.1.4",
     "find-my-way": "9.7.0",
     "fast-uri": "3.1.4",
+    "brace-expansion": "5.0.8",
     "undici": ">=7.28.0",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
     "next": "16.2.4",
     "@modelcontextprotocol/sdk": "1.29.0",
     "diff": "8.0.4",
-    "yaml": "2.8.3",
+    "yaml": "2.9.0",
     "tmp": "0.2.5",
     "jsdom": {
       "undici": "7.28.0"
@@ -94,7 +118,7 @@
     "lingo.dev": {
       "@modelcontextprotocol/sdk": "1.29.0",
       "diff": "8.0.4",
-      "yaml": "2.8.3"
+      "yaml": "2.9.0"
     }
   }
 }

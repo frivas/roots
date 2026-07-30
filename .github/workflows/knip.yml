@@ -16,4 +16,4 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Run knip
-        run: npx knip
+        run: npm run dead-code

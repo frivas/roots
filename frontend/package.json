@@ -11,12 +11,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:release": "npm run build && node ../scripts/write-release-metadata.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
     "test:coverage": "NODE_OPTIONS=--no-experimental-webstorage vitest run --coverage",
     "test:e2e": "playwright test"
+  },
+  "engines": {
+    "node": ">=22.22.2 <23"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.9",
@@ -26,7 +31,7 @@
     "lucide-react": "^1.27.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "7.18.2",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

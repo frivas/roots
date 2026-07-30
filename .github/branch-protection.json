@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "branches": {
+    "develop": {
+      "requiredApprovingReviewCount": 1,
+      "dismissStaleReviews": true,
+      "requireConversationResolution": true,
+      "requireLinearHistory": true,
+      "requireBranchesToBeUpToDate": true,
+      "enforceForAdministrators": true,
+      "allowForcePushes": false,
+      "allowDeletions": false,
+      "requiredStatusChecks": [
+        "Lint & Typecheck",
+        "Unit Tests",
+        "Build",
+        "Playwright smoke",
+        "npm audit",
+        "License Check",
+        "Secret Scanning",
+        "Knip",
+        "Analyze Bundle"
+      ]
+    },
+    "main": {
+      "requiredApprovingReviewCount": 1,
+      "dismissStaleReviews": true,
+      "requireConversationResolution": true,
+      "requireLinearHistory": true,
+      "requireBranchesToBeUpToDate": true,
+      "enforceForAdministrators": true,
+      "allowForcePushes": false,
+      "allowDeletions": false,
+      "requiredStatusChecks": [
+        "Lint & Typecheck",
+        "Unit Tests",
+        "Build",
+        "Playwright smoke",
+        "npm audit",
+        "License Check",
+        "Secret Scanning",
+        "Knip",
+        "Analyze Bundle"
+      ]
+    }
+  }
+}

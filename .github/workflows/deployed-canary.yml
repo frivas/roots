@@ -1,0 +1,93 @@
+name: Deployed canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Exact lowercase 40-character commit SHA
+        required: true
+        type: string
+      netlify_deploy_id:
+        description: Immutable current Netlify deploy ID
+        required: true
+        type: string
+      netlify_deployed_sha:
+        description: Commit SHA reported for the Netlify deploy
+        required: true
+        type: string
+      netlify_rollback_deploy_id:
+        description: Immutable previous Netlify deploy ID
+        required: true
+        type: string
+      vercel_deployment_id:
+        description: Immutable current Vercel deployment ID
+        required: true
+        type: string
+      vercel_deployed_sha:
+        description: Commit SHA reported for the Vercel deployment
+        required: true
+        type: string
+      vercel_rollback_deployment_id:
+        description: Immutable previous Vercel deployment ID
+        required: true
+        type: string
+      performance_observations_json:
+        description: Exact-SHA Web Vital, backend, and provider observation payload
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    name: Exact-SHA deployed canary
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_SHA: ${{ inputs.release_sha }}
+      NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      NETLIFY_DEPLOY_ID: ${{ inputs.netlify_deploy_id }}
+      NETLIFY_DEPLOYED_SHA: ${{ inputs.netlify_deployed_sha }}
+      NETLIFY_PRODUCTION_URL: ${{ vars.NETLIFY_PRODUCTION_URL }}
+      NETLIFY_ROLLBACK_DEPLOY_ID: ${{ inputs.netlify_rollback_deploy_id }}
+      VERCEL_PROJECT_ID: prj_GSAg55JO0lYdjI7tCQqwC6u7qp4C
+      VERCEL_DEPLOYMENT_ID: ${{ inputs.vercel_deployment_id }}
+      VERCEL_DEPLOYED_SHA: ${{ inputs.vercel_deployed_sha }}
+      VERCEL_PRODUCTION_URL: ${{ vars.VERCEL_PRODUCTION_URL }}
+      VERCEL_ROLLBACK_DEPLOYMENT_ID: ${{ inputs.vercel_rollback_deployment_id }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.release_sha }}
+      - name: Verify exact-SHA checkout
+        env:
+          EXPECTED_SHA: ${{ inputs.release_sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - name: Validate immutable release identity
+        run: npm run validate:release-config -- --release
+      - name: Run read-only production canary
+        env:
+          RELEASE_EVIDENCE_FILE: release-evidence.json
+        run: node scripts/run-deployed-canary.mjs
+      - name: Check exact-SHA runtime SLO observations
+        env:
+          PERFORMANCE_OBSERVATIONS_JSON: ${{ inputs.performance_observations_json }}
+          PERFORMANCE_OBSERVATIONS_FILE: performance-observations.json
+        run: |
+          node scripts/write-performance-observations.mjs
+          npm run check:performance-slo -- --observations performance-observations.json
+      - name: Upload immutable release evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-evidence-${{ inputs.release_sha }}
+          path: |
+            release-evidence.json
+            performance-observations.json
+          if-no-files-found: error
+          retention-days: 30

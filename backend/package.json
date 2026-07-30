@@ -10,13 +10,20 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build && npm run start",
-    "build": "tsc --project tsconfig.json",
+    "build": "node ../scripts/clean-backend-dist.mjs && tsc --project tsconfig.build.json",
+    "build:debug": "node ../scripts/clean-backend-dist.mjs && tsc --project tsconfig.json",
     "start": "node dist/index.js",
     "vercel-build": "npm run build",
     "lint": "eslint src/ --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:serverless": "vitest run src/serverless-adapter.test.ts",
+    "test:contracts": "RUN_SUPABASE_CONTRACT_TESTS=1 vitest run src/integration/clerk-supabase.contract.test.ts",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
+  },
+  "engines": {
+    "node": ">=22.22.2 <23"
   },
   "dependencies": {
     "@clerk/fastify": "^3.1.57",

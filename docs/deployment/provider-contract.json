@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "productionBranch": "main",
+  "frontend": {
+    "provider": "netlify",
+    "siteId": {
+      "status": "unverified",
+      "requiredVariable": "NETLIFY_SITE_ID"
+    },
+    "productionUrl": {
+      "status": "unverified",
+      "requiredVariable": "NETLIFY_PRODUCTION_URL"
+    },
+    "releaseIdentity": {
+      "deployIdVariable": "NETLIFY_DEPLOY_ID",
+      "deployedShaVariable": "NETLIFY_DEPLOYED_SHA",
+      "rollbackDeployIdVariable": "NETLIFY_ROLLBACK_DEPLOY_ID"
+    }
+  },
+  "backend": {
+    "provider": "vercel",
+    "projectName": "roots-api",
+    "projectId": "prj_GSAg55JO0lYdjI7tCQqwC6u7qp4C",
+    "orgId": "team_eJRc3uJPBTvXknc9WbVr4nlh",
+    "nodeVersion": "22.x",
+    "productionUrl": {
+      "status": "unverified",
+      "requiredVariable": "VERCEL_PRODUCTION_URL"
+    },
+    "lastObservedDeployment": {
+      "status": "stale-unverified",
+      "deploymentId": "dpl_HnnytUuYV5TXnSxszK31mSCfzHfR",
+      "url": "https://roots-3rlcn3vd7-thecreativetoken.vercel.app",
+      "observedAt": "2025-09-12",
+      "sourceCommitSha": "unverified",
+      "rollbackProven": false
+    },
+    "aliases": [
+      "roots-api-ashy.vercel.app",
+      "roots-api-thecreativetoken.vercel.app",
+      "roots-api-frivas.vercel.app"
+    ],
+    "releaseIdentity": {
+      "deploymentIdVariable": "VERCEL_DEPLOYMENT_ID",
+      "deployedShaVariable": "VERCEL_DEPLOYED_SHA",
+      "rollbackDeploymentIdVariable": "VERCEL_ROLLBACK_DEPLOYMENT_ID"
+    }
+  },
+  "release": {
+    "shaVariable": "RELEASE_SHA",
+    "requiredVariables": [
+      "RELEASE_SHA",
+      "NETLIFY_SITE_ID",
+      "NETLIFY_DEPLOY_ID",
+      "NETLIFY_DEPLOYED_SHA",
+      "NETLIFY_PRODUCTION_URL",
+      "NETLIFY_ROLLBACK_DEPLOY_ID",
+      "VERCEL_PROJECT_ID",
+      "VERCEL_DEPLOYMENT_ID",
+      "VERCEL_DEPLOYED_SHA",
+      "VERCEL_PRODUCTION_URL",
+      "VERCEL_ROLLBACK_DEPLOYMENT_ID"
+    ]
+  },
+  "coverage": {
+    "transport": "portfolio-central",
+    "producerRepository": "juan294/portfolio",
+    "producerWorkflow": ".github/workflows/roots-coverage.yml",
+    "targetRepository": "frivas/roots"
+  }
+}
