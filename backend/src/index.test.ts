@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
@@ -12,14 +12,20 @@ vi.mock('@clerk/fastify', () => ({
 import { buildServer, validateEnv } from './index.js';
 import { createInMemoryBackendDependencies } from './test/inMemoryBackend.js';
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 describe('buildServer', () => {
   it('serves minimal liveness and dependency readiness endpoints', async () => {
+    const releaseSha = 'a'.repeat(40);
+    vi.stubEnv('RELEASE_SHA', releaseSha);
     const harness = createInMemoryBackendDependencies();
     const app = await buildServer({ dependencies: harness.dependencies });
 
     expect(
       (await app.inject({ method: 'GET', url: '/health' })).json(),
-    ).toEqual({ status: 'ok', releaseSha: 'local' });
+    ).toEqual({ status: 'ok', releaseSha });
     expect(
       (await app.inject({ method: 'GET', url: '/ready' })).json(),
     ).toMatchObject({ status: 'ready' });

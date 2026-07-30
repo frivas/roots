@@ -1,6 +1,6 @@
 import { createHmac } from 'node:crypto';
 import type { FastifyBaseLogger } from 'fastify';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const authState = vi.hoisted(() => ({
   userId: 'user_1' as string | null,
@@ -37,7 +37,13 @@ describe('security remediation contracts', () => {
     authState.sessionId = 'session_1';
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('splits liveness from dependency readiness', async () => {
+    const releaseSha = 'a'.repeat(40);
+    vi.stubEnv('RELEASE_SHA', releaseSha);
     const harness = createInMemoryBackendDependencies();
     harness.dependencies.readiness = {
       async check() {
@@ -57,7 +63,7 @@ describe('security remediation contracts', () => {
     const ready = await app.inject({ method: 'GET', url: '/ready' });
 
     expect(live.statusCode).toBe(200);
-    expect(live.json()).toEqual({ status: 'ok', releaseSha: 'local' });
+    expect(live.json()).toEqual({ status: 'ok', releaseSha });
     expect(ready.statusCode).toBe(503);
     expect(ready.json()).toEqual({
       status: 'not_ready',
