@@ -1,62 +1,37 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
-  getAuth: vi.fn(() => ({ userId: 'u1' })),
+  getAuth: vi.fn(() => ({
+    userId: 'user_1',
+    sessionId: 'session_1',
+    getToken: vi.fn(async () => 'clerk-session-token'),
+  })),
 }));
-vi.mock('openai', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] })) };
-  };
-  return { default: MockOpenAI };
-});
 
 import { buildServer } from '../index.js';
-import { getAuth } from '@clerk/fastify';
+import { createInMemoryBackendDependencies } from '../test/inMemoryBackend.js';
 
 describe('services routes', () => {
-  it('GET /api/services returns 200 with array of services', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/services' });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(Array.isArray(body)).toBe(true);
-    expect(body.length).toBeGreaterThan(0);
-    expect(body[0]).toHaveProperty('id');
-    expect(body[0]).toHaveProperty('name');
-    expect(body[0]).toHaveProperty('isActive');
-  });
+  it('returns persisted active services and opaque not-found responses', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
 
-  it('GET /api/services returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/services' });
-    expect(res.statusCode).toBe(401);
-  });
+    const listed = await app.inject({ method: 'GET', url: '/api/services' });
+    const known = await app.inject({
+      method: 'GET',
+      url: '/api/services/storytelling',
+    });
+    const unknown = await app.inject({
+      method: 'GET',
+      url: '/api/services/missing',
+    });
 
-  it('GET /api/services/:id returns 200 for a known service', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/services/classroom' });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(body).toHaveProperty('id', 'classroom');
-    expect(body).toHaveProperty('name');
-    expect(body).toHaveProperty('details');
-  });
-
-  it('GET /api/services/:id returns 404 for an unknown service', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/services/nonexistent' });
-    expect(res.statusCode).toBe(404);
-  });
-
-  it('GET /api/services/:id returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/services/classroom' });
-    expect(res.statusCode).toBe(401);
+    expect(listed.json()).toEqual([
+      expect.objectContaining({ id: 'storytelling', isActive: true }),
+    ]);
+    expect(known.statusCode).toBe(200);
+    expect(unknown.statusCode).toBe(404);
+    expect(unknown.json()).toEqual({ error: 'NOT_FOUND' });
   });
 });

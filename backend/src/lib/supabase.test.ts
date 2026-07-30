@@ -1,38 +1,57 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('createSupabase', () => {
-  beforeEach(() => { vi.resetModules(); });
+const createClient = vi.hoisted(() => vi.fn(() => ({ from: vi.fn() })));
 
-  it('calls createClient with URL and key from env', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const spy = vi.fn(() => ({} as any));
-    vi.doMock('@supabase/supabase-js', () => ({ createClient: spy }));
-    const { createSupabase } = await import('./supabase.js');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createSupabase({ SUPABASE_URL: 'https://u.co', SUPABASE_API_KEY: 'k' } as any);
-    expect(spy).toHaveBeenCalledWith('https://u.co', 'k');
+vi.mock('@supabase/supabase-js', () => ({ createClient }));
+
+import { createRequestSupabase, createTrustedSupabase } from './supabase.js';
+
+describe('Supabase client factories', () => {
+  beforeEach(() => {
+    createClient.mockClear();
   });
 
-  it('throws when SUPABASE_URL is missing', async () => {
-    const { createSupabase } = await import('./supabase.js');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => createSupabase({ SUPABASE_API_KEY: 'k' } as any)).toThrow();
+  it('passes the Clerk session token provider to a per-request public client', async () => {
+    const getToken = vi.fn(async () => 'clerk-token');
+    createRequestSupabase(getToken, {
+      SUPABASE_URL: 'https://project.supabase.co',
+      SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_test',
+    });
+
+    expect(createClient).toHaveBeenCalledWith(
+      'https://project.supabase.co',
+      'sb_publishable_test',
+      expect.objectContaining({ accessToken: getToken }),
+    );
   });
 
-  it('throws when SUPABASE_API_KEY is missing', async () => {
-    const { createSupabase } = await import('./supabase.js');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => createSupabase({ SUPABASE_URL: 'https://u.co' } as any)).toThrow();
+  it('rejects a secret key in a user-request client', () => {
+    expect(() =>
+      createRequestSupabase(async () => 'clerk-token', {
+        SUPABASE_URL: 'https://project.supabase.co',
+        SUPABASE_PUBLISHABLE_KEY: 'sb_secret_forbidden',
+      }),
+    ).toThrow(/cannot be used for user requests/);
   });
 
-  it('lazily creates and proxies the default client', async () => {
-    const fromSpy = vi.fn();
-    vi.doMock('@supabase/supabase-js', () => ({
-      createClient: vi.fn(() => ({ from: fromSpy })),
-    }));
+  it('requires a dedicated secret for trusted webhook processing', () => {
+    expect(() =>
+      createTrustedSupabase({
+        SUPABASE_URL: 'https://project.supabase.co',
+      }),
+    ).toThrow(/SUPABASE_SECRET_KEY/);
+  });
 
-    const { supabase } = await import('./supabase.js');
+  it('creates the trusted client without a user access-token callback', () => {
+    createTrustedSupabase({
+      SUPABASE_URL: 'https://project.supabase.co',
+      SUPABASE_SECRET_KEY: 'sb_secret_server_only',
+    });
 
-    expect(supabase.from).toBe(fromSpy);
+    expect(createClient).toHaveBeenCalledWith(
+      'https://project.supabase.co',
+      'sb_secret_server_only',
+      expect.not.objectContaining({ accessToken: expect.anything() }),
+    );
   });
 });

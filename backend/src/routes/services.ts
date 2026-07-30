@@ -1,135 +1,52 @@
-import { FastifyPluginAsync } from 'fastify';
-import { getAuth } from '@clerk/fastify';
+import type { FastifyPluginAsync } from 'fastify';
+import { notFound } from '../lib/application-error.js';
+import { sendPublicError } from '../lib/http.js';
+import {
+  getDataRepository,
+  type BackendRouteOptions,
+} from './options.js';
 
-const servicesRoutes: FastifyPluginAsync = async (fastify) => {
-  // Get all services
+const servicesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
+  fastify,
+  options,
+) => {
   fastify.get('/', async (request, reply) => {
-    const { userId } = getAuth(request);
-    
-    if (!userId) {
-      return reply.code(401).send({ error: 'Unauthorized' });
-    }
-    
     try {
-      // In a real app, you would fetch from your database
-      const services = [
-        {
-          id: 'classroom',
-          name: 'Classroom Management',
-          description: 'Manage morning classroom activities and attendance',
-          isActive: true,
-        },
-        {
-          id: 'transportation',
-          name: 'Transportation',
-          description: 'Track school transportation routes and schedules',
-          isActive: true,
-        },
-        {
-          id: 'cafeteria',
-          name: 'Cafeteria Services',
-          description: 'Meal planning and cafeteria service management',
-          isActive: true,
-        },
-        {
-          id: 'extracurricular',
-          name: 'Extracurricular Activities',
-          description: 'Register and manage after-school programs',
-          isActive: true,
-        },
-        {
-          id: 'language',
-          name: 'Language Support',
-          description: 'Language assistance programs for immigrant students',
-          isActive: true,
-        },
-        {
-          id: 'mentorship',
-          name: 'Mentorship Program',
-          description: 'Connect with mentors and manage mentorship relationships',
-          isActive: true,
-        }
-      ];
-      
-      return services;
-    /* c8 ignore start */
+      const { repository } = await getDataRepository(request, options);
+      return await repository.listServices();
     } catch (error) {
-      fastify.log.error(error);
-      return reply.code(500).send({ error: 'Internal Server Error' });
+      return sendPublicError(reply, fastify.log, error);
     }
-    /* c8 ignore stop */
   });
-  
-  // Get a specific service by ID
-  fastify.get('/:id', async (request, reply) => {
-    const { userId } = getAuth(request);
-    const { id } = request.params as { id: string };
-    
-    if (!userId) {
-      return reply.code(401).send({ error: 'Unauthorized' });
-    }
-    
-    try {
-      // In a real app, you would fetch from your database
-      const services = {
-        classroom: {
-          id: 'classroom',
-          name: 'Classroom Management',
-          description: 'Manage morning classroom activities and attendance',
-          details: 'Full classroom management system including attendance tracking, behavior management, and activity scheduling.',
-          isActive: true,
+
+  fastify.get(
+    '/:id',
+    {
+      schema: {
+        params: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id'],
+          properties: {
+            id: { type: 'string', minLength: 1, maxLength: 128 },
+          },
         },
-        transportation: {
-          id: 'transportation',
-          name: 'Transportation',
-          description: 'Track school transportation routes and schedules',
-          details: 'Real-time bus tracking, route management, and driver assignment system.',
-          isActive: true,
-        },
-        cafeteria: {
-          id: 'cafeteria',
-          name: 'Cafeteria Services',
-          description: 'Meal planning and cafeteria service management',
-          details: 'Menu planning, inventory management, and nutritional information tracking.',
-          isActive: true,
-        },
-        extracurricular: {
-          id: 'extracurricular',
-          name: 'Extracurricular Activities',
-          description: 'Register and manage after-school programs',
-          details: 'Registration system for clubs, sports, and other after-school activities.',
-          isActive: true,
-        },
-        language: {
-          id: 'language',
-          name: 'Language Support',
-          description: 'Language assistance programs for immigrant students',
-          details: 'ESL resources, translation services, and cultural integration programs.',
-          isActive: true,
-        },
-        mentorship: {
-          id: 'mentorship',
-          name: 'Mentorship Program',
-          description: 'Connect with mentors and manage mentorship relationships',
-          details: 'Mentor matching, session scheduling, and progress tracking tools.',
-          isActive: true,
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { repository } = await getDataRepository(request, options);
+        const { id } = request.params as { id: string };
+        const service = await repository.getService(id);
+        if (!service) {
+          throw notFound();
         }
-      };
-      
-      const service = services[id as keyof typeof services];
-      
-      if (!service) {
-        return reply.code(404).send({ error: 'Service not found' });
+        return service;
+      } catch (error) {
+        return sendPublicError(reply, fastify.log, error);
       }
-      
-      return service;
-    /* c8 ignore start */
-    } catch (error) {
-      fastify.log.error(error);
-      return reply.code(500).send({ error: 'Internal Server Error' });
-    }
-    /* c8 ignore stop */
-  });
+    },
+  );
 };
 
 export default servicesRoutes;

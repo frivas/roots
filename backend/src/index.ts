@@ -1,254 +1,292 @@
-import 'dotenv/config';
-import Fastify, { FastifyPluginAsync } from 'fastify';
+import { clerkPlugin } from '@clerk/fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
-import { clerkPlugin } from '@clerk/fastify';
-import type { ServerResponse } from 'http';
-
-// Routes
+import Fastify from 'fastify';
+import {
+  createDefaultDependencies,
+  createIllustrationService,
+  type BackendDependencies,
+} from './dependencies.js';
+import { ApplicationError } from './lib/application-error.js';
+import { getRequestIdentity } from './lib/auth.js';
+import { verifyElevenLabsWebhook } from './lib/elevenlabs-webhook.js';
+import { safeErrorMetadata, sendPublicError } from './lib/http.js';
 import authRoutes from './routes/auth.js';
+import imagesRoutes from './routes/images.js';
 import messagesRoutes from './routes/messages.js';
 import notificationsRoutes from './routes/notifications.js';
 import servicesRoutes from './routes/services.js';
 import settingsRoutes from './routes/settings.js';
-import imagesRoutes from './routes/images.js';
+import {
+  buildIllustrationPrompt,
+  deriveIdempotencyKey,
+  type StoryIllustrationInput,
+} from './services/illustration-jobs.js';
 
-// Validate environment variables
-function validateEnv() {
-  const required = [
-    'PORT',
-    'CLERK_PUBLISHABLE_KEY',
-    'CLERK_SECRET_KEY',
-    'SUPABASE_URL',
-    'SUPABASE_API_KEY',
-  ];
-  const missing = required.filter((k) => !process.env[k]);
-  if (missing.length) {
-    throw new Error(`Missing env vars: ${missing.join(', ')}`);
+declare module 'fastify' {
+  interface FastifyRequest {
+    rawBody?: string;
   }
 }
 
-export type BuildServerOptions = Record<string, never>;
+export interface BuildServerOptions {
+  dependencies?: BackendDependencies;
+  standalone?: boolean;
+}
 
-export const buildServer = async (opts: BuildServerOptions = {} as BuildServerOptions) => {
-  void opts; // Reserved for future injection (e.g. openai client override)
-  validateEnv();
+const required = (env: NodeJS.ProcessEnv, name: string) => {
+  if (!env[name]) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+};
 
-  const server = Fastify({ logger: { level: 'info' } });
-  const sseConnections = new Set<ServerResponse>();
-  server.decorate('sseConnections', sseConnections);
+export const validateEnv = (
+  env: NodeJS.ProcessEnv = process.env,
+  { standalone = false, injectedDependencies = false } = {},
+) => {
+  if (standalone) {
+    required(env, 'PORT');
+  }
+  required(env, 'CLERK_PUBLISHABLE_KEY');
+  required(env, 'CLERK_SECRET_KEY');
+  required(env, 'FRONTEND_URL');
 
-  // Public health endpoint
-  server.get('/health', async () => ({ status: 'ok' }));
+  if (!injectedDependencies) {
+    required(env, 'SUPABASE_URL');
+    if (!env.SUPABASE_PUBLISHABLE_KEY && !env.SUPABASE_API_KEY) {
+      throw new Error(
+        'Missing required environment variable: SUPABASE_PUBLISHABLE_KEY',
+      );
+    }
+    required(env, 'SUPABASE_SECRET_KEY');
+    required(env, 'OPENAI_API_KEY');
+    required(env, 'ELEVENLABS_WEBHOOK_SECRET');
+  }
+};
 
-  // SSE endpoint for story illustrations
-  server.get('/events/story-illustrations', async (request, reply) => {
-    reply.raw.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control'
-    });
-
-    // Add connection to our set
-    sseConnections.add(reply.raw);
-
-    // Send initial connection message
-    reply.raw.write('data: {"type":"connected"}\n\n');
-
-    // Clean up on disconnect
-    reply.raw.on('close', () => {
-      sseConnections.delete(reply.raw);
-    });
-
-    // Keep connection alive
-    /* c8 ignore next 3 */
-    const keepAlive = setInterval(() => {
-      reply.raw.write(': heartbeat\n\n');
-    }, 30000);
-
-    reply.raw.on('close', () => {
-      clearInterval(keepAlive);
-    });
+export const buildServer = async (options: BuildServerOptions = {}) => {
+  validateEnv(process.env, {
+    standalone: options.standalone,
+    injectedDependencies: options.dependencies !== undefined,
   });
+  const server = Fastify({
+    logger:
+      process.env.NODE_ENV === 'test'
+        ? false
+        : { level: process.env.LOG_LEVEL ?? 'info' },
+    bodyLimit: 64 * 1024,
+    ajv: {
+      customOptions: {
+        removeAdditional: false,
+      },
+    },
+  });
+  const dependencies = options.dependencies ?? createDefaultDependencies();
 
-  // Public webhook endpoints (no auth required)
-  server.register(async function publicWebhooks(fastify) {
-    // ElevenLabs webhook for story illustrations
-    fastify.post('/webhook/elevenlabs/story-illustration', async (request, reply) => {
+  server.removeContentTypeParser('application/json');
+  server.addContentTypeParser(
+    'application/json',
+    { parseAs: 'string' },
+    (request, body, done) => {
+      const rawBody = typeof body === 'string' ? body : body.toString('utf8');
+      request.rawBody = rawBody;
       try {
-        const {
-          story_content,
-          characters,
-          setting,
-          mood,
-          current_scene
-        } = request.body as {
-          story_content?: string;
-          characters?: string;
-          setting?: string;
-          mood?: string;
-          current_scene?: string;
-        };
-
-        // SEND GENERATION START EVENT FIRST
-        const startEventData = JSON.stringify({
-          type: 'generation-started',
-          data: {
-            message: 'Starting image generation...',
-            context: { story_content, characters, setting, mood, current_scene }
-          }
-        });
-
-        sseConnections.forEach((connection) => {
-          try {
-            connection.write(`data: ${startEventData}\n\n`);
-            console.log('Sent generation-started event to frontend');
-          } catch (error) {
-            console.error('Error sending generation-started SSE:', error);
-            sseConnections.delete(connection);
-          }
-        });
-
-        // Import OpenAI dynamically
-        const { default: OpenAI } = await import('openai');
-        const openai = new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY,
-        });
-
-        // Generate contextual prompt based on story elements
-        const generateContextualPrompt = () => {
-          const baseStyle = "Children's book illustration, cartoon style, vibrant colors, friendly and approachable";
-
-          const moodStyles = {
-            happy: "bright and cheerful colors, sunny atmosphere, smiling characters",
-            scary: "dramatic lighting, mysterious shadows, but still child-appropriate and not too frightening",
-            sad: "soft, muted colors, gentle expressions, comforting atmosphere",
-            magical: "sparkles, glowing effects, enchanted atmosphere, mystical elements",
-            adventurous: "dynamic composition, action poses, exciting landscape, bold colors",
-            cheerful: "warm colors, pleasant lighting, joyful expressions"
-          };
-
-          const characterDesc = characters
-            ? `featuring ${characters}`
-            : 'with charming storybook characters';
-
-          const sceneDesc = current_scene
-            ? `showing ${current_scene.substring(0, 100)}`
-            : 'in an engaging story scene';
-
-          const settingDesc = setting || 'in a magical storybook world';
-          const selectedMoodStyle = moodStyles[mood as keyof typeof moodStyles] || moodStyles.cheerful;
-
-          const prompt = `${baseStyle}, ${selectedMoodStyle},
-          set in ${settingDesc}, ${characterDesc}, ${sceneDesc}.
-          Perfect for children ages 4-10, safe and wholesome content, high quality digital art.`;
-
-          return prompt.replace(/\s+/g, ' ').trim();
-        };
-
-        const contextualPrompt = generateContextualPrompt();
-
-        const response = await openai.images.generate({
-          model: "dall-e-3",
-          prompt: contextualPrompt,
-          n: 1,
-          size: "1024x1024",
-          quality: "standard",
-          style: "vivid"
-        });
-
-        if (!response.data || !response.data[0]?.url) {
-          throw new Error('No image URL returned from OpenAI');
-        }
-        const imageUrl = response.data[0].url;
-
-        // Broadcast the image to all connected SSE clients
-        const eventData = JSON.stringify({
-          type: 'story-illustration',
-          data: {
-            imageUrl,
-            context: {
-              story_content,
-              characters,
-              setting,
-              mood,
-              current_scene
-            }
-          }
-        });
-
-        sseConnections.forEach((connection) => {
-          try {
-            connection.write(`data: ${eventData}\n\n`);
-          } catch (error) {
-            console.error('Error sending SSE message:', error);
-            sseConnections.delete(connection);
-          }
-        });
-
-        reply.send({
-          success: true,
-          image_url: imageUrl,
-          message: "I've created a beautiful illustration for your story! The image shows the scene with all the characters and details from our story."
-        });
-      } catch (error) {
-        console.error('Image generation error:', error);
-        reply.status(500).send({
-          success: false,
-          error: error instanceof Error ? error.message : 'Failed to generate image',
-          message: "I'm sorry, I couldn't create the illustration right now. Let's continue with our story!"
-        });
+        done(null, JSON.parse(rawBody));
+      } catch {
+        done(new Error('INVALID_JSON'));
       }
-    });
+    },
+  );
 
-    // Test endpoint
-    fastify.get('/webhook/test', async (request, reply) => {
-      reply.send({
-        message: 'Webhook endpoint is working!',
-        timestamp: new Date().toISOString(),
-        ngrok_working: true
-      });
-    });
-  });
-
-  // Public middleware
   await server.register(cors, {
-    origin: process.env.FRONTEND_URL,
+    origin(origin, callback) {
+      callback(
+        null,
+        origin === undefined || origin === process.env.FRONTEND_URL,
+      );
+    },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
-  await server.register(rateLimit, { max: 100, timeWindow: '1 minute' });
+  await server.register(rateLimit, {
+    max: 30,
+    timeWindow: '1 minute',
+  });
+  await server.register(clerkPlugin, {
+    secretKey: process.env.CLERK_SECRET_KEY!,
+    publishableKey: process.env.CLERK_PUBLISHABLE_KEY!,
+  });
 
-  // Protected routes encapsulated as an async plugin
-  const protectedRoutes: FastifyPluginAsync = async (app) => {
-    // Initialize Clerk authentication
-    app.register(clerkPlugin, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
-      publishableKey: process.env.CLERK_PUBLISHABLE_KEY!,
+  server.setErrorHandler((error: Error & {
+    statusCode?: number;
+    validation?: unknown;
+  }, _request, reply) => {
+    if (error.validation || error.message === 'INVALID_JSON') {
+      return reply.code(400).send({ error: 'VALIDATION_FAILED' });
+    }
+    if (error.statusCode === 429) {
+      return reply.code(429).send({ error: 'RATE_LIMITED' });
+    }
+    server.log.error(safeErrorMetadata(error), 'unhandled request failure');
+    return reply.code(500).send({ error: 'INTERNAL_ERROR' });
+  });
+
+  server.get('/health', async () => ({ status: 'ok' }));
+  server.get('/ready', async (_request, reply) => {
+    const result = await dependencies.readiness.check();
+    return reply.code(result.ready ? 200 : 503).send({
+      status: result.ready ? 'ready' : 'not_ready',
+      checks: result.checks,
     });
+  });
 
-    // Register authenticated route modules
-    await app.register(authRoutes,          { prefix: '/api/auth' });
-    await app.register(messagesRoutes,      { prefix: '/api/messages' });
-    await app.register(notificationsRoutes, { prefix: '/api/notifications' });
-    await app.register(servicesRoutes,      { prefix: '/api/services' });
-    await app.register(settingsRoutes,      { prefix: '/api/settings' });
-    await app.register(imagesRoutes,        { prefix: '/api/images' });
-  };
+  server.get('/events/story-illustrations', async (request, reply) => {
+    try {
+      const identity = getRequestIdentity(request);
+      reply.raw.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        Vary: 'Origin',
+      });
+      dependencies.eventRegistry.subscribe(
+        identity.userId,
+        identity.sessionId,
+        reply.raw,
+      );
+      reply.raw.write(
+        `data: ${JSON.stringify({ type: 'connected' })}\n\n`,
+      );
 
-  // Register the protected plugin
-  await server.register(protectedRoutes);
+      const heartbeat = setInterval(() => {
+        reply.raw.write(': heartbeat\n\n');
+      }, 30_000);
+      reply.raw.on('close', () => {
+        clearInterval(heartbeat);
+        dependencies.eventRegistry.unsubscribe(
+          identity.userId,
+          identity.sessionId,
+          reply.raw,
+        );
+      });
+      return reply;
+    } catch (error) {
+      return sendPublicError(reply, server.log, error);
+    }
+  });
+
+  server.post(
+    '/webhook/elevenlabs/story-illustration',
+    {
+      schema: {
+        body: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['user_id', 'session_id', 'event_id'],
+          properties: {
+            user_id: { type: 'string', minLength: 1, maxLength: 128 },
+            session_id: { type: 'string', minLength: 1, maxLength: 128 },
+            event_id: { type: 'string', minLength: 1, maxLength: 128 },
+            prompt: { type: 'string', minLength: 1, maxLength: 4_000 },
+            story_content: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 4_000,
+            },
+            characters: { type: 'string', minLength: 1, maxLength: 1_000 },
+            setting: { type: 'string', minLength: 1, maxLength: 1_000 },
+            mood: { type: 'string', minLength: 1, maxLength: 50 },
+            current_scene: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 1_000,
+            },
+          },
+          anyOf: [{ required: ['prompt'] }, { required: ['story_content'] }],
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        verifyElevenLabsWebhook(
+          request.rawBody ?? '',
+          request.headers['elevenlabs-signature'] as string | undefined,
+          process.env.ELEVENLABS_WEBHOOK_SECRET,
+        );
+        const body = request.body as StoryIllustrationInput & {
+          user_id: string;
+          session_id: string;
+          event_id: string;
+        };
+        const prompt = buildIllustrationPrompt(body);
+        if (prompt.length > 4_000) {
+          throw new ApplicationError(
+            'VALIDATION_FAILED',
+            400,
+            'VALIDATION_FAILED',
+          );
+        }
+        const service = await createIllustrationService(
+          dependencies,
+          server.log,
+          { trusted: true },
+        );
+        const job = await service.enqueue({
+          ownerId: body.user_id,
+          sessionId: body.session_id,
+          idempotencyKey: deriveIdempotencyKey(
+            body.user_id,
+            body.session_id,
+            prompt,
+            body.event_id,
+          ),
+          prompt,
+        });
+        return reply.code(202).send({
+          jobId: job.id,
+          status: job.status,
+        });
+      } catch (error) {
+        return sendPublicError(reply, server.log, error);
+      }
+    },
+  );
+
+  const routeOptions = { dependencies };
+  await server.register(authRoutes, {
+    prefix: '/api/auth',
+    ...routeOptions,
+  });
+  await server.register(messagesRoutes, {
+    prefix: '/api/messages',
+    ...routeOptions,
+  });
+  await server.register(notificationsRoutes, {
+    prefix: '/api/notifications',
+    ...routeOptions,
+  });
+  await server.register(servicesRoutes, {
+    prefix: '/api/services',
+    ...routeOptions,
+  });
+  await server.register(settingsRoutes, {
+    prefix: '/api/settings',
+    ...routeOptions,
+  });
+  await server.register(imagesRoutes, {
+    prefix: '/api/images',
+    ...routeOptions,
+  });
 
   return server;
 };
 
-// Main entry — only when run as a script
-const isMain = process.argv[1] != null &&
+const isMain =
+  process.argv[1] != null &&
   (process.argv[1].endsWith('index.js') || process.argv[1].endsWith('index.ts'));
-/* c8 ignore next 4 */
+
+/* c8 ignore next 5 */
 if (isMain) {
-  const server = await buildServer();
-  const PORT = Number(process.env.PORT ?? 3000);
-  await server.listen({ port: PORT, host: '0.0.0.0' });
+  const server = await buildServer({ standalone: true });
+  const port = Number(process.env.PORT);
+  await server.listen({ port, host: '0.0.0.0' });
 }

@@ -1,197 +1,128 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockGenerate = vi.hoisted(() =>
-  vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] }))
-);
+const authState = vi.hoisted(() => ({
+  userId: 'user_1' as string | null,
+  sessionId: 'session_1' as string | null,
+}));
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
-  getAuth: vi.fn(() => ({ userId: 'u1' })),
+  getAuth: vi.fn(() => ({
+    userId: authState.userId,
+    sessionId: authState.sessionId,
+    getToken: vi.fn(async () => 'clerk-session-token'),
+  })),
 }));
-vi.mock('openai', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: mockGenerate };
-  };
-  return { default: MockOpenAI };
-});
 
 import { buildServer } from '../index.js';
-import { __resetOpenAI } from './images.js';
-import { getAuth } from '@clerk/fastify';
+import { createInMemoryBackendDependencies } from '../test/inMemoryBackend.js';
 
 describe('images routes', () => {
-  beforeEach(() => { __resetOpenAI(); });
-
-  it('GET /api/images/test returns 200 with message', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/images/test' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('message');
+  beforeEach(() => {
+    authState.userId = 'user_1';
+    authState.sessionId = 'session_1';
   });
 
-  it('POST /api/images/generate returns 200 with imageUrl', async () => {
-    const app = await buildServer();
-    const res = await app.inject({
+  it('returns a durable 202 job and completes it asynchronously', async () => {
+    const harness = createInMemoryBackendDependencies();
+    harness.dependencies.illustrationProvider = {
+      generate: vi.fn(async () => 'https://img.test/job.png'),
+    };
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const queued = await app.inject({
+      method: 'POST',
+      url: '/api/images/generate-for-story',
+      headers: { 'idempotency-key': 'turn_1' },
+      payload: { prompt: 'A cheerful forest scene' },
+    });
+
+    expect(queued.statusCode).toBe(202);
+    expect(queued.json()).toMatchObject({
+      jobId: expect.any(String),
+      status: 'pending',
+      statusUrl: expect.any(String),
+    });
+
+    await harness.drainIllustrationJobs();
+    const completed = await app.inject({
+      method: 'GET',
+      url: queued.json().statusUrl,
+    });
+    expect(completed.json()).toMatchObject({
+      status: 'completed',
+      imageUrl: 'https://img.test/job.png',
+    });
+  });
+
+  it('deduplicates retries and rejects cross-user job reads', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const request = {
+      method: 'POST' as const,
+      url: '/api/images/generate',
+      headers: { 'idempotency-key': 'turn_1' },
+      payload: { prompt: 'A safe scene' },
+    };
+    const first = await app.inject(request);
+    const retry = await app.inject(request);
+    authState.userId = 'user_2';
+    authState.sessionId = 'session_2';
+    const hidden = await app.inject({
+      method: 'GET',
+      url: first.json().statusUrl,
+    });
+
+    expect(retry.json().jobId).toBe(first.json().jobId);
+    expect(hidden.statusCode).toBe(404);
+  });
+
+  it('rejects unauthenticated and oversized requests before provider work', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const generate = vi.fn(async () => 'https://img.test/job.png');
+    harness.dependencies.illustrationProvider = { generate };
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const oversized = await app.inject({
       method: 'POST',
       url: '/api/images/generate',
-      payload: { prompt: 'a sunny day' },
+      payload: { prompt: 'x'.repeat(4_001) },
     });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('imageUrl');
-  });
-
-  it('POST /api/images/generate returns 400 without prompt', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'POST', url: '/api/images/generate', payload: {} });
-    expect(res.statusCode).toBe(400);
-  });
-
-  it('POST /api/images/generate returns 401 when unauthenticated', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({
+    authState.userId = null;
+    authState.sessionId = null;
+    const unauthenticated = await app.inject({
       method: 'POST',
       url: '/api/images/generate',
-      payload: { prompt: 'test' },
+      payload: { prompt: 'A safe scene' },
     });
-    expect(res.statusCode).toBe(401);
+
+    expect(oversized.statusCode).toBe(400);
+    expect(unauthenticated.statusCode).toBe(401);
+    expect(generate).not.toHaveBeenCalled();
   });
 
-  it('POST /api/images/generate returns 500 when OpenAI throws', async () => {
-    mockGenerate.mockImplementationOnce(async () => { throw new Error('OpenAI down'); });
-    __resetOpenAI();
-    const app = await buildServer();
-    const res = await app.inject({
+  it('stores only an opaque failure code when the provider fails', async () => {
+    const harness = createInMemoryBackendDependencies();
+    harness.dependencies.illustrationProvider = {
+      async generate() {
+        throw new Error('vendor-secret-detail');
+      },
+    };
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const queued = await app.inject({
       method: 'POST',
       url: '/api/images/generate',
-      payload: { prompt: 'test' },
+      payload: { prompt: 'A safe scene' },
     });
-    expect(res.statusCode).toBe(500);
-  });
-
-  it('POST /api/images/generate returns 500 when OpenAI omits the image URL', async () => {
-    mockGenerate.mockResolvedValueOnce({ data: [{}] } as never);
-    __resetOpenAI();
-    const app = await buildServer();
-    const res = await app.inject({
-      method: 'POST',
-      url: '/api/images/generate',
-      payload: { prompt: 'test' },
-    });
-    expect(res.statusCode).toBe(500);
-    expect(res.json()).toEqual({ error: 'No image URL returned from OpenAI' });
-  });
-
-  describe('POST /api/images/generate-for-story', () => {
-    it('returns 200 with success and image_url', async () => {
-      const app = await buildServer();
-      const res = await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { story_content: 'a dragon adventure', mood: 'magical', characters: 'a brave knight' },
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.json()).toMatchObject({ success: true, image_url: expect.any(String) });
+    await harness.drainIllustrationJobs();
+    const failed = await app.inject({
+      method: 'GET',
+      url: queued.json().statusUrl,
     });
 
-    it('broadcasts generation-started to sseConnections', async () => {
-      const app = await buildServer();
-      const fakeConn = { write: vi.fn(), end: vi.fn() };
-      (app as any).sseConnections.add(fakeConn); // eslint-disable-line @typescript-eslint/no-explicit-any
-      await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { mood: 'happy' },
-      });
-      expect(fakeConn.write).toHaveBeenCalledWith(expect.stringContaining('generation-started'));
+    expect(failed.json()).toMatchObject({
+      status: 'failed',
+      errorCode: 'IMAGE_GENERATION_FAILED',
     });
-
-    it('drops broken SSE connections during the generation-started broadcast', async () => {
-      const app = await buildServer();
-      const brokenConn = { write: vi.fn(() => { throw new Error('start failed'); }), end: vi.fn() };
-      (app as any).sseConnections.add(brokenConn); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { mood: 'happy' },
-      });
-
-      expect((app as any).sseConnections.has(brokenConn)).toBe(false); // eslint-disable-line @typescript-eslint/no-explicit-any
-    });
-
-    it('broadcasts story-illustration event after image generation', async () => {
-      const app = await buildServer();
-      const fakeConn = { write: vi.fn(), end: vi.fn() };
-      (app as any).sseConnections.add(fakeConn); // eslint-disable-line @typescript-eslint/no-explicit-any
-      await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { mood: 'cheerful', characters: 'a rabbit', setting: 'a forest' },
-      });
-      const allWrites = fakeConn.write.mock.calls.map((c: string[]) => c[0]).join('');
-      expect(allWrites).toContain('story-illustration');
-    });
-
-    it('drops broken SSE connections during the final illustration broadcast', async () => {
-      const app = await buildServer();
-      const brokenConn = {
-        write: vi.fn()
-          .mockImplementationOnce(() => undefined)
-          .mockImplementationOnce(() => { throw new Error('illustration failed'); }),
-        end: vi.fn(),
-      };
-      (app as any).sseConnections.add(brokenConn); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { mood: 'cheerful' },
-      });
-
-      expect((app as any).sseConnections.has(brokenConn)).toBe(false); // eslint-disable-line @typescript-eslint/no-explicit-any
-    });
-
-    it.each(['happy', 'scary', 'sad', 'magical', 'adventurous', 'cheerful', 'unknown_mood'])(
-      'handles mood=%s without error',
-      async (mood) => {
-        const app = await buildServer();
-        const res = await app.inject({
-          method: 'POST',
-          url: '/api/images/generate-for-story',
-          payload: { mood, current_scene: 'the hero enters the cave' },
-        });
-        expect([200, 500]).toContain(res.statusCode);
-      }
-    );
-
-    it('omits optional fields gracefully (no characters/setting/scene)', async () => {
-      const app = await buildServer();
-      const res = await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: {},
-      });
-      expect(res.statusCode).toBe(200);
-    });
-
-    it('returns 500 when story generation does not produce an image URL', async () => {
-      mockGenerate.mockResolvedValueOnce({ data: [{}] } as never);
-      __resetOpenAI();
-      const app = await buildServer();
-      const res = await app.inject({
-        method: 'POST',
-        url: '/api/images/generate-for-story',
-        payload: { mood: 'magical' },
-      });
-
-      expect(res.statusCode).toBe(500);
-      expect(res.json()).toMatchObject({
-        success: false,
-        error: 'No image URL returned from OpenAI',
-      });
-    });
+    expect(failed.body).not.toContain('vendor-secret-detail');
   });
 });
