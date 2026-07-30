@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getReleaseSha } from '../src/lib/release-identity.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const origin = req.headers.origin;
@@ -19,5 +20,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  res.status(200).json({ status: 'ok' });
+  try {
+    const releaseSha = getReleaseSha();
+    res.setHeader('x-release-sha', releaseSha);
+    res.status(200).json({ status: 'ok', releaseSha });
+  } catch {
+    res.status(503).json({ status: 'unavailable' });
+  }
 }

@@ -19,7 +19,8 @@
         "License Check",
         "Secret Scanning",
         "Knip",
-        "Analyze Bundle"
+        "Analyze Bundle",
+        "Tooling & CI config"
       ]
     },
     "main": {
@@ -40,7 +41,8 @@
         "License Check",
         "Secret Scanning",
         "Knip",
-        "Analyze Bundle"
+        "Analyze Bundle",
+        "Tooling & CI config"
       ]
     }
   }

@@ -9,6 +9,7 @@ import RouteWrapper from '../RouteWrapper';
 import { cn } from '../../lib/utils';
 import { useUser } from '@clerk/clerk-react';
 import { type Role } from '../../config/menuConfig';
+import { APP_ROUTES } from '../../config/routes';
 
 const MainLayout: React.FC = () => {
   const { user, isLoaded } = useUser();
@@ -24,13 +25,13 @@ const MainLayout: React.FC = () => {
 
   // Define pages with ElevenLabs agent integrations (hide footer and AI disclaimer)
   const elevenLabsAgentPaths = [
-    '/services/parent-wellness-chat',
-    '/services/language-lesson-session',
-    '/services/math-tutoring-session',
-    '/services/extra-curricular-session',
-    '/services/chess-coaching-session',
-    '/services/storytelling-session',
-    '/services/progress-interpretation-chat'
+    APP_ROUTES.servicesParentWellnessChat,
+    APP_ROUTES.servicesLanguageLesson,
+    APP_ROUTES.servicesMathTutoring,
+    APP_ROUTES.servicesExtraCurricularSession.replace('/:activityType', ''),
+    APP_ROUTES.servicesChessCoaching,
+    APP_ROUTES.servicesStorytelling,
+    APP_ROUTES.servicesProgressInterpretationChat,
   ];
 
   // Check if current page has ElevenLabs agent integration

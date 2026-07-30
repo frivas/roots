@@ -7,26 +7,8 @@ import TranslatedText from '../../components/TranslatedText';
 import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import ElevenLabsWidget from '../../components/ElevenLabsWidget';
 import AiAccuracyNotice from '../../components/AiAccuracyNotice';
-
-// Static translations for widget UI
-const widgetTranslations = {
-  en: {
-    actionText: 'Click to talk',
-    startCall: 'Start Call',
-    endCall: 'End Call',
-    expand: 'Expand',
-    listening: 'Listening...',
-    speaking: 'Speaking...'
-  },
-  es: {
-    actionText: 'Haz clic para hablar',
-    startCall: 'Iniciar Llamada',
-    endCall: 'Finalizar Llamada',
-    expand: 'Expandir',
-    listening: 'Escuchando...',
-    speaking: 'Hablando...'
-  }
-};
+import { AGENT_IDS, WIDGET_TRANSLATIONS } from '../../config/agentConfig';
+import { APP_ROUTES } from '../../config/routes';
 
 const LanguageLessonSession: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +16,7 @@ const LanguageLessonSession: React.FC = () => {
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
-  const i18n = widgetTranslations[widgetLanguage as keyof typeof widgetTranslations];
+  const i18n = WIDGET_TRANSLATIONS[widgetLanguage as keyof typeof WIDGET_TRANSLATIONS];
 
   return (
     <motion.div
@@ -48,7 +30,7 @@ const LanguageLessonSession: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/extra-curricular?tab=online')}
+          onClick={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -64,7 +46,7 @@ const LanguageLessonSession: React.FC = () => {
 
       {/* Widget Container */}
       <ElevenLabsWidget
-        agentId="agent_01jxy264qbe49b8f3rk71wnzn7"
+        agentId={AGENT_IDS.language}
         language={widgetLanguage}
         labels={i18n}
       />

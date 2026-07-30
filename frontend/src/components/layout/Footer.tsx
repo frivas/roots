@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import TranslatedText from '../TranslatedText';
 import { ExternalLink, Bot } from 'lucide-react';
+import { APP_ROUTES } from '../../config/routes';
 
 interface FooterProps {
   className?: string;
@@ -13,12 +14,12 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
   
   // Define AI-enabled pages that should show the disclaimer
   const aiEnabledPaths = [
-    '/services/storytelling-session',
-    '/services/chess-coaching-session',
-    '/services/math-tutoring-session',
-    '/services/language-lesson-session',
-    '/services/parent-wellness-chat',
-    '/services/extra-curricular-session'
+    APP_ROUTES.servicesStorytelling,
+    APP_ROUTES.servicesChessCoaching,
+    APP_ROUTES.servicesMathTutoring,
+    APP_ROUTES.servicesLanguageLesson,
+    APP_ROUTES.servicesParentWellnessChat,
+    APP_ROUTES.servicesExtraCurricularSession.replace('/:activityType', ''),
   ];
   
   // Check if current page uses AI
@@ -97,4 +98,4 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
   );
 };
 
-export default Footer; 
+export default Footer;

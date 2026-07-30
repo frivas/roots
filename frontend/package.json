@@ -18,7 +18,8 @@
     "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
     "test:coverage": "NODE_OPTIONS=--no-experimental-webstorage vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:auth": "playwright test --config playwright.auth.config.ts"
   },
   "engines": {
     "node": ">=22.22.2 <23"
@@ -31,10 +32,12 @@
     "lucide-react": "^1.27.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "7.18.2",
+    "react-router-dom": "6.30.3",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@clerk/backend": "^3.14.0",
+    "@clerk/testing": "^2.2.15",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
     "@tailwindcss/vite": "^4.3.1",

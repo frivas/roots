@@ -52,23 +52,5 @@ if (severe.length === 0) {
   process.exit(0);
 }
 
-const router = audit.vulnerabilities?.['react-router'];
-const exactAdvisories = (router?.via ?? [])
-  .filter((entry) => typeof entry === 'object')
-  .map((entry) => entry.url?.split('/').pop());
-const exactRscOnly =
-  workspace === 'frontend' &&
-  severe.every((entry) => ['react-router', 'react-router-dom'].includes(entry.name)) &&
-  exactAdvisories.length === 1 &&
-  exactAdvisories[0] === 'GHSA-qwww-vcr4-c8h2' &&
-  (audit.vulnerabilities?.['react-router-dom']?.via ?? []).every(
-    (entry) => entry === 'react-router',
-  );
-
-if (!exactRscOnly) {
-  const summary = severe.map((entry) => `${entry.name} (${entry.severity})`).join(', ');
-  throw new Error(`unaccepted production audit findings: ${summary}`);
-}
-console.log(
-  'Scoped audit accepted only GHSA-qwww-vcr4-c8h2 after the separate RSC-mode proof.',
-);
+const summary = severe.map((entry) => `${entry.name} (${entry.severity})`).join(', ');
+throw new Error(`production audit contains high or critical findings: ${summary}`);

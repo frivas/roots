@@ -76,6 +76,36 @@ describe('images routes', () => {
     expect(hidden.statusCode).toBe(404);
   });
 
+  it('keeps status polling read-only and recovers pending work once', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const generate = vi.fn(async () => 'https://img.test/recovered.png');
+    harness.dependencies.illustrationProvider = { generate };
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const queued = await app.inject({
+      method: 'POST',
+      url: '/api/images/generate',
+      payload: { prompt: 'A safe scene' },
+    });
+
+    expect(harness.getPendingIllustrationTaskCount()).toBe(1);
+    await app.inject({ method: 'GET', url: queued.json().statusUrl });
+    await app.inject({ method: 'GET', url: queued.json().statusUrl });
+    expect(harness.getPendingIllustrationTaskCount()).toBe(1);
+
+    harness.discardIllustrationTasks();
+    const recoveryUrl = `${queued.json().statusUrl}/recover`;
+    const [first, second] = await Promise.all([
+      app.inject({ method: 'POST', url: recoveryUrl }),
+      app.inject({ method: 'POST', url: recoveryUrl }),
+    ]);
+    expect(first.statusCode).toBe(202);
+    expect(second.statusCode).toBe(202);
+    expect(harness.getPendingIllustrationTaskCount()).toBe(1);
+
+    await harness.drainIllustrationJobs();
+    expect(generate).toHaveBeenCalledOnce();
+  });
+
   it('rejects unauthenticated and oversized requests before provider work', async () => {
     const harness = createInMemoryBackendDependencies();
     const generate = vi.fn(async () => 'https://img.test/job.png');

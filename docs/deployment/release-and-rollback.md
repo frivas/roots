@@ -11,8 +11,9 @@ variables; they must never be guessed or copied from another project.
 
 The `Deployed canary` workflow is read-only. It does not create deployments,
 change aliases, or execute a rollback. It validates the supplied provider
-identifiers, proves the frontend `release.json` SHA, checks the frontend and
-backend health endpoints, and uploads an exact-SHA evidence artifact.
+identifiers, proves the frontend `release.json` SHA and the backend health
+response SHA, checks both deployed runtimes, fetches fresh telemetry from the
+authorized performance collector, and uploads exact-SHA evidence artifacts.
 
 Before promoting a release:
 

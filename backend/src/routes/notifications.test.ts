@@ -76,4 +76,37 @@ describe('notifications routes', () => {
 
     expect(response.statusCode).toBe(403);
   });
+
+  it('paginates notifications without changing the array body', async () => {
+    const harness = createInMemoryBackendDependencies({
+      users: [{ id: 'user_1', role: 'parent' }],
+    });
+    const app = await buildServer({ dependencies: harness.dependencies });
+    for (const title of ['First', 'Second']) {
+      await app.inject({
+        method: 'POST',
+        url: '/api/notifications',
+        payload: {
+          title,
+          message: 'Hello',
+          type: 'info',
+          recipientId: 'user_1',
+        },
+      });
+    }
+
+    const first = await app.inject({
+      method: 'GET',
+      url: '/api/notifications?limit=1',
+    });
+    expect(first.json()).toHaveLength(1);
+    expect(first.headers['x-page-limit']).toBe('1');
+    expect(first.headers['x-next-cursor']).toEqual(expect.any(String));
+
+    const second = await app.inject({
+      method: 'GET',
+      url: `/api/notifications?limit=1&cursor=${first.headers['x-next-cursor']}`,
+    });
+    expect(second.json()).toHaveLength(1);
+  });
 });

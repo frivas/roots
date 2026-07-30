@@ -205,67 +205,67 @@ function App() {
             } />
 
             {/* Services section */}
-            <Route path="/services" element={
+            <Route path={APP_ROUTES.services} element={
               <Suspense fallback={<PageLoader />}>
                 <Services />
               </Suspense>
             } />
-            <Route path="/services/parent-wellness" element={
+            <Route path={APP_ROUTES.servicesParentWellness} element={
               <Suspense fallback={<PageLoader />}>
                 <ParentWellness />
               </Suspense>
             } />
-            <Route path="/services/parent-wellness-chat" element={
+            <Route path={APP_ROUTES.servicesParentWellnessChat} element={
               <Suspense fallback={<PageLoader />}>
                 <ParentWellnessChat />
               </Suspense>
             } />
-            <Route path="/services/extra-curricular" element={
+            <Route path={APP_ROUTES.servicesExtraCurricular} element={
               <Suspense fallback={<PageLoader />}>
                 <ExtraCurricular />
               </Suspense>
             } />
-            <Route path="/services/extra-curricular-session/:activityType" element={
+            <Route path={APP_ROUTES.servicesExtraCurricularSession} element={
               <Suspense fallback={<PageLoader />}>
                 <ExtraCurricularSession />
               </Suspense>
             } />
-            <Route path="/services/chess-coaching-session" element={
+            <Route path={APP_ROUTES.servicesChessCoaching} element={
               <Suspense fallback={<PageLoader />}>
                 <ChessCoachingSession />
               </Suspense>
             } />
-            <Route path="/services/math-tutoring-session" element={
+            <Route path={APP_ROUTES.servicesMathTutoring} element={
               <Suspense fallback={<PageLoader />}>
                 <MathTutoringSession />
               </Suspense>
             } />
-            <Route path="/services/storytelling-session" element={
+            <Route path={APP_ROUTES.servicesStorytelling} element={
               <Suspense fallback={<PageLoader />}>
                 <StorytellingSession />
               </Suspense>
             } />
-            <Route path="/services/language-lesson-session" element={
+            <Route path={APP_ROUTES.servicesLanguageLesson} element={
               <Suspense fallback={<PageLoader />}>
                 <LanguageLessonSession />
               </Suspense>
             } />
-            <Route path="/services/progress-interpretation" element={
+            <Route path={APP_ROUTES.servicesProgressInterpretation} element={
               <Suspense fallback={<PageLoader />}>
                 <ProgressInterpretationService />
               </Suspense>
             } />
-            <Route path="/services/progress-interpretation-chat" element={
+            <Route path={APP_ROUTES.servicesProgressInterpretationChat} element={
               <Suspense fallback={<PageLoader />}>
                 <ProgressInterpretationChat />
               </Suspense>
             } />
-            <Route path="/services/morning-classroom" element={
+            <Route path={APP_ROUTES.servicesMorningClassroom} element={
               <Suspense fallback={<PageLoader />}>
                 <MorningClassroom />
               </Suspense>
             } />
-            <Route path="/services/*" element={
+            <Route path={APP_ROUTES.servicesWildcard} element={
               <Suspense fallback={<PageLoader />}>
                 <Services />
               </Suspense>

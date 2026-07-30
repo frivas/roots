@@ -31,11 +31,6 @@ on:
         description: Immutable previous Vercel deployment ID
         required: true
         type: string
-      performance_observations_json:
-        description: Exact-SHA Web Vital, backend, and provider observation payload
-        required: true
-        type: string
-
 permissions:
   contents: read
 
@@ -55,6 +50,9 @@ jobs:
       VERCEL_DEPLOYED_SHA: ${{ inputs.vercel_deployed_sha }}
       VERCEL_PRODUCTION_URL: ${{ vars.VERCEL_PRODUCTION_URL }}
       VERCEL_ROLLBACK_DEPLOYMENT_ID: ${{ inputs.vercel_rollback_deployment_id }}
+      PERFORMANCE_COLLECTOR_URL: ${{ vars.PERFORMANCE_COLLECTOR_URL }}
+      PERFORMANCE_COLLECTOR_ID: ${{ vars.PERFORMANCE_COLLECTOR_ID }}
+      PERFORMANCE_COLLECTOR_TOKEN: ${{ secrets.PERFORMANCE_COLLECTOR_TOKEN }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -66,20 +64,18 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
-          cache: npm
-      - run: npm ci
       - name: Validate immutable release identity
         run: npm run validate:release-config -- --release
       - name: Run read-only production canary
         env:
           RELEASE_EVIDENCE_FILE: release-evidence.json
         run: node scripts/run-deployed-canary.mjs
-      - name: Check exact-SHA runtime SLO observations
+      - name: Collect authorized exact-SHA runtime observations
         env:
-          PERFORMANCE_OBSERVATIONS_JSON: ${{ inputs.performance_observations_json }}
           PERFORMANCE_OBSERVATIONS_FILE: performance-observations.json
+        run: node scripts/collect-performance-observations.mjs
+      - name: Check collected exact-SHA runtime SLO observations
         run: |
-          node scripts/write-performance-observations.mjs
           npm run check:performance-slo -- --observations performance-observations.json
       - name: Upload immutable release evidence
         if: always()

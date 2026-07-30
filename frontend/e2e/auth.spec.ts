@@ -16,8 +16,12 @@ test('auth/register renders the Madrid registration experience', async ({ page }
 test('language switcher changes the visible auth shell to Spanish', async ({ page }) => {
   await page.goto('/auth/login');
   await page.getByRole('button', { name: /change language|cambiar idioma/i }).first().click();
-  await page.getByRole('menuitem', { name: /español/i }).click();
 
-  await expect(page.getByText('Sistema Integral').first()).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: /change language to english/i }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Iniciar sesión' }).first(),
+  ).toBeVisible();
   await expect(page).toHaveURL(/\/auth\/login$/);
 });

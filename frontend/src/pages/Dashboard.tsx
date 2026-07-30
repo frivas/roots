@@ -230,19 +230,19 @@ const Dashboard = () => {
                    icon: <GraduationCap className="h-5 w-5" />,
                    label: "Progress Interpretation",
                    color: "bg-primary/10 text-primary",
-                   route: "/services/progress-interpretation-chat"
+                   route: APP_ROUTES.servicesProgressInterpretationChat
                  },
                  {
                    icon: <Heart className="h-5 w-5" />,
                    label: "Parent Wellness",
                    color: "bg-primary/10 text-primary",
-                   route: "/services/parent-wellness-chat"
+                   route: APP_ROUTES.servicesParentWellnessChat
                  },
                  {
                    icon: <Users className="h-5 w-5" />,
                    label: "Storytelling Adventure",
                    color: "bg-success/10 text-success",
-                   route: "/services/storytelling-session"
+                   route: APP_ROUTES.servicesStorytelling
                  },
                  {
                    icon: <Calendar className="h-5 w-5" />,

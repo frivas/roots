@@ -9,7 +9,7 @@ import type {
 
 export interface DataRepository {
   getCurrentUser(): Promise<UserProfile>;
-  listMessages(): Promise<MessageRecord[]>;
+  listMessages(page: PageRequest): Promise<PageResult<MessageRecord>>;
   getMessage(id: string): Promise<MessageRecord | null>;
   createMessage(input: {
     recipientId: string;
@@ -19,7 +19,7 @@ export interface DataRepository {
   }): Promise<MessageRecord>;
   markMessageRead(id: string): Promise<boolean>;
   deleteMessage(id: string): Promise<boolean>;
-  listNotifications(): Promise<NotificationRecord[]>;
+  listNotifications(page: PageRequest): Promise<PageResult<NotificationRecord>>;
   markNotificationRead(id: string): Promise<boolean>;
   markAllNotificationsRead(): Promise<void>;
   createNotification(input: {
@@ -33,6 +33,16 @@ export interface DataRepository {
   resetSettings(): Promise<UserSettings>;
   listServices(): Promise<ServiceRecord[]>;
   getService(id: string): Promise<ServiceRecord | null>;
+}
+
+export interface PageRequest {
+  limit: number;
+  cursor?: string;
+}
+
+export interface PageResult<T> {
+  items: T[];
+  nextCursor: string | null;
 }
 
 export interface IllustrationJobRepository {

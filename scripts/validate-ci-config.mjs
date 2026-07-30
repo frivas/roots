@@ -14,6 +14,7 @@ const rootPackage = json('package.json');
 const frontendPackage = json('frontend/package.json');
 const backendPackage = json('backend/package.json');
 const buildConfig = json('backend/tsconfig.build.json');
+const protection = json('.github/branch-protection.json');
 const nvmVersion = read('.nvmrc').trim();
 
 if (nvmVersion !== '22.22.2') fail('.nvmrc must pin Node 22.22.2');
@@ -34,15 +35,18 @@ for (const script of [
   'audit:production',
   'check:bundle',
   'check:performance-slo',
+  'test:tooling',
+  'validate:ci-config',
   'validate:release-config',
   'test:serverless',
   'test:contracts',
   'test:rls:local',
+  'test:e2e:auth',
 ]) {
   if (!rootPackage.scripts[script]) fail(`missing canonical root script: ${script}`);
 }
 if (rootPackage.devDependencies.knip !== '6.29.0') fail('Knip must be exactly pinned');
-if (frontendPackage.dependencies['react-router-dom'] !== '7.18.2') {
+if (frontendPackage.dependencies['react-router-dom'] !== '6.30.3') {
   fail('react-router-dom must be exactly pinned to the compatible patched release');
 }
 
@@ -78,6 +82,7 @@ const workflowFiles = readdirSync(workflowDir)
   .filter((name) => name.endsWith('.yml') || name.endsWith('.yaml'))
   .sort();
 const jobNames = new Set();
+const workflows = new Map();
 for (const file of workflowFiles) {
   const source = read(`.github/workflows/${file}`);
   if (/\bnpx\b/.test(source)) fail(`${file} must use canonical pinned scripts instead of npx`);
@@ -90,27 +95,95 @@ for (const file of workflowFiles) {
   if (!workflow?.name || !workflow?.on || !workflow?.jobs) {
     fail(`${file} must define a name, trigger, and jobs`);
   }
+  workflows.set(file, workflow);
   for (const job of Object.values(workflow.jobs)) {
     if (job?.name) jobNames.add(job.name);
   }
 }
 
-for (const required of [
-  'Lint & Typecheck',
-  'Unit Tests',
-  'Build',
-  'Playwright smoke',
-  'npm audit',
-  'License Check',
-  'Secret Scanning',
-  'Knip',
-  'Analyze Bundle',
+const requiredChecks = new Set();
+let canonicalRequiredChecks;
+for (const branchName of ['develop', 'main']) {
+  const checks = protection.branches?.[branchName]?.requiredStatusChecks;
+  if (
+    !Array.isArray(checks) ||
+    checks.length === 0 ||
+    new Set(checks).size !== checks.length
+  ) {
+    fail(`${branchName} must define unique required status checks`);
+  }
+  canonicalRequiredChecks ??= checks;
+  if (
+    canonicalRequiredChecks.length !== checks.length ||
+    canonicalRequiredChecks.some((check) => !checks.includes(check))
+  ) {
+    fail(`${branchName} required checks must match develop`);
+  }
+  for (const check of checks) requiredChecks.add(check);
+}
+for (const required of requiredChecks) {
+  if (!jobNames.has(required)) fail(`missing required workflow check: ${required}`);
+}
+
+for (const expected of [
   'Serverless adapter smoke',
-  'Real Clerk and Supabase contract',
-  'Local Clerk RLS contract',
+  'Local Clerk-shaped RLS contract',
+  'Remote Clerk-issued-token contract',
+  'Real Clerk browser auth contract',
   'Exact-SHA deployed canary',
 ]) {
-  if (!jobNames.has(required)) fail(`missing workflow check: ${required}`);
+  if (!jobNames.has(expected)) fail(`missing workflow check: ${expected}`);
+}
+
+const ciSource = read('.github/workflows/ci.yml');
+for (const command of ['npm run test:tooling', 'npm run validate:ci-config']) {
+  if (!ciSource.includes(command)) fail(`CI tooling check must run: ${command}`);
+}
+
+const runCommands = (workflowFile, jobId) =>
+  (workflows.get(workflowFile)?.jobs?.[jobId]?.steps ?? [])
+    .map((step) => step?.run)
+    .filter(Boolean)
+    .join('\n');
+const usesDependencyCache = (workflowFile, jobId) =>
+  (workflows.get(workflowFile)?.jobs?.[jobId]?.steps ?? [])
+    .some((step) => step?.with?.cache);
+for (const [workflowFile, jobId] of [
+  ['security.yml', 'npm-audit'],
+  ['security.yml', 'license-check'],
+  ['deployed-canary.yml', 'canary'],
+]) {
+  if (/\bnpm ci\b/.test(runCommands(workflowFile, jobId))) {
+    fail(`${workflowFile}:${jobId} must not install the full workspace`);
+  }
+  if (usesDependencyCache(workflowFile, jobId)) {
+    fail(`${workflowFile}:${jobId} must not restore an unused dependency cache`);
+  }
+}
+if (!/\bnpm ci\b/.test(runCommands('integration-contracts.yml', 'local-clerk-shaped-rls'))) {
+  fail('the local Clerk-shaped RLS contract must install its real test dependencies');
+}
+
+const deployedCanarySource = read('.github/workflows/deployed-canary.yml');
+if (
+  deployedCanarySource.includes('performance_observations_json') ||
+  !deployedCanarySource.includes('node scripts/collect-performance-observations.mjs')
+) {
+  fail('the deployed canary must collect performance evidence instead of accepting input');
+}
+const integrationSource = read('.github/workflows/integration-contracts.yml');
+for (const expected of [
+  'run_remote_clerk_issued_token_contract',
+  'run_real_clerk_browser_auth_contract',
+  'npm --workspace backend run test:contracts --',
+  '--reporter=json',
+  'validate-local-contract-evidence.mjs',
+  'run-remote-clerk-supabase-contract.mjs',
+  'npm run test:e2e:auth',
+]) {
+  if (!integrationSource.includes(expected)) {
+    fail(`integration contracts workflow is missing: ${expected}`);
+  }
 }
 
 console.log(`Validated ${workflowFiles.length} workflow files and runtime/tooling contracts.`);

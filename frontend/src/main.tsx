@@ -1,9 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ClerkProvider } from '@clerk/clerk-react';
 import { LingoTranslationProvider } from './contexts/LingoTranslationContext';
-import ErrorBoundary from './components/ErrorBoundary';
+import ClerkRuntimeBoundary from './components/ClerkRuntimeBoundary';
 import App from './App';
 import './index.css';
 
@@ -16,14 +15,12 @@ if (!clerkPubKey) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ErrorBoundary>
-      <LingoTranslationProvider>
-        <ClerkProvider publishableKey={clerkPubKey}>
-          <BrowserRouter>
+    <LingoTranslationProvider>
+      <BrowserRouter>
+        <ClerkRuntimeBoundary publishableKey={clerkPubKey}>
             <App />
-          </BrowserRouter>
-        </ClerkProvider>
-      </LingoTranslationProvider>
-    </ErrorBoundary>
+        </ClerkRuntimeBoundary>
+      </BrowserRouter>
+    </LingoTranslationProvider>
   </StrictMode>
 );

@@ -31,7 +31,12 @@ if (release.schemaVersion !== 1 || release.commitSha !== releaseSha) {
 const observations = { frontend: [], backend: [] };
 for (let index = 0; index < samples; index += 1) {
   observations.frontend.push((await request(frontendUrl)).elapsedMs);
-  observations.backend.push((await request(new URL('/health', backendUrl))).elapsedMs);
+  const backendResponse = await request(new URL('/health', backendUrl));
+  const backendHealth = await backendResponse.response.json();
+  if (backendHealth.releaseSha !== releaseSha) {
+    throw new Error('deployed backend release metadata does not match RELEASE_SHA');
+  }
+  observations.backend.push(backendResponse.elapsedMs);
 }
 
 const percentile = (values, quantile) => {
@@ -67,6 +72,7 @@ const evidence = {
     projectId: process.env.VERCEL_PROJECT_ID,
     deploymentId: process.env.VERCEL_DEPLOYMENT_ID,
     deployedSha: process.env.VERCEL_DEPLOYED_SHA,
+    runtimeReleaseSha: releaseSha,
     rollbackDeploymentId: process.env.VERCEL_ROLLBACK_DEPLOYMENT_ID,
     url: backendUrl.href,
     latency: summarize(observations.backend),

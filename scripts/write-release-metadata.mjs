@@ -1,9 +1,12 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const commitSha = process.env.COMMIT_REF || process.env.GITHUB_SHA;
+const commitSha =
+  process.env.RELEASE_SHA || process.env.COMMIT_REF || process.env.GITHUB_SHA;
 if (!/^[0-9a-f]{40}$/.test(commitSha ?? '')) {
-  throw new Error('COMMIT_REF or GITHUB_SHA must be a lowercase 40-character SHA');
+  throw new Error(
+    'RELEASE_SHA, COMMIT_REF, or GITHUB_SHA must be a lowercase 40-character SHA',
+  );
 }
 
 const outputDir = resolve('dist');

@@ -37,10 +37,10 @@ const rscAudit = {
   },
 };
 
-test('accepts only the exact non-enabled RSC advisory chain', () => {
+test('rejects high findings even when a vulnerable feature is not enabled', () => {
   const result = runFixture(rscAudit);
-  assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /only GHSA-qwww-vcr4-c8h2/);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /high or critical findings/);
 });
 
 test('rejects an npm error response instead of treating it as clean', () => {
@@ -61,5 +61,5 @@ test('rejects any additional high or critical advisory', () => {
     },
   });
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /unaccepted production audit findings/);
+  assert.match(result.stderr, /high or critical findings/);
 });

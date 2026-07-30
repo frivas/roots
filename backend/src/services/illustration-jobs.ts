@@ -123,11 +123,23 @@ export class IllustrationJobService {
   }
 
   async get(jobId: string, ownerId: string): Promise<IllustrationJob | null> {
+    return this.repository.getForOwner(jobId, ownerId);
+  }
+
+  async recover(
+    jobId: string,
+    ownerId: string,
+  ): Promise<IllustrationJob | null> {
     const job = await this.repository.getForOwner(jobId, ownerId);
-    if (job?.status === 'pending') {
-      this.scheduler(() => this.process(job.id, ownerId));
+    if (!job || job.status !== 'pending') {
+      return job;
     }
-    return job;
+    const claimed = await this.repository.markProcessing(job.id, ownerId);
+    if (!claimed) {
+      return this.repository.getForOwner(jobId, ownerId);
+    }
+    this.scheduler(() => this.processClaimed(claimed, ownerId));
+    return claimed;
   }
 
   private async process(jobId: string, ownerId: string) {
@@ -135,7 +147,10 @@ export class IllustrationJobService {
     if (!job) {
       return;
     }
+    await this.processClaimed(job, ownerId);
+  }
 
+  private async processClaimed(job: IllustrationJob, ownerId: string) {
     try {
       const imageUrl = await this.provider.generate(job.prompt);
       await this.repository.markCompleted(job.id, ownerId, imageUrl);

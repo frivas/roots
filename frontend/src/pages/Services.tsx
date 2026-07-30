@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import useTranslatedString from '../hooks/useTranslatedString';
+import { APP_ROUTES } from '../config/routes';
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
@@ -133,7 +134,7 @@ const services: ServiceItem[] = [
     icon: BookOpen,
     title: 'Classroom Management',
     description: 'Manage morning classroom activities, attendance, and student participation',
-    href: '/services/classroom',
+    href: APP_ROUTES.servicesClassroom,
     category: 'academic',
     parentVisible: false, // Hidden for demo - teacher/faculty service
     isActive: false
@@ -142,7 +143,7 @@ const services: ServiceItem[] = [
     icon: Bus,
     title: 'Transportation',
     description: 'Track school transportation routes, schedules, and manage student pickup/dropoff',
-    href: '/services/transportation',
+    href: APP_ROUTES.servicesTransportation,
     category: 'support',
     parentVisible: false, // Hidden for demo - teacher/faculty service
     isActive: false
@@ -151,7 +152,7 @@ const services: ServiceItem[] = [
     icon: Coffee,
     title: 'Cafeteria Services',
     description: 'Meal planning, nutrition management, and cafeteria service scheduling',
-    href: '/services/cafeteria',
+    href: APP_ROUTES.servicesCafeteria,
     category: 'support',
     parentVisible: true, // Parent service - meal management for children
     isActive: false
@@ -160,7 +161,7 @@ const services: ServiceItem[] = [
     icon: Calendar,
     title: 'Morning Classroom',
     description: 'Early morning childcare and educational activities before regular school hours',
-    href: '/services/morning-classroom',
+    href: APP_ROUTES.servicesMorningClassroom,
     category: 'support',
     parentVisible: true, // Parent service - before-school care
     isActive: false
@@ -169,7 +170,7 @@ const services: ServiceItem[] = [
     icon: Users,
     title: 'Parent Coaching Assistant',
     description: 'Guidance for supporting children\'s academic development and effective communication strategies',
-    href: '/services/parent-coaching',
+    href: APP_ROUTES.servicesParentCoaching,
     category: 'academic',
     parentVisible: true, // Parent service - parenting support
     isActive: false
@@ -178,7 +179,7 @@ const services: ServiceItem[] = [
     icon: GraduationCap,
     title: 'Progress Interpretation Service',
     description: 'Comprehensive academic progress analysis and personalized guidance for parents to understand their child\'s educational journey',
-    href: '/services/progress-interpretation',
+    href: APP_ROUTES.servicesProgressInterpretation,
     category: 'academic',
     parentVisible: true, // Parent service - academic progress support
     isActive: true
@@ -187,7 +188,7 @@ const services: ServiceItem[] = [
     icon: Users,
     title: 'Parent Wellness and Self-Care',
     description: 'Stress management, work-life balance coaching, and family relationship support for parents',
-    href: '/services/parent-wellness',
+    href: APP_ROUTES.servicesParentWellness,
     category: 'support',
     parentVisible: true, // Parent service - wellness and family support
     isActive: true
@@ -196,7 +197,7 @@ const services: ServiceItem[] = [
     icon: Sparkles,
     title: 'Extracurricular Activities',
     description: 'Register and manage after-school programs, clubs, and special events',
-    href: '/services/extra-curricular',
+    href: APP_ROUTES.servicesExtraCurricular,
     category: 'extracurricular',
     parentVisible: true, // Parent service
     isActive: true
@@ -205,7 +206,7 @@ const services: ServiceItem[] = [
     icon: Globe,
     title: 'Language Support',
     description: 'Language assistance programs and resources for multilingual students',
-    href: '/services/language',
+    href: APP_ROUTES.servicesLanguage,
     category: 'academic',
     parentVisible: true, // Parent service
     isActive: false
@@ -214,7 +215,7 @@ const services: ServiceItem[] = [
     icon: Users,
     title: 'Mentorship Program',
     description: 'Connect with mentors and manage student-mentor relationships',
-    href: '/services/mentorship',
+    href: APP_ROUTES.servicesMentorship,
     category: 'academic',
     parentVisible: true, // Parent service
     isActive: false
@@ -223,7 +224,7 @@ const services: ServiceItem[] = [
     icon: Calendar,
     title: 'Event Planning',
     description: 'Schedule and organize school events, parent-teacher conferences, and assemblies',
-    href: '/services/events',
+    href: APP_ROUTES.servicesEvents,
     category: 'support',
     parentVisible: false, // Hidden for demo - teacher/faculty service
     isActive: false
@@ -232,7 +233,7 @@ const services: ServiceItem[] = [
     icon: GraduationCap,
     title: 'Academic Counseling',
     description: 'Academic guidance, course selection, and college preparation resources',
-    href: '/services/counseling',
+    href: APP_ROUTES.servicesCounseling,
     category: 'academic',
     parentVisible: true, // Parent service
     isActive: false
@@ -241,7 +242,7 @@ const services: ServiceItem[] = [
     icon: School,
     title: 'Field Trips',
     description: 'Plan, schedule, and manage educational field trips and excursions',
-    href: '/services/fieldtrips',
+    href: APP_ROUTES.servicesFieldTrips,
     category: 'extracurricular',
     parentVisible: false, // Hidden for demo - teacher/faculty service
     isActive: false

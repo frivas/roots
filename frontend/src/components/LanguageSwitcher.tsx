@@ -29,12 +29,14 @@ const LanguageSwitcher: React.FC = () => {
     const newLang = language === 'en-US' ? 'es-ES' : 'en-US';
     handleLanguageChange(newLang);
   };
+  const targetLanguage = language === 'en-US' ? 'Spanish' : 'English';
 
   return (
     <button
       onClick={toggleLanguage}
       className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-muted hover:text-foreground"
-      title={`Switch to ${language === 'en-US' ? 'Spanish' : 'English'}`}
+      aria-label={`Change language to ${targetLanguage}`}
+      title={`Switch to ${targetLanguage}`}
     >
       <span className="font-semibold">
         {language === 'es-ES' ? 'ES' : 'EN'}
@@ -43,4 +45,4 @@ const LanguageSwitcher: React.FC = () => {
   );
 };
 
-export default LanguageSwitcher; 
+export default LanguageSwitcher;

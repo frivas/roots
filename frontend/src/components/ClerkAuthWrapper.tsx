@@ -1,6 +1,8 @@
 import React from 'react';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import useClerkLocalization from '../hooks/useClerkLocalization';
+import ErrorBoundary from './ErrorBoundary';
+import TranslatedText from './TranslatedText';
 
 interface ClerkAuthWrapperProps {
   type: 'signIn' | 'signUp';
@@ -42,46 +44,69 @@ const ClerkAuthWrapper: React.FC<ClerkAuthWrapperProps> = ({
     }
   };
 
+  const unavailableFallback = (
+    <div role="alert" aria-live="assertive" className="space-y-3 text-center">
+      <h2 className="text-2xl font-bold text-foreground">
+        <TranslatedText>
+          {type === 'signIn' ? 'Sign in' : 'Create your account'}
+        </TranslatedText>
+      </h2>
+      <p className="text-muted-foreground">
+        <TranslatedText>
+          Authentication is temporarily unavailable. Please try again later.
+        </TranslatedText>
+      </p>
+    </div>
+  );
+
   if (type === 'signIn') {
     if (routing === 'path' && path) {
       return (
-        <SignIn
-          forceRedirectUrl={forceRedirectUrl}
-          appearance={appearance}
-          routing="path"
-          path={path}
-          initialValues={{ emailAddress: "" }}
-        />
+        <ErrorBoundary fallback={unavailableFallback}>
+          <SignIn
+            forceRedirectUrl={forceRedirectUrl}
+            appearance={appearance}
+            routing="path"
+            path={path}
+            initialValues={{ emailAddress: "" }}
+          />
+        </ErrorBoundary>
       );
     }
     return (
-      <SignIn
-        forceRedirectUrl={forceRedirectUrl}
-        appearance={appearance}
-        routing="virtual"
-        initialValues={{ emailAddress: "" }}
-      />
+      <ErrorBoundary fallback={unavailableFallback}>
+        <SignIn
+          forceRedirectUrl={forceRedirectUrl}
+          appearance={appearance}
+          routing="virtual"
+          initialValues={{ emailAddress: "" }}
+        />
+      </ErrorBoundary>
     );
   }
 
   if (routing === 'path' && path) {
     return (
-      <SignUp
-        forceRedirectUrl={forceRedirectUrl}
-        appearance={appearance}
-        routing="path"
-        path={path}
-        initialValues={{ emailAddress: "", username: "" }}
-      />
+      <ErrorBoundary fallback={unavailableFallback}>
+        <SignUp
+          forceRedirectUrl={forceRedirectUrl}
+          appearance={appearance}
+          routing="path"
+          path={path}
+          initialValues={{ emailAddress: "", username: "" }}
+        />
+      </ErrorBoundary>
     );
   }
   return (
-    <SignUp
-      forceRedirectUrl={forceRedirectUrl}
-      appearance={appearance}
-      routing="virtual"
-      initialValues={{ emailAddress: "", username: "" }}
-    />
+    <ErrorBoundary fallback={unavailableFallback}>
+      <SignUp
+        forceRedirectUrl={forceRedirectUrl}
+        appearance={appearance}
+        routing="virtual"
+        initialValues={{ emailAddress: "", username: "" }}
+      />
+    </ErrorBoundary>
   );
 };
 

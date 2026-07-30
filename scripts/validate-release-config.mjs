@@ -7,18 +7,6 @@ const readJson = (path) =>
 const provider = readJson('docs/deployment/provider-contract.json');
 const protection = readJson('.github/branch-protection.json');
 
-const requiredChecks = [
-  'Lint & Typecheck',
-  'Unit Tests',
-  'Build',
-  'Playwright smoke',
-  'npm audit',
-  'License Check',
-  'Secret Scanning',
-  'Knip',
-  'Analyze Bundle',
-];
-
 const fail = (message) => {
   throw new Error(message);
 };
@@ -39,8 +27,21 @@ if (
 ) {
   fail('coverage publication must remain owned by the Portfolio workflow');
 }
+const performanceEvidence = provider.performanceEvidence;
+if (
+  !performanceEvidence ||
+  !provider.release.requiredVariables.includes(performanceEvidence.collectorUrlVariable) ||
+  !provider.release.requiredVariables.includes(performanceEvidence.collectorIdVariable) ||
+  !provider.release.requiredVariables.includes(performanceEvidence.collectorTokenVariable) ||
+  performanceEvidence.workflowAudience !==
+    'frivas/roots/.github/workflows/deployed-canary.yml'
+) {
+  fail('provider contract must bind release evidence to the deployed canary collector');
+}
 
-for (const branchName of ['develop', 'main']) {
+const protectedBranches = ['develop', 'main'];
+let canonicalRequiredChecks;
+for (const branchName of protectedBranches) {
   const branch = protection.branches?.[branchName];
   if (!branch) fail(`missing branch protection contract for ${branchName}`);
   if (branch.requiredApprovingReviewCount < 1) {
@@ -57,10 +58,19 @@ for (const branchName of ['develop', 'main']) {
   ) {
     fail(`${branchName} branch protection contract is incomplete`);
   }
-  for (const check of requiredChecks) {
-    if (!branch.requiredStatusChecks.includes(check)) {
-      fail(`${branchName} is missing required check: ${check}`);
-    }
+  if (
+    !Array.isArray(branch.requiredStatusChecks) ||
+    branch.requiredStatusChecks.length === 0 ||
+    new Set(branch.requiredStatusChecks).size !== branch.requiredStatusChecks.length
+  ) {
+    fail(`${branchName} must define unique required status checks`);
+  }
+  canonicalRequiredChecks ??= branch.requiredStatusChecks;
+  if (
+    canonicalRequiredChecks.length !== branch.requiredStatusChecks.length ||
+    canonicalRequiredChecks.some((check) => !branch.requiredStatusChecks.includes(check))
+  ) {
+    fail(`${branchName} required checks must match ${protectedBranches[0]}`);
   }
 }
 
@@ -86,7 +96,11 @@ if (process.argv.includes('--release')) {
   if (process.env.VERCEL_ROLLBACK_DEPLOYMENT_ID === process.env.VERCEL_DEPLOYMENT_ID) {
     fail('Vercel rollback deployment must differ from the current deployment');
   }
-  for (const name of ['NETLIFY_PRODUCTION_URL', 'VERCEL_PRODUCTION_URL']) {
+  for (const name of [
+    'NETLIFY_PRODUCTION_URL',
+    'VERCEL_PRODUCTION_URL',
+    performanceEvidence.collectorUrlVariable,
+  ]) {
     let url;
     try {
       url = new URL(process.env[name]);

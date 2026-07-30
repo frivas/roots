@@ -4,24 +4,21 @@ import rateLimit from '@fastify/rate-limit';
 import Fastify from 'fastify';
 import {
   createDefaultDependencies,
-  createIllustrationService,
+  enqueueIllustration,
   type BackendDependencies,
 } from './dependencies.js';
-import { ApplicationError } from './lib/application-error.js';
 import { getRequestIdentity } from './lib/auth.js';
 import { verifyElevenLabsWebhook } from './lib/elevenlabs-webhook.js';
 import { safeErrorMetadata, sendPublicError } from './lib/http.js';
+import { getReleaseSha } from './lib/release-identity.js';
 import authRoutes from './routes/auth.js';
 import imagesRoutes from './routes/images.js';
 import messagesRoutes from './routes/messages.js';
 import notificationsRoutes from './routes/notifications.js';
 import servicesRoutes from './routes/services.js';
 import settingsRoutes from './routes/settings.js';
-import {
-  buildIllustrationPrompt,
-  deriveIdempotencyKey,
-  type StoryIllustrationInput,
-} from './services/illustration-jobs.js';
+import { webhookIllustrationBodySchema } from './routes/illustration-contract.js';
+import type { StoryIllustrationInput } from './services/illustration-jobs.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -62,6 +59,7 @@ export const validateEnv = (
     required(env, 'OPENAI_API_KEY');
     required(env, 'ELEVENLABS_WEBHOOK_SECRET');
   }
+  getReleaseSha(env);
 };
 
 export const buildServer = async (options: BuildServerOptions = {}) => {
@@ -82,6 +80,7 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
     },
   });
   const dependencies = options.dependencies ?? createDefaultDependencies();
+  const releaseSha = getReleaseSha();
 
   server.removeContentTypeParser('application/json');
   server.addContentTypeParser(
@@ -106,6 +105,7 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
       );
     },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    exposedHeaders: ['x-next-cursor', 'x-page-limit', 'x-release-sha'],
   });
   await server.register(rateLimit, {
     max: 30,
@@ -130,7 +130,11 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
     return reply.code(500).send({ error: 'INTERNAL_ERROR' });
   });
 
-  server.get('/health', async () => ({ status: 'ok' }));
+  server.get('/health', async (_request, reply) =>
+    reply
+      .header('x-release-sha', releaseSha)
+      .send({ status: 'ok', releaseSha }),
+  );
   server.get('/ready', async (_request, reply) => {
     const result = await dependencies.readiness.check();
     return reply.code(result.ready ? 200 : 503).send({
@@ -178,31 +182,7 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
     '/webhook/elevenlabs/story-illustration',
     {
       schema: {
-        body: {
-          type: 'object',
-          additionalProperties: false,
-          required: ['user_id', 'session_id', 'event_id'],
-          properties: {
-            user_id: { type: 'string', minLength: 1, maxLength: 128 },
-            session_id: { type: 'string', minLength: 1, maxLength: 128 },
-            event_id: { type: 'string', minLength: 1, maxLength: 128 },
-            prompt: { type: 'string', minLength: 1, maxLength: 4_000 },
-            story_content: {
-              type: 'string',
-              minLength: 1,
-              maxLength: 4_000,
-            },
-            characters: { type: 'string', minLength: 1, maxLength: 1_000 },
-            setting: { type: 'string', minLength: 1, maxLength: 1_000 },
-            mood: { type: 'string', minLength: 1, maxLength: 50 },
-            current_scene: {
-              type: 'string',
-              minLength: 1,
-              maxLength: 1_000,
-            },
-          },
-          anyOf: [{ required: ['prompt'] }, { required: ['story_content'] }],
-        },
+        body: webhookIllustrationBodySchema,
       },
     },
     async (request, reply) => {
@@ -217,30 +197,17 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
           session_id: string;
           event_id: string;
         };
-        const prompt = buildIllustrationPrompt(body);
-        if (prompt.length > 4_000) {
-          throw new ApplicationError(
-            'VALIDATION_FAILED',
-            400,
-            'VALIDATION_FAILED',
-          );
-        }
-        const service = await createIllustrationService(
+        const job = await enqueueIllustration(
           dependencies,
           server.log,
-          { trusted: true },
+          {
+            access: { trusted: true },
+            ownerId: body.user_id,
+            sessionId: body.session_id,
+            suppliedKey: body.event_id,
+            story: body,
+          },
         );
-        const job = await service.enqueue({
-          ownerId: body.user_id,
-          sessionId: body.session_id,
-          idempotencyKey: deriveIdempotencyKey(
-            body.user_id,
-            body.session_id,
-            prompt,
-            body.event_id,
-          ),
-          prompt,
-        });
         return reply.code(202).send({
           jobId: job.id,
           status: job.status,

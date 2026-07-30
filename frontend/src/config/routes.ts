@@ -20,6 +20,7 @@ export const APP_ROUTES = {
   servicesParentWellness: '/services/parent-wellness',
   servicesParentWellnessChat: '/services/parent-wellness-chat',
   servicesExtraCurricular: '/services/extra-curricular',
+  servicesExtraCurricularSession: '/services/extra-curricular-session/:activityType',
   servicesChessCoaching: '/services/chess-coaching-session',
   servicesMathTutoring: '/services/math-tutoring-session',
   servicesStorytelling: '/services/storytelling-session',
@@ -27,6 +28,16 @@ export const APP_ROUTES = {
   servicesProgressInterpretation: '/services/progress-interpretation',
   servicesProgressInterpretationChat: '/services/progress-interpretation-chat',
   servicesMorningClassroom: '/services/morning-classroom',
+  servicesClassroom: '/services/classroom',
+  servicesTransportation: '/services/transportation',
+  servicesCafeteria: '/services/cafeteria',
+  servicesParentCoaching: '/services/parent-coaching',
+  servicesLanguage: '/services/language',
+  servicesMentorship: '/services/mentorship',
+  servicesEvents: '/services/events',
+  servicesCounseling: '/services/counseling',
+  servicesFieldTrips: '/services/fieldtrips',
+  servicesWildcard: '/services/*',
   communications: '/communications',
   communicationsMessages: '/communications/messages',
   communicationsBulletin: '/communications/bulletin',
@@ -46,3 +57,9 @@ const registeredRoutes = new Set<string>(Object.values(APP_ROUTES));
 
 export const isRegisteredRoute = (path: string): path is AppRoute =>
   registeredRoutes.has(path);
+
+export const extracurricularSessionRoute = (activityType: string) =>
+  APP_ROUTES.servicesExtraCurricularSession.replace(
+    ':activityType',
+    encodeURIComponent(activityType),
+  );

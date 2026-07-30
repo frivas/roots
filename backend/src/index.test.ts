@@ -19,7 +19,7 @@ describe('buildServer', () => {
 
     expect(
       (await app.inject({ method: 'GET', url: '/health' })).json(),
-    ).toEqual({ status: 'ok' });
+    ).toEqual({ status: 'ok', releaseSha: 'local' });
     expect(
       (await app.inject({ method: 'GET', url: '/ready' })).json(),
     ).toMatchObject({ status: 'ready' });
@@ -39,6 +39,7 @@ describe('buildServer', () => {
 
   it('requires PORT only for the standalone listener', () => {
     const env = {
+      NODE_ENV: 'test',
       CLERK_PUBLISHABLE_KEY: 'pk_test',
       CLERK_SECRET_KEY: 'sk_test',
       FRONTEND_URL: 'https://frontend.test',
@@ -50,5 +51,30 @@ describe('buildServer', () => {
     expect(() =>
       validateEnv(env, { standalone: true, injectedDependencies: true }),
     ).toThrow('Missing required environment variable: PORT');
+  });
+
+  it('requires a valid immutable release SHA outside local and test', () => {
+    const env = {
+      NODE_ENV: 'production',
+      CLERK_PUBLISHABLE_KEY: 'pk_test',
+      CLERK_SECRET_KEY: 'sk_test',
+      FRONTEND_URL: 'https://frontend.test',
+    } as NodeJS.ProcessEnv;
+
+    expect(() =>
+      validateEnv(env, { injectedDependencies: true }),
+    ).toThrow('Missing immutable release SHA');
+    expect(() =>
+      validateEnv(
+        { ...env, RELEASE_SHA: 'not-a-sha' },
+        { injectedDependencies: true },
+      ),
+    ).toThrow('Invalid immutable release SHA');
+    expect(() =>
+      validateEnv(
+        { ...env, RELEASE_SHA: 'a'.repeat(40) },
+        { injectedDependencies: true },
+      ),
+    ).not.toThrow();
   });
 });

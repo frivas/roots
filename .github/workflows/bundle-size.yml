@@ -14,7 +14,6 @@ jobs:
     env:
       VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
       VITE_BACKEND_URL: http://localhost:3000
-      VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

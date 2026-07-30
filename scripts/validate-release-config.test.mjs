@@ -16,6 +16,9 @@ const validEnv = {
   VERCEL_DEPLOYED_SHA: sha,
   VERCEL_PRODUCTION_URL: 'https://api.roots.example.com',
   VERCEL_ROLLBACK_DEPLOYMENT_ID: 'vercel-previous',
+  PERFORMANCE_COLLECTOR_URL: 'https://observability.example.com/roots',
+  PERFORMANCE_COLLECTOR_ID: 'roots-production-observability',
+  PERFORMANCE_COLLECTOR_TOKEN: 'collector-secret',
 };
 
 const run = (env = validEnv, args = ['--release']) =>
@@ -37,6 +40,13 @@ test('deployed SHA mismatch fails closed', () => {
   const result = run({ ...validEnv, NETLIFY_DEPLOYED_SHA: 'b'.repeat(40) });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /must match RELEASE_SHA/);
+});
+
+test('missing authorized performance collector access fails closed', () => {
+  const { PERFORMANCE_COLLECTOR_TOKEN: _removed, ...env } = validEnv;
+  const result = run(env);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /PERFORMANCE_COLLECTOR_TOKEN/);
 });
 
 test('current deployment cannot be its own rollback target', () => {

@@ -8,8 +8,10 @@ import {
 import type {
   DataRepository,
   IllustrationJobRepository,
+  PageRequest,
   RepositoryFactory,
 } from '../repositories/contracts.js';
+import { decodeCursor, encodeCursor } from '../repositories/pagination.js';
 import { OpenAIImageProvider } from '../services/illustration-jobs.js';
 import { SessionEventRegistry } from '../services/session-events.js';
 import type {
@@ -118,12 +120,33 @@ class InMemoryDataRepository implements DataRepository {
     return created;
   }
 
-  async listMessages() {
-    return [...this.state.messages.values()].filter(
-      (message) =>
-        message.senderId === this.userId ||
-        message.recipientId === this.userId,
-    );
+  async listMessages(page: PageRequest) {
+    const cursor = page.cursor ? decodeCursor(page.cursor) : null;
+    const rows = [...this.state.messages.values()]
+      .filter(
+        (message) =>
+          message.senderId === this.userId ||
+          message.recipientId === this.userId,
+      )
+      .sort(
+        (left, right) =>
+          right.createdAt.localeCompare(left.createdAt) ||
+          right.id.localeCompare(left.id),
+      )
+      .filter(
+        (message) =>
+          !cursor ||
+          message.createdAt < cursor.createdAt ||
+          (message.createdAt === cursor.createdAt && message.id < cursor.id),
+      );
+    const items = rows.slice(0, page.limit);
+    const last = rows.length > page.limit ? items.at(-1) : undefined;
+    return {
+      items,
+      nextCursor: last
+        ? encodeCursor({ createdAt: last.createdAt, id: last.id })
+        : null,
+    };
   }
 
   async getMessage(id: string) {
@@ -176,10 +199,30 @@ class InMemoryDataRepository implements DataRepository {
     return message ? this.state.messages.delete(id) : false;
   }
 
-  async listNotifications() {
-    return [...this.state.notifications.values()].filter(
-      (notification) => notification.userId === this.userId,
-    );
+  async listNotifications(page: PageRequest) {
+    const cursor = page.cursor ? decodeCursor(page.cursor) : null;
+    const rows = [...this.state.notifications.values()]
+      .filter((notification) => notification.userId === this.userId)
+      .sort(
+        (left, right) =>
+          right.timestamp.localeCompare(left.timestamp) ||
+          right.id.localeCompare(left.id),
+      )
+      .filter(
+        (notification) =>
+          !cursor ||
+          notification.timestamp < cursor.createdAt ||
+          (notification.timestamp === cursor.createdAt &&
+            notification.id < cursor.id),
+      );
+    const items = rows.slice(0, page.limit);
+    const last = rows.length > page.limit ? items.at(-1) : undefined;
+    return {
+      items,
+      nextCursor: last
+        ? encodeCursor({ createdAt: last.timestamp, id: last.id })
+        : null,
+    };
   }
 
   async markNotificationRead(id: string) {
@@ -387,6 +430,12 @@ export const createInMemoryBackendDependencies = (
   return {
     dependencies,
     state,
+    getPendingIllustrationTaskCount() {
+      return pendingTasks.length;
+    },
+    discardIllustrationTasks() {
+      pendingTasks.splice(0);
+    },
     async drainIllustrationJobs() {
       while (pendingTasks.length > 0) {
         await Promise.all(pendingTasks.splice(0).map((task) => task()));

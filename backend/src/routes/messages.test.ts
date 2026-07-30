@@ -63,6 +63,55 @@ describe('messages routes', () => {
     expect(hidden.statusCode).toBe(404);
   });
 
+  it('keeps the array response contract while exposing bounded pagination', async () => {
+    const harness = createInMemoryBackendDependencies({
+      users: [
+        { id: 'user_1', role: 'parent' },
+        { id: 'user_2', role: 'teacher' },
+      ],
+      messages: [
+        {
+          id: '00000000-0000-4000-8000-000000000001',
+          senderId: 'user_1',
+          recipientId: 'user_2',
+          subject: 'First',
+          body: 'One',
+        },
+        {
+          id: '00000000-0000-4000-8000-000000000002',
+          senderId: 'user_2',
+          recipientId: 'user_1',
+          subject: 'Second',
+          body: 'Two',
+        },
+      ],
+    });
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const first = await app.inject({
+      method: 'GET',
+      url: '/api/messages?limit=1',
+    });
+    expect(first.json()).toHaveLength(1);
+    expect(first.headers['x-page-limit']).toBe('1');
+    expect(first.headers['x-next-cursor']).toEqual(expect.any(String));
+
+    const second = await app.inject({
+      method: 'GET',
+      url: `/api/messages?limit=1&cursor=${first.headers['x-next-cursor']}`,
+    });
+    expect(second.json()).toHaveLength(1);
+    expect(
+      await app.inject({ method: 'GET', url: '/api/messages?limit=101' }),
+    ).toMatchObject({ statusCode: 400 });
+    expect(
+      await app.inject({
+        method: 'GET',
+        url: '/api/messages?cursor=not-a-cursor',
+      }),
+    ).toMatchObject({ statusCode: 400 });
+  });
+
   it('persists create, read, and delete mutations', async () => {
     const harness = createHarness();
     const app = await buildServer({ dependencies: harness.dependencies });

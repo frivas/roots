@@ -5,19 +5,40 @@ on:
     branches: [develop, main]
     paths:
       - 'backend/**'
+      - 'frontend/e2e/clerk-authenticated.auth.ts'
+      - 'frontend/playwright.auth.config.ts'
+      - 'frontend/package.json'
       - 'supabase/**'
       - '.github/workflows/integration-contracts.yml'
+      - 'scripts/run-remote-clerk-supabase-contract.mjs'
+      - 'scripts/validate-local-contract-evidence.mjs'
       - 'package.json'
       - 'package-lock.json'
   push:
     branches: [develop, main]
     paths:
       - 'backend/**'
+      - 'frontend/e2e/clerk-authenticated.auth.ts'
+      - 'frontend/playwright.auth.config.ts'
+      - 'frontend/package.json'
       - 'supabase/**'
       - '.github/workflows/integration-contracts.yml'
+      - 'scripts/run-remote-clerk-supabase-contract.mjs'
+      - 'scripts/validate-local-contract-evidence.mjs'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:
+    inputs:
+      run_remote_clerk_issued_token_contract:
+        description: Run the remote RLS contract with a fresh Clerk-issued test token
+        required: true
+        default: false
+        type: boolean
+      run_real_clerk_browser_auth_contract:
+        description: Run browser auth with a disposable user in the Clerk development instance
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -35,33 +56,8 @@ jobs:
       - run: npm ci
       - run: npm run test:serverless
 
-  clerk-supabase:
-    name: Real Clerk and Supabase contract
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    environment: integration
-    env:
-      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
-      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
-      - run: npm ci
-      - name: Reject incomplete real-stack identity
-        run: |
-          test -n "$CLERK_PUBLISHABLE_KEY"
-          test -n "$CLERK_SECRET_KEY"
-          test -n "$SUPABASE_URL"
-          test -n "$SUPABASE_API_KEY"
-      - run: npm run test:contracts
-
-  local-rls:
-    name: Local Clerk RLS contract
+  local-clerk-shaped-rls:
+    name: Local Clerk-shaped RLS contract
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -75,4 +71,83 @@ jobs:
           version: 2.110.0
       - run: npm run supabase:start
       - run: npm run supabase:reset
-      - run: npm run test:rls:local
+      - name: Exercise local RLS with injected Clerk-shaped claims
+        run: |
+          mkdir -p contract-evidence
+          npm run test:rls:local | tee contract-evidence/local-rls-pgtap.txt
+      - name: Exercise the request client with a locally signed Clerk-shaped token
+        run: npm --workspace backend run test:contracts -- --reporter=json --outputFile="$GITHUB_WORKSPACE/contract-evidence/local-clerk-shaped-vitest.json"
+      - name: Reject skipped or missing enabled contract tests
+        run: node scripts/validate-local-contract-evidence.mjs contract-evidence/local-clerk-shaped-vitest.json
+      - name: Upload local contract evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: local-clerk-shaped-rls-evidence
+          path: contract-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  remote-clerk-issued-token:
+    name: Remote Clerk-issued-token contract
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_remote_clerk_issued_token_contract }}
+    runs-on: ubuntu-latest
+    environment: integration
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      CLERK_SUPABASE_TEST_TOKEN: ${{ secrets.CLERK_SUPABASE_TEST_TOKEN }}
+      CLERK_SUPABASE_TEST_SUBJECT: ${{ vars.CLERK_SUPABASE_TEST_SUBJECT }}
+      CLERK_SUPABASE_CONTROL_SUBJECT: ${{ vars.CLERK_SUPABASE_CONTROL_SUBJECT }}
+      CLERK_SUPABASE_TEST_ISSUER: ${{ vars.CLERK_SUPABASE_TEST_ISSUER }}
+      REMOTE_CONTRACT_EVIDENCE_FILE: contract-evidence/remote-clerk-issued-token.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+      - name: Verify a fresh Clerk-issued token through remote Supabase RLS
+        run: node scripts/run-remote-clerk-supabase-contract.mjs
+      - name: Upload remote contract evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: remote-clerk-issued-token-evidence
+          path: contract-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  real-clerk-browser-auth:
+    name: Real Clerk browser auth contract
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_real_clerk_browser_auth_contract }}
+    runs-on: ubuntu-latest
+    environment: integration
+    env:
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      VITE_BACKEND_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - name: Install the pinned browser runtime
+        run: npm exec playwright -- install --with-deps chromium
+      - name: Build the frontend with the development Clerk instance
+        run: npm run build:frontend
+      - name: Exercise real Clerk sign-in, role state, and sign-out
+        run: npm run test:e2e:auth
+      - name: Upload browser contract failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: real-clerk-browser-auth-evidence
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+          if-no-files-found: warn
+          retention-days: 30

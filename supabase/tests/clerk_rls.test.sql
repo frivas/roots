@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 
-SELECT plan(13);
+SELECT plan(18);
 
 INSERT INTO public.users (id, role)
 VALUES
@@ -82,6 +82,50 @@ SELECT throws_ok(
   '42501',
   'new row violates row-level security policy for table "settings"',
   'a user cannot create another user settings row'
+);
+
+SELECT results_eq(
+  $$SELECT id FROM public.get_or_create_current_user()$$,
+  ARRAY['user_1']::text[],
+  'the atomic current-user function returns only the Clerk subject'
+);
+
+SELECT results_eq(
+  $$SELECT language FROM public.get_or_create_current_settings()$$,
+  ARRAY['Spanish']::text[],
+  'the atomic settings function returns existing current-user settings'
+);
+
+SELECT results_eq(
+  $$SELECT language
+    FROM public.upsert_current_settings(p_language => 'French')$$,
+  ARRAY['French']::text[],
+  'the atomic settings upsert applies a partial update'
+);
+
+SELECT results_eq(
+  $$SELECT language
+    FROM public.upsert_current_settings(p_reset => true)$$,
+  ARRAY['English']::text[],
+  'the atomic settings upsert resets defaults in one call'
+);
+
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"user_2","role":"authenticated"}',
+  true
+);
+
+SELECT results_eq(
+  $$SELECT user_id FROM public.get_or_create_current_settings()$$,
+  ARRAY['user_2']::text[],
+  'the atomic settings function remains scoped by RLS to the Clerk subject'
+);
+
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"user_1","role":"authenticated"}',
+  true
 );
 
 SELECT throws_ok(

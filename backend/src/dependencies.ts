@@ -1,10 +1,12 @@
 import type { FastifyBaseLogger } from 'fastify';
 import type OpenAI from 'openai';
+import { waitUntil } from '@vercel/functions';
 import {
   createRequestSupabase,
   createTrustedSupabase,
 } from './lib/supabase.js';
 import type { RepositoryFactory } from './repositories/contracts.js';
+import { ApplicationError } from './lib/application-error.js';
 import {
   SupabaseDataRepository,
   SupabaseIllustrationJobRepository,
@@ -12,13 +14,16 @@ import {
 import {
   IllustrationJobService,
   OpenAIImageProvider,
+  buildIllustrationPrompt,
+  deriveIdempotencyKey,
   type IllustrationEventPublisher,
   type IllustrationProvider,
   type JobScheduler,
+  type StoryIllustrationInput,
 } from './services/illustration-jobs.js';
 import { SessionEventRegistry } from './services/session-events.js';
 
-export interface ReadinessResult {
+interface ReadinessResult {
   ready: boolean;
   checks: {
     clerk: 'ok' | 'unavailable';
@@ -27,7 +32,7 @@ export interface ReadinessResult {
   };
 }
 
-export interface ReadinessChecker {
+interface ReadinessChecker {
   check(): Promise<ReadinessResult>;
 }
 
@@ -51,6 +56,10 @@ const getOpenAI = async () => {
 };
 
 const defaultScheduler: JobScheduler = (task) => {
+  if (process.env.VERCEL === '1') {
+    waitUntil(Promise.resolve().then(task));
+    return;
+  }
   queueMicrotask(() => {
     void task();
   });
@@ -142,4 +151,43 @@ export const createIllustrationService = async (
     dependencies.scheduler,
     logger,
   );
+};
+
+export const enqueueIllustration = async (
+  dependencies: BackendDependencies,
+  logger: FastifyBaseLogger,
+  input: {
+    access:
+      | { trusted: true }
+      | {
+          trusted?: false;
+          userId: string;
+          getToken: () => Promise<string | null>;
+        };
+    ownerId: string;
+    sessionId: string;
+    suppliedKey?: string;
+    story: StoryIllustrationInput;
+  },
+) => {
+  const prompt = buildIllustrationPrompt(input.story);
+  if (prompt.length > 4_000) {
+    throw new ApplicationError('VALIDATION_FAILED', 400, 'VALIDATION_FAILED');
+  }
+  const service = await createIllustrationService(
+    dependencies,
+    logger,
+    input.access,
+  );
+  return service.enqueue({
+    ownerId: input.ownerId,
+    sessionId: input.sessionId,
+    idempotencyKey: deriveIdempotencyKey(
+      input.ownerId,
+      input.sessionId,
+      prompt,
+      input.suppliedKey,
+    ),
+    prompt,
+  });
 };

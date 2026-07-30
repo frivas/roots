@@ -57,7 +57,7 @@ describe('security remediation contracts', () => {
     const ready = await app.inject({ method: 'GET', url: '/ready' });
 
     expect(live.statusCode).toBe(200);
-    expect(live.json()).toEqual({ status: 'ok' });
+    expect(live.json()).toEqual({ status: 'ok', releaseSha: 'local' });
     expect(ready.statusCode).toBe(503);
     expect(ready.json()).toEqual({
       status: 'not_ready',

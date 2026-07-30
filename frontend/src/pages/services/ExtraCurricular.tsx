@@ -19,6 +19,10 @@ import {
   Mic,
   Star
 } from 'lucide-react';
+import {
+  APP_ROUTES,
+  extracurricularSessionRoute,
+} from '../../config/routes';
 
 const ExtraCurricular: React.FC = () => {
   const navigate = useNavigate();
@@ -50,15 +54,15 @@ const ExtraCurricular: React.FC = () => {
 
   const handleStartOnlineSession = (activityType: string) => {
     if (activityType === 'chess') {
-      navigate('/services/chess-coaching-session');
+      navigate(APP_ROUTES.servicesChessCoaching);
     } else if (activityType === 'math') {
-      navigate('/services/math-tutoring-session');
+      navigate(APP_ROUTES.servicesMathTutoring);
     } else if (activityType === 'storytelling') {
-      navigate('/services/storytelling-session');
+      navigate(APP_ROUTES.servicesStorytelling);
     } else if (activityType === 'language') {
-      navigate('/services/language-lesson-session');
+      navigate(APP_ROUTES.servicesLanguageLesson);
     } else {
-      navigate(`/services/extra-curricular-session/${activityType}`);
+      navigate(extracurricularSessionRoute(activityType));
     }
   };
 
@@ -208,7 +212,7 @@ const ExtraCurricular: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services')}
+          onClick={() => navigate(APP_ROUTES.services)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />

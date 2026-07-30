@@ -21,6 +21,7 @@ import {
   Mic,
   Star
 } from 'lucide-react';
+import { APP_ROUTES } from '../../config/routes';
 
 const ParentWellness: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const ParentWellness: React.FC = () => {
 
   const handleStartVoiceSession = () => {
     // Navigate to dedicated parent wellness chat page
-    navigate('/services/parent-wellness-chat');
+    navigate(APP_ROUTES.servicesParentWellnessChat);
   };
 
   const handleToggleFavorite = (supportType: string) => {
@@ -172,7 +173,7 @@ const ParentWellness: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services')}
+          onClick={() => navigate(APP_ROUTES.services)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -480,4 +481,4 @@ const ParentWellness: React.FC = () => {
   );
 };
 
-export default ParentWellness; 
+export default ParentWellness;

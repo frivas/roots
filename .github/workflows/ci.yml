@@ -26,6 +26,21 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+  tooling:
+    name: Tooling & CI config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - name: Test repository tooling
+        run: npm run test:tooling
+      - name: Validate CI and runtime contracts
+        run: npm run validate:ci-config
+
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -72,7 +87,6 @@ jobs:
     env:
       VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
       VITE_BACKEND_URL: http://localhost:3000
-      VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -114,7 +128,6 @@ jobs:
       - run: cd frontend && npm run test:e2e
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
-          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:

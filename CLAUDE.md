@@ -74,7 +74,6 @@ npm run check-localization  # Check for untranslated strings
 ```
 VITE_CLERK_PUBLISHABLE_KEY=...    # Clerk publishable key
 VITE_BACKEND_URL=http://localhost:3000
-VITE_GROQ_API_KEY=...             # Required for Lingo.dev translations
 ```
 
 ### Backend (`backend/.env`)
@@ -91,12 +90,11 @@ FRONTEND_URL=http://localhost:5173 # For CORS
 
 ## Localization (CRITICAL)
 
-Every user-facing string MUST be wrapped for translation. The project uses a hybrid translation system:
-
-1. **Local dictionary first** (`frontend/src/services/SpanishTranslations.ts`) - 900+ Spanish translations
-2. **Cache layer** - Previously translated strings are cached
-3. **Lingo.dev SDK** - Dynamic/unknown strings translated via API (uses Groq)
-4. **Fallback** - English original if all else fails
+Every user-facing string MUST be wrapped for translation. The frontend uses
+the checked-in local dictionary in
+`frontend/src/services/SpanishTranslations.ts`; unsupported strings fall back
+to the English source text. Client builds must never receive provider secret
+keys.
 
 ### Rules
 - Wrap ALL user-facing text: `<TranslatedText>Your text here</TranslatedText>`

@@ -59,8 +59,20 @@
       "VERCEL_DEPLOYMENT_ID",
       "VERCEL_DEPLOYED_SHA",
       "VERCEL_PRODUCTION_URL",
-      "VERCEL_ROLLBACK_DEPLOYMENT_ID"
+      "VERCEL_ROLLBACK_DEPLOYMENT_ID",
+      "PERFORMANCE_COLLECTOR_URL",
+      "PERFORMANCE_COLLECTOR_ID",
+      "PERFORMANCE_COLLECTOR_TOKEN"
     ]
+  },
+  "performanceEvidence": {
+    "collectorUrlVariable": "PERFORMANCE_COLLECTOR_URL",
+    "collectorIdVariable": "PERFORMANCE_COLLECTOR_ID",
+    "collectorTokenVariable": "PERFORMANCE_COLLECTOR_TOKEN",
+    "workflowAudience": "frivas/roots/.github/workflows/deployed-canary.yml",
+    "minimumWindowSeconds": 300,
+    "maximumAgeSeconds": 900,
+    "maximumCollectionLagSeconds": 300
   },
   "coverage": {
     "transport": "portfolio-central",

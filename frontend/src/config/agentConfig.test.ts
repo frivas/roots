@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { AGENT_IDS, WIDGET_TRANSLATIONS, WIDGET_CONFIG } from './agentConfig';
 
@@ -8,6 +10,36 @@ describe('agentConfig', () => {
     ids.forEach(id => {
       expect(id).toMatch(/^agent_/);
     });
+  });
+
+  it('keeps every voice-service agent in the shared registry', () => {
+    expect(Object.keys(AGENT_IDS).sort()).toEqual([
+      'chess',
+      'language',
+      'math',
+      'parentWellness',
+      'progressInterpretation',
+      'storytelling',
+    ]);
+  });
+
+  it('keeps voice-service pages free of copied agent ids and widget translations', () => {
+    for (const page of [
+      'ChessCoachingSession',
+      'ExtraCurricularSession',
+      'LanguageLessonSession',
+      'MathTutoringSession',
+      'ParentWellnessChat',
+      'ProgressInterpretationChat',
+      'StorytellingSession',
+    ]) {
+      const source = readFileSync(
+        resolve(process.cwd(), `src/pages/services/${page}.tsx`),
+        'utf8',
+      );
+      expect(source).not.toMatch(/agent_[0-9a-z]+/);
+      expect(source).not.toMatch(/const\s+widgetTranslations\s*=/);
+    }
   });
 
   it('en and es translation objects share the same keys', () => {

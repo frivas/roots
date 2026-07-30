@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Star
 } from 'lucide-react';
+import { APP_ROUTES } from '../../config/routes';
 
 const ProgressInterpretationService: React.FC = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const ProgressInterpretationService: React.FC = () => {
   
   const handleStartVoiceSession = () => {
     // Navigate to dedicated progress interpretation chat page
-    navigate('/services/progress-interpretation-chat');
+    navigate(APP_ROUTES.servicesProgressInterpretationChat);
   };
 
   const handleToggleFavorite = (supportType: string) => {
@@ -205,7 +206,7 @@ const ProgressInterpretationService: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services')}
+          onClick={() => navigate(APP_ROUTES.services)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -461,4 +462,4 @@ const ProgressInterpretationService: React.FC = () => {
   );
 };
 
-export default ProgressInterpretationService; 
+export default ProgressInterpretationService;

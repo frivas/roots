@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const defaultSloFile = resolve(repositoryRoot, 'docs/deployment/performance-slo.json');
+const defaultProviderFile = resolve(repositoryRoot, 'docs/deployment/provider-contract.json');
 
 const metricContracts = {
   webVitals: {
@@ -56,17 +57,116 @@ export function readPerformanceSlo(sloFile = defaultSloFile) {
   return config;
 }
 
-export function enforcePerformanceSlo(observations, config) {
+export function readPerformanceEvidenceContract(providerFile = defaultProviderFile) {
+  const provider = JSON.parse(readFileSync(providerFile, 'utf8'));
+  const contract = provider.performanceEvidence;
+  if (
+    !contract ||
+    typeof contract.collectorUrlVariable !== 'string' ||
+    typeof contract.collectorIdVariable !== 'string' ||
+    typeof contract.collectorTokenVariable !== 'string' ||
+    typeof contract.workflowAudience !== 'string'
+  ) {
+    fail('provider contract must define the performance evidence collector identity');
+  }
+  for (const name of [
+    'minimumWindowSeconds',
+    'maximumAgeSeconds',
+    'maximumCollectionLagSeconds',
+  ]) {
+    if (!Number.isInteger(contract[name]) || contract[name] < 1) {
+      fail(`performanceEvidence.${name} must be a positive integer`);
+    }
+  }
+  return contract;
+}
+
+const timestamp = (value, label) => {
+  const milliseconds = Date.parse(value);
+  if (!Number.isFinite(milliseconds)) fail(`${label} must be an ISO timestamp`);
+  return milliseconds;
+};
+
+export function validatePerformanceEvidence(
+  observations,
+  contract,
+  {
+    expectedCollectorId = process.env.PERFORMANCE_COLLECTOR_ID,
+    expectedCollectorUrl = process.env[contract.collectorUrlVariable],
+    expectedReleaseSha = process.env.RELEASE_SHA,
+    nowMs = Date.now(),
+  } = {},
+) {
   if (observations.schemaVersion !== 1) fail('observations.schemaVersion must be 1');
   if (!/^[0-9a-f]{40}$/.test(observations.releaseSha ?? '')) {
     fail('observations.releaseSha must be a lowercase 40-character SHA');
   }
-  if (process.env.RELEASE_SHA && observations.releaseSha !== process.env.RELEASE_SHA) {
+  if (expectedReleaseSha && observations.releaseSha !== expectedReleaseSha) {
     fail('observations.releaseSha must match RELEASE_SHA exactly');
   }
-  if (!Number.isFinite(Date.parse(observations.collectedAt))) {
-    fail('observations.collectedAt must be an ISO timestamp');
+  if (!expectedCollectorId) {
+    fail('PERFORMANCE_COLLECTOR_ID is required to validate observations');
   }
+  if (!expectedCollectorUrl) {
+    fail(`${contract.collectorUrlVariable} is required to validate observations`);
+  }
+  let expectedCollectorOrigin;
+  try {
+    expectedCollectorOrigin = new URL(expectedCollectorUrl).origin;
+  } catch {
+    fail(`${contract.collectorUrlVariable} must be a valid URL`);
+  }
+  if (observations.collector?.id !== expectedCollectorId) {
+    fail('observations collector identity does not match PERFORMANCE_COLLECTOR_ID');
+  }
+  if (observations.collector?.audience !== contract.workflowAudience) {
+    fail('observations collector audience does not match the deployed canary');
+  }
+
+  const startedAt = timestamp(observations.window?.startedAt, 'observations.window.startedAt');
+  const endedAt = timestamp(observations.window?.endedAt, 'observations.window.endedAt');
+  const collectedAt = timestamp(observations.collectedAt, 'observations.collectedAt');
+  const retrievedAt = timestamp(
+    observations.retrieval?.retrievedAt,
+    'observations.retrieval.retrievedAt',
+  );
+  if (endedAt <= startedAt) fail('observations measurement window must end after it starts');
+  if (endedAt - startedAt < contract.minimumWindowSeconds * 1_000) {
+    fail('observations measurement window is shorter than the required minimum');
+  }
+  if (endedAt > nowMs + 60_000 || collectedAt > nowMs + 60_000 || retrievedAt > nowMs + 60_000) {
+    fail('observations timestamps cannot be in the future');
+  }
+  if (nowMs - endedAt > contract.maximumAgeSeconds * 1_000) {
+    fail('observations measurement window is stale');
+  }
+  if (
+    collectedAt < endedAt ||
+    collectedAt - endedAt > contract.maximumCollectionLagSeconds * 1_000
+  ) {
+    fail('observations collection time is outside the allowed window lag');
+  }
+  if (retrievedAt < collectedAt) {
+    fail('observations retrieval must occur after collector emission');
+  }
+  if (
+    observations.retrieval?.repository !==
+      contract.workflowAudience.split('/.github/workflows/')[0] ||
+    observations.retrieval?.collectorOrigin !== expectedCollectorOrigin ||
+    !/^[1-9][0-9]*$/.test(observations.retrieval?.runId ?? '') ||
+    !observations.retrieval?.workflowRef?.startsWith(`${contract.workflowAudience}@`)
+  ) {
+    fail('observations retrieval identity does not match the deployed canary workflow');
+  }
+}
+
+export function enforcePerformanceSlo(
+  observations,
+  config,
+  evidenceContract = readPerformanceEvidenceContract(),
+  options,
+) {
+  validatePerformanceEvidence(observations, evidenceContract, options);
   const failures = [];
   for (const [domain, metrics] of Object.entries(metricContracts)) {
     for (const [metric, threshold] of Object.entries(metrics)) {
@@ -87,12 +187,13 @@ function observationsArgument(argv) {
 
 export function runPerformanceSloCheck(argv = process.argv.slice(2)) {
   const config = readPerformanceSlo();
+  const evidenceContract = readPerformanceEvidenceContract();
   if (argv.includes('--config-only')) return { configOnly: true };
 
   const observationsFile = observationsArgument(argv);
   if (!observationsFile) fail('Use --config-only or provide --observations <file>');
   const observations = JSON.parse(readFileSync(observationsFile, 'utf8'));
-  enforcePerformanceSlo(observations, config);
+  enforcePerformanceSlo(observations, config, evidenceContract);
   return { configOnly: false, observationsFile };
 }
 

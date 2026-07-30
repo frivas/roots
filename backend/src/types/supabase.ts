@@ -181,6 +181,25 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
+      get_or_create_current_user: {
+        Args: Record<PropertyKey, never>;
+        Returns: UserRow[];
+      };
+      get_or_create_current_settings: {
+        Args: Record<PropertyKey, never>;
+        Returns: SettingsRow[];
+      };
+      upsert_current_settings: {
+        Args: {
+          p_email_notifications?: boolean | null;
+          p_sms_notifications?: boolean | null;
+          p_push_notifications?: boolean | null;
+          p_language?: string | null;
+          p_timezone?: string | null;
+          p_reset?: boolean;
+        };
+        Returns: SettingsRow[];
+      };
       enqueue_illustration_job: {
         Args: {
           p_owner_id: string;

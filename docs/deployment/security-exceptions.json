@@ -1,23 +1,4 @@
 {
   "schemaVersion": 1,
-  "exceptions": [
-    {
-      "advisory": "GHSA-qwww-vcr4-c8h2",
-      "packages": [
-        "react-router",
-        "react-router-dom"
-      ],
-      "severity": "high",
-      "runtimeFeature": "React Router RSC mode",
-      "applicability": "not-enabled",
-      "proofCommand": "npm run audit:rsc-scope",
-      "rationale": "Roots is a client-only Vite SPA using BrowserRouter and does not install the React Router framework packages or configure RSC mode.",
-      "reviewWhen": [
-        "react-router-dom version changes",
-        "React Router framework packages are added",
-        "react-router.config is added",
-        "RSC or server-action APIs are added"
-      ]
-    }
-  ]
+  "exceptions": []
 }

@@ -8,6 +8,7 @@ import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import { AGENT_IDS, WIDGET_TRANSLATIONS } from '../../config/agentConfig';
 import ElevenLabsWidget from '../../components/ElevenLabsWidget';
 import AiAccuracyNotice from '../../components/AiAccuracyNotice';
+import { APP_ROUTES } from '../../config/routes';
 
 // Add window type for ElevenLabs API
 const ChessCoachingSession: React.FC = () => {
@@ -30,7 +31,7 @@ const ChessCoachingSession: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/services/extra-curricular?tab=online')}
+          onClick={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />

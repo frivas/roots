@@ -16,17 +16,12 @@ import type { Database } from '../types/supabase.js';
 import type {
   DataRepository,
   IllustrationJobRepository,
+  PageRequest,
+  PageResult,
 } from './contracts.js';
+import { decodeCursor, encodeCursor } from './pagination.js';
 
 type Tables = Database['public']['Tables'];
-
-const DEFAULT_SETTINGS = {
-  email_notifications: true,
-  sms_notifications: false,
-  push_notifications: false,
-  language: 'English',
-  timezone: 'UTC',
-} as const;
 
 const knownRoles = new Set<UserRole>([
   'admin',
@@ -116,21 +111,9 @@ export class SupabaseDataRepository implements DataRepository {
     private readonly userId: string,
   ) {}
 
-  private async ensureCurrentUser() {
-    const { error } = await this.client
-      .from('users')
-      .upsert({ id: this.userId }, { onConflict: 'id', ignoreDuplicates: true });
-    if (error) {
-      throwDataError(error);
-    }
-  }
-
   async getCurrentUser(): Promise<UserProfile> {
-    await this.ensureCurrentUser();
     const { data, error } = await this.client
-      .from('users')
-      .select('*')
-      .eq('id', this.userId)
+      .rpc('get_or_create_current_user')
       .single();
     if (error) {
       throwDataError(error);
@@ -141,15 +124,36 @@ export class SupabaseDataRepository implements DataRepository {
     return userProfile(data);
   }
 
-  async listMessages(): Promise<MessageRecord[]> {
-    const { data, error } = await this.client
+  async listMessages(
+    page: PageRequest,
+  ): Promise<PageResult<MessageRecord>> {
+    let query = this.client
       .from('messages')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select(
+        'id,sender_id,recipient_id,subject,body,created_at,read,starred',
+      )
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .limit(page.limit + 1);
+    if (page.cursor) {
+      const cursor = decodeCursor(page.cursor);
+      query = query.or(
+        `created_at.lt.${cursor.createdAt},and(created_at.eq.${cursor.createdAt},id.lt.${cursor.id})`,
+      );
+    }
+    const { data, error } = await query;
     if (error) {
       throwDataError(error);
     }
-    return (data ?? []).map(messageRecord);
+    const rows = data ?? [];
+    const items = rows.slice(0, page.limit).map(messageRecord);
+    const last = rows.length > page.limit ? items.at(-1) : undefined;
+    return {
+      items,
+      nextCursor: last
+        ? encodeCursor({ createdAt: last.createdAt, id: last.id })
+        : null,
+    };
   }
 
   async getMessage(id: string): Promise<MessageRecord | null> {
@@ -170,7 +174,7 @@ export class SupabaseDataRepository implements DataRepository {
     subject: string;
     body: string;
   }): Promise<MessageRecord> {
-    await this.ensureCurrentUser();
+    await this.getCurrentUser();
     const { data, error } = await this.client
       .from('messages')
       .insert({
@@ -219,15 +223,34 @@ export class SupabaseDataRepository implements DataRepository {
     return data !== null;
   }
 
-  async listNotifications(): Promise<NotificationRecord[]> {
-    const { data, error } = await this.client
+  async listNotifications(
+    page: PageRequest,
+  ): Promise<PageResult<NotificationRecord>> {
+    let query = this.client
       .from('notifications')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select('id,title,message,type,read,created_at,user_id')
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .limit(page.limit + 1);
+    if (page.cursor) {
+      const cursor = decodeCursor(page.cursor);
+      query = query.or(
+        `created_at.lt.${cursor.createdAt},and(created_at.eq.${cursor.createdAt},id.lt.${cursor.id})`,
+      );
+    }
+    const { data, error } = await query;
     if (error) {
       throwDataError(error);
     }
-    return (data ?? []).map(notificationRecord);
+    const rows = data ?? [];
+    const items = rows.slice(0, page.limit).map(notificationRecord);
+    const last = rows.length > page.limit ? items.at(-1) : undefined;
+    return {
+      items,
+      nextCursor: last
+        ? encodeCursor({ createdAt: last.timestamp, id: last.id })
+        : null,
+    };
   }
 
   async markNotificationRead(id: string): Promise<boolean> {
@@ -285,54 +308,29 @@ export class SupabaseDataRepository implements DataRepository {
 
   async getSettings(): Promise<UserSettings> {
     const { data, error } = await this.client
-      .from('settings')
-      .select('*')
-      .eq('user_id', this.userId)
-      .maybeSingle();
+      .rpc('get_or_create_current_settings')
+      .single();
     if (error) {
       throwDataError(error);
     }
-    if (data) {
-      return settingsRecord(data);
+    if (!data) {
+      throw new Error('Supabase returned no current settings');
     }
-
-    const { data: inserted, error: insertError } = await this.client
-      .from('settings')
-      .insert({ user_id: this.userId, ...DEFAULT_SETTINGS })
-      .select('*')
-      .single();
-    if (insertError) {
-      throwDataError(insertError);
-    }
-    if (!inserted) {
-      throw new Error('Supabase returned no inserted settings');
-    }
-    return settingsRecord(inserted);
+    return settingsRecord(data);
   }
 
   async updateSettings(
     updates: Partial<Omit<UserSettings, 'id' | 'userId'>>,
   ): Promise<UserSettings> {
-    await this.getSettings();
-    const databaseUpdates: Tables['settings']['Update'] = {
-      ...(updates.emailNotifications === undefined
-        ? {}
-        : { email_notifications: updates.emailNotifications }),
-      ...(updates.smsNotifications === undefined
-        ? {}
-        : { sms_notifications: updates.smsNotifications }),
-      ...(updates.pushNotifications === undefined
-        ? {}
-        : { push_notifications: updates.pushNotifications }),
-      ...(updates.language === undefined ? {} : { language: updates.language }),
-      ...(updates.timezone === undefined ? {} : { timezone: updates.timezone }),
-      updated_at: new Date().toISOString(),
-    };
     const { data, error } = await this.client
-      .from('settings')
-      .update(databaseUpdates)
-      .eq('user_id', this.userId)
-      .select('*')
+      .rpc('upsert_current_settings', {
+        p_email_notifications: updates.emailNotifications ?? null,
+        p_sms_notifications: updates.smsNotifications ?? null,
+        p_push_notifications: updates.pushNotifications ?? null,
+        p_language: updates.language ?? null,
+        p_timezone: updates.timezone ?? null,
+        p_reset: false,
+      })
       .single();
     if (error) {
       throwDataError(error);
@@ -344,12 +342,15 @@ export class SupabaseDataRepository implements DataRepository {
   }
 
   async resetSettings(): Promise<UserSettings> {
-    await this.getSettings();
     const { data, error } = await this.client
-      .from('settings')
-      .update({ ...DEFAULT_SETTINGS, updated_at: new Date().toISOString() })
-      .eq('user_id', this.userId)
-      .select('*')
+      .rpc('upsert_current_settings', {
+        p_email_notifications: null,
+        p_sms_notifications: null,
+        p_push_notifications: null,
+        p_language: null,
+        p_timezone: null,
+        p_reset: true,
+      })
       .single();
     if (error) {
       throwDataError(error);

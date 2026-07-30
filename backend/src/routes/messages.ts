@@ -5,6 +5,11 @@ import {
   getDataRepository,
   type BackendRouteOptions,
 } from './options.js';
+import {
+  getPageRequest,
+  paginationQuerySchema,
+  sendPage,
+} from './pagination.js';
 
 const idParamsSchema = {
   type: 'object',
@@ -19,14 +24,23 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
   fastify,
   options,
 ) => {
-  fastify.get('/', async (request, reply) => {
-    try {
-      const { repository } = await getDataRepository(request, options);
-      return await repository.listMessages();
-    } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
-    }
-  });
+  fastify.get(
+    '/',
+    { schema: { querystring: paginationQuerySchema } },
+    async (request, reply) => {
+      try {
+        const { repository } = await getDataRepository(request, options);
+        const pageRequest = getPageRequest(request.query);
+        return sendPage(
+          reply,
+          await repository.listMessages(pageRequest),
+          pageRequest.limit,
+        );
+      } catch (error) {
+        return sendPublicError(reply, fastify.log, error);
+      }
+    },
+  );
 
   fastify.get(
     '/:id',
