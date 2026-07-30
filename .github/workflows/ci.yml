@@ -33,7 +33,8 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    needs: lint-typecheck
+    # This job has its own checkout/install and consumes no lint artifacts, so
+    # it can run alongside the other fail-fast gates.
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -64,7 +65,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: unit-tests
+    # Build consumes source rather than test artifacts, so keep it independent
+    # from unit tests to shorten the exact-SHA feedback loop.
     env:
       VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
       VITE_BACKEND_URL: http://localhost:3000

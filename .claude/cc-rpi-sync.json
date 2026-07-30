@@ -1,16 +1,5 @@
 {
-  "lastSyncCommit": "250d6e21934a731f68639ab588850856427a487a",
-  "lastSyncDate": "2026-05-02",
-  "blueprintVersion": "v1.18.0",
-  "agentsTemplateSynced": true,
-  "rulesSynced": [
-    "deployment-safety.md",
-    "push-accountability.md",
-    "rpi-details.md",
-    "supabase.md",
-    "testing.md"
-  ],
-  "rulesCustom": [
-    "elevenlabs-agent-testing.md"
-  ]
+  "lastSyncCommit": "76b6b88dcd0aeed447fd3d597249744e0a58ca11",
+  "lastSyncDate": "2026-06-25",
+  "ccRpiVersion": "v1.24.0"
 }
