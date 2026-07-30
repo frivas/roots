@@ -1,123 +1,113 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const authState = vi.hoisted(() => ({
+  userId: 'user_1' as string | null,
+  sessionId: 'session_1' as string | null,
+}));
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
-  getAuth: vi.fn(() => ({ userId: 'u1' })),
+  getAuth: vi.fn(() => ({
+    userId: authState.userId,
+    sessionId: authState.sessionId,
+    getToken: vi.fn(async () => 'clerk-session-token'),
+  })),
 }));
-vi.mock('openai', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] })) };
-  };
-  return { default: MockOpenAI };
-});
 
 import { buildServer } from '../index.js';
-import { getAuth } from '@clerk/fastify';
+import { createInMemoryBackendDependencies } from '../test/inMemoryBackend.js';
+
+const createHarness = () =>
+  createInMemoryBackendDependencies({
+    users: [
+      { id: 'user_1', role: 'parent' },
+      { id: 'user_2', role: 'teacher' },
+    ],
+    messages: [
+      {
+        id: 'owned_message',
+        senderId: 'user_2',
+        recipientId: 'user_1',
+        subject: 'Owned',
+        body: 'Visible',
+      },
+      {
+        id: 'private_message',
+        senderId: 'user_2',
+        recipientId: 'user_2',
+        subject: 'Private',
+        body: 'Hidden',
+      },
+    ],
+  });
 
 describe('messages routes', () => {
-  it('GET /api/messages returns 200 with array of messages', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/messages' });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(Array.isArray(body)).toBe(true);
-    expect(body.length).toBeGreaterThan(0);
-    expect(body[0]).toHaveProperty('id');
-    expect(body[0]).toHaveProperty('subject');
+  beforeEach(() => {
+    authState.userId = 'user_1';
+    authState.sessionId = 'session_1';
   });
 
-  it('GET /api/messages returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/messages' });
-    expect(res.statusCode).toBe(401);
+  it('lists only participating messages and hides cross-user IDs', async () => {
+    const harness = createHarness();
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const listed = await app.inject({ method: 'GET', url: '/api/messages' });
+    const hidden = await app.inject({
+      method: 'GET',
+      url: '/api/messages/private_message',
+    });
+
+    expect(listed.json()).toEqual([
+      expect.objectContaining({ id: 'owned_message' }),
+    ]);
+    expect(hidden.statusCode).toBe(404);
   });
 
-  it('GET /api/messages/:id returns 200 for a known message', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/messages/1' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('id', '1');
-  });
-
-  it('GET /api/messages/:id returns 404 for an unknown message', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/messages/nonexistent' });
-    expect(res.statusCode).toBe(404);
-  });
-
-  it('GET /api/messages/:id returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/messages/1' });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('POST /api/messages returns 200 with success and message data', async () => {
-    const app = await buildServer();
-    const res = await app.inject({
+  it('persists create, read, and delete mutations', async () => {
+    const harness = createHarness();
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const created = await app.inject({
       method: 'POST',
       url: '/api/messages',
-      payload: { recipient: 'Alice', subject: 'Hello', body: 'World' },
+      payload: {
+        recipientId: 'user_2',
+        recipient: 'Teacher',
+        subject: 'Hello',
+        body: 'World',
+      },
     });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(body).toHaveProperty('success', true);
-    expect(body).toHaveProperty('data');
+    const id = created.json().data.id as string;
+
+    expect(created.statusCode).toBe(201);
+    expect(
+      (
+        await app.inject({
+          method: 'PATCH',
+          url: `/api/messages/${id}/read`,
+        })
+      ).statusCode,
+    ).toBe(200);
+    expect(
+      (
+        await app.inject({
+          method: 'DELETE',
+          url: `/api/messages/${id}`,
+        })
+      ).statusCode,
+    ).toBe(200);
   });
 
-  it('POST /api/messages returns 400 when required fields are missing', async () => {
-    const app = await buildServer();
-    const res = await app.inject({
+  it('rejects missing recipient ownership input before persistence', async () => {
+    const harness = createHarness();
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const response = await app.inject({
       method: 'POST',
       url: '/api/messages',
-      payload: { recipient: 'Alice' },
+      payload: { recipient: 'Teacher', subject: 'Hello', body: 'World' },
     });
-    expect(res.statusCode).toBe(400);
-  });
 
-  it('POST /api/messages returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({
-      method: 'POST',
-      url: '/api/messages',
-      payload: { recipient: 'Alice', subject: 'Hello', body: 'World' },
-    });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('PATCH /api/messages/:id/read returns 200 with success', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/messages/1/read' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('success', true);
-  });
-
-  it('PATCH /api/messages/:id/read returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/messages/1/read' });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('DELETE /api/messages/:id returns 200 with success', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'DELETE', url: '/api/messages/1' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('success', true);
-  });
-
-  it('DELETE /api/messages/:id returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'DELETE', url: '/api/messages/1' });
-    expect(res.statusCode).toBe(401);
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ error: 'VALIDATION_FAILED' });
   });
 });

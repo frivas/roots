@@ -1,212 +1,150 @@
-import { FastifyPluginAsync } from 'fastify';
-import { getAuth } from '@clerk/fastify';
-import type OpenAI from 'openai';
+import type {
+  FastifyPluginAsync,
+  FastifyReply,
+  FastifyRequest,
+} from 'fastify';
+import { createIllustrationService } from '../dependencies.js';
+import { ApplicationError, notFound } from '../lib/application-error.js';
+import { getRequestIdentity } from '../lib/auth.js';
+import { sendPublicError } from '../lib/http.js';
+import {
+  buildIllustrationPrompt,
+  deriveIdempotencyKey,
+  type StoryIllustrationInput,
+} from '../services/illustration-jobs.js';
+import type { IllustrationJob } from '../types/application.js';
+import type { BackendRouteOptions } from './options.js';
 
-// Define proper type for SSE connection
-type SSEConnection = NodeJS.WritableStream;
+const generationBodySchema = {
+  type: 'object',
+  additionalProperties: false,
+  minProperties: 1,
+  properties: {
+    prompt: { type: 'string', minLength: 1, maxLength: 4_000 },
+    story_content: { type: 'string', minLength: 1, maxLength: 4_000 },
+    characters: { type: 'string', minLength: 1, maxLength: 1_000 },
+    setting: { type: 'string', minLength: 1, maxLength: 1_000 },
+    mood: { type: 'string', minLength: 1, maxLength: 50 },
+    current_scene: { type: 'string', minLength: 1, maxLength: 1_000 },
+  },
+  anyOf: [{ required: ['prompt'] }, { required: ['story_content'] }],
+} as const;
 
-// Extend Fastify instance type to include our decorated properties
-declare module 'fastify' {
-  interface FastifyInstance {
-    sseConnections: Set<SSEConnection>;
-  }
-}
+const publicJob = (job: IllustrationJob) => ({
+  jobId: job.id,
+  status: job.status,
+  imageUrl: job.imageUrl,
+  errorCode: job.errorCode,
+  createdAt: job.createdAt,
+  updatedAt: job.updatedAt,
+});
 
-let _openai: OpenAI | null = null;
-
-const getOpenAI = async (): Promise<OpenAI> => {
-  if (!_openai) {
-    const { default: OpenAIClass } = await import('openai');
-    _openai = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
-  }
-  return _openai;
-};
-
-export const __resetOpenAI = () => { _openai = null; };
-
-const images: FastifyPluginAsync = async (fastify) => {
-  // Test endpoint to verify webhook connectivity
-  fastify.get('/test', async (request, reply) => {
-    reply.send({
-      message: 'Images API is working!',
-      timestamp: new Date().toISOString(),
-      ngrok_working: true
-    });
-  });
-
-  // Existing generate endpoint for direct website calls
-  fastify.post('/generate', async (request, reply) => {
-    const { userId } = getAuth(request);
-    if (!userId) {
-      return reply.code(401).send({ error: 'Unauthorized' });
-    }
-
+const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
+  fastify,
+  options,
+) => {
+  const enqueue = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
     try {
-      const { prompt } = request.body as { prompt: string };
-
-      if (!prompt) {
-        return reply.status(400).send({ error: 'Prompt is required' });
+      const identity = getRequestIdentity(request);
+      const prompt = buildIllustrationPrompt(
+        request.body as StoryIllustrationInput,
+      );
+      if (prompt.length > 4_000) {
+        throw new ApplicationError(
+          'VALIDATION_FAILED',
+          400,
+          'VALIDATION_FAILED',
+        );
       }
-
-      const client = await getOpenAI();
-      const response = await client.images.generate({
-        model: "dall-e-3",
-        prompt: prompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "standard",
-        style: "vivid"
-      });
-
-      if (!response.data || !response.data[0]?.url) {
-        throw new Error('No image URL returned from OpenAI');
+      const suppliedKey = request.headers['idempotency-key'];
+      if (
+        suppliedKey !== undefined &&
+        (typeof suppliedKey !== 'string' || suppliedKey.length > 128)
+      ) {
+        throw new ApplicationError(
+          'VALIDATION_FAILED',
+          400,
+          'VALIDATION_FAILED',
+        );
       }
-      const imageUrl = response.data[0].url;
-
-      reply.send({ imageUrl });
-    } catch (error) {
-      console.error('Image generation error:', error);
-      reply.status(500).send({
-        error: error instanceof Error ? error.message : 'Failed to generate image'
+      const service = await createIllustrationService(
+        options.dependencies,
+        fastify.log,
+        {
+          userId: identity.userId,
+          getToken: identity.getToken,
+        },
+      );
+      const job = await service.enqueue({
+        ownerId: identity.userId,
+        sessionId: identity.sessionId,
+        idempotencyKey: deriveIdempotencyKey(
+          identity.userId,
+          identity.sessionId,
+          prompt,
+          suppliedKey,
+        ),
+        prompt,
       });
-    }
-  });
-
-  // New webhook endpoint for ElevenLabs agent tool calls (no auth required for webhooks)
-  fastify.post('/generate-for-story', async (request, reply) => {
-    try {
-      const {
-        story_content,
-        characters,
-        setting,
-        mood,
-        current_scene
-      } = request.body as {
-        story_content?: string;
-        characters?: string;
-        setting?: string;
-        mood?: string;
-        current_scene?: string;
-      };
-
-      // SEND GENERATION START EVENT FIRST
-      const sseConnections = fastify.sseConnections;
-      const startEventData = JSON.stringify({
-        type: 'generation-started',
-        data: {
-          message: 'Starting image generation...',
-          context: { story_content, characters, setting, mood, current_scene }
-        }
-      });
-
-      sseConnections.forEach((connection: SSEConnection) => {
-        try {
-          connection.write(`data: ${startEventData}\n\n`);
-        } catch (writeError) {
-          console.error('Error sending generation-started SSE:', writeError);
-          sseConnections.delete(connection);
-        }
-      });
-
-      // Generate contextual prompt based on story elements
-      const generateContextualPrompt = () => {
-        // Base style for children's illustrations
-        const baseStyle = "Children's book illustration, cartoon style, vibrant colors, friendly and approachable";
-
-        // Mood-based style modifiers
-        const moodStyles = {
-          happy: "bright and cheerful colors, sunny atmosphere, smiling characters",
-          scary: "dramatic lighting, mysterious shadows, but still child-appropriate and not too frightening",
-          sad: "soft, muted colors, gentle expressions, comforting atmosphere",
-          magical: "sparkles, glowing effects, enchanted atmosphere, mystical elements",
-          adventurous: "dynamic composition, action poses, exciting landscape, bold colors",
-          cheerful: "warm colors, pleasant lighting, joyful expressions"
-        };
-
-        // Character description
-        const characterDesc = characters
-          ? `featuring ${characters}`
-          : 'with charming storybook characters';
-
-        // Scene description
-        const sceneDesc = current_scene
-          ? `showing ${current_scene.substring(0, 100)}`
-          : 'in an engaging story scene';
-
-        // Setting description
-        const settingDesc = setting || 'in a magical storybook world';
-
-        // Selected mood style
-        const selectedMoodStyle = moodStyles[mood as keyof typeof moodStyles] || moodStyles.cheerful;
-
-        // Combine all elements
-        const prompt = `${baseStyle}, ${selectedMoodStyle},
-          set in ${settingDesc}, ${characterDesc}, ${sceneDesc}.
-          Perfect for children ages 4-10, safe and wholesome content, high quality digital art.`;
-
-        return prompt.replace(/\s+/g, ' ').trim();
-      };
-
-      const contextualPrompt = generateContextualPrompt();
-      console.log('Contextual prompt:', contextualPrompt);
-
-      const client = await getOpenAI();
-      const response = await client.images.generate({
-        model: "dall-e-3",
-        prompt: contextualPrompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "standard",
-        style: "vivid"
-      });
-
-      if (!response.data || !response.data[0]?.url) {
-        throw new Error('No image URL returned from OpenAI');
-      }
-      const imageUrl = response.data[0].url;
-
-      // Broadcast the image to all connected SSE clients
-      const eventData = JSON.stringify({
-        type: 'story-illustration',
-        data: {
-          imageUrl,
-          context: {
-            story_content,
-            characters,
-            setting,
-            mood,
-            current_scene
-          }
-        }
-      });
-
-      console.log('Image generation completed');
-      console.log('Image URL:', imageUrl);
-
-      sseConnections.forEach((connection: SSEConnection) => {
-        try {
-          connection.write(`data: ${eventData}\n\n`);
-        } catch (error) {
-          console.error('Error sending SSE message:', error);
-          sseConnections.delete(connection);
-        }
-      });
-
-      // Return response in format expected by ElevenLabs
-      reply.send({
-        success: true,
-        image_url: imageUrl,
-        message: "I've created a beautiful illustration for your story! The image shows the scene with all the characters and details from our story."
+      return reply.code(202).send({
+        ...publicJob(job),
+        statusUrl: `/api/images/jobs/${job.id}`,
       });
     } catch (error) {
-      console.error('Image generation error:', error);
-      reply.status(500).send({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to generate image',
-        message: "I'm sorry, I couldn't create the illustration right now. Let's continue with our story!"
-      });
+      return sendPublicError(reply, fastify.log, error);
     }
-  });
+  };
+
+  fastify.post(
+    '/generate',
+    { schema: { body: generationBodySchema } },
+    enqueue,
+  );
+  fastify.post(
+    '/generate-for-story',
+    { schema: { body: generationBodySchema } },
+    enqueue,
+  );
+
+  fastify.get(
+    '/jobs/:id',
+    {
+      schema: {
+        params: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id'],
+          properties: {
+            id: { type: 'string', minLength: 1, maxLength: 128 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const identity = getRequestIdentity(request);
+        const service = await createIllustrationService(
+          options.dependencies,
+          fastify.log,
+          {
+            userId: identity.userId,
+            getToken: identity.getToken,
+          },
+        );
+        const { id } = request.params as { id: string };
+        const job = await service.get(id, identity.userId);
+        if (!job) {
+          throw notFound();
+        }
+        return publicJob(job);
+      } catch (error) {
+        return sendPublicError(reply, fastify.log, error);
+      }
+    },
+  );
 };
 
-export default images;
+export default imagesRoutes;

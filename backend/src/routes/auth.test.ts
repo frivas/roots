@@ -1,48 +1,52 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const authState = vi.hoisted(() => ({
+  userId: 'user_1' as string | null,
+  sessionId: 'session_1' as string | null,
+}));
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
-  getAuth: vi.fn(() => ({ userId: 'u1' })),
+  getAuth: vi.fn(() => ({
+    userId: authState.userId,
+    sessionId: authState.sessionId,
+    getToken: vi.fn(async () => 'clerk-session-token'),
+  })),
 }));
-vi.mock('openai', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] })) };
-  };
-  return { default: MockOpenAI };
-});
 
 import { buildServer } from '../index.js';
-import { getAuth } from '@clerk/fastify';
+import { createInMemoryBackendDependencies } from '../test/inMemoryBackend.js';
 
 describe('auth routes', () => {
-  it('GET /api/auth/user returns 200 with userId as id', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/auth/user' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('id', 'u1');
+  beforeEach(() => {
+    authState.userId = 'user_1';
+    authState.sessionId = 'session_1';
   });
 
-  it('GET /api/auth/user returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/auth/user' });
-    expect(res.statusCode).toBe(401);
+  it('returns the persisted current user and server-side role', async () => {
+    const harness = createInMemoryBackendDependencies({
+      users: [{ id: 'user_1', role: 'teacher' }],
+    });
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const user = await app.inject({ method: 'GET', url: '/api/auth/user' });
+    const role = await app.inject({ method: 'GET', url: '/api/auth/role' });
+
+    expect(user.json()).toMatchObject({ id: 'user_1', role: 'teacher' });
+    expect(role.json()).toEqual({ role: 'teacher' });
   });
 
-  it('GET /api/auth/role returns 200 with role field', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/auth/role' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('role');
-  });
+  it('rejects an incomplete Clerk session', async () => {
+    authState.sessionId = null;
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
 
-  it('GET /api/auth/role returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/auth/role' });
-    expect(res.statusCode).toBe(401);
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/auth/user',
+    });
+
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toEqual({ error: 'UNAUTHORIZED' });
   });
 });

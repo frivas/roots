@@ -1,103 +1,79 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const authState = vi.hoisted(() => ({
+  userId: 'user_1',
+  sessionId: 'session_1',
+}));
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
-  getAuth: vi.fn(() => ({ userId: 'u1' })),
+  getAuth: vi.fn(() => ({
+    userId: authState.userId,
+    sessionId: authState.sessionId,
+    getToken: vi.fn(async () => 'clerk-session-token'),
+  })),
 }));
-vi.mock('openai', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MockOpenAI = function(this: any) {
-    this.images = { generate: vi.fn(async () => ({ data: [{ url: 'https://img.test/mock.png' }] })) };
-  };
-  return { default: MockOpenAI };
-});
 
 import { buildServer } from '../index.js';
-import { getAuth } from '@clerk/fastify';
+import { createInMemoryBackendDependencies } from '../test/inMemoryBackend.js';
 
 describe('notifications routes', () => {
-  it('GET /api/notifications returns 200 with array of notifications', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/notifications' });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(Array.isArray(body)).toBe(true);
-    expect(body.length).toBeGreaterThan(0);
-    expect(body[0]).toHaveProperty('id');
-    expect(body[0]).toHaveProperty('title');
-    expect(body[0]).toHaveProperty('type');
+  beforeEach(() => {
+    authState.userId = 'user_1';
+    authState.sessionId = 'session_1';
   });
 
-  it('GET /api/notifications returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'GET', url: '/api/notifications' });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('PATCH /api/notifications/:id/read returns 200 with success', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/notifications/1/read' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('success', true);
-  });
-
-  it('PATCH /api/notifications/:id/read returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/notifications/1/read' });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('PATCH /api/notifications/read-all returns 200 with success', async () => {
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/notifications/read-all' });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty('success', true);
-  });
-
-  it('PATCH /api/notifications/read-all returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({ method: 'PATCH', url: '/api/notifications/read-all' });
-    expect(res.statusCode).toBe(401);
-  });
-
-  it('POST /api/notifications returns 200 with success and new notification data', async () => {
-    const app = await buildServer();
-    const res = await app.inject({
+  it('persists self-notifications and read mutations', async () => {
+    const harness = createInMemoryBackendDependencies({
+      users: [{ id: 'user_1', role: 'parent' }],
+    });
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const created = await app.inject({
       method: 'POST',
       url: '/api/notifications',
-      payload: { title: 'Test', message: 'Hello', type: 'info', recipientId: 'user_abc' },
+      payload: {
+        title: 'Notice',
+        message: 'Hello',
+        type: 'info',
+        recipientId: 'user_1',
+      },
     });
-    expect(res.statusCode).toBe(200);
-    const body = res.json();
-    expect(body).toHaveProperty('success', true);
-    expect(body).toHaveProperty('data');
+    const id = created.json().data.id as string;
+
+    expect(created.statusCode).toBe(201);
+    expect(
+      (
+        await app.inject({
+          method: 'PATCH',
+          url: `/api/notifications/${id}/read`,
+        })
+      ).statusCode,
+    ).toBe(200);
+    expect(
+      (await app.inject({ method: 'GET', url: '/api/notifications' })).json(),
+    ).toEqual([expect.objectContaining({ id, read: true })]);
   });
 
-  it('POST /api/notifications returns 400 when required fields are missing', async () => {
-    const app = await buildServer();
-    const res = await app.inject({
-      method: 'POST',
-      url: '/api/notifications',
-      payload: { title: 'Test' },
+  it('denies non-admin cross-user creation', async () => {
+    const harness = createInMemoryBackendDependencies({
+      users: [
+        { id: 'user_1', role: 'parent' },
+        { id: 'user_2', role: 'teacher' },
+      ],
     });
-    expect(res.statusCode).toBe(400);
-  });
+    const app = await buildServer({ dependencies: harness.dependencies });
 
-  it('POST /api/notifications returns 401 when userId is null', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(getAuth).mockReturnValueOnce({ userId: null } as any);
-    const app = await buildServer();
-    const res = await app.inject({
+    const response = await app.inject({
       method: 'POST',
       url: '/api/notifications',
-      payload: { title: 'Test', message: 'Hello', type: 'info', recipientId: 'user_abc' },
+      payload: {
+        title: 'Notice',
+        message: 'Cross user',
+        type: 'warning',
+        recipientId: 'user_2',
+      },
     });
-    expect(res.statusCode).toBe(401);
+
+    expect(response.statusCode).toBe(403);
   });
 });

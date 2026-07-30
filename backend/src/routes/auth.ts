@@ -1,50 +1,31 @@
-import { FastifyPluginAsync } from 'fastify';
-import { getAuth } from '@clerk/fastify';
+import type { FastifyPluginAsync } from 'fastify';
+import { sendPublicError } from '../lib/http.js';
+import {
+  getDataRepository,
+  type BackendRouteOptions,
+} from './options.js';
 
-const authRoutes: FastifyPluginAsync = async (fastify) => {
-  // Get current user info
+const authRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
+  fastify,
+  options,
+) => {
   fastify.get('/user', async (request, reply) => {
-    const { userId } = getAuth(request);
-    
-    if (!userId) {
-      return reply.code(401).send({ error: 'Unauthorized' });
-    }
-    
     try {
-      // You would typically fetch user data from your database here
-      // For now, we'll return basic info from Clerk
-      return {
-        id: userId,
-        // Additional user data would be fetched from your database
-      };
-    /* c8 ignore start */
+      const { repository } = await getDataRepository(request, options);
+      return await repository.getCurrentUser();
     } catch (error) {
-      fastify.log.error(error);
-      return reply.code(500).send({ error: 'Internal Server Error' });
+      return sendPublicError(reply, fastify.log, error);
     }
-    /* c8 ignore stop */
   });
-  
-  // Get user role
+
   fastify.get('/role', async (request, reply) => {
-    const { userId } = getAuth(request);
-    
-    if (!userId) {
-      return reply.code(401).send({ error: 'Unauthorized' });
-    }
-    
     try {
-      // In a real app, you would fetch the user's role from your database
-      // For demo purposes, we'll return a default role
-      return {
-        role: 'teacher',
-      };
-    /* c8 ignore start */
+      const { repository } = await getDataRepository(request, options);
+      const user = await repository.getCurrentUser();
+      return { role: user.role };
     } catch (error) {
-      fastify.log.error(error);
-      return reply.code(500).send({ error: 'Internal Server Error' });
+      return sendPublicError(reply, fastify.log, error);
     }
-    /* c8 ignore stop */
   });
 };
 
