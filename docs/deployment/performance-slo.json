@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "bundle": {
+    "initialGzipBytesMax": 225280,
+    "totalGzipBytesMax": 409600
+  },
+  "webVitals": {
+    "lcpP75MsMax": 2500,
+    "inpP75MsMax": 200,
+    "clsP75Max": 0.1
+  },
+  "backend": {
+    "p50MsMax": 250,
+    "p95MsMax": 750,
+    "p99MsMax": 1500,
+    "errorRateMax": 0.01,
+    "timeoutRateMax": 0
+  },
+  "provider": {
+    "p50MsMax": 10000,
+    "p95MsMax": 25000,
+    "p99MsMax": 29000,
+    "errorRateMax": 0.05,
+    "timeoutRateMax": 0.01
+  }
+}

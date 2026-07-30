@@ -1,6 +1,6 @@
 {
   "ignore": ["eslint.config.js"],
-  "ignoreBinaries": ["du", "knip", "license-checker", "AGPL-3.0", "playwright"],
+  "ignoreBinaries": ["playwright", "supabase"],
   "ignoreDependencies": ["react", "react-dom"],
   "workspaces": {
     "frontend": {
@@ -11,14 +11,12 @@
         "eslint-plugin-react-hooks",
         "eslint-plugin-react-refresh",
         "globals",
-        "typescript-eslint",
-        "@testing-library/user-event"
+        "typescript-eslint"
       ]
     },
     "backend": {
-      "entry": ["src/index.ts", "api/serverless.ts", "api/health.ts", "api/webhook-test.ts"],
+      "entry": ["src/index.ts", "api/serverless.ts", "api/health.ts"],
       "project": ["src/**/*.ts", "api/**/*.ts"],
-      "ignore": ["src/test/**"],
       "ignoreDependencies": [
         "tsx",
         "globals"

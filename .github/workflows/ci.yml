@@ -23,12 +23,8 @@ jobs:
       - run: npm ci
       - name: Lint
         run: npm run lint
-      - name: Typecheck frontend
-        run: npx tsc --noEmit
-        working-directory: frontend
-      - name: Typecheck backend
-        run: npx tsc --noEmit
-        working-directory: backend
+      - name: Typecheck
+        run: npm run typecheck
 
   unit-tests:
     name: Unit Tests
@@ -46,11 +42,16 @@ jobs:
         run: cd frontend && npm run test:coverage -- --reporter=json --outputFile=coverage/test-results.json
       - name: Run backend tests with coverage
         run: cd backend && npm run test:coverage -- --reporter=json --outputFile=coverage/test-results.json
-      - name: Report coverage to Portfolio
+      - name: Package exact-SHA coverage evidence
         if: github.event_name == 'push'
         env:
-          COVERAGE_SECRET: ${{ secrets.COVERAGE_SECRET }}
-          PORTFOLIO_COVERAGE_URL: https://portfolio.thecreativetoken.com/api/coverage
+          COVERAGE_DRY_RUN: "1"
+          COVERAGE_EVIDENCE_FILE: coverage-evidence/roots-coverage.json
+          REPO: ${{ github.repository }}
+          SOURCE_COMMIT_SHA: ${{ github.sha }}
+          COVERAGE_RUN_ID: ${{ github.run_id }}
+          COVERAGE_WORKFLOW_REF: ${{ github.workflow_ref }}
+          SOURCE_TARGET_BRANCH: ${{ github.ref_name }}
         run: npm run report:portfolio-coverage
       - name: Upload coverage
         if: always()
@@ -60,6 +61,7 @@ jobs:
           path: |
             frontend/coverage/
             backend/coverage/
+            coverage-evidence/
           retention-days: 7
 
   build:
@@ -92,21 +94,23 @@ jobs:
   e2e:
     name: Playwright smoke
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    needs: [lint-typecheck]
+    needs: [lint-typecheck, build]
     steps:
       - uses: actions/checkout@v7
+      - name: Verify exact-SHA checkout
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
       - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      - run: cd frontend && npx playwright install --with-deps chromium
-      - run: cd frontend && npm run build
-        env:
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}
-          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY || 'gsk_placeholder' }}
-          VITE_BACKEND_URL: http://localhost:3000
+      - uses: actions/download-artifact@v7
+        with:
+          name: build-output
+          path: .
+      - run: npm run install:e2e-browsers
       - run: cd frontend && npm run test:e2e
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_placeholder' }}

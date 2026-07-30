@@ -1,0 +1,78 @@
+name: Integration contracts
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - 'backend/**'
+      - 'supabase/**'
+      - '.github/workflows/integration-contracts.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  push:
+    branches: [develop, main]
+    paths:
+      - 'backend/**'
+      - 'supabase/**'
+      - '.github/workflows/integration-contracts.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  serverless-adapter:
+    name: Serverless adapter smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:serverless
+
+  clerk-supabase:
+    name: Real Clerk and Supabase contract
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: integration
+    env:
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - name: Reject incomplete real-stack identity
+        run: |
+          test -n "$CLERK_PUBLISHABLE_KEY"
+          test -n "$CLERK_SECRET_KEY"
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_API_KEY"
+      - run: npm run test:contracts
+
+  local-rls:
+    name: Local Clerk RLS contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.110.0
+      - run: npm run supabase:start
+      - run: npm run supabase:reset
+      - run: npm run test:rls:local
