@@ -23,6 +23,8 @@ import { cn } from '../lib/utils';
 import TranslatedText from '../components/TranslatedText';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import Button from '../components/ui/Button';
+import { APP_ROUTES } from '../config/routes';
+import StatusState from '../components/ui/StatusState';
 
 // Animation variants
 const containerVariants = {
@@ -155,11 +157,11 @@ const mockSchoolCalendarEvents = [
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'info':
-      return <Info className="h-4 w-4 text-blue-500" />;
+      return <Info className="h-4 w-4 text-primary" />;
     case 'success':
-      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+      return <CheckCircle2 className="h-4 w-4 text-success" />;
     case 'warning':
-      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      return <AlertTriangle className="h-4 w-4 text-warning" />;
     default:
       return <Bell className="h-4 w-4 text-muted-foreground" />;
   }
@@ -174,14 +176,7 @@ const Dashboard = () => {
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
-          <TranslatedText element="p" className="text-sm text-muted-foreground">Loading dashboard...</TranslatedText>
-        </div>
-      </div>
-    );
+    return <StatusState kind="loading" message="Loading dashboard..." className="min-h-[50vh]" />;
   }
 
   return (
@@ -208,6 +203,9 @@ const Dashboard = () => {
         >
           Here's an overview of your educational journey.
         </TranslatedText>
+        <p role="note" className="w-fit rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
+          <TranslatedText>Demo data — examples only</TranslatedText>
+        </p>
       </motion.div>
 
 
@@ -231,25 +229,25 @@ const Dashboard = () => {
                  {
                    icon: <GraduationCap className="h-5 w-5" />,
                    label: "Progress Interpretation",
-                   color: "bg-blue-500/10 text-blue-600",
+                   color: "bg-primary/10 text-primary",
                    route: "/services/progress-interpretation-chat"
                  },
                  {
                    icon: <Heart className="h-5 w-5" />,
                    label: "Parent Wellness",
-                   color: "bg-purple-500/10 text-purple-600",
+                   color: "bg-primary/10 text-primary",
                    route: "/services/parent-wellness-chat"
                  },
                  {
                    icon: <Users className="h-5 w-5" />,
                    label: "Storytelling Adventure",
-                   color: "bg-green-500/10 text-green-600",
+                   color: "bg-success/10 text-success",
                    route: "/services/storytelling-session"
                  },
                  {
                    icon: <Calendar className="h-5 w-5" />,
                    label: "Schedule",
-                   color: "bg-amber-500/10 text-amber-600",
+                   color: "bg-warning/10 text-warning",
                    route: "/home/schedule"
                  },
                ].map((item, index) => (
@@ -291,7 +289,7 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate('/notifications')}
+                  onClick={() => navigate(APP_ROUTES.communicationsNotifications)}
                   className="text-xs"
                 >
                   <Bell className="h-3 w-3 mr-1" />
@@ -300,7 +298,7 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate('/messages')}
+                  onClick={() => navigate(APP_ROUTES.communicationsMessages)}
                   className="text-xs"
                 >
                   <Mail className="h-3 w-3 mr-1" />
@@ -311,13 +309,14 @@ const Dashboard = () => {
             <CardContent className="space-y-3 max-h-80 overflow-y-auto">
               {/* Recent Notifications */}
               {mockNotifications.slice(0, 2).map((notification, index) => (
-                <motion.div
+                <motion.button
+                  type="button"
                   key={notification.id}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  className="flex w-full items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors text-left"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  onClick={() => navigate('/notifications')}
+                  onClick={() => navigate(APP_ROUTES.communicationsNotifications)}
                 >
                   <div className="shrink-0 mt-0.5">
                     {getNotificationIcon(notification.type)}
@@ -333,18 +332,19 @@ const Dashboard = () => {
                       {notification.message}
                     </TranslatedText>
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
 
               {/* Recent Messages */}
               {visibleMessages.slice(0, 3).map((message, index) => (
-                <motion.div
+                <motion.button
+                  type="button"
                   key={message.id}
-                  className="group flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  className="group flex w-full items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors text-left"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * (index + 2) }}
-                  onClick={() => navigate('/messages')}
+                  onClick={() => navigate(APP_ROUTES.communicationsMessages)}
                 >
                   <div className="shrink-0 mt-1">
                     <div className={cn(
@@ -368,13 +368,13 @@ const Dashboard = () => {
                       {message.preview}
                     </TranslatedText>
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
 
               {visibleMessages.length === 0 && mockNotifications.length === 0 && (
                 <div className="flex items-center justify-center py-8 text-center">
                   <div className="space-y-2">
-                    <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto" />
+                    <CheckCircle2 className="h-8 w-8 text-success mx-auto" />
                     <TranslatedText className="text-sm text-muted-foreground">
                       All caught up!
                     </TranslatedText>
@@ -401,7 +401,7 @@ const Dashboard = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/personal-calendar')}
+                onClick={() => navigate(APP_ROUTES.calendarMonthly)}
                 className="text-xs"
               >
                 <Calendar className="h-3 w-3 mr-1" />
@@ -410,7 +410,7 @@ const Dashboard = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/schedule')}
+                onClick={() => navigate(APP_ROUTES.homeSchedule)}
                 className="text-xs"
               >
                 <BookOpen className="h-3 w-3 mr-1" />
@@ -421,18 +421,19 @@ const Dashboard = () => {
           <CardContent>
             <div className="grid gap-3 md:grid-cols-3">
               {mockCalendarEvents.map((event, index) => (
-                <motion.div
+                <motion.button
+                  type="button"
                   key={event.id}
                   className={cn(
-                    "p-3 rounded-lg border transition-colors cursor-pointer hover:bg-muted/50",
-                    event.priority === 'high' ? 'border-l-4 border-l-red-500 bg-red-50/30' :
-                      event.priority === 'medium' ? 'border-l-4 border-l-yellow-500 bg-yellow-50/30' :
-                        'border-l-4 border-l-green-500 bg-green-50/30'
+                    "w-full p-3 rounded-lg border transition-colors hover:bg-muted/50 text-left",
+                    event.priority === 'high' ? 'border-l-4 border-l-error bg-error/5' :
+                      event.priority === 'medium' ? 'border-l-4 border-l-warning bg-warning/5' :
+                        'border-l-4 border-l-success bg-success/5'
                   )}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  onClick={() => navigate('/personal-calendar')}
+                  onClick={() => navigate(APP_ROUTES.calendarMonthly)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <TranslatedText className="text-sm font-medium line-clamp-2 pr-2">
@@ -440,9 +441,9 @@ const Dashboard = () => {
                     </TranslatedText>
                     <span className={cn(
                       "text-xs px-2 py-0.5 rounded-full shrink-0",
-                      event.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        event.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-green-100 text-green-800'
+                      event.priority === 'high' ? 'bg-error/10 text-error' :
+                        event.priority === 'medium' ? 'bg-warning/10 text-warning' :
+                          'bg-success/10 text-success'
                     )}>
                       <TranslatedText>{event.priority}</TranslatedText>
                     </span>
@@ -453,7 +454,7 @@ const Dashboard = () => {
                     <span>•</span>
                     <TranslatedText>{event.date}</TranslatedText>
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
             </div>
           </CardContent>
@@ -475,7 +476,7 @@ const Dashboard = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/school-calendar')}
+                onClick={() => navigate(APP_ROUTES.schoolCalendar)}
                 className="text-xs"
               >
                 <Calendar className="h-3 w-3 mr-1" />
@@ -484,7 +485,7 @@ const Dashboard = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/school-data')}
+                onClick={() => navigate(APP_ROUTES.schoolData)}
                 className="text-xs"
               >
                 <BookOpen className="h-3 w-3 mr-1" />
@@ -495,18 +496,19 @@ const Dashboard = () => {
           <CardContent>
             <div className="grid gap-3 md:grid-cols-3">
               {mockSchoolCalendarEvents.map((event, index) => (
-                <motion.div
+                <motion.button
+                  type="button"
                   key={event.id}
                   className={cn(
-                    "p-3 rounded-lg border transition-colors cursor-pointer hover:bg-muted/50",
-                    event.priority === 'high' ? 'border-l-4 border-l-red-500 bg-red-50/30' :
-                      event.priority === 'medium' ? 'border-l-4 border-l-yellow-500 bg-yellow-50/30' :
-                        'border-l-4 border-l-green-500 bg-green-50/30'
+                    "w-full p-3 rounded-lg border transition-colors hover:bg-muted/50 text-left",
+                    event.priority === 'high' ? 'border-l-4 border-l-error bg-error/5' :
+                      event.priority === 'medium' ? 'border-l-4 border-l-warning bg-warning/5' :
+                        'border-l-4 border-l-success bg-success/5'
                   )}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  onClick={() => navigate('/school-calendar')}
+                  onClick={() => navigate(APP_ROUTES.schoolCalendar)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <TranslatedText className="text-sm font-medium line-clamp-2 pr-2">
@@ -514,9 +516,9 @@ const Dashboard = () => {
                     </TranslatedText>
                     <span className={cn(
                       "text-xs px-2 py-0.5 rounded-full shrink-0",
-                      event.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        event.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-green-100 text-green-800'
+                      event.priority === 'high' ? 'bg-error/10 text-error' :
+                        event.priority === 'medium' ? 'bg-warning/10 text-warning' :
+                          'bg-success/10 text-success'
                     )}>
                       <TranslatedText>{event.priority}</TranslatedText>
                     </span>
@@ -527,7 +529,7 @@ const Dashboard = () => {
                     <span>•</span>
                     <TranslatedText>{event.date}</TranslatedText>
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
             </div>
           </CardContent>

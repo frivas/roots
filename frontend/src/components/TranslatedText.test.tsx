@@ -4,14 +4,12 @@ import React from 'react';
 
 const {
   mockTranslateText,
-  mockGetSpanishTranslation,
   getMockLanguage,
   setMockLanguage,
 } = vi.hoisted(() => {
   let language = 'en-US';
   return {
     mockTranslateText: vi.fn(async (text: string) => text),
-    mockGetSpanishTranslation: vi.fn((text: string) => text),
     getMockLanguage: () => language,
     setMockLanguage: (nextLanguage: string) => {
       language = nextLanguage;
@@ -32,10 +30,6 @@ vi.mock('../contexts/LingoTranslationContext', () => ({
   LingoTranslationProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-vi.mock('../services/SpanishTranslations', () => ({
-  getSpanishTranslation: mockGetSpanishTranslation,
-}));
-
 import TranslatedText from './TranslatedText';
 
 describe('TranslatedText', () => {
@@ -43,8 +37,6 @@ describe('TranslatedText', () => {
     setMockLanguage('en-US');
     mockTranslateText.mockReset();
     mockTranslateText.mockImplementation(async (text: string) => text);
-    mockGetSpanishTranslation.mockReset();
-    mockGetSpanishTranslation.mockImplementation((text: string) => text);
   });
 
   it('renders children as text', () => {
@@ -91,14 +83,14 @@ describe('TranslatedText', () => {
     expect(container.querySelector('div')?.textContent).toBe('Div text');
   });
 
-  it('uses immediate Spanish dictionary translations without calling the API', async () => {
+  it('uses the context translation API for Spanish text', async () => {
     setMockLanguage('es-ES');
-    mockGetSpanishTranslation.mockReturnValue('Hola Mundo');
+    mockTranslateText.mockResolvedValue('Hola Mundo');
 
     render(<TranslatedText>Hello World</TranslatedText>);
 
     await waitFor(() => expect(screen.getByText('Hola Mundo')).toBeInTheDocument());
-    expect(mockTranslateText).not.toHaveBeenCalled();
+    expect(mockTranslateText).toHaveBeenCalledWith('Hello World');
   });
 
   it('skips translation for very short strings', async () => {
@@ -110,7 +102,7 @@ describe('TranslatedText', () => {
     expect(mockTranslateText).not.toHaveBeenCalled();
   });
 
-  it('uses the async translation API when no dictionary translation exists', async () => {
+  it('uses the async translation API for translatable text', async () => {
     setMockLanguage('es-ES');
     mockTranslateText.mockResolvedValue('Texto traducido');
 

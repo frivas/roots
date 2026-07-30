@@ -12,6 +12,29 @@ interface State {
   error?: Error;
 }
 
+const getErrorCopy = () => {
+  let isSpanish = false;
+  try {
+    isSpanish = localStorage.getItem('selectedLanguage') === 'es-ES';
+  } catch {
+    // Use the English fallback when storage is unavailable.
+  }
+
+  return isSpanish ? {
+    title: 'Algo salió mal',
+    description: 'La página encontró un error y no pudo cargarse correctamente.',
+    details: 'Detalles del error',
+    retry: 'Intentar de nuevo',
+    home: 'Ir al inicio',
+  } : {
+    title: 'Something went wrong',
+    description: 'The page encountered an error and couldn\'t load properly.',
+    details: 'Error Details',
+    retry: 'Try Again',
+    home: 'Go to Home',
+  };
+};
+
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false
@@ -31,24 +54,25 @@ class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const copy = getErrorCopy();
       return (
-        <div className="flex items-center justify-center min-h-screen bg-background p-4">
+        <div role="alert" aria-live="assertive" className="flex items-center justify-center min-h-screen bg-background p-4">
           <div className="max-w-md mx-auto text-center space-y-4">
             <div className="flex justify-center">
               <AlertTriangle className="h-12 w-12 text-error" />
             </div>
 
             <h2 className="text-xl font-semibold text-foreground">
-              Something went wrong
+              {copy.title}
             </h2>
 
             <p className="text-muted-foreground">
-              The page encountered an error and couldn't load properly.
+              {copy.description}
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="text-left bg-muted p-4 rounded-md text-sm">
-                <summary className="cursor-pointer font-medium">Error Details</summary>
+                <summary className="cursor-pointer font-medium">{copy.details}</summary>
                 <pre className="mt-2 text-xs overflow-auto">
                   {this.state.error.toString()}
                 </pre>
@@ -63,7 +87,7 @@ class ErrorBoundary extends Component<Props, State> {
                 variant="outline"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Try Again
+                {copy.retry}
               </Button>
 
               <Button
@@ -71,7 +95,7 @@ class ErrorBoundary extends Component<Props, State> {
                   window.location.href = '/home';
                 }}
               >
-                Go to Home
+                {copy.home}
               </Button>
             </div>
           </div>

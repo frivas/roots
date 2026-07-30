@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
@@ -9,6 +9,7 @@ const Bomb = () => {
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
+    localStorage.clear();
     // Suppress expected console.error from React's error boundary
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -33,6 +34,18 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+  });
+
+  it('localizes the global error state from the saved language', () => {
+    localStorage.setItem('selectedLanguage', 'es-ES');
+    render(
+      <ErrorBoundary>
+        <Bomb />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Algo salió mal');
+    expect(screen.getByRole('button', { name: 'Intentar de nuevo' })).toBeInTheDocument();
   });
 
   it('renders custom fallback when fallback prop provided', () => {

@@ -1,35 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-import { getSpanishTranslation } from '../services/SpanishTranslations';
 
 /**
  * Hook that returns a translated string for use in HTML attributes
  * (placeholder, alt, title) where <TranslatedText> can't be used.
  *
- * Uses sync dictionary first for instant render, falls back to async API.
+ * Translation resources are loaded by the context only when Spanish is active.
  */
 function useTranslatedString(text: string): string {
   const { language, translateText } = useLingoTranslation();
 
-  const [translated, setTranslated] = useState(() => {
-    if (language === 'en-US') return text;
-    const t = getSpanishTranslation(text);
-    return t !== text ? t : text;
-  });
+  const [translated, setTranslated] = useState(text);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (language === 'en-US') {
       setTranslated(text);
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
-    const t = getSpanishTranslation(text);
-    if (t !== text) {
-      setTranslated(t);
-      return;
-    }
+    void translateText(text)
+      .then(result => {
+        if (!cancelled) setTranslated(result || text);
+      })
+      .catch(() => {
+        if (!cancelled) setTranslated(text);
+      });
 
-    translateText(text).then(r => setTranslated(r || text));
+    return () => {
+      cancelled = true;
+    };
   }, [text, language, translateText]);
 
   return translated;

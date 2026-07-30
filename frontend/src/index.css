@@ -97,56 +97,56 @@
 
 /* Clerk Auth Madrid Styling */
 .clerk-auth-madrid .cl-formButtonPrimary {
-  background-color: #ff0000 !important;
-  border-color: #ff0000 !important;
+  background-color: hsl(var(--color-primary)) !important;
+  border-color: hsl(var(--color-primary)) !important;
   color: white !important;
   font-family: Arial, Helvetica, sans-serif !important;
   font-weight: bold !important;
 }
 
 .clerk-auth-madrid .cl-formButtonPrimary:hover {
-  background-color: #e60000 !important;
-  border-color: #e60000 !important;
+  background-color: hsl(var(--color-primary) / 0.9) !important;
+  border-color: hsl(var(--color-primary) / 0.9) !important;
 }
 
 .clerk-auth-madrid .cl-socialButtonsBlockButton {
-  border: 1px solid #e5e5e5 !important;
-  color: #333 !important;
+  border: 1px solid hsl(var(--color-border)) !important;
+  color: hsl(var(--color-foreground)) !important;
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-socialButtonsBlockButton:hover {
-  background-color: #f8f8f8 !important;
+  background-color: hsl(var(--color-muted)) !important;
 }
 
 .clerk-auth-madrid .cl-formFieldInput {
-  border: 1px solid #d1d5db !important;
+  border: 1px solid hsl(var(--color-border)) !important;
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-formFieldInput:focus {
-  border-color: #ff0000 !important;
-  box-shadow: 0 0 0 1px #ff0000 !important;
+  border-color: hsl(var(--color-primary)) !important;
+  box-shadow: 0 0 0 1px hsl(var(--color-primary)) !important;
 }
 
 .clerk-auth-madrid .cl-headerTitle {
   font-family: Arial, Helvetica, sans-serif !important;
   font-weight: bold !important;
-  color: #000 !important;
+  color: hsl(var(--color-foreground)) !important;
 }
 
 .clerk-auth-madrid .cl-headerSubtitle {
   font-family: Arial, Helvetica, sans-serif !important;
-  color: #666 !important;
+  color: hsl(var(--color-muted-foreground)) !important;
 }
 
 .clerk-auth-madrid .cl-footerActionLink {
-  color: #ff0000 !important;
+  color: hsl(var(--color-primary)) !important;
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-footerActionLink:hover {
-  color: #e60000 !important;
+  color: hsl(var(--color-primary) / 0.9) !important;
 }
 
 .clerk-auth-madrid .cl-card {
@@ -188,11 +188,11 @@
 
 /* Any other Clerk branding elements */
 .clerk-auth-madrid [style*="background-color: rgb(55, 99, 244)"] {
-  background-color: #ff0000 !important;
+  background-color: hsl(var(--color-primary)) !important;
 }
 
 .clerk-auth-madrid [style*="background: rgb(55, 99, 244)"] {
-  background: #ff0000 !important;
+  background: hsl(var(--color-primary)) !important;
 }
 
 /* Bolt Button Styles */
@@ -236,4 +236,19 @@
 
 .widget-container > * {
   max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

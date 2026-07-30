@@ -7,6 +7,9 @@ import {
   SignedOut
 } from '@clerk/clerk-react';
 import { Analytics } from '@vercel/analytics/react';
+import { APP_ROUTES } from './config/routes';
+import { MotionConfig } from 'framer-motion';
+import StatusState from './components/ui/StatusState';
 
 // Layouts
 import MainLayout from './components/layout/MainLayout';
@@ -43,9 +46,8 @@ const SchoolPlaceholder = lazy(() => import('./pages/placeholders/SchoolPlacehol
 const CalendarPlaceholder = lazy(() => import('./pages/placeholders/CalendarPlaceholder'));
 const MyDataPlaceholder = lazy(() => import('./pages/placeholders/MyDataPlaceholder'));
 
-// New component
-import TutorInfo from './pages/TutorInfo';
 import DynamicTitle from './components/DynamicTitle';
+const TutorInfo = lazy(() => import('./pages/TutorInfo'));
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Absences = lazy(() => import('./pages/Absences'));
 const Activities = lazy(() => import('./pages/Activities'));
@@ -62,43 +64,37 @@ const ContributionDashboard = lazy(() => import('./pages/ContributionDashboard')
 
 // Loading component with better UX
 const Loading = () => (
-  <div className="flex items-center justify-center min-h-screen bg-background">
-    <div className="flex flex-col items-center gap-4">
-      <div className="animate-spin rounded-full h-12 w-12 border-2 border-muted border-t-primary"></div>
-      <p className="text-sm text-muted-foreground animate-pulse">Loading...</p>
-    </div>
-  </div>
+  <StatusState kind="loading" message="Loading..." className="min-h-screen bg-background" />
 );
 
 // Loading fallback component
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[50vh]">
-    <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
-  </div>
+  <StatusState kind="loading" message="Loading page..." className="min-h-[50vh]" />
 );
 
 function App() {
   return (
-    <AuthProvider>
+    <MotionConfig reducedMotion="user">
+      <AuthProvider>
       <DynamicTitle />
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* Public routes */}
           <Route
-            path="/"
-            element={<Navigate to="/home" replace />}
+            path={APP_ROUTES.root}
+            element={<Navigate to={APP_ROUTES.home} replace />}
           />
 
           {/* Auth routes */}
           <Route
-            path="/auth/login"
+            path={APP_ROUTES.authLogin}
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signIn"
                     routing="virtual"
-                    forceRedirectUrl="/home"
+                    forceRedirectUrl={APP_ROUTES.home}
                   />
                 </AuthLayout>
               </SignedOut>
@@ -106,14 +102,14 @@ function App() {
           />
 
           <Route
-            path="/auth/register"
+            path={APP_ROUTES.authRegister}
             element={
               <SignedOut>
                 <AuthLayout>
                   <ClerkAuthWrapper
                     type="signUp"
                     routing="virtual"
-                    forceRedirectUrl="/home"
+                    forceRedirectUrl={APP_ROUTES.home}
                   />
                 </AuthLayout>
               </SignedOut>
@@ -127,50 +123,50 @@ function App() {
             </SignedIn>
           }>
             {/* Redirect dashboard to home */}
-            <Route path="/dashboard" element={<Navigate to="/home" replace />} />
+            <Route path={APP_ROUTES.dashboard} element={<Navigate to={APP_ROUTES.home} replace />} />
 
             {/* Home section */}
-            <Route path="/home" element={
+            <Route path={APP_ROUTES.home} element={
               <Suspense fallback={<PageLoader />}>
                 <Dashboard />
               </Suspense>
             } />
-            <Route path="/home/schedule" element={
+            <Route path={APP_ROUTES.homeSchedule} element={
               <Suspense fallback={<PageLoader />}>
                 <Schedule />
               </Suspense>
             } />
-            <Route path="/home/absences" element={
+            <Route path={APP_ROUTES.homeAbsences} element={
               <Suspense fallback={<PageLoader />}>
                 <Absences />
               </Suspense>
             } />
-            <Route path="/home/activities" element={
+            <Route path={APP_ROUTES.homeActivities} element={
               <Suspense fallback={<PageLoader />}>
                 <Activities />
               </Suspense>
             } />
-            <Route path="/home/history" element={
+            <Route path={APP_ROUTES.homeHistory} element={
               <Suspense fallback={<PageLoader />}>
                 <AcademicHistory />
               </Suspense>
             } />
-            <Route path="/home/documents" element={
+            <Route path={APP_ROUTES.homeDocuments} element={
               <Suspense fallback={<PageLoader />}>
                 <Documents />
               </Suspense>
             } />
-            <Route path="/home/grades" element={
+            <Route path={APP_ROUTES.homeGrades} element={
               <Suspense fallback={<PageLoader />}>
                 <CurrentYearGrades />
               </Suspense>
             } />
-            <Route path="/home/profile" element={
+            <Route path={APP_ROUTES.homeProfile} element={
               <Suspense fallback={<PageLoader />}>
                 <StudentProfile />
               </Suspense>
             } />
-            <Route path="/home/tutoring" element={
+            <Route path={APP_ROUTES.homeTutoring} element={
               <Suspense fallback={<PageLoader />}>
                 <TutorInfo />
               </Suspense>
@@ -182,22 +178,22 @@ function App() {
             } />
 
             {/* Our School section */}
-            <Route path="/school/data" element={
+            <Route path={APP_ROUTES.schoolData} element={
               <Suspense fallback={<PageLoader />}>
                 <SchoolData />
               </Suspense>
             } />
-            <Route path="/school/calendar" element={
+            <Route path={APP_ROUTES.schoolCalendar} element={
               <Suspense fallback={<PageLoader />}>
                 <SchoolCalendar />
               </Suspense>
             } />
-            <Route path="/school/services" element={
+            <Route path={APP_ROUTES.schoolServices} element={
               <Suspense fallback={<PageLoader />}>
                 <Services />
               </Suspense>
             } />
-            <Route path="/school/elections" element={
+            <Route path={APP_ROUTES.schoolElections} element={
               <Suspense fallback={<PageLoader />}>
                 <SchoolElections />
               </Suspense>
@@ -276,12 +272,12 @@ function App() {
             } />
 
             {/* Communications section */}
-            <Route path="/communications" element={
+            <Route path={APP_ROUTES.communications} element={
               <Suspense fallback={<PageLoader />}>
                 <CommunicationsPlaceholder />
               </Suspense>
             } />
-            <Route path="/communications/messages" element={
+            <Route path={APP_ROUTES.communicationsMessages} element={
               <Suspense fallback={<PageLoader />}>
                 <Messages />
               </Suspense>
@@ -291,12 +287,12 @@ function App() {
                 <Messages />
               </Suspense>
             } />
-            <Route path="/communications/bulletin" element={
+            <Route path={APP_ROUTES.communicationsBulletin} element={
               <Suspense fallback={<PageLoader />}>
                 <Bulletin />
               </Suspense>
             } />
-            <Route path="/communications/notifications" element={
+            <Route path={APP_ROUTES.communicationsNotifications} element={
               <Suspense fallback={<PageLoader />}>
                 <Notifications />
               </Suspense>
@@ -313,12 +309,12 @@ function App() {
             } />
 
             {/* Personal Calendar section */}
-            <Route path="/calendar/monthly" element={
+            <Route path={APP_ROUTES.calendarMonthly} element={
               <Suspense fallback={<PageLoader />}>
                 <PersonalCalendar />
               </Suspense>
             } />
-            <Route path="/calendar/create" element={
+            <Route path={APP_ROUTES.calendarCreate} element={
               <Suspense fallback={<PageLoader />}>
                 <PersonalCalendar />
               </Suspense>
@@ -330,17 +326,17 @@ function App() {
             } />
 
             {/* My Data section */}
-            <Route path="/data/personal" element={
+            <Route path={APP_ROUTES.dataPersonal} element={
               <Suspense fallback={<PageLoader />}>
                 <PersonalData />
               </Suspense>
             } />
-            <Route path="/data/password" element={
+            <Route path={APP_ROUTES.dataPassword} element={
               <Suspense fallback={<PageLoader />}>
                 <PasswordChange />
               </Suspense>
             } />
-            <Route path="/data/contributions" element={
+            <Route path={APP_ROUTES.dataContributions} element={
               <Suspense fallback={<PageLoader />}>
                 <ContributionDashboard />
               </Suspense>
@@ -360,7 +356,7 @@ function App() {
 
           {/* Public legal pages */}
           <Route
-            path="/privacy-policy"
+            path={APP_ROUTES.privacyPolicy}
             element={
               <Suspense fallback={<PageLoader />}>
                 <PrivacyPolicy />
@@ -370,8 +366,8 @@ function App() {
 
           {/* Catch unauthenticated users */}
           <Route
-            path="/signin"
-            element={<RedirectToSignIn redirectUrl="/home" />}
+            path={APP_ROUTES.signIn}
+            element={<RedirectToSignIn redirectUrl={APP_ROUTES.home} />}
           />
 
           {/* 404 route */}
@@ -379,7 +375,8 @@ function App() {
         </Routes>
       </Suspense>
       <Analytics />
-    </AuthProvider>
+      </AuthProvider>
+    </MotionConfig>
   );
 }
 

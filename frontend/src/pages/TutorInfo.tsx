@@ -7,6 +7,7 @@ import tutorMockData from '../services/TutorMockData';
 import { Calendar, Mail, Phone, School } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { formatDate } from '../lib/utils';
+import { APP_ROUTES } from '../config/routes';
 
 // Type assertions for Lucide icons
 const MailIcon = Mail as unknown as React.ComponentType<{ className?: string }>;
@@ -19,7 +20,7 @@ const TutorInfo: React.FC = () => {
     const navigate = useNavigate();
 
     const handleSendMessage = () => {
-        navigate('/messages', { replace: true });
+        navigate(APP_ROUTES.communicationsMessages, { replace: true });
     };
 
     return (
@@ -51,20 +52,19 @@ const TutorInfo: React.FC = () => {
                     <div className="relative mb-4">
                         <div className="w-24 h-32 overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
                             <div className="w-full h-full overflow-hidden bg-white">
-                                <img
-                                    src={tutor.avatar}
-                                    alt={tutor.name}
-                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                    onError={(e) => {
-                                        // Fallback to illustration avatar if local image fails
-                                        const fallbackImages = [
-                                            "https://api.dicebear.com/7.x/personas/svg?seed=Lucia&backgroundColor=f4d1ad&hair=long01,long02&hairColor=brown&eyes=normal&mouth=smile&skinColor=f4d1ad",
-                                            "https://ui-avatars.com/api/?name=Lucia+M&size=200&background=e3f2fd&color=1976d2&font-size=0.6&bold=true"
-                                        ];
-                                        const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-                                        e.currentTarget.src = fallbackImages[randomIndex];
-                                    }}
-                                />
+                                <picture>
+                                    <source srcSet="/images/lucia-profile.avif" type="image/avif" />
+                                    <source srcSet="/images/lucia-profile.webp" type="image/webp" />
+                                    <img
+                                        src={tutor.avatar}
+                                        alt={tutor.name}
+                                        width={96}
+                                        height={128}
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                    />
+                                </picture>
                             </div>
                         </div>
                     </div>

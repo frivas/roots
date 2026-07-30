@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 const mockUseLingoTranslation = vi.hoisted(() =>
@@ -35,27 +35,15 @@ describe('RouteWrapper', () => {
     });
   });
 
-  it('renders children when lingo is initialized and preloaded', async () => {
+  it('renders children immediately when lingo is initialized and preloaded', () => {
     render(
       <RouteWrapper>
         <div>Page Content</div>
       </RouteWrapper>
     );
-    // The component uses a 50ms timer before showing content
-    await waitFor(
-      () => expect(screen.getByText('Page Content')).toBeInTheDocument(),
-      { timeout: 3000 }
-    );
-  });
 
-  it('shows a loading state (spinner) initially', () => {
-    render(
-      <RouteWrapper>
-        <div>Page Content</div>
-      </RouteWrapper>
-    );
-    // Before the 50ms timer fires, the spinner shows "Loading..." text
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Page Content')).toBeInTheDocument();
+    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
 
   it('shows spinner when lingo is not yet initialized', () => {
@@ -78,25 +66,4 @@ describe('RouteWrapper', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it('falls back to ready after the long timeout even if initialization never completes', async () => {
-    mockUseLingoTranslation.mockReturnValueOnce({
-      language: 'en-US',
-      setLanguage: vi.fn(),
-      isTranslating: false,
-      translateText: vi.fn(async (t: string) => t),
-      preloadingComplete: false,
-      isInitialized: false,
-      isProviderMounted: false,
-    });
-
-    render(
-      <RouteWrapper>
-        <div>Fallback Content</div>
-      </RouteWrapper>
-    );
-
-    await new Promise((resolve) => setTimeout(resolve, 2100));
-
-    await waitFor(() => expect(screen.getByText('Fallback Content')).toBeInTheDocument());
-  });
 });

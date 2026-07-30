@@ -1,34 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { getMenuItems } from './menuConfig';
+import { isRegisteredRoute } from './routes';
 
 describe('getMenuItems', () => {
-  it('returns items for teacher role', () => {
-    const items = getMenuItems(['teacher']);
-    const names = items.map(i => i.name);
-    expect(names).toContain('Teaching');
-  });
-
-  it('returns items for admin role', () => {
-    const items = getMenuItems(['administrator']);
-    const names = items.map(i => i.name);
-    expect(names).toContain('Administration');
-  });
-
-  it('returns items for parent role', () => {
-    const items = getMenuItems(['parent']);
-    const names = items.map(i => i.name);
-    expect(names).toContain('My Children');
-  });
-
-  it('handles multiple roles without duplicating shared items', () => {
+  it('does not expose role-only destinations until those pages are implemented', () => {
     const items = getMenuItems(['teacher', 'parent']);
     const names = items.map(i => i.name);
-    // Common items like 'Home' should appear exactly once
-    const homeCount = names.filter(n => n === 'Home').length;
-    expect(homeCount).toBe(1);
-    // Both role-specific items should be present
-    expect(names).toContain('Teaching');
-    expect(names).toContain('My Children');
+
+    expect(names).not.toContain('Teaching');
+    expect(names).not.toContain('My Children');
+    expect(names.filter(n => n === 'Home')).toHaveLength(1);
   });
 
   it('returns base items when roles array is empty', () => {
@@ -54,5 +35,21 @@ describe('getMenuItems', () => {
     const children = myDataItem?.children ?? [];
     const contributionItem = children.find(c => c.name === 'Developer Contribution');
     expect(contributionItem).toBeDefined();
+  });
+
+  it('only exposes destinations registered by the application router', () => {
+    const items = getMenuItems(
+      ['student', 'parent', 'teacher', 'administrator'],
+      'juan294@gmail.com',
+    );
+    const destinations = items.flatMap(item =>
+      item.children?.flatMap(child => [
+        ...(child.href ? [child.href] : []),
+        ...(child.children?.flatMap(grandchild => grandchild.href ? [grandchild.href] : []) ?? []),
+      ]) ?? (item.href ? [item.href] : []),
+    );
+
+    expect(destinations.length).toBeGreaterThan(0);
+    expect(destinations.every(isRegisteredRoute)).toBe(true);
   });
 });

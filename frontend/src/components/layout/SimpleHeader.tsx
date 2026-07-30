@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { useClerk } from '@clerk/clerk-react';
-import { Menu, X, Bell, Home, Mail, Settings, BookOpen, User, LogOut } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
+import { getMenuItems, type Role } from '../../config/menuConfig';
 
 const SimpleHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,14 +14,17 @@ const SimpleHeader: React.FC = () => {
   const { signOut } = useClerk();
   const location = useLocation();
 
-  const navigation = [
-    { name: 'Home', href: '/home', icon: Home },
-    { name: 'Services', href: '/services', icon: BookOpen },
-    { name: 'Messages', href: '/messages', icon: Mail },
-    { name: 'Notifications', href: '/notifications', icon: Bell },
-    { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Profile', href: '/profile', icon: User },
-  ];
+  const userRoles = useMemo(() => {
+    const roles = user?.publicMetadata?.roles;
+    if (!Array.isArray(roles)) return [];
+    return roles.filter((role): role is Role =>
+      ['student', 'parent', 'teacher', 'administrator'].includes(String(role)),
+    );
+  }, [user?.publicMetadata?.roles]);
+  const navigation = useMemo(
+    () => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress),
+    [userRoles, user?.primaryEmailAddress?.emailAddress],
+  );
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -45,6 +49,8 @@ const SimpleHeader: React.FC = () => {
             type="button"
             className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
             onClick={toggleMobileMenu}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             <span className="sr-only">Open main menu</span>
             {mobileMenuOpen ? (
@@ -58,24 +64,32 @@ const SimpleHeader: React.FC = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="animate-fade-in bg-background border-t border-border">
+        <div id="mobile-navigation" className="animate-fade-in bg-background border-t border-border">
           <div className="space-y-1 px-4 pb-3 pt-2">
             {/* Navigation Links */}
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "flex items-center py-3 text-base font-medium transition-colors rounded-lg px-3",
-                  location.pathname.startsWith(item.href)
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <item.icon className="mr-3 h-5 w-5" />
-                <TranslatedText>{item.name}</TranslatedText>
-              </Link>
+            {navigation.map((group) => (
+              <div key={group.name} className="py-1">
+                <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TranslatedText>{group.name}</TranslatedText>
+                </p>
+                {group.children?.map(item => item.href && (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    aria-current={location.pathname === item.href ? 'page' : undefined}
+                    className={cn(
+                      "flex items-center py-3 text-base font-medium transition-colors rounded-lg px-3",
+                      location.pathname === item.href
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
+                    <TranslatedText>{item.name}</TranslatedText>
+                  </Link>
+                ))}
+              </div>
             ))}
 
 
