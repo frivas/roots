@@ -6,10 +6,6 @@ import {
     User,
     School,
     Calendar,
-    Megaphone,
-    GraduationCap,
-    BookMarked,
-    Users,
     FileText,
     Award,
     LucideIcon,
@@ -28,12 +24,13 @@ import {
 } from 'lucide-react';
 
 import { GitHubContributorsService } from '../services/GitHubContributorsService';
+import { APP_ROUTES, type AppRoute } from './routes';
 
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
 
-interface MenuItem {
+export interface MenuItem {
     name: string;
-    href?: string;
+    href?: AppRoute;
     icon: LucideIcon;
     children?: MenuItem[];
     roles?: Role[]; // If undefined, item is visible to all roles
@@ -49,42 +46,42 @@ const commonMenuItems: MenuItem[] = [
         children: [
             {
                 name: 'Tutoring',
-                href: '/home/tutoring',
+                href: APP_ROUTES.homeTutoring,
                 icon: UserCheck
             },
             {
                 name: 'Schedule',
-                href: '/home/schedule',
+                href: APP_ROUTES.homeSchedule,
                 icon: Calendar
             },
             {
                 name: 'Absences',
-                href: '/home/absences',
+                href: APP_ROUTES.homeAbsences,
                 icon: FileCheck
             },
             {
                 name: 'Assessable Activities',
-                href: '/home/activities',
+                href: APP_ROUTES.homeActivities,
                 icon: Award
             },
             {
                 name: 'Academic History',
-                href: '/home/history',
+                href: APP_ROUTES.homeHistory,
                 icon: History
             },
             {
                 name: 'Student Documents',
-                href: '/home/documents',
+                href: APP_ROUTES.homeDocuments,
                 icon: FileText
             },
             {
                 name: 'Current Year Grades',
-                href: '/home/grades',
+                href: APP_ROUTES.homeGrades,
                 icon: Award
             },
             {
                 name: 'Student Profile',
-                href: '/home/profile',
+                href: APP_ROUTES.homeProfile,
                 icon: UserCircle
             }
         ]
@@ -95,22 +92,22 @@ const commonMenuItems: MenuItem[] = [
         children: [
             {
                 name: 'School data',
-                href: '/school/data',
+                href: APP_ROUTES.schoolData,
                 icon: Building
             },
             {
                 name: 'School calendar',
-                href: '/school/calendar',
+                href: APP_ROUTES.schoolCalendar,
                 icon: CalendarDays
             },
             {
                 name: 'Services',
-                href: '/school/services',
+                href: APP_ROUTES.schoolServices,
                 icon: BookOpen
             },
             {
                 name: 'School elections',
-                href: '/school/elections',
+                href: APP_ROUTES.schoolElections,
                 icon: Vote
             }
         ]
@@ -121,17 +118,17 @@ const commonMenuItems: MenuItem[] = [
         children: [
             {
                 name: 'Messages',
-                href: '/communications/messages',
+                href: APP_ROUTES.communicationsMessages,
                 icon: Mail
             },
             {
                 name: 'Bulletin board',
-                href: '/communications/bulletin',
+                href: APP_ROUTES.communicationsBulletin,
                 icon: Newspaper
             },
             {
                 name: 'Notifications',
-                href: '/communications/notifications',
+                href: APP_ROUTES.communicationsNotifications,
                 icon: Bell
             }
         ]
@@ -142,7 +139,7 @@ const commonMenuItems: MenuItem[] = [
         children: [
             {
                 name: 'Monthly calendar',
-                href: '/calendar/monthly',
+                href: APP_ROUTES.calendarMonthly,
                 icon: CalendarDays
             }
         ]
@@ -153,17 +150,17 @@ const commonMenuItems: MenuItem[] = [
         children: [
             {
                 name: 'User personal information',
-                href: '/data/personal',
+                href: APP_ROUTES.dataPersonal,
                 icon: CreditCard
             },
             {
                 name: 'Password change',
-                href: '/data/password',
+                href: APP_ROUTES.dataPassword,
                 icon: Key
             },
             {
                 name: 'Developer Contribution',
-                href: '/data/contributions',
+                href: APP_ROUTES.dataContributions,
                 icon: BarChart3,
                 restrictedEmails: GitHubContributorsService.getAllContributorEmails()
             }
@@ -171,112 +168,9 @@ const commonMenuItems: MenuItem[] = [
     }
 ];
 
-// Role-specific menu items
-const roleSpecificMenuItems: MenuItem[] = [
-    // Student-specific items
-    {
-        name: 'My Learning',
-        icon: BookOpen,
-        roles: ['student'],
-        children: [
-            {
-                name: 'My Courses',
-                href: '/student/courses',
-                icon: BookMarked,
-            },
-            {
-                name: 'Assignments',
-                href: '/student/assignments',
-                icon: FileText,
-            },
-            {
-                name: 'Grades',
-                href: '/student/grades',
-                icon: Award,
-            },
-        ],
-    },
-
-    // Parent-specific items
-    {
-        name: 'My Children',
-        icon: Users,
-        roles: ['parent'],
-        children: [
-            {
-                name: 'Children Overview',
-                href: '/parent/children',
-                icon: Users,
-            },
-            {
-                name: 'Academic Progress',
-                href: '/parent/progress',
-                icon: Award,
-            },
-            {
-                name: 'Communication',
-                href: '/parent/communication',
-                icon: Mail,
-            },
-        ],
-    },
-
-    // Teacher-specific items
-    {
-        name: 'Teaching',
-        icon: GraduationCap,
-        roles: ['teacher'],
-        children: [
-            {
-                name: 'My Classes',
-                href: '/teacher/classes',
-                icon: BookOpen,
-            },
-            {
-                name: 'Grade Management',
-                href: '/teacher/grades',
-                icon: Award,
-            },
-            {
-                name: 'Student Progress',
-                href: '/teacher/progress',
-                icon: FileText,
-            },
-        ],
-    },
-
-    // Administrator-specific items
-    {
-        name: 'Administration',
-        icon: School,
-        roles: ['administrator'],
-        children: [
-            {
-                name: 'School Overview',
-                href: '/admin/overview',
-                icon: School,
-            },
-            {
-                name: 'User Management',
-                href: '/admin/users',
-                icon: Users,
-            },
-            {
-                name: 'Academic Calendar',
-                href: '/admin/calendar',
-                icon: Calendar,
-            },
-            {
-                name: 'Announcements',
-                href: '/admin/announcements',
-                icon: Megaphone,
-            },
-        ],
-    },
-];
-
 // Function to get menu items based on user roles and email
 export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuItem[] => {
+    void userRoles;
     // Start with common menu items and filter based on email access
     const menuItems: MenuItem[] = commonMenuItems.map(item => ({
         ...item,
@@ -287,13 +181,6 @@ export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuIt
                 return !child.restrictedEmails; // Show items without restrictions
             })
     }));
-
-    // Add role-specific items
-    roleSpecificMenuItems.forEach(item => {
-        if (!item.roles || item.roles.some(role => userRoles.includes(role))) {
-            menuItems.push(item);
-        }
-    });
 
     return menuItems;
 };

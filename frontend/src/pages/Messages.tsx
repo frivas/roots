@@ -24,6 +24,7 @@ import {
   Search
 } from 'lucide-react';
 import { getSpanishTranslation } from '../services/SpanishTranslations';
+import StatusState from '../components/ui/StatusState';
 
 // Type assertions for Lucide icons
 const ArchiveIcon = Archive as unknown as React.ComponentType<{ className?: string }>;
@@ -548,14 +549,7 @@ const Messages = () => {
 
   // Show loading state if translation context is not ready
   if (!isInitialized || !preloadingComplete) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-primary"></div>
-          <p className="text-sm text-muted-foreground">Loading messages...</p>
-        </div>
-      </div>
-    );
+    return <StatusState kind="loading" message="Loading messages..." className="min-h-[50vh]" />;
   }
 
   const folders = [
@@ -743,19 +737,16 @@ const Messages = () => {
                       {paginatedMessages.map((message, index) => (
                       <motion.li
                         key={message.id}
-                        className={`cursor-pointer hover:bg-muted transition-colors ${!message.read ? 'bg-muted/50' : ''}`}
-                        onClick={() => {
-                          setSelectedMessage(message);
-                          markAsRead(message.id);
-                        }}
+                        className={`flex items-stretch hover:bg-muted transition-colors ${!message.read ? 'bg-muted/50' : ''}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2, delay: index * 0.05 }}
                       >
-                        <div className="flex items-center px-4 py-3">
                           <button
-                            className="mr-3 text-muted-foreground hover:text-amber-500 transition-colors"
-                            onClick={(e) => toggleStarred(message.id, e)}
+                            type="button"
+                            className="ml-4 self-center text-muted-foreground hover:text-amber-500 transition-colors"
+                            aria-label={message.starred ? `Unstar ${message.subject}` : `Star ${message.subject}`}
+                            onClick={(event) => toggleStarred(message.id, event)}
                           >
                             {message.starred ? (
                               <StarIcon className="h-5 w-5 fill-amber-500 text-amber-500" />
@@ -763,6 +754,14 @@ const Messages = () => {
                               <StarOffIcon className="h-5 w-5" />
                             )}
                           </button>
+                          <button
+                            type="button"
+                            className="flex min-w-0 flex-1 items-center px-4 py-3 text-left"
+                            onClick={() => {
+                              setSelectedMessage(message);
+                              markAsRead(message.id);
+                            }}
+                          >
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center">
                                                           <p className={`text-sm font-medium ${!message.read ? 'font-semibold' : ''}`}>
@@ -780,9 +779,9 @@ const Messages = () => {
                             </p>
                           </div>
                           {!message.read && (
-                            <div className="ml-2 h-2 w-2 rounded-full bg-primary" />
+                            <span className="ml-2 h-2 w-2 rounded-full bg-primary" aria-label="Unread" />
                           )}
-                        </div>
+                          </button>
                       </motion.li>
                     ))}
                   </ul>

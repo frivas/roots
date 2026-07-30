@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-import { getSpanishTranslation } from '../services/SpanishTranslations';
 
 interface TranslatedTextProps {
   children: string;
@@ -19,54 +18,45 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
 }) => {
   const { language, translateText } = useLingoTranslation();
 
-  // Initialize with immediate translation if available
-  const [translatedText, setTranslatedText] = useState(() => {
-    if (language === 'en-US') {
-      return children; // Show English text as-is
-    }
-
-    // For Spanish, check for immediate translation from English to Spanish
-    const immediateTranslation = getSpanishTranslation(children);
-    return immediateTranslation !== children ? immediateTranslation : children;
-  });
-
+  const [translatedText, setTranslatedText] = useState(children);
   const [isLoading, setIsLoading] = useState(false);
 
-  const performTranslation = useCallback(async () => {
+  useEffect(() => {
+    let cancelled = false;
+
     if (language === 'en-US') {
-      setTranslatedText(children); // Show English text as-is
-      return;
+      setTranslatedText(children);
+      setIsLoading(false);
+      return () => {
+        cancelled = true;
+      };
     }
 
-    // Don't translate empty or very short strings
     if (!children || children.trim().length < 2) {
       setTranslatedText(children);
-      return;
-    }
-
-    // For Spanish, first try immediate English->Spanish dictionary lookup
-    const spanishTranslation = getSpanishTranslation(children);
-    if (spanishTranslation !== children) {
-      setTranslatedText(spanishTranslation);
-      return; // Don't need API call
-    }
-
-    // If no local translation, use API to translate English->Spanish
-    setIsLoading(true);
-    try {
-      const translated = await translateText(children);
-      setTranslatedText(translated || children);
-    } catch (error) {
-      console.error('Translation failed:', error);
-      setTranslatedText(fallback || children);
-    } finally {
       setIsLoading(false);
+      return () => {
+        cancelled = true;
+      };
     }
-  }, [children, language, translateText, fallback]);
 
-  useEffect(() => {
-    performTranslation();
-  }, [performTranslation]);
+    setIsLoading(true);
+    void translateText(children)
+      .then(translated => {
+        if (!cancelled) setTranslatedText(translated || children);
+      })
+      .catch(error => {
+        console.error('Translation failed:', error);
+        if (!cancelled) setTranslatedText(fallback || children);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [children, language, translateText, fallback]);
 
   const Element = element as keyof React.JSX.IntrinsicElements;
 

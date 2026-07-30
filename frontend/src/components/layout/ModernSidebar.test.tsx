@@ -116,31 +116,32 @@ describe('ModernSidebar', () => {
   });
 
   it('toggles expandable menus and signs the user out', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
     renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: /section/i }));
-    fireEvent.click(screen.getByRole('button', { name: /section/i }));
+    const section = screen.getByRole('button', { name: /section/i });
+    expect(section).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(section);
+    expect(section).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.click(section);
+    expect(section).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(screen.getByText('Sign Out'));
 
-    expect(logSpy).toHaveBeenCalledWith('Expanded:', 'Section');
-    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Section');
     expect(mockSignOut).toHaveBeenCalled();
   });
 
   it('toggles nested child menus and responds to hover expansion', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     mockUseLocation.mockReturnValue({ pathname: '/nested/leaf' });
 
     const { container } = renderSidebar();
     const root = container.firstElementChild as HTMLElement;
 
     fireEvent.mouseEnter(root);
-    fireEvent.click(screen.getByRole('button', { name: /nested/i }));
+    const nested = screen.getByRole('button', { name: /nested/i });
+    expect(nested).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.click(nested);
     fireEvent.mouseLeave(root);
 
-    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Nested');
+    expect(nested).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('renders user image avatars and respects the hideBottomBorder variant', () => {
@@ -159,7 +160,8 @@ describe('ModernSidebar', () => {
     const { container } = renderSidebar({ hideBottomBorder: true });
 
     expect(screen.getByAltText('Image User')).toBeInTheDocument();
-    expect(screen.getByText('Top Link').closest('a')?.className).toContain('bg-red-500/20');
+    expect(screen.getByText('Top Link').closest('a')?.className).toContain('bg-primary/15');
+    expect(screen.getByText('Top Link').closest('a')).toHaveAttribute('aria-current', 'page');
     expect(container.querySelector('.border-t')).not.toBeInTheDocument();
   });
 
@@ -168,7 +170,7 @@ describe('ModernSidebar', () => {
 
     renderSidebar();
 
-    expect(screen.getByText('Hybrid Section').closest('a')?.className).toContain('bg-red-500/20');
+    expect(screen.getByText('Hybrid Section').closest('a')?.className).toContain('bg-primary/15');
   });
 
   it('falls back to a generic user label when names are unavailable', () => {

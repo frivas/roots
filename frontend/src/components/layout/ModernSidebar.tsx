@@ -86,17 +86,13 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
   }, [location.pathname, navigation]);
 
   const toggleMenu = (menuName: string) => {
-    console.log('Toggling menu:', menuName); // Debug log
     setExpandedMenus(prev => {
       const newSet = new Set(prev);
       if (newSet.has(menuName)) {
         newSet.delete(menuName);
-        console.log('Collapsed:', menuName); // Debug log
       } else {
         newSet.add(menuName);
-        console.log('Expanded:', menuName); // Debug log
       }
-      console.log('Current expanded menus:', Array.from(newSet)); // Debug log
       return newSet;
     });
   };
@@ -116,6 +112,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
     to: string;
     className?: string;
     children: React.ReactNode;
+    'aria-current'?: 'page';
   }>;
 
   // For desktop (md and up): always expanded (w-72)
@@ -182,15 +179,17 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 // Item with only children - expandable button
                 <>
                   <button
+                    type="button"
                     onClick={() => toggleMenu(item.name)}
+                    aria-expanded={expandedMenus.has(item.name)}
                     className={cn(
                       "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
                       // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
                       "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
                       isExpanded && "px-4 py-3 justify-start",
                       isMenuItemActive(item)
-                        ? "bg-red-500/20 text-red-700 font-semibold"
-                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                        ? "bg-primary/15 text-primary font-semibold"
+                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                     )}
                   >
                     <div className={cn(
@@ -228,12 +227,14 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                           // Child with only children - expandable button
                           <>
                             <button
+                              type="button"
                               onClick={() => toggleMenu(child.name)}
+                              aria-expanded={expandedMenus.has(child.name)}
                               className={cn(
                                 "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
                                 isMenuItemActive(child)
-                                  ? "bg-red-500/20 text-red-700 font-semibold"
-                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                  ? "bg-primary/15 text-primary font-semibold"
+                                  : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                               )}
                             >
                               <div className="flex items-center justify-center w-6 min-w-[24px]">
@@ -250,11 +251,12 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                                     <Link
                                       key={grandchild.name}
                                       to={grandchild.href}
+                                      aria-current={location.pathname === grandchild.href ? 'page' : undefined}
                                       className={cn(
                                         "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
                                         location.pathname === grandchild.href
-                                          ? "bg-red-500/20 text-red-700 font-semibold"
-                                          : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                          ? "bg-primary/15 text-primary font-semibold"
+                                          : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                       )}
                                     >
                                       <div className="flex items-center justify-center w-6 min-w-[24px]">
@@ -286,11 +288,12 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                           child.href ? (
                             <Link
                               to={child.href}
+                              aria-current={location.pathname === child.href ? 'page' : undefined}
                               className={cn(
                                 "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
                                 location.pathname === child.href
-                                  ? "bg-red-500/20 text-red-700 font-semibold"
-                                  : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                                  ? "bg-primary/15 text-primary font-semibold"
+                                  : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                               )}
                             >
                               <div className="flex items-center justify-center w-6 min-w-[24px]">
@@ -320,14 +323,15 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
                 item.href ? (
                   <Link
                     to={item.href}
+                    aria-current={location.pathname === item.href ? 'page' : undefined}
                     className={cn(
                       "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
                       // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
                       "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
                       isExpanded && "px-4 py-3 justify-start",
                       location.pathname === item.href
-                        ? "bg-red-500/20 text-red-700 font-semibold"
-                        : "text-muted-foreground hover:bg-red-500/10 hover:text-red-700"
+                        ? "bg-primary/15 text-primary font-semibold"
+                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                     )}
                   >
                     <div className={cn(
@@ -423,7 +427,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
           <button
             onClick={() => signOut()}
             className={cn(
-              "flex items-center rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors",
+              "flex items-center rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors",
               // Mobile: responsive layout, Desktop: always expanded style
               "px-0 py-3 w-full justify-center md:px-4 md:py-3 md:w-full md:max-w-[180px] md:justify-center",
               isExpanded && "px-4 py-3 w-full max-w-[180px] justify-center"

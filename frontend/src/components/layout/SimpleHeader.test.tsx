@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { getMenuItems } from '../../config/menuConfig';
 
 vi.mock('../../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
@@ -81,10 +82,33 @@ describe('SimpleHeader', () => {
     expect(screen.queryByText('Home')).not.toBeInTheDocument();
 
     // Click the menu toggle button
-    fireEvent.click(screen.getByRole('button'));
+    const toggle = screen.getByRole('button', { name: /open main menu/i });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
 
     // After clicking, navigation items should appear
     expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('uses the same registered destination model as the desktop sidebar', () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+
+    const expectedDestinations = getMenuItems([], 'test@example.com')
+      .flatMap(group => group.children ?? [])
+      .flatMap(item => item.href ? [item.href] : []);
+    const renderedDestinations = screen.getAllByRole('link')
+      .map(link => link.getAttribute('href'))
+      .filter(Boolean);
+
+    expect(renderedDestinations).toEqual(expect.arrayContaining(expectedDestinations));
+    expect(renderedDestinations).not.toContain('/messages');
+    expect(renderedDestinations).not.toContain('/settings');
   });
 
   it('closes mobile menu when a navigation link is clicked', () => {
@@ -99,10 +123,10 @@ describe('SimpleHeader', () => {
     expect(screen.getByText('Home')).toBeInTheDocument();
 
     // Click a navigation link
-    fireEvent.click(screen.getByText('Home'));
+    fireEvent.click(screen.getByRole('link', { name: 'Tutoring' }));
 
     // Menu should be closed
-    expect(screen.queryByText('Home')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Tutoring' })).not.toBeInTheDocument();
   });
 
   it('renders header element', () => {

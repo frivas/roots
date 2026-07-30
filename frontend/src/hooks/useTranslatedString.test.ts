@@ -62,22 +62,12 @@ describe('useTranslatedString', () => {
     expect(result.current).toBe('Test String');
   });
 
-  it('calls translateText and updates result for Spanish (non-dict text)', async () => {
+  it('calls translateText and updates the result for Spanish', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(useLingoTranslation).mockReturnValue(esCtx() as any);
-    // Use text that is NOT in the Spanish dictionary so it falls through to translateText
     const { result } = renderHook(() => useTranslatedString('xyzzy unknown phrase'));
-    await waitFor(() => expect(result.current).toContain('xyzzy unknown phrase'));
-  });
-
-  it('uses local Spanish dictionary sync for known Spanish text', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(useLingoTranslation).mockReturnValue(esCtx() as any);
-    // "Home" -> "Inicio" in the local dictionary; translateText should not be called
-    const { result } = renderHook(() => useTranslatedString('Home'));
-    await waitFor(() => expect(result.current).toBe('Inicio'));
-    // translateText should NOT be called since dictionary hit is synchronous
-    expect(mockTranslateText).not.toHaveBeenCalled();
+    await waitFor(() => expect(result.current).toBe('[es]xyzzy unknown phrase'));
+    expect(mockTranslateText).toHaveBeenCalledWith('xyzzy unknown phrase');
   });
 
   it('returns the translated result from translateText when dictionary misses', async () => {

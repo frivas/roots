@@ -166,23 +166,21 @@ const StudentProfile: React.FC = () => {
               {/* Profile Photo */}
               <div className="flex justify-center items-center">
                 <div className="relative">
-                  <div className="w-24 h-32 overflow-hidden ring-4 ring-red-100 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-red-50 to-rose-50 p-1">
-                    <div className="w-full h-full overflow-hidden bg-white">
-                      <img
-                        src="/images/sofia-profile.png"
-                        alt="Sofía Hernández López"
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        onError={(e) => {
-                          // Fallback to reliable avatar options if local image fails
-                          const fallbackImages = [
-                            "https://ui-avatars.com/api/?name=SH&size=200&background=fce4ec&color=c2185b&font-size=0.7&bold=true&rounded=true",
-                            "https://ui-avatars.com/api/?name=Student&size=200&background=f3e5f5&color=7b1fa2&font-size=0.6&bold=true",
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23e3f2fd'/%3E%3Ccircle cx='100' cy='75' r='25' fill='%231976d2'/%3E%3Ccircle cx='100' cy='135' r='35' fill='%231976d2'/%3E%3Ctext x='100' y='170' text-anchor='middle' font-family='Arial' font-size='12' fill='%23ffffff'%3ESH%3C/text%3E%3C/svg%3E"
-                          ];
-                          const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-                          e.currentTarget.src = fallbackImages[randomIndex];
-                        }}
-                      />
+                  <div className="w-24 h-32 overflow-hidden ring-4 ring-primary/20 ring-offset-4 ring-offset-background shadow-lg bg-gradient-to-br from-primary/5 to-primary/10 p-1">
+                    <div className="w-full h-full overflow-hidden bg-card">
+                      <picture>
+                        <source srcSet="/images/sofia-profile.avif" type="image/avif" />
+                        <source srcSet="/images/sofia-profile.webp" type="image/webp" />
+                        <img
+                          src="/images/sofia-profile.png"
+                          alt="Sofía Hernández López"
+                          width={96}
+                          height={128}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                      </picture>
                     </div>
                   </div>
                 </div>
@@ -271,11 +269,14 @@ const StudentProfile: React.FC = () => {
       {/* Birth Data */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted transition-colors"
-            onClick={() => toggleSection('birthData')}
-          >
-            <div className="flex items-center justify-between">
+          <CardHeader className="p-0">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between p-6 text-left hover:bg-muted transition-colors"
+              onClick={() => toggleSection('birthData')}
+              aria-expanded={expandedSections.has('birthData')}
+              aria-controls="birth-data-panel"
+            >
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
                 <TranslatedText>Birth Data</TranslatedText>
@@ -284,76 +285,76 @@ const StudentProfile: React.FC = () => {
                 "h-4 w-4 text-muted-foreground transition-transform",
                 expandedSections.has('birthData') ? "rotate-180" : ""
               )} />
-            </div>
+            </button>
           </CardHeader>
 
           {expandedSections.has('birthData') && (
-            <CardContent className="pt-0">
+            <CardContent id="birth-data-panel" className="pt-0">
               <div className="border-t border-border pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Birth Date</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {formatDate(studentProfileData.birthData.birthDate)}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Age</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.birthData.age}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Age at Dec 31</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.birthData.ageAt31Dec}
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Gender</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.birthData.gender}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Country</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.birthData.country}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Province</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.birthData.province}</TranslatedText>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Municipality</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.birthData.municipality}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Locality</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.birthData.locality}</TranslatedText>
                     </div>
                   </div>
@@ -367,11 +368,14 @@ const StudentProfile: React.FC = () => {
       {/* Family Data */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted transition-colors"
-            onClick={() => toggleSection('familyData')}
-          >
-            <div className="flex items-center justify-between">
+          <CardHeader className="p-0">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between p-6 text-left hover:bg-muted transition-colors"
+              onClick={() => toggleSection('familyData')}
+              aria-expanded={expandedSections.has('familyData')}
+              aria-controls="family-data-panel"
+            >
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
                 <TranslatedText>Family Data</TranslatedText>
@@ -380,48 +384,48 @@ const StudentProfile: React.FC = () => {
                 "h-4 w-4 text-muted-foreground transition-transform",
                 expandedSections.has('familyData') ? "rotate-180" : ""
               )} />
-            </div>
+            </button>
           </CardHeader>
 
           {expandedSections.has('familyData') && (
-            <CardContent className="pt-0">
+            <CardContent id="family-data-panel" className="pt-0">
               <div className="border-t border-border pt-4">
                 <div className="space-y-6">
                   {/* Primary Tutor */}
                   <div>
-                    <h4 className="font-medium text-sm text-gray-700 mb-3">
+                    <h4 className="font-medium text-sm text-muted-foreground mb-3">
                       <TranslatedText>Primary Tutor</TranslatedText>
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>ID Type</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.primaryTutor.idType}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>ID Number</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.primaryTutor.idNumber}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>First Name</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.primaryTutor.firstName}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>Relationship</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           <TranslatedText>{studentProfileData.familyData.primaryTutor.relationship}</TranslatedText>
                         </div>
                       </div>
@@ -430,39 +434,39 @@ const StudentProfile: React.FC = () => {
 
                   {/* Secondary Tutor */}
                   <div>
-                    <h4 className="font-medium text-sm text-gray-700 mb-3">
+                    <h4 className="font-medium text-sm text-muted-foreground mb-3">
                       <TranslatedText>Secondary Tutor</TranslatedText>
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>ID Type</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.secondaryTutor.idType}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>ID Number</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.secondaryTutor.idNumber}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>First Name</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           {studentProfileData.familyData.secondaryTutor.firstName}
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="text-sm font-medium text-muted-foreground">
                           <TranslatedText>Relationship</TranslatedText>
                         </label>
-                        <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                        <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                           <TranslatedText>{studentProfileData.familyData.secondaryTutor.relationship}</TranslatedText>
                         </div>
                       </div>
@@ -478,11 +482,14 @@ const StudentProfile: React.FC = () => {
       {/* Contact Information */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted transition-colors"
-            onClick={() => toggleSection('contactInfo')}
-          >
-            <div className="flex items-center justify-between">
+          <CardHeader className="p-0">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between p-6 text-left hover:bg-muted transition-colors"
+              onClick={() => toggleSection('contactInfo')}
+              aria-expanded={expandedSections.has('contactInfo')}
+              aria-controls="contact-info-panel"
+            >
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 <TranslatedText>Contact Information</TranslatedText>
@@ -491,69 +498,69 @@ const StudentProfile: React.FC = () => {
                 "h-4 w-4 text-muted-foreground transition-transform",
                 expandedSections.has('contactInfo') ? "rotate-180" : ""
               )} />
-            </div>
+            </button>
           </CardHeader>
 
           {expandedSections.has('contactInfo') && (
-            <CardContent className="pt-0">
+            <CardContent id="contact-info-panel" className="pt-0">
               <div className="border-t border-border pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Address</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.contactData.address}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Postal Code</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.contactData.postalCode}
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>City</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.contactData.city}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Province</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.contactData.province}</TranslatedText>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Phone</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.contactData.phone}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Email</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.contactData.email}
                     </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Emergency Contact</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.contactData.emergencyContact}
                     </div>
                   </div>
@@ -567,11 +574,14 @@ const StudentProfile: React.FC = () => {
       {/* Academic Information */}
       <motion.div variants={itemVariants}>
         <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted transition-colors"
-            onClick={() => toggleSection('academicInfo')}
-          >
-            <div className="flex items-center justify-between">
+          <CardHeader className="p-0">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between p-6 text-left hover:bg-muted transition-colors"
+              onClick={() => toggleSection('academicInfo')}
+              aria-expanded={expandedSections.has('academicInfo')}
+              aria-controls="academic-info-panel"
+            >
               <CardTitle className="flex items-center gap-2">
                 <School className="h-5 w-5" />
                 <TranslatedText>Academic Information</TranslatedText>
@@ -580,78 +590,78 @@ const StudentProfile: React.FC = () => {
                 "h-4 w-4 text-muted-foreground transition-transform",
                 expandedSections.has('academicInfo') ? "rotate-180" : ""
               )} />
-            </div>
+            </button>
           </CardHeader>
 
           {expandedSections.has('academicInfo') && (
-            <CardContent className="pt-0">
+            <CardContent id="academic-info-panel" className="pt-0">
               <div className="border-t border-border pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Current Course</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.academicData.currentCourse}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Group</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       {studentProfileData.academicData.group}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Enrollment Status</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-success/10 text-success border border-success/20">
                         <TranslatedText>{studentProfileData.academicData.enrollmentStatus}</TranslatedText>
                       </span>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Class Delegate</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.academicData.delegate}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Class Subdelegate</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.academicData.subdelegate}</TranslatedText>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Secretary</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.academicData.secretary}</TranslatedText>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Special Needs</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.academicData.specialNeeds}</TranslatedText>
                     </div>
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-muted-foreground">
                       <TranslatedText>Previous Education</TranslatedText>
                     </label>
-                    <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded-lg border">
+                    <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border">
                       <TranslatedText>{studentProfileData.academicData.previousEducation}</TranslatedText>
                     </div>
                   </div>
@@ -664,13 +674,13 @@ const StudentProfile: React.FC = () => {
 
       {/* Notice */}
       <motion.div variants={itemVariants}>
-        <Card className="border-l-4 border-l-blue-500 bg-blue-50">
+        <Card className="border-l-4 border-l-primary bg-primary/5">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center mt-0.5">
-                <FileText className="h-3 w-3 text-white" />
+              <div className="flex-shrink-0 w-5 h-5 bg-primary/50 rounded-full flex items-center justify-center mt-0.5">
+                <FileText className="h-3 w-3 text-primary-foreground" />
               </div>
-              <div className="text-sm text-blue-800">
+              <div className="text-sm text-foreground">
                 <TranslatedText>From the profile, if the center allows it, you will be able to access editing the student's photo. For this, click on the Student Photo button. Once on the Student Photo screen, if you want to upload a photo or change the one that appears, click Select file and locate the image on your computer, and upload it.</TranslatedText>
               </div>
             </div>

@@ -84,4 +84,16 @@ describe('AuthLayout', () => {
     );
     expect(container.firstChild).toHaveClass('custom-auth');
   });
+
+  it('renders the current year instead of a stale hardcoded year', () => {
+    render(
+      <MemoryRouter>
+        <AuthLayout>
+          <div>Child</div>
+        </AuthLayout>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeInTheDocument();
+  });
 });

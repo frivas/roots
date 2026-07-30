@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -36,7 +36,7 @@ vi.mock('./pages/placeholders/SchoolPlaceholder', () => ({ default: () => <div d
 vi.mock('./pages/placeholders/CalendarPlaceholder', () => ({ default: () => <div data-testid="page-CalendarPlaceholder">CalendarPlaceholder</div> }));
 vi.mock('./pages/placeholders/MyDataPlaceholder', () => ({ default: () => <div data-testid="page-MyDataPlaceholder">MyDataPlaceholder</div> }));
 
-// Static-imported page (not lazy, but mock path must match App.tsx import)
+// Lazy page mock
 vi.mock('./pages/TutorInfo', () => ({ default: () => <div data-testid="page-TutorInfo">TutorInfo</div> }));
 
 // Additional lazy pages
@@ -92,14 +92,22 @@ vi.mock('./contexts/LingoTranslationContext', () => ({
 // ── External dependency mocks ─────────────────────────────────────────────────
 vi.mock('@vercel/analytics/react', () => ({ Analytics: () => null }));
 
+const clerkState = vi.hoisted(() => ({ signedIn: true }));
+
 // ── Clerk mock (signed-in by default) ────────────────────────────────────────
 vi.mock('@clerk/clerk-react', () => ({
-  useUser: () => ({ isLoaded: true, isSignedIn: true, user: { id: 'u1', publicMetadata: {} } }),
-  useAuth: () => ({ isLoaded: true, isSignedIn: true, getToken: async () => 'tok' }),
+  useUser: () => ({
+    isLoaded: true,
+    isSignedIn: clerkState.signedIn,
+    user: clerkState.signedIn ? { id: 'u1', publicMetadata: {} } : null,
+  }),
+  useAuth: () => ({ isLoaded: true, isSignedIn: clerkState.signedIn, getToken: async () => 'tok' }),
   useClerk: () => ({ signOut: vi.fn() }),
   ClerkProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  SignedIn: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  SignedOut: () => null,
+  SignedIn: ({ children }: { children: React.ReactNode }) =>
+    clerkState.signedIn ? <>{children}</> : null,
+  SignedOut: ({ children }: { children: React.ReactNode }) =>
+    clerkState.signedIn ? null : <>{children}</>,
   SignIn: () => <div data-testid="clerk-signin" />,
   SignUp: () => <div data-testid="clerk-signup" />,
   UserButton: () => <div data-testid="user-btn" />,
@@ -107,6 +115,10 @@ vi.mock('@clerk/clerk-react', () => ({
 }));
 
 import App from './App';
+
+beforeEach(() => {
+  clerkState.signedIn = true;
+});
 
 // ── Helper ───────────────────────────────────────────────────────────────────
 const renderAt = (path: string) =>
@@ -356,18 +368,26 @@ describe('App routing — public routes', () => {
 });
 
 // ── Auth routes ───────────────────────────────────────────────────────────────
-// When signed IN (default mock), SignedOut returns null so ClerkAuthWrapper
-// is not rendered. These tests verify the routes are registered without error.
-describe('App routing — auth routes (route registration)', () => {
-  it('/auth/login route is registered without error', () => {
-    const { unmount } = renderAt('/auth/login');
-    // No crash means the route tree is valid
-    unmount();
+describe('App routing — deterministic auth states', () => {
+  it('renders the sign-in flow for a signed-out visitor', async () => {
+    clerkState.signedIn = false;
+    renderAt('/auth/login');
+
+    expect(await screen.findByTestId('clerk-wrapper')).toBeInTheDocument();
   });
 
-  it('/auth/register route is registered without error', () => {
-    const { unmount } = renderAt('/auth/register');
-    unmount();
+  it('renders the registration flow for a signed-out visitor', async () => {
+    clerkState.signedIn = false;
+    renderAt('/auth/register');
+
+    expect(await screen.findByTestId('clerk-wrapper')).toBeInTheDocument();
+  });
+
+  it('does not expose protected page content to a signed-out visitor', async () => {
+    clerkState.signedIn = false;
+    renderAt('/home');
+
+    expect(screen.queryByTestId('page-Dashboard')).not.toBeInTheDocument();
   });
 
   it('renders RedirectToSignIn stub at /signin', async () => {
