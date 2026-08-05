@@ -32,7 +32,7 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('react-dom') || (id.includes('/react/') && !id.includes('react-router'))) return 'vendor';
-          if (id.includes('react-router-dom')) return 'router';
+          if (id.includes('react-router')) return 'router';
           if (id.includes('@clerk/clerk-react')) return 'clerk';
           if (id.includes('lucide-react') || id.includes('framer-motion')) return 'ui';
         },
@@ -58,7 +58,7 @@ export default defineConfig({
     include: [
       'react',
       'react-dom',
-      'react-router-dom',
+      'react-router',
       '@clerk/clerk-react'
     ],
   },

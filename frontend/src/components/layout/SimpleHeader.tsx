@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { useClerk } from '@clerk/clerk-react';
 import { Menu, X, Bell, Home, Mail, Settings, BookOpen, User, LogOut } from 'lucide-react';

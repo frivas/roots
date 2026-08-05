@@ -25,7 +25,7 @@
 
 import React from 'react';
 import { render, type RenderResult } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { LingoTranslationProvider } from '../contexts/LingoTranslationContext';
 
 export interface RenderOptions {
