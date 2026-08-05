@@ -34,7 +34,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "concurrently": "^10.0.3",
+    "concurrently": "^10.0.4",
     "glob": "^13.0.6",
     "husky": "^9.1.7"
   },
@@ -57,8 +57,8 @@
     "@rollup/rollup-darwin-x64": "^4.62.0"
   },
   "overrides": {
-    "fast-uri": "3.1.4",
-    "undici": ">=7.28.0",
+    "fast-uri": "3.1.5",
+    "undici": ">=7.29.0 <8",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
     "next": "16.2.4",
@@ -67,7 +67,7 @@
     "yaml": "2.8.3",
     "tmp": "0.2.5",
     "jsdom": {
-      "undici": "7.28.0"
+      "undici": "7.29.0"
     },
     "@vercel/node": {
       "path-to-regexp": "^6.3.0"
@@ -91,6 +91,14 @@
       "@modelcontextprotocol/sdk": "1.29.0",
       "diff": "8.0.4",
       "yaml": "2.8.3"
+    },
+    "tar": ">=7.5.22",
+    "postcss": ">=8.5.23",
+    "shell-quote": ">=1.10.0",
+    "find-my-way": ">=9.7.0",
+    "brace-expansion": ">=5.0.9",
+    "@ts-morph/common": {
+      "brace-expansion": "1.1.18"
     }
   }
 }
