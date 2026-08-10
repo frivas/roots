@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';

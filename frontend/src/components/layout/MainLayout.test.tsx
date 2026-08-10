@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 const mockUseUser = vi.fn();
 const mockSidebar = vi.fn(({ userRoles, hideBottomBorder }: { userRoles: string[]; hideBottomBorder: boolean }) => (
@@ -68,8 +68,8 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
   return {
     ...actual,
     useLocation: vi.fn(() => ({ pathname: '/home' })),
@@ -78,7 +78,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 import MainLayout from './MainLayout';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 describe('MainLayout', () => {
   beforeEach(() => {

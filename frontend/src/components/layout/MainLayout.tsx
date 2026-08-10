@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import SimpleHeader from './SimpleHeader';
 import ModernSidebar from './ModernSidebar';

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 // ── Page mocks (exact import paths from App.tsx) ────────────────────────────
 // NOTE: vi.mock factories are hoisted — do NOT reference outer variables.
@@ -59,7 +59,7 @@ vi.mock('./pages/ContributionDashboard', () => ({ default: () => <div data-testi
 // so nested routes actually render their page components.
 // Use a lazy import inside the factory to avoid ESLint no-require-imports.
 vi.mock('./components/layout/MainLayout', async () => {
-  const { Outlet: RouterOutlet } = await import('react-router-dom');
+  const { Outlet: RouterOutlet } = await import('react-router');
   return {
     default: () => <RouterOutlet />,
   };

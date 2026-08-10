@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import Button from '../../components/ui/Button';
 import TranslatedText from '../../components/TranslatedText';
 import { ArrowLeft } from 'lucide-react';

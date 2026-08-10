@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {
   BarChart,
   Bell,

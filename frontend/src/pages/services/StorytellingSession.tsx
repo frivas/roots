@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Image as ImageIcon, Download, Info } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
