@@ -37,7 +37,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.0.0",
-    "@vercel/node": "^5.9.0",
+    "@vercel/node": "^5.9.5",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.0",
     "tsx": "^4.22.4",
