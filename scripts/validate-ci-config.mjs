@@ -46,8 +46,14 @@ for (const script of [
   if (!rootPackage.scripts[script]) fail(`missing canonical root script: ${script}`);
 }
 if (rootPackage.devDependencies.knip !== '6.29.0') fail('Knip must be exactly pinned');
-if (frontendPackage.dependencies['react-router-dom'] !== '6.30.3') {
-  fail('react-router-dom must be exactly pinned to the compatible patched release');
+if (frontendPackage.dependencies['react-router-dom']) {
+  fail('react-router-dom must not be reintroduced -- it was migrated to react-router to close a CSRF advisory (GHSA, vulnerable range >=7.12.0 <8.3.0)');
+}
+const reactRouterVersion = frontendPackage.dependencies['react-router'];
+if (!reactRouterVersion) fail('react-router must be present as a direct dependency');
+const reactRouterMajor = Number(reactRouterVersion.replace(/^[^\d]*/, '').split('.')[0]);
+if (!(reactRouterMajor >= 8)) {
+  fail('react-router must be pinned at >=8.3.0 -- versions below that (including any 7.x) fall inside the patched CSRF advisory range');
 }
 
 if (

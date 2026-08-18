@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 vi.mock('../../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
@@ -20,8 +20,8 @@ vi.mock('../../services/SpanishTranslations', () => ({
   getSpanishTranslation: vi.fn((text: string) => text),
 }));
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
   return {
     ...actual,
     useLocation: vi.fn(() => ({ pathname: '/home' })),
@@ -34,7 +34,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 import Footer from './Footer';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 describe('Footer', () => {
   it('renders copyright with the current year', () => {

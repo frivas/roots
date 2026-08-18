@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import useTranslatedString from '../hooks/useTranslatedString';
 import { APP_ROUTES } from '../config/routes';
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import TranslatedText from '../components/TranslatedText';

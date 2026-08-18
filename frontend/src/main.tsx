@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { LingoTranslationProvider } from './contexts/LingoTranslationContext';
 import ClerkRuntimeBoundary from './components/ClerkRuntimeBoundary';
 import App from './App';

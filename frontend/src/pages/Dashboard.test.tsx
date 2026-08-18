@@ -4,7 +4,7 @@ import React from 'react';
 import { APP_ROUTES } from '../config/routes';
 
 const navigate = vi.fn();
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: () => navigate,
 }));
 vi.mock('../contexts/LingoTranslationContext', () => ({
