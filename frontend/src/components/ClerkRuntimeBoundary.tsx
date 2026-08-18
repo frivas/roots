@@ -1,6 +1,6 @@
 import { ClerkProvider } from '@clerk/clerk-react';
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { APP_ROUTES } from '../config/routes';
 import AuthLayout from './layout/AuthLayout';
 import ErrorBoundary from './ErrorBoundary';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router';
 import { cn } from '../../lib/utils';
 import TranslatedText from '../TranslatedText';
 import { getMenuItems, type Role } from '../../config/menuConfig';

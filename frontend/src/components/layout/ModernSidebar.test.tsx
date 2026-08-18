@@ -25,7 +25,7 @@ vi.mock('@clerk/clerk-react', () => ({
   useClerk: () => ({ signOut: mockSignOut }),
 }));
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string; className?: string }) => (
     <a href={to} {...rest}>
       {children}

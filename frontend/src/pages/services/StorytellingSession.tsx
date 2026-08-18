@@ -8,7 +8,7 @@ import React, {
 import { useAuth } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, Image as ImageIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import AiAccuracyNotice from '../../components/AiAccuracyNotice';
 import ElevenLabsWidget from '../../components/ElevenLabsWidget';
 import TranslatedText from '../../components/TranslatedText';
