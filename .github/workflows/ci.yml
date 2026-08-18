@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   lint-typecheck:
@@ -134,3 +134,24 @@ jobs:
           name: playwright-report
           path: frontend/playwright-report/
           retention-days: 7
+
+  notify-portfolio-coverage:
+    name: Notify Portfolio coverage
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.PORTFOLIO_COVERAGE_DISPATCH_ENABLED == 'true'
+    needs: [lint-typecheck, tooling, unit-tests, build, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Dispatch exact green main SHA
+        env:
+          GH_TOKEN: ${{ secrets.PORTFOLIO_DISPATCH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::PORTFOLIO_DISPATCH_TOKEN is not configured; the hourly Portfolio fallback remains active."
+            exit 0
+          fi
+          gh api --method POST repos/juan294/portfolio/dispatches \
+            -f event_type=roots-coverage-ready \
+            -F "client_payload[roots_sha]=${GITHUB_SHA}"
