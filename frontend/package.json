@@ -36,8 +36,8 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@clerk/backend": "^3.16.5",
-    "@clerk/testing": "^2.2.23",
+    "@clerk/backend": "^3.16.10",
+    "@clerk/testing": "^2.2.28",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.3.1",

@@ -26,7 +26,7 @@
     "node": ">=22.22.2 <23"
   },
   "dependencies": {
-    "@clerk/fastify": "^3.1.66",
+    "@clerk/fastify": "^3.1.71",
     "@fastify/cors": "^11.2.0",
     "@fastify/rate-limit": "^11.1.0",
     "@supabase/supabase-js": "^2.112.3",
