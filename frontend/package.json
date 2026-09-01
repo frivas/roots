@@ -29,7 +29,7 @@
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.0",
     "framer-motion": "^12.40.0",
-    "lucide-react": "^1.33.0",
+    "lucide-react": "^1.35.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^8.3.0",
