@@ -26,23 +26,23 @@
     "node": ">=22.22.2 <23"
   },
   "dependencies": {
-    "@clerk/fastify": "^3.1.66",
+    "@clerk/fastify": "^3.1.71",
     "@fastify/cors": "^11.2.0",
     "@fastify/rate-limit": "^11.1.0",
     "@supabase/supabase-js": "^2.112.3",
-    "@vercel/functions": "3.8.0",
-    "fastify": "^5.11.2",
+    "@vercel/functions": "3.9.5",
+    "fastify": "^5.12.1",
     "openai": "^7.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.0.0",
-    "@vercel/node": "^5.10.0",
+    "@vercel/node": "^5.10.2",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.1",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }
