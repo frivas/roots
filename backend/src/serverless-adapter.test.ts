@@ -67,4 +67,16 @@ describe('Vercel serverless adapter', () => {
       response,
     );
   });
+
+  it('shares one in-flight application build across concurrent cold starts', async () => {
+    const adapter = await import('./serverless-app.js');
+    const harness = createInMemoryBackendDependencies();
+
+    const [first, second] = await Promise.all([
+      adapter.getServerlessApp({ dependencies: harness.dependencies }),
+      adapter.getServerlessApp({ dependencies: harness.dependencies }),
+    ]);
+
+    expect(first).toBe(second);
+  });
 });

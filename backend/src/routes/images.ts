@@ -47,7 +47,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
       }
       const job = await enqueueIllustration(
         options.dependencies,
-        fastify.log,
+        request.log,
         {
           access: {
             userId: identity.userId,
@@ -64,7 +64,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         statusUrl: `/api/images/jobs/${job.id}`,
       });
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   };
 
@@ -98,7 +98,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         const identity = getRequestIdentity(request);
         const service = await createIllustrationService(
           options.dependencies,
-          fastify.log,
+          request.log,
           {
             userId: identity.userId,
             getToken: identity.getToken,
@@ -111,7 +111,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return publicJob(job);
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -135,7 +135,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         const identity = getRequestIdentity(request);
         const service = await createIllustrationService(
           options.dependencies,
-          fastify.log,
+          request.log,
           {
             userId: identity.userId,
             getToken: identity.getToken,
@@ -148,7 +148,7 @@ const imagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return reply.code(202).send(publicJob(job));
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );

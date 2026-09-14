@@ -404,6 +404,7 @@ export const createInMemoryBackendDependencies = (
     },
   };
   const dependencies: BackendDependencies = {
+    mode: 'connected',
     repositories,
     illustrationProvider: new OpenAIImageProvider(async () => new OpenAI()),
     scheduler(task) {
@@ -414,9 +415,9 @@ export const createInMemoryBackendDependencies = (
         return {
           ready: true,
           checks: {
-            clerk: 'ok',
-            openai: 'ok',
-            supabase: 'ok',
+            clerk: 'configured',
+            openai: 'configured',
+            supabase: 'available',
           },
         };
       },

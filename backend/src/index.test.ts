@@ -9,7 +9,7 @@ vi.mock('@clerk/fastify', () => ({
   })),
 }));
 
-import { buildServer, validateEnv } from './index.js';
+import { buildServer, getRuntimeMode, validateEnv } from './index.js';
 import { createInMemoryBackendDependencies } from './test/inMemoryBackend.js';
 
 afterEach(() => {
@@ -25,10 +25,50 @@ describe('buildServer', () => {
 
     expect(
       (await app.inject({ method: 'GET', url: '/health' })).json(),
-    ).toEqual({ status: 'ok', releaseSha });
+    ).toEqual({ status: 'ok', mode: 'connected', releaseSha });
     expect(
       (await app.inject({ method: 'GET', url: '/ready' })).json(),
     ).toMatchObject({ status: 'ready' });
+  });
+
+  it('defaults production configuration to honest demo mode', () => {
+    expect(getRuntimeMode({} as NodeJS.ProcessEnv)).toBe('demo');
+    expect(
+      getRuntimeMode({ ROOTS_BACKEND_MODE: 'connected' } as NodeJS.ProcessEnv),
+    ).toBe('connected');
+    expect(() =>
+      getRuntimeMode({ ROOTS_BACKEND_MODE: 'invalid' } as NodeJS.ProcessEnv),
+    ).toThrow('ROOTS_BACKEND_MODE must be demo or connected');
+  });
+
+  it('does not require data or paid-provider configuration in demo mode', () => {
+    const env = {
+      NODE_ENV: 'production',
+      RELEASE_SHA: 'a'.repeat(40),
+      CLERK_PUBLISHABLE_KEY: 'pk_test',
+      CLERK_SECRET_KEY: 'sk_test',
+      FRONTEND_URL: 'https://frontend.test',
+    } as NodeJS.ProcessEnv;
+
+    expect(() => validateEnv(env)).not.toThrow();
+    expect(() =>
+      validateEnv({ ...env, ROOTS_BACKEND_MODE: 'connected' }),
+    ).toThrow('Missing required environment variable: SUPABASE_URL');
+  });
+
+  it('returns a generated correlation ID without trusting inbound IDs', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const response = await app.inject({
+      method: 'GET',
+      url: '/health',
+      headers: { 'x-request-id': 'attacker-controlled' },
+    });
+
+    expect(response.headers['x-request-id']).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+    expect(response.headers['x-request-id']).not.toBe('attacker-controlled');
   });
 
   it('does not expose removed diagnostic endpoints', async () => {

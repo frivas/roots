@@ -5,14 +5,21 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-let app: Awaited<ReturnType<typeof buildServer>> | null = null;
+let appPromise: Promise<Awaited<ReturnType<typeof buildServer>>> | null = null;
 
 export const getServerlessApp = async (options: BuildServerOptions = {}) => {
-  if (!app) {
-    app = await buildServer(options);
-    await app.ready();
+  if (!appPromise) {
+    appPromise = buildServer(options)
+      .then(async (app) => {
+        await app.ready();
+        return app;
+      })
+      .catch((error) => {
+        appPromise = null;
+        throw error;
+      });
   }
-  return app;
+  return appPromise;
 };
 
 export const dispatchServerlessRequest = async (
@@ -47,7 +54,8 @@ export const dispatchServerlessRequest = async (
   });
 
 export const resetServerlessAppForTests = async () => {
-  const existing = app;
-  app = null;
-  await existing?.close();
+  const existing = appPromise;
+  appPromise = null;
+  const app = await existing?.catch(() => null);
+  await app?.close();
 };

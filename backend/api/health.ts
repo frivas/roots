@@ -1,7 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getReleaseSha } from '../src/lib/release-identity.js';
+import { getRuntimeMode } from '../src/lib/runtime-mode.js';
+import { randomUUID } from 'node:crypto';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('x-request-id', randomUUID());
   const origin = req.headers.origin;
   if (origin && origin === process.env.FRONTEND_URL) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -22,8 +25,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const releaseSha = getReleaseSha();
+    const mode = getRuntimeMode();
     res.setHeader('x-release-sha', releaseSha);
-    res.status(200).json({ status: 'ok', releaseSha });
+    res.setHeader('x-roots-mode', mode);
+    res.status(200).json({ status: 'ok', mode, releaseSha });
   } catch {
     res.status(503).json({ status: 'unavailable' });
   }

@@ -15,7 +15,7 @@ const settingsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
       const { repository } = await getDataRepository(request, options);
       return await repository.getSettings();
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   });
 
@@ -49,7 +49,7 @@ const settingsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
           data: updated,
         };
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -64,7 +64,7 @@ const settingsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         data: settings,
       };
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   });
 };

@@ -2,14 +2,18 @@ import { clerkPlugin } from '@clerk/fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import Fastify from 'fastify';
+import { randomUUID } from 'node:crypto';
 import {
   createDefaultDependencies,
+  createDemoDependencies,
   enqueueIllustration,
   type BackendDependencies,
 } from './dependencies.js';
 import { verifyElevenLabsWebhook } from './lib/elevenlabs-webhook.js';
 import { safeErrorMetadata, sendPublicError } from './lib/http.js';
 import { getReleaseSha } from './lib/release-identity.js';
+import { getRuntimeMode } from './lib/runtime-mode.js';
+export { getRuntimeMode } from './lib/runtime-mode.js';
 import authRoutes from './routes/auth.js';
 import imagesRoutes from './routes/images.js';
 import messagesRoutes from './routes/messages.js';
@@ -47,7 +51,7 @@ export const validateEnv = (
   required(env, 'CLERK_SECRET_KEY');
   required(env, 'FRONTEND_URL');
 
-  if (!injectedDependencies) {
+  if (!injectedDependencies && getRuntimeMode(env) === 'connected') {
     required(env, 'SUPABASE_URL');
     if (!env.SUPABASE_PUBLISHABLE_KEY && !env.SUPABASE_API_KEY) {
       throw new Error(
@@ -67,10 +71,22 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
     injectedDependencies: options.dependencies !== undefined,
   });
   const server = Fastify({
+    genReqId: () => randomUUID(),
     logger:
       process.env.NODE_ENV === 'test'
         ? false
-        : { level: process.env.LOG_LEVEL ?? 'info' },
+        : {
+            level: process.env.LOG_LEVEL ?? 'info',
+            redact: {
+              paths: [
+                'req.headers.authorization',
+                'req.headers.cookie',
+                'req.headers.elevenlabs-signature',
+                'res.headers.set-cookie',
+              ],
+              censor: '[REDACTED]',
+            },
+          },
     bodyLimit: 64 * 1024,
     ajv: {
       customOptions: {
@@ -78,8 +94,18 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
       },
     },
   });
-  const dependencies = options.dependencies ?? createDefaultDependencies();
+  const dependencies =
+    options.dependencies ??
+    (getRuntimeMode() === 'demo'
+      ? createDemoDependencies()
+      : createDefaultDependencies());
   const releaseSha = getReleaseSha();
+
+  server.addHook('onSend', async (request, reply, payload) => {
+    reply.header('x-request-id', request.id);
+    reply.header('x-roots-mode', dependencies.mode);
+    return payload;
+  });
 
   server.removeContentTypeParser('application/json');
   server.addContentTypeParser(
@@ -118,14 +144,14 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
   server.setErrorHandler((error: Error & {
     statusCode?: number;
     validation?: unknown;
-  }, _request, reply) => {
+  }, request, reply) => {
     if (error.validation || error.message === 'INVALID_JSON') {
       return reply.code(400).send({ error: 'VALIDATION_FAILED' });
     }
     if (error.statusCode === 429) {
       return reply.code(429).send({ error: 'RATE_LIMITED' });
     }
-    server.log.error(safeErrorMetadata(error), 'unhandled request failure');
+    request.log.error(safeErrorMetadata(error), 'unhandled request failure');
     return reply.code(500).send({ error: 'INTERNAL_ERROR' });
   });
   server.setNotFoundHandler((_request, reply) =>
@@ -135,12 +161,13 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
   server.get('/health', async (_request, reply) =>
     reply
       .header('x-release-sha', releaseSha)
-      .send({ status: 'ok', releaseSha }),
+      .send({ status: 'ok', mode: dependencies.mode, releaseSha }),
   );
   server.get('/ready', async (_request, reply) => {
     const result = await dependencies.readiness.check();
     return reply.code(result.ready ? 200 : 503).send({
       status: result.ready ? 'ready' : 'not_ready',
+      mode: dependencies.mode,
       checks: result.checks,
     });
   });
@@ -180,7 +207,7 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
           status: job.status,
         });
       } catch (error) {
-        return sendPublicError(reply, server.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );

@@ -50,8 +50,8 @@ describe('security remediation contracts', () => {
         return {
           ready: false,
           checks: {
-            clerk: 'ok',
-            openai: 'ok',
+            clerk: 'configured',
+            openai: 'configured',
             supabase: 'unavailable',
           },
         };
@@ -63,13 +63,18 @@ describe('security remediation contracts', () => {
     const ready = await app.inject({ method: 'GET', url: '/ready' });
 
     expect(live.statusCode).toBe(200);
-    expect(live.json()).toEqual({ status: 'ok', releaseSha });
+    expect(live.json()).toEqual({
+      status: 'ok',
+      mode: 'connected',
+      releaseSha,
+    });
     expect(ready.statusCode).toBe(503);
     expect(ready.json()).toEqual({
       status: 'not_ready',
+      mode: 'connected',
       checks: {
-        clerk: 'ok',
-        openai: 'ok',
+        clerk: 'configured',
+        openai: 'configured',
         supabase: 'unavailable',
       },
     });

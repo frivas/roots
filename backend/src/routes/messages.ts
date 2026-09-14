@@ -37,7 +37,7 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
           pageRequest.limit,
         );
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -55,7 +55,7 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return message;
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -93,7 +93,7 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
           data: message,
         });
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -110,7 +110,7 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return { success: true, message: 'Message marked as read' };
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -127,7 +127,7 @@ const messagesRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return { success: true, message: 'Message deleted successfully' };
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
