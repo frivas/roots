@@ -319,11 +319,11 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('My Data');
   });
 
-  it('keeps the signed-in shell around unknown protected destinations', async () => {
+  it('renders unknown destinations without requiring the signed-in shell', async () => {
     renderAt('/unknown-protected-destination');
 
     expect(await screen.findByTestId('page-NotFound')).toBeInTheDocument();
-    expect(screen.getByTestId('signed-in-shell')).toBeInTheDocument();
+    expect(screen.queryByTestId('signed-in-shell')).not.toBeInTheDocument();
   });
 });
 
