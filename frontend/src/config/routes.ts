@@ -46,8 +46,9 @@ export const APP_ROUTES = {
   calendarCreate: '/calendar/create',
   dataPersonal: '/data/personal',
   dataPassword: '/data/password',
-  dataContributions: '/data/contributions',
   privacyPolicy: '/privacy-policy',
+  termsOfService: '/terms-of-service',
+  cookiesPolicy: '/cookies-policy',
   signIn: '/signin',
 } as const;
 

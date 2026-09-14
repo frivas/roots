@@ -64,6 +64,10 @@ const renderProvider = (language?: string) => {
 };
 
 describe('LingoTranslationProvider', () => {
+  it('updates the document language for assistive technology', async () => {
+    renderProvider('es-ES');
+    await waitFor(() => expect(document.documentElement.lang).toBe('es'));
+  });
   beforeEach(() => {
     window.localStorage.clear();
     mockServiceTranslateText.mockReset();

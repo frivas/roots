@@ -96,4 +96,14 @@ describe('AuthLayout', () => {
 
     expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeInTheDocument();
   });
+
+  it('does not render scaffolding attribution', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <AuthLayout><div>Child</div></AuthLayout>
+      </MemoryRouter>
+    );
+
+    expect(container.querySelector('#bolt-button')).not.toBeInTheDocument();
+  });
 });

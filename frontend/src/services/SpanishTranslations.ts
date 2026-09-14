@@ -26,6 +26,20 @@ export const spanishTranslations: Record<string, string> = {
   "Sign out": "Cerrar sesión",
   "Open main menu": "Abrir menú principal",
   "Raíces": "Raíces",
+  "Demo Mode:": "Modo de demostración:",
+  "Sample school records are for demonstration only. Changes are not saved.": "Los datos escolares de ejemplo son solo una demostración. Los cambios no se guardan.",
+  "Terms of Service": "Términos del servicio",
+  "Cookie Policy": "Política de cookies",
+  "Raíces is currently a demonstration. Sample records are fictional and changes are not saved.": "Raíces es actualmente una demostración. Los datos de ejemplo son ficticios y los cambios no se guardan.",
+  "Acceptable use": "Uso aceptable",
+  "Use the service only for lawful educational evaluation. Do not enter real student or family information.": "Utilice el servicio solo para una evaluación educativa lícita. No introduzca información real de estudiantes ni familias.",
+  "AI services": "Servicios de IA",
+  "AI-generated content may contain inaccuracies. Verify important information with a teacher or school.": "El contenido generado por IA puede contener errores. Verifique la información importante con un docente o con el centro.",
+  "Raíces uses essential browser storage to keep authentication and language preferences working.": "Raíces utiliza almacenamiento esencial del navegador para mantener la autenticación y las preferencias de idioma.",
+  "Essential storage": "Almacenamiento esencial",
+  "Authentication providers may store session information. Raíces stores your selected language in this browser.": "Los proveedores de autenticación pueden guardar información de sesión. Raíces guarda el idioma seleccionado en este navegador.",
+  "Your choices": "Sus opciones",
+  "You can clear browser storage in your browser settings. Doing so may sign you out and reset your language.": "Puede borrar el almacenamiento desde la configuración del navegador. Esto puede cerrar su sesión y restablecer el idioma.",
 
   // Menu Items - Main Navigation
   "Tutoring": "Tutoría",
@@ -1297,8 +1311,6 @@ export const spanishTranslations: Record<string, string> = {
   "Understood": "Entendido",
   "This service uses artificial intelligence technology to provide interactive educational experiences. AI-generated content may contain inaccuracies. Use at your own discretion and verify important information independently.": "Este servicio utiliza tecnología de inteligencia artificial para proporcionar experiencias educativas interactivas. El contenido generado por IA puede contener inexactitudes. Úselo bajo su propia discreción y verifique la información importante de forma independiente.",
   "This applies to all AI-powered services including voice conversations, story illustrations, and educational content.": "Esto se aplica a todos los servicios con IA incluyendo conversaciones de voz, ilustraciones de cuentos y contenido educativo.",
-  "Terms of Service": "Términos de Servicio",
-  "Cookie Policy": "Política de Cookies",
   "© 2025 Madrid Community. All rights reserved.": "© 2025 Comunidad de Madrid. Todos los derechos reservados.",
 
   // Story Illustration Feature

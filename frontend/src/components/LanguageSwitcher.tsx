@@ -3,7 +3,7 @@ import { useLocation } from 'react-router';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 const LanguageSwitcher: React.FC = () => {
-  const { language } = useLingoTranslation();
+  const { language, setLanguage } = useLingoTranslation();
   const location = useLocation();
 
   const handleLanguageChange = (newLanguage: string) => {
@@ -19,29 +19,29 @@ const LanguageSwitcher: React.FC = () => {
       localStorage.setItem('selectedLanguage', newLanguage);
     }
     
-    // Dispatch the language change event that the context listens for
-    window.dispatchEvent(new CustomEvent('languageChanged', {
-      detail: { language: newLanguage }
-    }));
+    setLanguage(newLanguage);
   };
-
-  const toggleLanguage = () => {
-    const newLang = language === 'en-US' ? 'es-ES' : 'en-US';
-    handleLanguageChange(newLang);
-  };
-  const targetLanguage = language === 'en-US' ? 'Spanish' : 'English';
 
   return (
-    <button
-      onClick={toggleLanguage}
-      className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-muted hover:text-foreground"
-      aria-label={`Change language to ${targetLanguage}`}
-      title={`Switch to ${targetLanguage}`}
-    >
-      <span className="font-semibold">
-        {language === 'es-ES' ? 'ES' : 'EN'}
-      </span>
-    </button>
+    <div className="inline-flex rounded-md border border-border bg-background p-0.5" role="group" aria-label={language === 'es-ES' ? 'Idioma' : 'Language'}>
+      {([
+        ['en-US', 'EN', language === 'es-ES' ? 'Usar inglés' : 'Use English'],
+        ['es-ES', 'ES', language === 'es-ES' ? 'Usar español' : 'Use Spanish'],
+      ] as const).map(([value, label, accessibleName]) => (
+        <button
+          key={value}
+          type="button"
+          onClick={() => handleLanguageChange(value)}
+          aria-label={accessibleName}
+          aria-pressed={language === value}
+          className={`min-h-9 rounded px-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            language === value ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
   );
 };
 

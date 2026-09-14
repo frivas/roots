@@ -19,16 +19,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
         <LanguageSwitcher />
       </div>
 
-      {/* Powered by Bolt New - Top Left - Show on all screens */}
-      <a
-        id="bolt-button"
-        href="https://bolt.new"
-        target="_blank"
-        title="Powered By Bolt"
-        className="absolute top-2 left-2 z-30 lg:top-4 lg:left-4"
-      >
-      </a>
-
       {/* Left side - Welcome content */}
       <div className="hidden lg:flex lg:w-1/2 bg-background flex-col justify-center px-12 py-24 relative">
 

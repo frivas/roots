@@ -14,6 +14,8 @@ vi.mock('./pages/Notifications', () => ({ default: () => <div data-testid="page-
 vi.mock('./pages/PersonalData', () => ({ default: () => <div data-testid="page-PersonalData">PersonalData</div> }));
 vi.mock('./pages/PasswordChange', () => ({ default: () => <div data-testid="page-PasswordChange">PasswordChange</div> }));
 vi.mock('./pages/PrivacyPolicy', () => ({ default: () => <div data-testid="page-PrivacyPolicy">PrivacyPolicy</div> }));
+vi.mock('./pages/TermsOfService', () => ({ default: () => <div data-testid="page-TermsOfService">TermsOfService</div> }));
+vi.mock('./pages/CookiePolicy', () => ({ default: () => <div data-testid="page-CookiePolicy">CookiePolicy</div> }));
 vi.mock('./pages/NotFound', () => ({ default: () => <div data-testid="page-NotFound">NotFound</div> }));
 
 // Service pages
@@ -310,9 +312,10 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-PasswordChange')).toBeInTheDocument();
   });
 
-  it('renders ContributionDashboard at /data/contributions', async () => {
+  it('does not expose the internal contribution dashboard route', async () => {
     renderAt('/data/contributions');
-    expect(await screen.findByTestId('page-ContributionDashboard')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-MyDataPlaceholder')).toBeInTheDocument();
+    expect(screen.queryByTestId('page-ContributionDashboard')).not.toBeInTheDocument();
   });
 
   it('renders MyDataPlaceholder for unknown /data/* paths', async () => {
@@ -361,6 +364,18 @@ describe('App routing — public routes', () => {
     expect(await screen.findByTestId('page-PrivacyPolicy')).toBeInTheDocument();
   });
 
+  it('renders TermsOfService at /terms-of-service', async () => {
+    clerkState.signedIn = false;
+    renderAt('/terms-of-service');
+    expect(await screen.findByTestId('page-TermsOfService')).toBeInTheDocument();
+  });
+
+  it('renders CookiePolicy at /cookies-policy', async () => {
+    clerkState.signedIn = false;
+    renderAt('/cookies-policy');
+    expect(await screen.findByTestId('page-CookiePolicy')).toBeInTheDocument();
+  });
+
   it('renders NotFound for unknown path', async () => {
     renderAt('/does-not-exist-xyz');
     expect(await screen.findByTestId('page-NotFound')).toBeInTheDocument();
@@ -381,6 +396,11 @@ describe('App routing — deterministic auth states', () => {
     renderAt('/auth/register');
 
     expect(await screen.findByTestId('clerk-wrapper')).toBeInTheDocument();
+  });
+
+  it('redirects signed-in users away from auth routes', async () => {
+    renderAt('/auth/login');
+    expect(await screen.findByTestId('page-Dashboard')).toBeInTheDocument();
   });
 
   it('does not expose protected page content to a signed-out visitor', async () => {

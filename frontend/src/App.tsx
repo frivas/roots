@@ -24,6 +24,8 @@ const Notifications = lazy(() => import('./pages/Notifications'));
 const PersonalData = lazy(() => import('./pages/PersonalData'));
 const PasswordChange = lazy(() => import('./pages/PasswordChange'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Service Pages
@@ -60,7 +62,6 @@ const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 const SchoolElections = lazy(() => import('./pages/SchoolElections'));
 const PersonalCalendar = lazy(() => import('./pages/PersonalCalendar'));
 const Bulletin = lazy(() => import('./pages/Bulletin'));
-const ContributionDashboard = lazy(() => import('./pages/ContributionDashboard'));
 
 // Loading component with better UX
 const Loading = () => (
@@ -89,30 +90,28 @@ function App() {
           <Route
             path={APP_ROUTES.authLogin}
             element={
-              <SignedOut>
-                <AuthLayout>
-                  <ClerkAuthWrapper
-                    type="signIn"
-                    routing="virtual"
-                    forceRedirectUrl={APP_ROUTES.home}
-                  />
-                </AuthLayout>
-              </SignedOut>
+              <>
+                <SignedIn><Navigate to={APP_ROUTES.home} replace /></SignedIn>
+                <SignedOut>
+                  <AuthLayout>
+                    <ClerkAuthWrapper type="signIn" routing="virtual" forceRedirectUrl={APP_ROUTES.home} />
+                  </AuthLayout>
+                </SignedOut>
+              </>
             }
           />
 
           <Route
             path={APP_ROUTES.authRegister}
             element={
-              <SignedOut>
-                <AuthLayout>
-                  <ClerkAuthWrapper
-                    type="signUp"
-                    routing="virtual"
-                    forceRedirectUrl={APP_ROUTES.home}
-                  />
-                </AuthLayout>
-              </SignedOut>
+              <>
+                <SignedIn><Navigate to={APP_ROUTES.home} replace /></SignedIn>
+                <SignedOut>
+                  <AuthLayout>
+                    <ClerkAuthWrapper type="signUp" routing="virtual" forceRedirectUrl={APP_ROUTES.home} />
+                  </AuthLayout>
+                </SignedOut>
+              </>
             }
           />
 
@@ -336,11 +335,6 @@ function App() {
                 <PasswordChange />
               </Suspense>
             } />
-            <Route path={APP_ROUTES.dataContributions} element={
-              <Suspense fallback={<PageLoader />}>
-                <ContributionDashboard />
-              </Suspense>
-            } />
             <Route path="/data/*" element={
               <Suspense fallback={<PageLoader />}>
                 <MyDataPlaceholder />
@@ -363,6 +357,8 @@ function App() {
               </Suspense>
             }
           />
+          <Route path={APP_ROUTES.termsOfService} element={<TermsOfService />} />
+          <Route path={APP_ROUTES.cookiesPolicy} element={<CookiePolicy />} />
 
           {/* Catch unauthenticated users */}
           <Route

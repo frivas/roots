@@ -4,6 +4,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router';
 
 const navigateSpy = vi.fn();
+const locationState = vi.hoisted(() => ({ pathname: '/home' }));
 
 vi.mock('@clerk/clerk-react', () => ({
   useAuth: vi.fn(() => ({
@@ -23,7 +24,7 @@ vi.mock('@clerk/clerk-react', () => ({
 vi.mock('react-router', async (orig) => ({
   ...(await orig<typeof import('react-router')>()),
   useNavigate: () => navigateSpy,
-  useLocation: () => ({ pathname: '/home' }),
+  useLocation: () => locationState,
 }));
 
 import { AuthProvider, useAuth } from './AuthContext';
@@ -40,6 +41,7 @@ describe('AuthProvider', () => {
   beforeEach(() => {
     navigateSpy.mockReset();
     window.localStorage.clear();
+    locationState.pathname = '/home';
     vi.mocked(useClerkAuth).mockReturnValue({
       isLoaded: true,
       isSignedIn: true,
@@ -72,6 +74,21 @@ describe('AuthProvider', () => {
     renderAuthProvider();
     await waitFor(() => expect(navigateSpy).toHaveBeenCalledWith('/auth/login'));
   });
+
+  it.each(['/privacy-policy', '/terms-of-service', '/cookies-policy'])(
+    'keeps public route %s reachable while signed out',
+    async (pathname) => {
+      locationState.pathname = pathname;
+      vi.mocked(useClerkAuth).mockReturnValue({
+        isLoaded: true,
+        isSignedIn: false,
+        getToken: vi.fn(async () => null),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+      renderAuthProvider();
+      await waitFor(() => expect(navigateSpy).not.toHaveBeenCalled());
+    },
+  );
 
   it('dispatches languageChanged after 500ms when authSelectedLanguage is set', async () => {
     window.localStorage.setItem('authSelectedLanguage', 'es-ES');

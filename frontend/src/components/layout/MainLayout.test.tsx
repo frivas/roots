@@ -34,6 +34,12 @@ vi.mock('@clerk/clerk-react', () => ({
 vi.mock('./SimpleHeader', () => ({
   default: () => <div data-testid="simple-header" />,
 }));
+vi.mock('../LanguageSwitcher', () => ({
+  default: () => <button data-testid="language-switcher">language</button>,
+}));
+vi.mock('../DemoModeNotice', () => ({
+  default: () => <div data-testid="demo-mode-notice" />,
+}));
 
 vi.mock('./ModernSidebar', () => ({
   default: (props: { userRoles: string[]; hideBottomBorder: boolean }) => mockSidebar(props),
@@ -134,7 +140,7 @@ describe('MainLayout', () => {
     expect(screen.getByTestId('footer')).toBeInTheDocument();
   });
 
-  it('hides footer on ElevenLabs agent paths like /services/storytelling-session', () => {
+  it('keeps the legal footer reachable on ElevenLabs agent paths', () => {
     vi.mocked(useLocation).mockReturnValueOnce({
       pathname: '/services/storytelling-session',
       search: '',
@@ -149,7 +155,18 @@ describe('MainLayout', () => {
       </MemoryRouter>
     );
 
-    expect(screen.queryByTestId('footer')).not.toBeInTheDocument();
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+  });
+
+  it('keeps Demo Mode and language controls visible in the signed-in shell', () => {
+    render(
+      <MemoryRouter>
+        <MainLayout />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('demo-mode-notice')).toBeInTheDocument();
+    expect(screen.getByTestId('language-switcher')).toBeInTheDocument();
   });
 
   it('passes filtered user roles to the sidebar and hides the border on agent pages', () => {

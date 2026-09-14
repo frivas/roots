@@ -10,6 +10,8 @@ import { cn } from '../../lib/utils';
 import { useUser } from '@clerk/clerk-react';
 import { type Role } from '../../config/menuConfig';
 import { APP_ROUTES } from '../../config/routes';
+import LanguageSwitcher from '../LanguageSwitcher';
+import DemoModeNotice from '../DemoModeNotice';
 
 const MainLayout: React.FC = () => {
   const { user, isLoaded } = useUser();
@@ -54,6 +56,7 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      <DemoModeNotice />
       {/* Mobile Header */}
       <div className="md:hidden flex-shrink-0">
         <SimpleHeader />
@@ -68,13 +71,16 @@ const MainLayout: React.FC = () => {
 
         {/* Main Content - Takes remaining width and matches sidebar height */}
         <div className="flex-1 flex flex-col min-h-0">
+          <div className="hidden md:flex h-12 shrink-0 items-center justify-end border-b border-border px-6">
+            <LanguageSwitcher />
+          </div>
           {/* Content Area - Takes available space */}
           <div className={cn(
             "flex-1 overflow-auto",
             "p-6 pt-0 md:pt-6", // No top padding on mobile (header handles it)
             hasElevenLabsAgent ? "pb-6" : "pb-0" // Add bottom padding when no footer
           )}>
-            <ErrorBoundary>
+            <ErrorBoundary key={location.pathname}>
               <RouteWrapper>
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -93,12 +99,9 @@ const MainLayout: React.FC = () => {
             </ErrorBoundary>
           </div>
 
-          {/* Footer - Only render when not on ElevenLabs agent pages */}
-          {!hasElevenLabsAgent && (
-            <div className="flex-shrink-0 border-t bg-background px-6 py-4">
-              <Footer />
-            </div>
-          )}
+          <div className="flex-shrink-0 border-t bg-background px-6 py-4">
+            <Footer />
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,30 @@ import { APP_ROUTES } from '../config/routes';
 import AuthLayout from './layout/AuthLayout';
 import ErrorBoundary from './ErrorBoundary';
 import TranslatedText from './TranslatedText';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
+
+const spanishClerkLocalization = {
+  signIn: {
+    start: {
+      title: 'Iniciar sesión',
+      subtitle: 'para continuar a Raíces',
+      actionText: '¿No tiene una cuenta?',
+      actionLink: 'Crear cuenta',
+    },
+  },
+  signUp: {
+    start: {
+      title: 'Crear cuenta',
+      subtitle: 'para continuar a Raíces',
+      actionText: '¿Ya tiene una cuenta?',
+      actionLink: 'Iniciar sesión',
+    },
+  },
+  formFieldLabel__emailAddress: 'Correo electrónico',
+  formFieldLabel__password: 'Contraseña',
+  formButtonPrimary: 'Continuar',
+  dividerText: 'o',
+} as const;
 
 const ClerkUnavailable = () => {
   const { pathname } = useLocation();
@@ -46,12 +70,19 @@ interface ClerkRuntimeBoundaryProps {
 const ClerkRuntimeBoundary = ({
   children,
   publishableKey,
-}: ClerkRuntimeBoundaryProps) => (
-  <ErrorBoundary fallback={<ClerkUnavailable />}>
-    <ClerkProvider publishableKey={publishableKey}>
-      {children}
-    </ClerkProvider>
-  </ErrorBoundary>
-);
+}: ClerkRuntimeBoundaryProps) => {
+  const { language } = useLingoTranslation();
+
+  return (
+    <ErrorBoundary fallback={<ClerkUnavailable />}>
+      <ClerkProvider
+        publishableKey={publishableKey}
+        localization={language === 'es-ES' ? spanishClerkLocalization : undefined}
+      >
+        {children}
+      </ClerkProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default ClerkRuntimeBoundary;

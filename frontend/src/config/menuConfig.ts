@@ -19,11 +19,9 @@ import {
     MessageSquare,
     Newspaper,
     CreditCard,
-    Key,
-    BarChart3
+    Key
 } from 'lucide-react';
 
-import { GitHubContributorsService } from '../services/GitHubContributorsService';
 import { APP_ROUTES, type AppRoute } from './routes';
 
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
@@ -35,7 +33,6 @@ export interface MenuItem {
     children?: MenuItem[];
     roles?: Role[]; // If undefined, item is visible to all roles
     permissions?: string[]; // For fine-grained access control
-    restrictedEmails?: string[]; // For email-based access control
 }
 
 // Common menu items visible to all roles
@@ -157,12 +154,6 @@ const commonMenuItems: MenuItem[] = [
                 name: 'Password change',
                 href: APP_ROUTES.dataPassword,
                 icon: Key
-            },
-            {
-                name: 'Developer Contribution',
-                href: APP_ROUTES.dataContributions,
-                icon: BarChart3,
-                restrictedEmails: GitHubContributorsService.getAllContributorEmails()
             }
         ]
     }
@@ -171,15 +162,10 @@ const commonMenuItems: MenuItem[] = [
 // Function to get menu items based on user roles and email
 export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuItem[] => {
     void userRoles;
-    // Start with common menu items and filter based on email access
+    void userEmail;
     const menuItems: MenuItem[] = commonMenuItems.map(item => ({
         ...item,
-        children: item.children?.filter(child => {
-                if (child.restrictedEmails && userEmail) {
-                    return child.restrictedEmails.includes(userEmail);
-                }
-                return !child.restrictedEmails; // Show items without restrictions
-            })
+        children: item.children
     }));
 
     return menuItems;
