@@ -4,7 +4,7 @@ import TranslatedText from './TranslatedText';
 import Button from './ui/Button';
 import StatusState from './ui/StatusState';
 
-export interface WidgetLabels {
+interface WidgetLabels {
   actionText: string;
   startCall: string;
   endCall: string;

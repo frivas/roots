@@ -52,7 +52,6 @@ vi.mock('./pages/SchoolCalendar', () => ({ default: () => <div data-testid="page
 vi.mock('./pages/SchoolElections', () => ({ default: () => <div data-testid="page-SchoolElections">SchoolElections</div> }));
 vi.mock('./pages/PersonalCalendar', () => ({ default: () => <div data-testid="page-PersonalCalendar">PersonalCalendar</div> }));
 vi.mock('./pages/Bulletin', () => ({ default: () => <div data-testid="page-Bulletin">Bulletin</div> }));
-vi.mock('./pages/ContributionDashboard', () => ({ default: () => <div data-testid="page-ContributionDashboard">ContributionDashboard</div> }));
 
 // ── Layout mocks ─────────────────────────────────────────────────────────────
 // MainLayout wraps protected child routes via <Outlet /> — must render Outlet
@@ -313,7 +312,6 @@ describe('App routing — protected routes (signed in)', () => {
   it('does not expose the internal contribution dashboard route', async () => {
     renderAt('/data/contributions');
     expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('My Data');
-    expect(screen.queryByTestId('page-ContributionDashboard')).not.toBeInTheDocument();
   });
 
   it('renders the shared section placeholder for unknown /data/* paths', async () => {

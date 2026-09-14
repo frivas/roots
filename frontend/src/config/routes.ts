@@ -142,7 +142,7 @@ export const AI_SERVICE_ROUTES = PROTECTED_PAGE_ROUTES
 const normalizePath = (path: string) => path.length > 1 ? path.replace(/\/+$/, '') : path;
 const routePrefix = (path: string) => normalizePath(path).replace(/\/:[^/]+/g, '').replace(/\/\*$/, '');
 
-export const routeMatchesPath = (pathname: string, route: string) => {
+const routeMatchesPath = (pathname: string, route: string) => {
   const current = normalizePath(pathname);
   const prefix = routePrefix(route);
   return current === prefix || current.startsWith(`${prefix}/`);
