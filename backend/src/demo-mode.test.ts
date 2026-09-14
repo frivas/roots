@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@clerk/fastify', () => ({
   clerkPlugin: async () => {},
@@ -17,6 +17,8 @@ import {
 } from './repositories/demo-repository.js';
 
 describe('demo backend mode', () => {
+  afterEach(() => vi.unstubAllEnvs());
+
   it('selects demo dependencies by default', async () => {
     const app = await buildServer();
     const response = await app.inject({ method: 'GET', url: '/ready' });
@@ -29,6 +31,9 @@ describe('demo backend mode', () => {
   });
 
   it('reports disabled external dependencies without probing them', async () => {
+    vi.stubEnv('RELEASE_SHA', '');
+    vi.stubEnv('VERCEL_GIT_COMMIT_SHA', '');
+    vi.stubEnv('GITHUB_SHA', '');
     const dependencies = createDemoDependencies();
     const app = await buildServer({ dependencies });
 
