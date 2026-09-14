@@ -11,9 +11,6 @@ const mockServiceTranslateText = vi.fn(async (text: string, language: string) =>
 vi.mock('../services/LingoTranslationService', () => ({
   lingoTranslationService: {
     translateText: (text: string, language: string) => mockServiceTranslateText(text, language),
-    clearCache: vi.fn(),
-    preloadCommonTranslations: vi.fn(async () => {}),
-    getStats: vi.fn(() => ({ cacheSize: 0, localTranslationsCount: 0 })),
   },
 }));
 

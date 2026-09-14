@@ -1,10 +1,1 @@
-[
-  "pages/ContributionDashboard.tsx|>Access Denied<",
-  "pages/ContributionDashboard.tsx|<h2>Access Denied</h2>",
-  "pages/PasswordChange.tsx|alert('Password updated successfully')",
-  "pages/PersonalCalendar.tsx|alert('Por favor, completa al menos el título y la fecha de inicio.')",
-  "pages/PersonalData.tsx|alert('Notification settings saved')",
-  "pages/PersonalData.tsx|alert('Profile settings saved')",
-  "pages/TutorInfo.tsx|<h2>{tutor.name}</h2>",
-  "pages/Messages.tsx|<h2>{selectedMessage.subject}</h2>"
-]
+[]

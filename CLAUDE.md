@@ -23,7 +23,7 @@ Use /clear between tasks, /compact when context is heavy.
 - **Database**: Supabase (PostgreSQL)
 - **Auth**: Clerk (frontend `@clerk/clerk-react`, backend `@clerk/fastify`)
 - **AI Services**: OpenAI DALL-E 3 (image generation), ElevenLabs (conversational AI)
-- **Translation**: Hybrid system (local Spanish dictionary + Lingo.dev SDK + caching)
+- **Translation**: Checked-in Spanish dictionary loaded lazily when Spanish text is requested
 
 ## Monorepo Structure
 
@@ -79,11 +79,14 @@ VITE_BACKEND_URL=http://localhost:3000
 ```
 PORT=3000
 NODE_ENV=development
+ROOTS_BACKEND_MODE=demo
 CLERK_PUBLISHABLE_KEY=...
 CLERK_SECRET_KEY=...
 SUPABASE_URL=...
-SUPABASE_API_KEY=...               # Supabase anon key
+SUPABASE_PUBLISHABLE_KEY=...       # Supabase user-request key
+SUPABASE_SECRET_KEY=...            # Server-only trusted-operation key
 OPENAI_API_KEY=...                 # For DALL-E 3 image generation
+ELEVENLABS_WEBHOOK_SECRET=...      # Verifies signed ElevenLabs webhook requests
 FRONTEND_URL=http://localhost:5173 # For CORS
 ```
 
@@ -136,7 +139,7 @@ Public endpoints:
 - **Supabase**: PostgreSQL database accessed via `@supabase/supabase-js` in backend routes.
 - **OpenAI DALL-E 3**: Generates children's book-style illustrations during storytelling sessions. Called from webhook handler + image routes.
 - **ElevenLabs**: Conversational AI agent that triggers story illustration generation via webhooks.
-- **Lingo.dev**: Translation SDK for dynamic content. Falls back from local dictionary -> cache -> API.
+- **Translation**: The context lazily imports the checked-in Spanish dictionary on the first Spanish translation request. Missing entries remain in English; there is no remote translation API or translation cache.
 
 ## Deployment
 

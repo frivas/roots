@@ -23,9 +23,9 @@ Roots is a next-generation educational platform that combines traditional educat
 
 ### Advanced Localization
 
-- **Hybrid Translation System** with 900+ local translations
+- **Local Translation System** with 900+ checked-in translations
 - **Real-time Language Switching** (English/Spanish)
-- **AI-Powered Dynamic Translation** via Lingo.dev
+- **Lazy Dictionary Loading** when Spanish text is first requested
 - **Regional Customization** for Spanish users (dates, phones, timezone)
 
 ### Real-Time Communication
@@ -79,7 +79,7 @@ roots/
 - **Framer Motion** for animations
 - **React Router** for navigation
 - **Clerk Authentication** for user management
-- **Lingo.dev SDK** for AI translation
+- **Checked-in Spanish dictionary** for deterministic translation
 - **Vite** for build tooling
 - **Deployed on Netlify**
 
@@ -95,8 +95,6 @@ roots/
 
 - **ElevenLabs Conversational AI** for voice agents
 - **OpenAI DALL-E 3** for image generation
-- **Lingo.dev** for dynamic translation
-- **Groq API** for language processing
 
 ## 🚀 Getting Started
 
@@ -121,13 +119,21 @@ VITE_BACKEND_URL=http://localhost:3000
 #### Backend (.env)
 
 ```bash
+ROOTS_BACKEND_MODE=demo
 CLERK_SECRET_KEY=your_clerk_secret_key
 CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 OPENAI_API_KEY=your_openai_api_key
 SUPABASE_URL=your_supabase_url
-SUPABASE_API_KEY=your_supabase_anon_key
+SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SECRET_KEY=your_supabase_secret_key
+ELEVENLABS_WEBHOOK_SECRET=your_elevenlabs_webhook_secret
+FRONTEND_URL=http://localhost:5173
 PORT=3000
 ```
+
+Demo mode needs only the server, Clerk, and frontend URL settings. Supabase,
+OpenAI, and the ElevenLabs webhook secret are required when
+`ROOTS_BACKEND_MODE=connected`.
 
 ### Installation & Development
 
@@ -310,7 +316,7 @@ tree directly; the deployed revision must remain traceable to a verified SHA.
 ## 📱 Supported Features
 
 - **Web Browsers**: Chrome, Firefox, Safari, Edge (modern versions)
-- **Languages**: English (US), Spanish (ES) with hybrid translation system
+- **Languages**: English (US), Spanish (ES) with a lazily loaded local dictionary
 - **Voice Agents**: Real-time conversational AI in multiple languages
 - **Devices**: Fully responsive design for desktop, tablet, and mobile
 - **Real-time Features**: SSE for live story illustrations

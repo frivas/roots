@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import {
@@ -61,7 +61,7 @@ const ContributionDashboard = () => {
       <div className="min-h-screen bg-white p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading contributor data...</p>
+          <p className="text-gray-600"><TranslatedText>Loading contributor data...</TranslatedText></p>
         </div>
       </div>
     );
@@ -75,9 +75,9 @@ const ContributionDashboard = () => {
           <div className="p-3 bg-red-100 rounded-xl mb-4 inline-block">
             <BarChart3 className="h-8 w-8 text-red-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600">You don't have access to the Developer Contribution Dashboard.</p>
-          <p className="text-sm text-gray-500 mt-2">Only verified repository contributors can access this section.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2"><TranslatedText>Access Denied</TranslatedText></h2>
+          <p className="text-gray-600"><TranslatedText>You don't have access to the Developer Contribution Dashboard.</TranslatedText></p>
+          <p className="text-sm text-gray-500 mt-2"><TranslatedText>Only verified repository contributors can access this section.</TranslatedText></p>
         </div>
       </div>
     );
@@ -137,8 +137,8 @@ const ContributionDashboard = () => {
       bgColor: "bg-purple-50"
     },
     {
-      title: "Hybrid Localization System",
-      description: "Production-ready bilingual system with sophisticated fallbacks",
+      title: "Deterministic Localization System",
+      description: "Bilingual interface with checked-in Spanish translations",
       icon: Globe,
       color: "text-blue-600",
       bgColor: "bg-blue-50"
@@ -175,7 +175,7 @@ const ContributionDashboard = () => {
     },
     {
       title: "Localization Engine",
-      description: "Custom translation system with race condition fixes",
+      description: "Lazy local dictionary with explicit English fallback",
       icon: Globe,
       impact: "High"
     },
@@ -672,7 +672,7 @@ const ContributionDashboard = () => {
                     <ul className="space-y-2 text-sm text-gray-600">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
-                        <TranslatedText>Architected hybrid translation system with local cache, SDK fallback, and race condition handling</TranslatedText>
+                        <TranslatedText>Built deterministic bilingual translation with a lazily loaded local dictionary</TranslatedText>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />

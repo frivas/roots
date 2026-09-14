@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { Analytics } from '@vercel/analytics/react';

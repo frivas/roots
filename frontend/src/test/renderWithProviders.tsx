@@ -12,9 +12,6 @@
  *      vi.mock('../services/LingoTranslationService', () => ({
  *        lingoTranslationService: {
  *          translateText: vi.fn(async (t) => t),
- *          clearCache: vi.fn(),
- *          preloadCommonTranslations: vi.fn(async () => {}),
- *          getStats: vi.fn(() => ({ size: 0 })),
  *        },
  *      }))
  *

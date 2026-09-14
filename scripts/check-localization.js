@@ -48,6 +48,9 @@ const IGNORE_PATTERNS = [
   /TranslatedText/,
   /translateText/,
   /useTranslatedString/,
+  // Dynamic values (for example a tutor name or message subject) are data,
+  // not source-language literals that this static checker can localize.
+  />\s*\{[^}]+\}\s*</,
   /import/,
   /export/,
   /console\./,
@@ -91,7 +94,14 @@ function stripStylingAttributes(line) {
 }
 
 export function checkFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+  const content = fs.readFileSync(filePath, 'utf8')
+    // AgentSession translates these props when it renders them. Mask the title
+    // literal so the line-oriented checker does not report that component
+    // boundary as raw user-facing text.
+    .replace(
+      /(<AgentSession\b[\s\S]*?\s)title=(["'])[^"']*\2([\s\S]*?\/>)/g,
+      '$1title={translatedByAgentSession}$3',
+    );
   const lines = content.split('\n');
   const issues = [];
 
