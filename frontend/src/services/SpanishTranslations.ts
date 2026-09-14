@@ -1814,6 +1814,10 @@ export const spanishTranslations: Record<string, string> = {
   "Analytics integration": "Integración de analíticas",
   "Documentation": "Documentación",
   "Scroll horizontally to see full timeline": "Desplázate horizontalmente para ver la cronología completa",
+  "Password settings updated for this demo": "Configuración de contraseña actualizada para esta demostración",
+  "Profile settings updated for this demo": "Configuración del perfil actualizada para esta demostración",
+  "Notification settings updated for this demo": "Configuración de notificaciones actualizada para esta demostración",
+  "Add a title and start date to create the event.": "Añade un título y una fecha de inicio para crear el evento.",
 
 } as const;
 

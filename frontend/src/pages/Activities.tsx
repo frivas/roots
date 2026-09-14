@@ -1,38 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { pageContainerVariants as containerVariants, pageItemVariants as itemVariants } from '../lib/motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { Award, Filter, ChevronDown, Calendar, BookOpen, FileText, ChevronLeft, ChevronRight, Trophy, Target } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.1,
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 400,
-      damping: 25,
-    }
-  }
-};
 
 // Mock activity data
 const activityData = {

@@ -38,7 +38,8 @@ export default defineConfig({
           if (id.includes('react-dom') || (id.includes('/react/') && !id.includes('react-router'))) return 'vendor';
           if (id.includes('react-router')) return 'router';
           if (id.includes('@clerk/clerk-react')) return 'clerk';
-          if (id.includes('lucide-react') || id.includes('framer-motion')) return 'ui';
+          if (id.includes('framer-motion')) return 'motion-vendor';
+          if (id.includes('lucide-react')) return 'icons';
         },
       },
     },

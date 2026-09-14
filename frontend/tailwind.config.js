@@ -39,8 +39,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Arial', 'Helvetica', 'sans-serif'],
-        'arial-black': ['Arial Black', 'Arial', 'sans-serif'],
+        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        'arial-black': ['Charter', 'Bitstream Charter', 'Sitka Text', 'Cambria', 'serif'],
       },
       container: {
         center: true,

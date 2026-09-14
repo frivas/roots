@@ -64,19 +64,31 @@
     @apply border-border;
   }
 
+  :focus-visible {
+    outline: 2px solid hsl(var(--color-primary));
+    outline-offset: 3px;
+  }
+
   body {
     @apply bg-background text-foreground;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
+    font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+    font-weight: 700;
   }
+}
 
-  .font-bold {
-    font-family: "Arial Black", Arial, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -100,7 +112,7 @@
   background-color: hsl(var(--color-primary)) !important;
   border-color: hsl(var(--color-primary)) !important;
   color: white !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   font-weight: bold !important;
 }
 
@@ -112,7 +124,7 @@
 .clerk-auth-madrid .cl-socialButtonsBlockButton {
   border: 1px solid hsl(var(--color-border)) !important;
   color: hsl(var(--color-foreground)) !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-socialButtonsBlockButton:hover {
@@ -121,7 +133,7 @@
 
 .clerk-auth-madrid .cl-formFieldInput {
   border: 1px solid hsl(var(--color-border)) !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-formFieldInput:focus {
@@ -130,19 +142,19 @@
 }
 
 .clerk-auth-madrid .cl-headerTitle {
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif !important;
   font-weight: bold !important;
   color: hsl(var(--color-foreground)) !important;
 }
 
 .clerk-auth-madrid .cl-headerSubtitle {
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   color: hsl(var(--color-muted-foreground)) !important;
 }
 
 .clerk-auth-madrid .cl-footerActionLink {
   color: hsl(var(--color-primary)) !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 .clerk-auth-madrid .cl-footerActionLink:hover {
@@ -155,7 +167,7 @@
 }
 
 .clerk-auth-madrid .cl-main {
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   display: flex !important;
   justify-content: center !important;
   width: 100% !important;

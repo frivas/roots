@@ -2,30 +2,32 @@ import { useEffect } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 const DynamicTitle: React.FC = () => {
-  const { language, translateText, preloadingComplete, isInitialized } = useLingoTranslation();
+  const { language, preloadingComplete, isInitialized } = useLingoTranslation();
 
   useEffect(() => {
     // Only update title after context is initialized and preloading is complete
     if (!isInitialized || !preloadingComplete) return;
 
-    const updateTitle = async () => {
-      const originalTitle = 'Raíces - Educational Management System for Madrid Community';
-      
-      try {
-        const translatedTitle = await translateText(originalTitle);
-        document.title = translatedTitle;
-      } catch (error) {
-        console.error('Failed to translate title:', error);
-        // Fallback to original title
-        document.title = originalTitle;
-      }
-    };
+    const metadata = language === 'es-ES'
+      ? {
+          title: 'Raíces | aprendizaje con IA para familias de Madrid',
+          description: 'Tutoría bilingüe con IA, cuentos, bienestar familiar e información escolar para familias de Madrid.',
+        }
+      : {
+          title: 'Raíces | AI learning for Madrid families',
+          description: 'Bilingual AI tutoring, storytelling, family wellbeing, and school information for Madrid families.',
+        };
 
-    updateTitle();
-  }, [language, translateText, preloadingComplete, isInitialized]);
+    document.title = metadata.title;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', metadata.description);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', metadata.title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', metadata.description);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', metadata.title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', metadata.description);
+  }, [language, preloadingComplete, isInitialized]);
 
   // This component doesn't render anything
   return null;
 };
 
-export default DynamicTitle; 
+export default DynamicTitle;

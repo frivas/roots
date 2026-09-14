@@ -30,7 +30,15 @@ describe('initial frontend payload boundaries', () => {
   });
 
   it('honors the user reduced-motion preference in React and CSS', () => {
-    expect(readSource('./App.tsx')).toContain('<MotionConfig reducedMotion="user">');
+    expect(readSource('./main.tsx')).toContain('<MotionConfig reducedMotion="user">');
     expect(readSource('./index.css')).toContain('@media (prefers-reduced-motion: reduce)');
+  });
+
+  it('splits animation and icon libraries into independent cache chunks', () => {
+    const viteConfig = readSource('../vite.config.ts');
+
+    expect(viteConfig).toContain("if (id.includes('framer-motion')) return 'motion-vendor'");
+    expect(viteConfig).toContain("if (id.includes('lucide-react')) return 'icons'");
+    expect(viteConfig).not.toContain("id.includes('lucide-react') || id.includes('framer-motion')");
   });
 });
