@@ -55,7 +55,7 @@ describe('ClerkRuntimeBoundary', () => {
 
     render(
       <LingoTranslationProvider>
-        <MemoryRouter>
+        <MemoryRouter initialEntries={['/auth/login']}>
           <ClerkRuntimeBoundary publishableKey="test_key">
             <div>application</div>
           </ClerkRuntimeBoundary>
@@ -67,5 +67,19 @@ describe('ClerkRuntimeBoundary', () => {
       signIn: { start: { title: 'Iniciar sesión' } },
       formFieldLabel__password: 'Contraseña',
     });
+  });
+
+  it('does not require Clerk to render a public legal route', () => {
+    render(
+      <LingoTranslationProvider>
+        <MemoryRouter initialEntries={['/privacy-policy']}>
+          <ClerkRuntimeBoundary publishableKey="">
+            <div>public legal content</div>
+          </ClerkRuntimeBoundary>
+        </MemoryRouter>
+      </LingoTranslationProvider>,
+    );
+
+    expect(screen.getByText('public legal content')).toBeInTheDocument();
   });
 });

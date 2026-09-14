@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { Analytics } from '@vercel/analytics/react';
 import { MotionConfig } from 'framer-motion';
@@ -33,15 +33,25 @@ const Loading = () => (
   <StatusState kind="loading" message="Loading..." className="min-h-screen bg-background" />
 );
 
+const AuthenticatedRouteContext = () => (
+  <AuthProvider>
+    <Outlet />
+  </AuthProvider>
+);
+
 function App() {
   return (
     <MotionConfig reducedMotion="user">
-      <AuthProvider>
-        <DynamicTitle />
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path={APP_ROUTES.root} element={<Navigate to={APP_ROUTES.home} replace />} />
+      <DynamicTitle />
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path={APP_ROUTES.root} element={<Navigate to={APP_ROUTES.authLogin} replace />} />
 
+          {publicPages.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component />} />
+          ))}
+
+          <Route element={<AuthenticatedRouteContext />}>
             <Route
               path={APP_ROUTES.authLogin}
               element={(
@@ -83,22 +93,18 @@ function App() {
                   element={<SectionPlaceholder title={title} />}
                 />
               ))}
-              <Route path="*" element={<NotFound />} />
             </Route>
-
-            {publicPages.map(({ path, Component }) => (
-              <Route key={path} path={path} element={<Component />} />
-            ))}
 
             <Route
               path={APP_ROUTES.signIn}
               element={<RedirectToSignIn redirectUrl={APP_ROUTES.home} />}
             />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <Analytics />
-      </AuthProvider>
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+      <Analytics />
     </MotionConfig>
   );
 }

@@ -22,6 +22,6 @@ test('renders privacy policy page without errors', async ({ page }) => {
 test('renders NotFound for unknown route', async ({ page }) => {
   await page.goto('/definitely-not-a-real-route-xyz');
   await page.waitForLoadState('domcontentloaded');
-  await expect(page).toHaveURL(/\/auth\/login$/);
-  await expect(page.getByRole('heading', { name: 'Raíces' }).first()).toBeVisible();
+  await expect(page).toHaveURL(/\/definitely-not-a-real-route-xyz$/);
+  await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
 });

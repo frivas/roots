@@ -1,7 +1,7 @@
 import { ClerkProvider } from '@clerk/clerk-react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router';
-import { APP_ROUTES } from '../config/routes';
+import { APP_ROUTES, requiresClerkRuntime } from '../config/routes';
 import AuthLayout from './layout/AuthLayout';
 import ErrorBoundary from './ErrorBoundary';
 import TranslatedText from './TranslatedText';
@@ -72,6 +72,9 @@ const ClerkRuntimeBoundary = ({
   publishableKey,
 }: ClerkRuntimeBoundaryProps) => {
   const { language } = useLingoTranslation();
+  const { pathname } = useLocation();
+
+  if (!requiresClerkRuntime(pathname)) return children;
 
   return (
     <ErrorBoundary fallback={<ClerkUnavailable />}>

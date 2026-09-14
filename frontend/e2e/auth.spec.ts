@@ -15,10 +15,10 @@ test('auth/register renders the Madrid registration experience', async ({ page }
 
 test('language switcher changes the visible auth shell to Spanish', async ({ page }) => {
   await page.goto('/auth/login');
-  await page.getByRole('button', { name: /change language|cambiar idioma/i }).first().click();
+  await page.getByRole('button', { name: /use spanish|usar español/i }).click();
 
   await expect(
-    page.getByRole('button', { name: /change language to english/i }).first(),
+    page.getByRole('button', { name: /use english|usar inglés/i }),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Iniciar sesión' }).first(),

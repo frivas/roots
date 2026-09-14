@@ -162,6 +162,16 @@ export const getProtectedRoutePaths = () => new Set<string>([
   ...SECTION_PLACEHOLDER_ROUTES.map(route => route.path),
 ]);
 
+const CLERK_ROUTES = new Set<string>([
+  APP_ROUTES.authLogin,
+  APP_ROUTES.authRegister,
+  APP_ROUTES.signIn,
+]);
+
+export const requiresClerkRuntime = (pathname: string) =>
+  CLERK_ROUTES.has(pathname) ||
+  [...getProtectedRoutePaths()].some(route => routeMatchesPath(pathname, route));
+
 const registeredRoutes = new Set<string>(Object.values(APP_ROUTES));
 
 export const isRegisteredRoute = (path: string): path is AppRoute =>
