@@ -7,9 +7,10 @@ const readSource = (relativePath: string) =>
 describe('initial frontend payload boundaries', () => {
   it('lazy-loads TutorInfo with the other page modules', () => {
     const appSource = readSource('./App.tsx');
+    const routeSource = readSource('./config/routes.ts');
 
     expect(appSource).not.toMatch(/import TutorInfo from ['"]\.\/pages\/TutorInfo['"]/);
-    expect(appSource).toContain("const TutorInfo = lazy(() => import('./pages/TutorInfo'))");
+    expect(routeSource).toContain("load: () => import('../pages/TutorInfo')");
   });
 
   it.each([
