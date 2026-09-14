@@ -15,6 +15,21 @@ if (provider.schemaVersion !== 1 || provider.productionBranch !== 'main') {
   fail('provider contract must use schema 1 and production branch main');
 }
 if (
+  provider.release?.trigger !== 'successful-main-ci-workflow-run' ||
+  provider.release?.workflow !== '.github/workflows/production-release-gate.yml' ||
+  provider.release?.deploymentDiscovery !== 'provider-api-exact-sha'
+) {
+  fail('provider contract must bind releases to successful main CI and exact-SHA discovery');
+}
+if (
+  provider.observability?.healthWorkflow !== '.github/workflows/production-health.yml' ||
+  provider.observability?.intervalMinutes !== 15 ||
+  provider.observability?.evidenceRetentionDays !== 30 ||
+  provider.observability?.alertWebhookSecret !== 'ALERT_WEBHOOK_URL'
+) {
+  fail('provider contract must define the production health and alerting contract');
+}
+if (
   provider.backend.projectId !== 'prj_GSAg55JO0lYdjI7tCQqwC6u7qp4C' ||
   provider.backend.orgId !== 'team_eJRc3uJPBTvXknc9WbVr4nlh'
 ) {

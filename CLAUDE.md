@@ -230,7 +230,12 @@ Use prefixes: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `ci:`
 - Security audit: Weekly (Monday 9am UTC)
 - Gitleaks: Daily (3am UTC)
 - Dependabot: Weekly updates with grouped PRs
-- Deployed canary: manually dispatched exact-SHA production and performance verification
+- Production health: Every 15 minutes with structured evidence and alert hook
+
+### Production release:
+- `Production release gate` runs after successful `main` CI, discovers both
+  provider deploys by exact SHA, and records canary and performance evidence.
+- `Deployed canary` remains the manual recovery and rehearsal path.
 
 ## Agent Behavior
 

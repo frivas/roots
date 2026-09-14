@@ -48,6 +48,9 @@
   },
   "release": {
     "shaVariable": "RELEASE_SHA",
+    "trigger": "successful-main-ci-workflow-run",
+    "workflow": ".github/workflows/production-release-gate.yml",
+    "deploymentDiscovery": "provider-api-exact-sha",
     "requiredVariables": [
       "RELEASE_SHA",
       "NETLIFY_SITE_ID",
@@ -63,6 +66,17 @@
       "PERFORMANCE_COLLECTOR_URL",
       "PERFORMANCE_COLLECTOR_ID",
       "PERFORMANCE_COLLECTOR_TOKEN"
+    ]
+  },
+  "observability": {
+    "healthWorkflow": ".github/workflows/production-health.yml",
+    "intervalMinutes": 15,
+    "evidenceRetentionDays": 30,
+    "alertWebhookSecret": "ALERT_WEBHOOK_URL",
+    "requiredExternalControls": [
+      "provider-error-rate-alert",
+      "provider-log-retention-and-redaction",
+      "provider-spend-alert"
     ]
   },
   "performanceEvidence": {

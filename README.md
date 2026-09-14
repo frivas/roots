@@ -290,6 +290,10 @@ npm run build:backend   # Creates dist/ folder with compiled TypeScript
 - Set up rate limiting and monitoring
 - Configure proper environment variables for production
 
+The required provider variables, alert hook, preview isolation, release
+evidence, and rollback commands are defined in
+`docs/runbooks/production-operations.md`.
+
 Production deployment is performed by the connected Netlify and Vercel Git
 integrations from the protected `main` branch. Do not deploy a local working
 tree directly; the deployed revision must remain traceable to a verified SHA.

@@ -15,6 +15,8 @@ const frontendPackage = json('frontend/package.json');
 const backendPackage = json('backend/package.json');
 const buildConfig = json('backend/tsconfig.build.json');
 const protection = json('.github/branch-protection.json');
+const repositorySettings = json('.github/repository-settings.json');
+const vercelConfig = json('backend/vercel.json');
 const nvmVersion = read('.nvmrc').trim();
 
 if (nvmVersion !== '22.22.2') fail('.nvmrc must pin Node 22.22.2');
@@ -38,12 +40,28 @@ for (const script of [
   'test:tooling',
   'validate:ci-config',
   'validate:release-config',
+  'monitor:production',
+  'discover:deployments',
   'test:serverless',
   'test:contracts',
   'test:rls:local',
   'test:e2e:auth',
 ]) {
   if (!rootPackage.scripts[script]) fail(`missing canonical root script: ${script}`);
+}
+if (
+  repositorySettings.schemaVersion !== 1 ||
+  repositorySettings.productionBranch !== 'main' ||
+  repositorySettings.integrationBranch !== 'develop' ||
+  repositorySettings.deleteBranchOnMerge !== true
+) {
+  fail('repository settings must protect branch topology and delete merged head branches');
+}
+if ('ignoreCommand' in vercelConfig) {
+  fail('Vercel previews must not be disabled by ignoreCommand');
+}
+if (vercelConfig.functions?.['api/serverless.ts']?.maxDuration !== 60) {
+  fail('the serverless function must have a 60-second platform bound');
 }
 if (rootPackage.devDependencies.knip !== '6.29.0') fail('Knip must be exactly pinned');
 if (frontendPackage.dependencies['react-router-dom']) {
@@ -168,8 +186,39 @@ for (const expected of [
   'Remote Clerk-issued-token contract',
   'Real Clerk browser auth contract',
   'Exact-SHA deployed canary',
+  'Verify exact-SHA production release',
+  'Reject failed production CI',
+  'Production health probe',
 ]) {
   if (!jobNames.has(expected)) fail(`missing workflow check: ${expected}`);
+}
+
+const releaseGateSource = read('.github/workflows/production-release-gate.yml');
+for (const expected of [
+  'workflow_run:',
+  "workflows: [CI]",
+  "branches: [main]",
+  "github.event.workflow_run.conclusion == 'success'",
+  'github.event.workflow_run.head_sha',
+  'node scripts/discover-provider-deployments.mjs',
+  'node scripts/run-deployed-canary.mjs',
+  'node scripts/send-operations-alert.mjs',
+  'retention-days: 30',
+]) {
+  if (!releaseGateSource.includes(expected)) {
+    fail(`production release gate is missing: ${expected}`);
+  }
+}
+const healthSource = read('.github/workflows/production-health.yml');
+for (const expected of [
+  "cron: '7,22,37,52 * * * *'",
+  'node scripts/run-health-monitor.mjs',
+  'node scripts/send-operations-alert.mjs',
+  'retention-days: 30',
+]) {
+  if (!healthSource.includes(expected)) {
+    fail(`production health workflow is missing: ${expected}`);
+  }
 }
 
 const ciSource = read('.github/workflows/ci.yml');

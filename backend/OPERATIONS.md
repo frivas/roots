@@ -24,3 +24,10 @@ verified in the target environment:
 `GET /health` is process liveness. `GET /ready` reports the active mode and the
 state of dependencies used in that mode. `configured` means credentials are
 present; it does not claim a successful remote provider call.
+
+Repository-owned production monitoring lives in
+`.github/workflows/production-health.yml`. It compares frontend release
+metadata with backend health identity, retains structured evidence for 30
+days, and sends a redacted failure event when `ALERT_WEBHOOK_URL` is configured.
+Provider error-rate, timeout, spend, and log-retention controls remain required.
+See `docs/runbooks/production-operations.md` for incident and rollback steps.
