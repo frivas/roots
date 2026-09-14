@@ -31,5 +31,6 @@ export const WIDGET_TRANSLATIONS = {
 // Widget configuration
 export const WIDGET_CONFIG = {
   ELEMENT_NAME: 'elevenlabs-convai',
-  SCRIPT_SRC: 'https://unpkg.com/@elevenlabs/convai-widget-embed'
+  SCRIPT_SRC: 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.18.2/dist/index.js',
+  SCRIPT_INTEGRITY: 'sha384-nuKwCIZnnG7tbq5OxYN1GCUc9CaDxR/DjQOSEHuy+HtZEgux+GRQZMbPJ5Oh0vFo',
 } as const;

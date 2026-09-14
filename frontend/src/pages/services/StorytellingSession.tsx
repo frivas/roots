@@ -7,10 +7,9 @@ import React, {
 } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Download, Image as ImageIcon } from 'lucide-react';
+import { Download, Image as ImageIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import AiAccuracyNotice from '../../components/AiAccuracyNotice';
-import ElevenLabsWidget from '../../components/ElevenLabsWidget';
+import AgentSession from '../../components/AgentSession';
 import TranslatedText from '../../components/TranslatedText';
 import Button from '../../components/ui/Button';
 import PaintingSpinner from '../../components/ui/PaintingSpinner';
@@ -231,33 +230,17 @@ const StorytellingSession: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
-      <motion.div
-        className="space-y-8 p-6 pb-16"
-        style={{ paddingBottom: '70px' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <TranslatedText>Back to Online Learning</TranslatedText>
-          </Button>
-
-          <h1 className="text-xl font-semibold text-foreground">
-            <TranslatedText>Storytelling Adventure</TranslatedText>
-          </h1>
-
-          <AiAccuracyNotice />
-        </div>
-
-        {hasStoryContent && (
+    <AgentSession
+      agentId={AGENT_IDS.storytelling}
+      language={widgetLanguage}
+      labels={i18n}
+      title="Storytelling Adventure"
+      backLabel="Back to Online Learning"
+      onBack={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
+      onWidgetReady={handleWidgetReady}
+      widgetClassName="widget-container max-h-[calc(100vh-200px)] overflow-hidden"
+      className="min-h-screen p-4 pb-16 sm:p-6"
+      beforeWidget={hasStoryContent ? (
           <div className="flex justify-center">
             <Button
               onClick={handleManualIllustration}
@@ -271,15 +254,8 @@ const StorytellingSession: React.FC = () => {
                 : <TranslatedText>Draw your story</TranslatedText>}
             </Button>
           </div>
-        )}
-
-        <ElevenLabsWidget
-          agentId={AGENT_IDS.storytelling}
-          language={widgetLanguage}
-          labels={i18n}
-          onWidgetReady={handleWidgetReady}
-          className="widget-container max-h-[calc(100vh-200px)] overflow-hidden"
-        />
+      ) : undefined}
+    >
 
         {isWaitingForDrawingResponse && (
           <motion.div
@@ -364,8 +340,7 @@ const StorytellingSession: React.FC = () => {
             )}
           </motion.div>
         )}
-      </motion.div>
-    </div>
+    </AgentSession>
   );
 };
 
