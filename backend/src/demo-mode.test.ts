@@ -40,6 +40,7 @@ describe('demo backend mode', () => {
     expect(ready.json()).toEqual({
       status: 'ready',
       mode: 'demo',
+      releaseSha: 'local',
       checks: {
         clerk: 'configured',
         openai: 'disabled',
