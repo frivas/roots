@@ -72,6 +72,7 @@ describe('security remediation contracts', () => {
     expect(ready.json()).toEqual({
       status: 'not_ready',
       mode: 'connected',
+      releaseSha,
       checks: {
         clerk: 'configured',
         openai: 'configured',

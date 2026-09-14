@@ -36,13 +36,13 @@ if (expectedSha && !/^[0-9a-f]{40}$/.test(expectedSha)) {
 const [frontend, frontendRelease, backend] = await Promise.all([
   request(frontendUrl),
   request(new URL('/release.json', frontendUrl), true),
-  request(new URL('/health', backendUrl), true),
+  request(new URL('/ready', backendUrl), true),
 ]);
 const releaseSha = frontendRelease.body?.commitSha;
 if (
   frontendRelease.body?.schemaVersion !== 1 ||
   !/^[0-9a-f]{40}$/.test(releaseSha ?? '') ||
-  backend.body?.status !== 'ok' ||
+  backend.body?.status !== 'ready' ||
   backend.body?.releaseSha !== releaseSha ||
   (expectedSha && releaseSha !== expectedSha)
 ) {
@@ -63,6 +63,7 @@ const evidence = {
     durationMs: backend.durationMs,
     requestId: backend.requestId,
     mode: backend.body.mode,
+    checks: backend.body.checks,
   },
 };
 writeFileSync(process.env.HEALTH_EVIDENCE_FILE ?? 'health-evidence.json', `${JSON.stringify(evidence, null, 2)}\n`);

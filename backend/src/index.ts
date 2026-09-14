@@ -165,11 +165,15 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
   );
   server.get('/ready', async (_request, reply) => {
     const result = await dependencies.readiness.check();
-    return reply.code(result.ready ? 200 : 503).send({
-      status: result.ready ? 'ready' : 'not_ready',
-      mode: dependencies.mode,
-      checks: result.checks,
-    });
+    return reply
+      .header('x-release-sha', releaseSha)
+      .code(result.ready ? 200 : 503)
+      .send({
+        status: result.ready ? 'ready' : 'not_ready',
+        mode: dependencies.mode,
+        releaseSha,
+        checks: result.checks,
+      });
   });
 
   server.post(

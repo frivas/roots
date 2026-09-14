@@ -41,6 +41,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
       - name: Discover exact-SHA deploys and rollback targets
+        id: deployment-discovery
         env:
           DEPLOYMENT_DISCOVERY_FILE: deployment-discovery.json
         run: node scripts/discover-provider-deployments.mjs
@@ -56,6 +57,11 @@ jobs:
         run: node scripts/collect-performance-observations.mjs
       - name: Enforce runtime SLOs
         run: npm run check:performance-slo -- --observations performance-observations.json
+      - name: Roll back both providers after a failed release check
+        if: ${{ failure() && steps.deployment-discovery.outcome == 'success' }}
+        env:
+          ROLLBACK_EVIDENCE_FILE: rollback-evidence.json
+        run: npm run rollback:deployments
       - name: Upload immutable release evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -65,6 +71,7 @@ jobs:
             deployment-discovery.json
             release-evidence.json
             performance-observations.json
+            rollback-evidence.json
           if-no-files-found: warn
           retention-days: 30
       - name: Notify operations on release failure

@@ -42,6 +42,7 @@ for (const script of [
   'validate:release-config',
   'monitor:production',
   'discover:deployments',
+  'rollback:deployments',
   'test:serverless',
   'test:contracts',
   'test:rls:local',
@@ -91,11 +92,25 @@ for (const expected of [
   'Cache-Control = "public, max-age=31536000, immutable"',
   'command = "npm run build:frontend:release"',
   'for = "/release.json"',
-  'Content-Security-Policy-Report-Only',
+  'Content-Security-Policy =',
   'Strict-Transport-Security',
   'Permissions-Policy',
 ]) {
   if (!netlify.includes(expected)) fail(`Netlify contract is missing: ${expected}`);
+}
+if (netlify.includes('Content-Security-Policy-Report-Only')) {
+  fail('Netlify must enforce CSP rather than report it only');
+}
+for (const origin of [
+  'https://unpkg.com',
+  'https://*.clerk.com',
+  'https://*.elevenlabs.io',
+  'https://api.elevenlabs.io',
+  'https://api.openai.com',
+  'https://*.vercel.app',
+  'https://*.netlify.app',
+]) {
+  if (!netlify.includes(origin)) fail(`Netlify CSP is missing required origin: ${origin}`);
 }
 if (read('.husky/pre-commit').includes('arch -arm64')) {
   fail('the pre-commit hook must be portable across supported architectures');
@@ -202,6 +217,8 @@ for (const expected of [
   'github.event.workflow_run.head_sha',
   'node scripts/discover-provider-deployments.mjs',
   'node scripts/run-deployed-canary.mjs',
+  'npm run rollback:deployments',
+  "failure() && steps.deployment-discovery.outcome == 'success'",
   'node scripts/send-operations-alert.mjs',
   'retention-days: 30',
 ]) {
@@ -219,6 +236,12 @@ for (const expected of [
   if (!healthSource.includes(expected)) {
     fail(`production health workflow is missing: ${expected}`);
   }
+}
+if (!read('scripts/run-health-monitor.mjs').includes("new URL('/ready', backendUrl)")) {
+  fail('the production health monitor must probe dependency readiness');
+}
+if (vercelConfig.routes?.find((route) => route.src === '/ready')?.dest !== '/api/serverless') {
+  fail('Vercel must route dependency readiness through the shared serverless application');
 }
 
 const ciSource = read('.github/workflows/ci.yml');

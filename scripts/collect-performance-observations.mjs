@@ -28,11 +28,12 @@ const releaseSha = required('RELEASE_SHA');
 const repository = required('GITHUB_REPOSITORY');
 const runId = required('GITHUB_RUN_ID');
 const workflowRef = required('GITHUB_WORKFLOW_REF');
-if (`${repository}/.github/workflows/deployed-canary.yml` !== evidenceContract.workflowAudience) {
-  throw new Error('GitHub repository does not match the performance collector audience');
-}
-if (!workflowRef.startsWith(`${evidenceContract.workflowAudience}@`)) {
-  throw new Error('GITHUB_WORKFLOW_REF does not identify the deployed canary workflow');
+const workflowAudience = workflowRef.split('@')[0];
+if (
+  !evidenceContract.workflowAudiences.includes(workflowAudience) ||
+  !workflowAudience.startsWith(`${repository}/.github/workflows/`)
+) {
+  throw new Error('collector workflow is not authorized by the provider contract');
 }
 if (!/^[1-9][0-9]*$/.test(runId)) {
   throw new Error('GITHUB_RUN_ID must be a positive integer');
@@ -76,6 +77,7 @@ validatePerformanceEvidence(evidence, evidenceContract, {
   expectedCollectorId: collectorId,
   expectedCollectorUrl: collectorUrl.href,
   expectedReleaseSha: releaseSha,
+  expectedWorkflowAudience: workflowAudience,
   nowMs: Date.parse(retrievedAt),
 });
 

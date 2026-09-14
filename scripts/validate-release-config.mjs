@@ -17,7 +17,10 @@ if (provider.schemaVersion !== 1 || provider.productionBranch !== 'main') {
 if (
   provider.release?.trigger !== 'successful-main-ci-workflow-run' ||
   provider.release?.workflow !== '.github/workflows/production-release-gate.yml' ||
-  provider.release?.deploymentDiscovery !== 'provider-api-exact-sha'
+  provider.release?.deploymentDiscovery !== 'provider-api-exact-sha' ||
+  provider.release?.automaticRollback?.workflow !== provider.release.workflow ||
+  provider.release?.automaticRollback?.script !== 'scripts/rollback-provider-deployments.mjs' ||
+  provider.release?.automaticRollback?.requiresVerifiedImmutableTargets !== true
 ) {
   fail('provider contract must bind releases to successful main CI and exact-SHA discovery');
 }
@@ -48,8 +51,13 @@ if (
   !provider.release.requiredVariables.includes(performanceEvidence.collectorUrlVariable) ||
   !provider.release.requiredVariables.includes(performanceEvidence.collectorIdVariable) ||
   !provider.release.requiredVariables.includes(performanceEvidence.collectorTokenVariable) ||
-  performanceEvidence.workflowAudience !==
+  !Array.isArray(performanceEvidence.workflowAudiences) ||
+  !performanceEvidence.workflowAudiences.includes(
     'frivas/roots/.github/workflows/deployed-canary.yml'
+  ) ||
+  !performanceEvidence.workflowAudiences.includes(
+    'frivas/roots/.github/workflows/production-release-gate.yml'
+  )
 ) {
   fail('provider contract must bind release evidence to the deployed canary collector');
 }

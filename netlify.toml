@@ -36,7 +36,7 @@ for = "/release.json"
 for = "/*"
 
   [headers.values]
-  Content-Security-Policy-Report-Only = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io https://api.elevenlabs.io https://*.vercel.app wss://*.elevenlabs.io; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io; worker-src 'self' blob:"
+  Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://*.clerk.accounts.dev https://*.clerk.com; script-src 'self' 'unsafe-inline' https://unpkg.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://*.elevenlabs.io; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io https://api.elevenlabs.io https://api.openai.com https://*.vercel.app https://*.netlify.app wss://*.elevenlabs.io; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://*.elevenlabs.io; worker-src 'self' blob:; manifest-src 'self'"
   Permissions-Policy = "camera=(), geolocation=(), microphone=(self), payment=(), usb=()"
   Referrer-Policy = "strict-origin-when-cross-origin"
   Strict-Transport-Security = "max-age=31536000; includeSubDomains"

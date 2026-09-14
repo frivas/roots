@@ -14,8 +14,8 @@ test('records exact-SHA evidence from both deployed runtimes', async (context) =
     response.setHeader('content-type', 'application/json');
     if (request.url === '/release.json') {
       response.end(JSON.stringify({ schemaVersion: 1, commitSha: sha }));
-    } else if (request.url === '/health') {
-      response.end(JSON.stringify({ status: 'ok', releaseSha: sha }));
+    } else if (request.url === '/ready') {
+      response.end(JSON.stringify({ status: 'ready', releaseSha: sha }));
     } else {
       response.end(JSON.stringify({ application: 'roots' }));
     }
@@ -64,8 +64,8 @@ test('rejects a backend runtime that reports a different release SHA', async (co
     response.setHeader('content-type', 'application/json');
     if (request.url === '/release.json') {
       response.end(JSON.stringify({ schemaVersion: 1, commitSha: sha }));
-    } else if (request.url === '/health') {
-      response.end(JSON.stringify({ status: 'ok', releaseSha: '2'.repeat(40) }));
+    } else if (request.url === '/ready') {
+      response.end(JSON.stringify({ status: 'ready', releaseSha: '2'.repeat(40) }));
     } else {
       response.end(JSON.stringify({ application: 'roots' }));
     }

@@ -8,10 +8,10 @@ Configure these GitHub repository variables: `NETLIFY_SITE_ID`,
 
 Configure these GitHub Actions secrets with the narrowest provider scope:
 
-- `NETLIFY_AUTH_TOKEN` reads deploy metadata. Restore permission is needed only
-  by an operator performing a rollback.
-- `VERCEL_TOKEN` reads deployments for the Roots API project. Rollback
-  permission is needed only by an operator performing a rollback.
+- `NETLIFY_AUTH_TOKEN` reads deploy metadata and restores a previously verified
+  immutable production deploy after a release-gate failure.
+- `VERCEL_TOKEN` reads Roots API deployments and points production traffic to a
+  previously verified, previously promoted deployment after a gate failure.
 - `PERFORMANCE_COLLECTOR_TOKEN` reads only the Roots production evidence feed.
 - `ALERT_WEBHOOK_URL` accepts redacted operational events. The workflow sends
   repository, workflow, run ID, run URL, event type, and release SHA only.
@@ -37,13 +37,15 @@ the matching preview deployment when an end-to-end preview is required.
 
 For every push to `main`, confirm `Production release gate` has the same SHA as
 the successful `CI` run and both provider deployments. Retain these 30-day
-artifacts: `deployment-discovery.json`, `release-evidence.json`, and
-`performance-observations.json`.
+artifacts: `deployment-discovery.json`, `release-evidence.json`,
+`performance-observations.json`, and, after a failed check,
+`rollback-evidence.json`.
 
 If discovery times out, inspect provider build state and commit metadata. Do
-not substitute the latest deployment. If the canary or SLO check fails, treat
-the release as failed and use the immutable rollback IDs in the discovery
-artifact.
+not substitute the latest deployment. If the readiness canary or SLO check
+fails after discovery, the workflow re-fetches all four deployment records. It
+dispatches no rollback unless both current deployments match the release SHA
+and both immutable targets are verified as previous production deployments.
 
 ## Rollback
 
@@ -69,15 +71,16 @@ vercel rollback "$VERCEL_ROLLBACK_DEPLOYMENT_ID" \
 
 Wait for both providers to report ready. Run `Deployed canary` with the
 rollback SHA and new current/previous ID pairs. Close the incident only after
-frontend `release.json`, backend `/health`, and canary evidence all report the
+frontend `release.json`, backend `/ready`, and canary evidence all report the
 rollback SHA.
 
 ## Health and alert response
 
 `Production health` runs four times per hour. It checks the frontend, reads
-`release.json`, checks backend `/health`, and rejects cross-provider SHA skew.
-Evidence includes latency, mode, backend request ID, run identity, and time. It
-excludes response bodies, credentials, and user data.
+`release.json`, checks backend `/ready`, and rejects dependency failures or
+cross-provider SHA skew. Evidence includes latency, dependency states, mode,
+backend request ID, run identity, and time. It excludes credentials and user
+data.
 
 On failure, the workflow posts a redacted event to `ALERT_WEBHOOK_URL`. Use the
 run URL and request ID to query provider logs. Configure provider-native alerts

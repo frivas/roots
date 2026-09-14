@@ -31,9 +31,9 @@ if (release.schemaVersion !== 1 || release.commitSha !== releaseSha) {
 const observations = { frontend: [], backend: [] };
 for (let index = 0; index < samples; index += 1) {
   observations.frontend.push((await request(frontendUrl)).elapsedMs);
-  const backendResponse = await request(new URL('/health', backendUrl));
+  const backendResponse = await request(new URL('/ready', backendUrl));
   const backendHealth = await backendResponse.response.json();
-  if (backendHealth.releaseSha !== releaseSha) {
+  if (backendHealth.status !== 'ready' || backendHealth.releaseSha !== releaseSha) {
     throw new Error('deployed backend release metadata does not match RELEASE_SHA');
   }
   observations.backend.push(backendResponse.elapsedMs);

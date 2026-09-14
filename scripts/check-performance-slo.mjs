@@ -65,7 +65,9 @@ export function readPerformanceEvidenceContract(providerFile = defaultProviderFi
     typeof contract.collectorUrlVariable !== 'string' ||
     typeof contract.collectorIdVariable !== 'string' ||
     typeof contract.collectorTokenVariable !== 'string' ||
-    typeof contract.workflowAudience !== 'string'
+    !Array.isArray(contract.workflowAudiences) ||
+    contract.workflowAudiences.length === 0 ||
+    contract.workflowAudiences.some((audience) => typeof audience !== 'string')
   ) {
     fail('provider contract must define the performance evidence collector identity');
   }
@@ -91,9 +93,10 @@ export function validatePerformanceEvidence(
   observations,
   contract,
   {
-    expectedCollectorId = process.env.PERFORMANCE_COLLECTOR_ID,
+    expectedCollectorId = process.env[contract.collectorIdVariable],
     expectedCollectorUrl = process.env[contract.collectorUrlVariable],
     expectedReleaseSha = process.env.RELEASE_SHA,
+    expectedWorkflowAudience = process.env.GITHUB_WORKFLOW_REF?.split('@')[0],
     nowMs = Date.now(),
   } = {},
 ) {
@@ -119,8 +122,14 @@ export function validatePerformanceEvidence(
   if (observations.collector?.id !== expectedCollectorId) {
     fail('observations collector identity does not match PERFORMANCE_COLLECTOR_ID');
   }
-  if (observations.collector?.audience !== contract.workflowAudience) {
-    fail('observations collector audience does not match the deployed canary');
+  if (!expectedWorkflowAudience) {
+    fail('GITHUB_WORKFLOW_REF is required to validate collector audience');
+  }
+  if (!contract.workflowAudiences.includes(expectedWorkflowAudience)) {
+    fail('collector workflow is not authorized by the provider contract');
+  }
+  if (observations.collector?.audience !== expectedWorkflowAudience) {
+    fail('observations collector audience does not match the invoking workflow');
   }
 
   const startedAt = timestamp(observations.window?.startedAt, 'observations.window.startedAt');
@@ -151,12 +160,12 @@ export function validatePerformanceEvidence(
   }
   if (
     observations.retrieval?.repository !==
-      contract.workflowAudience.split('/.github/workflows/')[0] ||
+      expectedWorkflowAudience.split('/.github/workflows/')[0] ||
     observations.retrieval?.collectorOrigin !== expectedCollectorOrigin ||
     !/^[1-9][0-9]*$/.test(observations.retrieval?.runId ?? '') ||
-    !observations.retrieval?.workflowRef?.startsWith(`${contract.workflowAudience}@`)
+    !observations.retrieval?.workflowRef?.startsWith(`${expectedWorkflowAudience}@`)
   ) {
-    fail('observations retrieval identity does not match the deployed canary workflow');
+    fail('observations retrieval identity does not match the invoking workflow');
   }
 }
 

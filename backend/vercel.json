@@ -13,6 +13,10 @@
       "dest": "/api/health"
     },
     {
+      "src": "/ready",
+      "dest": "/api/serverless"
+    },
+    {
       "src": "/webhook/(.*)",
       "dest": "/api/serverless"
     },
