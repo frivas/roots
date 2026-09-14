@@ -83,7 +83,7 @@
     "@rollup/rollup-darwin-x64": "^4.62.5"
   },
   "overrides": {
-    "fast-uri": "3.1.5",
+    "fast-uri": "3.1.6",
     "undici": ">=7.29.0 <8",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
