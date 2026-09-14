@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { pageContainerVariants as containerVariants, pageItemVariants as itemVariants } from '../lib/motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { Award, Filter, ChevronDown, Calendar, BookOpen, FileText, ChevronLeft, ChevronRight, Trophy, Target } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { snappyItemVariants as itemVariants, tightContainerVariants as containerVariants } from '../lib/motion';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 // Mock activity data

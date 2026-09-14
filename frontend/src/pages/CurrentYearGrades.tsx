@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { pageContainerVariants as containerVariants, pageItemVariants as itemVariants } from '../lib/motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import TranslatedText from '../components/TranslatedText';
 import { BookOpen, Filter, ChevronDown, Award, ChevronLeft, ChevronRight, TrendingUp, Target } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { snappyItemVariants as itemVariants, tightContainerVariants as containerVariants } from '../lib/motion';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 // Mock current year grades data based on Spanish education system

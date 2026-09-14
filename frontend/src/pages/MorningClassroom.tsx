@@ -4,34 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import TranslatedText from '../components/TranslatedText';
 import { Sun, Clock, MapPin, Building, Calendar, Info } from 'lucide-react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
-
-// Animation variants
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.05,
-            delayChildren: 0.1,
-        }
-    }
-};
-
-const itemVariants = {
-    hidden: {
-        opacity: 0,
-        y: 20,
-    },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            type: "spring" as const,
-            stiffness: 400,
-            damping: 25,
-        }
-    }
-};
+import { snappyItemVariants as itemVariants, tightContainerVariants as containerVariants } from '../lib/motion';
 
 // Morning Classroom Service Data
 const morningClassroomData = {
