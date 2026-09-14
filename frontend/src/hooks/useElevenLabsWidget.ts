@@ -151,7 +151,6 @@ export const useElevenLabsWidget = ({
     return () => {
       cancelled = true;
       window.clearTimeout(timeoutId);
-      if (!settled) widgetLoader?.cancel();
       cleanupWidget?.();
       widget?.remove();
     };

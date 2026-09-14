@@ -13,9 +13,8 @@ import AgentSession from '../../components/AgentSession';
 import TranslatedText from '../../components/TranslatedText';
 import Button from '../../components/ui/Button';
 import PaintingSpinner from '../../components/ui/PaintingSpinner';
-import { AGENT_IDS, WIDGET_TRANSLATIONS } from '../../config/agentConfig';
+import { AGENT_IDS } from '../../config/agentConfig';
 import { APP_ROUTES } from '../../config/routes';
-import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import useTranslatedString from '../../hooks/useTranslatedString';
 import {
   appendRecentStoryTurn,
@@ -78,7 +77,6 @@ const analyzeStory = (
 const StorytellingSession: React.FC = () => {
   const navigate = useNavigate();
   const { getToken } = useAuth();
-  const { language } = useLingoTranslation();
   const storyIllustrationAlt = useTranslatedString('Story illustration');
   const downloadIllustrationTitle = useTranslatedString('Download Illustration');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -99,8 +97,6 @@ const StorytellingSession: React.FC = () => {
     [getToken],
   );
 
-  const widgetLanguage = language === 'en-US' ? 'en' : 'es';
-  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
 
   useEffect(() => () => abortControllerRef.current?.abort(), []);
 
@@ -230,8 +226,6 @@ const StorytellingSession: React.FC = () => {
   return (
     <AgentSession
       agentId={AGENT_IDS.storytelling}
-      language={widgetLanguage}
-      labels={i18n}
       title="Storytelling Adventure"
       backLabel="Back to Online Learning"
       onBack={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}

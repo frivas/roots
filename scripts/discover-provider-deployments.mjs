@@ -1,14 +1,12 @@
 import { appendFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { shaForVercel } from './provider-deployment-utils.mjs';
 
 const required = (name) => {
   const value = process.env[name];
   if (!value) throw new Error(`missing required value: ${name}`);
   return value;
 };
-
-const shaForVercel = (deployment) =>
-  deployment?.meta?.githubCommitSha ?? deployment?.meta?.githubCommitRef;
 
 export const selectNetlifyDeployments = (deployments, releaseSha) => {
   const eligible = deployments.filter(

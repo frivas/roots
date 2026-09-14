@@ -115,7 +115,8 @@ describe('SimpleHeader', () => {
 
     const toggle = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(toggle);
-    await waitFor(() => expect(screen.getByRole('link', { name: 'AI services overview' })).toHaveFocus());
+    const firstSummary = document.querySelector('summary');
+    await waitFor(() => expect(firstSummary).toHaveFocus());
 
     fireEvent.keyDown(document, { key: 'Escape' });
 
@@ -135,7 +136,7 @@ describe('SimpleHeader', () => {
     signOut.focus();
     fireEvent.keyDown(document, { key: 'Tab' });
 
-    expect(screen.getByRole('link', { name: 'AI services overview' })).toHaveFocus();
+    expect(document.querySelector('summary')).toHaveFocus();
   });
 
   it('uses the same registered destination model as the desktop sidebar', () => {

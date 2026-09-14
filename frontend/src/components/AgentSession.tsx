@@ -1,16 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
+import { WIDGET_TRANSLATIONS } from '../config/agentConfig';
+import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import AiAccuracyNotice from './AiAccuracyNotice';
-import ElevenLabsWidget, { type WidgetLabels } from './ElevenLabsWidget';
+import ElevenLabsWidget from './ElevenLabsWidget';
 import TranslatedText from './TranslatedText';
 import Button from './ui/Button';
 import StatusState from './ui/StatusState';
 
 interface AgentSessionProps {
   agentId?: string;
-  language: string;
-  labels: WidgetLabels;
   title: string;
   backLabel: string;
   onBack: () => void;
@@ -24,8 +24,6 @@ interface AgentSessionProps {
 
 const AgentSession: React.FC<AgentSessionProps> = ({
   agentId,
-  language,
-  labels,
   title,
   backLabel,
   onBack,
@@ -35,7 +33,11 @@ const AgentSession: React.FC<AgentSessionProps> = ({
   widgetClassName,
   className = '',
   unavailableMessage = 'An error occurred',
-}) => (
+}) => {
+  const { language } = useLingoTranslation();
+  const widgetLanguage = language === 'en-US' ? 'en' : 'es';
+
+  return (
   <motion.section
     className={`space-y-6 pb-8 sm:space-y-8 ${className}`}
     initial={{ opacity: 0 }}
@@ -66,8 +68,8 @@ const AgentSession: React.FC<AgentSessionProps> = ({
     {agentId ? (
       <ElevenLabsWidget
         agentId={agentId}
-        language={language}
-        labels={labels}
+        language={widgetLanguage}
+        labels={WIDGET_TRANSLATIONS[widgetLanguage]}
         onWidgetReady={onWidgetReady}
         className={widgetClassName}
       />
@@ -76,6 +78,7 @@ const AgentSession: React.FC<AgentSessionProps> = ({
     )}
     {children}
   </motion.section>
-);
+  );
+};
 
 export default AgentSession;

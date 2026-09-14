@@ -48,6 +48,7 @@ jobs:
       - name: Validate immutable release identity
         run: npm run validate:release-config -- --release
       - name: Run the read-only production canary
+        id: production-canary
         env:
           RELEASE_EVIDENCE_FILE: release-evidence.json
         run: node scripts/run-deployed-canary.mjs
@@ -56,9 +57,10 @@ jobs:
           PERFORMANCE_OBSERVATIONS_FILE: performance-observations.json
         run: node scripts/collect-performance-observations.mjs
       - name: Enforce runtime SLOs
+        id: runtime-slo
         run: npm run check:performance-slo -- --observations performance-observations.json
       - name: Roll back both providers after a failed release check
-        if: ${{ failure() && steps.deployment-discovery.outcome == 'success' }}
+        if: ${{ steps.deployment-discovery.outcome == 'success' && (steps.production-canary.outcome == 'failure' || steps.runtime-slo.outcome == 'failure') }}
         env:
           ROLLBACK_EVIDENCE_FILE: rollback-evidence.json
         run: npm run rollback:deployments

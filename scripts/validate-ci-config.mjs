@@ -218,7 +218,7 @@ for (const expected of [
   'node scripts/discover-provider-deployments.mjs',
   'node scripts/run-deployed-canary.mjs',
   'npm run rollback:deployments',
-  "failure() && steps.deployment-discovery.outcome == 'success'",
+  "steps.production-canary.outcome == 'failure' || steps.runtime-slo.outcome == 'failure'",
   'node scripts/send-operations-alert.mjs',
   'retention-days: 30',
 ]) {

@@ -11,21 +11,15 @@ vi.mock('./AiAccuracyNotice', () => ({
 vi.mock('./TranslatedText', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
+vi.mock('../contexts/LingoTranslationContext', () => ({
+  useLingoTranslation: () => ({ language: 'en-US' }),
+}));
 
 describe('AgentSession', () => {
   it('renders the shared responsive session header and widget', () => {
     render(
       <AgentSession
         agentId="agent-test"
-        language="en"
-        labels={{
-          actionText: 'Talk',
-          startCall: 'Start',
-          endCall: 'End',
-          expand: 'Expand',
-          listening: 'Listening',
-          speaking: 'Speaking',
-        }}
         title="Math Tutoring"
         backLabel="Back to Online Learning"
         onBack={vi.fn()}

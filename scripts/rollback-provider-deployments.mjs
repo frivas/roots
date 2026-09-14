@@ -1,8 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
-
-const shaForVercel = (deployment) =>
-  deployment?.meta?.githubCommitSha ?? deployment?.gitSource?.sha;
+import { shaForVercel } from './provider-deployment-utils.mjs';
 
 const required = (value, name) => {
   const normalized = value?.trim();

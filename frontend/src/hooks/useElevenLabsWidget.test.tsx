@@ -1,4 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { StrictMode, type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   loadElevenLabsWidget,
@@ -36,6 +37,29 @@ describe('ElevenLabs widget lifecycle', () => {
 
     await expect(first).resolves.toBeUndefined();
     await expect(second).resolves.toBeUndefined();
+  });
+
+  it('keeps the shared loader alive across a StrictMode remount', async () => {
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <StrictMode>{children}</StrictMode>
+    );
+    const { result } = renderHook(
+      () => useElevenLabsWidget({ agentId: 'agent-test', language: 'en-US' }),
+      { wrapper },
+    );
+    const container = document.createElement('div');
+    act(() => {
+      result.current.containerRef.current = container;
+    });
+
+    const script = document.head.querySelector<HTMLScriptElement>('script[data-elevenlabs-widget]');
+    expect(script).not.toBeNull();
+    expect(document.head.querySelectorAll('script[data-elevenlabs-widget]')).toHaveLength(1);
+
+    act(() => script?.dispatchEvent(new Event('load')));
+
+    await waitFor(() => expect(result.current.status).toBe('ready'));
+    expect(container.querySelector('elevenlabs-convai')).not.toBeNull();
   });
 
   it('removes only its scoped widget when unmounted', async () => {
@@ -87,7 +111,7 @@ describe('ElevenLabs widget lifecycle', () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it('clears its timeout and pending script when unmounted during loading', () => {
+  it('clears its timeout without cancelling the loader shared by other subscribers', () => {
     vi.useFakeTimers();
     const { unmount } = renderHook(() =>
       useElevenLabsWidget({ agentId: 'agent-test', language: 'en-US' }),
@@ -97,6 +121,6 @@ describe('ElevenLabs widget lifecycle', () => {
     unmount();
 
     expect(vi.getTimerCount()).toBe(0);
-    expect(document.head.querySelector('script[data-elevenlabs-widget]')).toBeNull();
+    expect(document.head.querySelector('script[data-elevenlabs-widget]')).not.toBeNull();
   });
 });

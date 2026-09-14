@@ -17,8 +17,8 @@ test('verifies immutable provider rollback targets', () => {
     siteId: 'site', currentId: 'netlify-current', rollbackId: 'netlify-previous', releaseSha,
   }));
   assert.doesNotThrow(() => verifyVercelRollback({
-    rollback: { id: 'vercel-previous', project: { id: 'project' }, readyState: 'READY', target: 'production', readySubstate: 'PROMOTED', meta: { githubCommitSha: rollbackSha } },
-    current: { id: 'vercel-current', project: { id: 'project' }, readyState: 'READY', target: 'production', meta: { githubCommitSha: releaseSha } },
+    rollback: { id: 'vercel-previous', project: { id: 'project' }, readyState: 'READY', target: 'production', readySubstate: 'PROMOTED', meta: { githubCommitRef: rollbackSha } },
+    current: { id: 'vercel-current', project: { id: 'project' }, readyState: 'READY', target: 'production', gitSource: { sha: releaseSha } },
     projectId: 'project', currentId: 'vercel-current', rollbackId: 'vercel-previous', releaseSha,
   }));
 });

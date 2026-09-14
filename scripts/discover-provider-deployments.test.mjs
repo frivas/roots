@@ -25,8 +25,8 @@ test('selects the exact ready Netlify deploy and an older rollback target', () =
 test('selects the exact ready Vercel production deploy and an older rollback target', () => {
   const result = selectVercelDeployments([
     { uid: 'preview', state: 'READY', target: null, meta: { githubCommitSha: sha } },
-    { uid: 'current', state: 'READY', target: 'production', meta: { githubCommitSha: sha } },
-    { uid: 'previous', state: 'READY', target: 'production', meta: { githubCommitSha: 'c'.repeat(40) } },
+    { uid: 'current', state: 'READY', target: 'production', gitSource: { sha } },
+    { uid: 'previous', state: 'READY', target: 'production', meta: { githubCommitRef: 'c'.repeat(40) } },
   ], sha);
 
   assert.deepEqual(result, {

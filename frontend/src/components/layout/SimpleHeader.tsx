@@ -35,7 +35,7 @@ const SimpleHeader: React.FC = () => {
     if (!mobileMenuOpen) return;
 
     const navigation = mobileNavigationRef.current;
-    const focusableSelector = 'a[href], button:not([disabled])';
+    const focusableSelector = 'a[href], button:not([disabled]), details > summary';
     const focusableItems = () =>
       Array.from(navigation?.querySelectorAll<HTMLElement>(focusableSelector) ?? [])
         .filter(item => !item.closest('details:not([open])'));
