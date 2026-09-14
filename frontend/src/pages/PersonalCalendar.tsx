@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import TranslatedText from '../components/TranslatedText';
+import InlineStatus from '../components/ui/InlineStatus';
 import useTranslatedString from '../hooks/useTranslatedString';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 import {
@@ -16,34 +17,7 @@ import {
     Check
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-
-// Animation variants
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-            delayChildren: 0.2,
-        }
-    }
-};
-
-const itemVariants = {
-    hidden: {
-        opacity: 0,
-        y: 20,
-    },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            type: "spring" as const,
-            stiffness: 400,
-            damping: 25,
-        }
-    }
-};
+import { relaxedContainerVariants as containerVariants, snappyItemVariants as itemVariants } from '../lib/motion';
 
 // Priority types and their styling
 const priorityTypes = {
@@ -132,6 +106,7 @@ const PersonalCalendar: React.FC = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
+    const [validationError, setValidationError] = useState<string | null>(null);
     const [events, setEvents] = useState<CalendarEvent[]>([
         // Example events like those mentioned in the user guide
         {
@@ -348,9 +323,11 @@ const PersonalCalendar: React.FC = () => {
         e.preventDefault();
 
         if (!formData.title || !formData.startDate) {
-            alert('Por favor, completa al menos el título y la fecha de inicio.');
+            setValidationError('Add a title and start date to create the event.');
             return;
         }
+
+        setValidationError(null);
 
         // Start loading state
         setIsSubmitting(true);
@@ -430,7 +407,7 @@ const PersonalCalendar: React.FC = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="flex gap-6">
+                        <div className="flex flex-wrap gap-4 sm:gap-6">
                             {Object.entries(priorityTypes).map(([key, type]) => (
                                 <div key={key} className="flex items-center gap-3">
                                     <div className={cn("w-4 h-4 rounded", type.bgColor)}></div>
@@ -582,11 +559,14 @@ const PersonalCalendar: React.FC = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
                         className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="create-event-title"
                     >
                         <form onSubmit={handleCreateEvent}>
                             <div className="p-6 border-b">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold">
+                                    <h2 id="create-event-title" className="text-xl font-semibold">
                                         <TranslatedText>Create Event</TranslatedText>
                                     </h2>
                                     <Button
@@ -594,6 +574,7 @@ const PersonalCalendar: React.FC = () => {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setShowCreateForm(false)}
+                                        aria-label={language === 'es-ES' ? 'Cerrar' : 'Close'}
                                     >
                                         <X className="h-4 w-4" />
                                     </Button>
@@ -601,6 +582,9 @@ const PersonalCalendar: React.FC = () => {
                             </div>
 
                             <div className="p-6 space-y-4">
+                                {validationError && (
+                                    <InlineStatus kind="error" message={validationError} />
+                                )}
                                 {/* Title */}
                                 <div>
                                     <label className="block text-sm font-medium mb-2">

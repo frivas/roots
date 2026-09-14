@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 interface TranslatedTextProps {
@@ -18,45 +18,46 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
 }) => {
   const { language, translateText } = useLingoTranslation();
 
-  const [translatedText, setTranslatedText] = useState(children);
-  const [isLoading, setIsLoading] = useState(false);
+  const translationKey = `${language}\u0000${children}\u0000${fallback ?? ''}`;
+  const [resolvedTranslation, setResolvedTranslation] = useState({
+    key: '',
+    text: children,
+  });
+  const shouldTranslate = language === 'es-ES' && children.trim().length >= 2;
 
   useEffect(() => {
+    if (!shouldTranslate) return;
+
     let cancelled = false;
-
-    if (language === 'en-US') {
-      setTranslatedText(children);
-      setIsLoading(false);
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    if (!children || children.trim().length < 2) {
-      setTranslatedText(children);
-      setIsLoading(false);
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    setIsLoading(true);
     void translateText(children)
       .then(translated => {
-        if (!cancelled) setTranslatedText(translated || children);
+        if (!cancelled) {
+          setResolvedTranslation({
+            key: translationKey,
+            text: translated || children,
+          });
+        }
       })
       .catch(error => {
         console.error('Translation failed:', error);
-        if (!cancelled) setTranslatedText(fallback || children);
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) {
+          setResolvedTranslation({
+            key: translationKey,
+            text: fallback || children,
+          });
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [children, language, translateText, fallback]);
+  }, [children, fallback, shouldTranslate, translateText, translationKey]);
+
+  const hasCurrentTranslation = resolvedTranslation.key === translationKey;
+  const translatedText = shouldTranslate && hasCurrentTranslation
+    ? resolvedTranslation.text
+    : fallback || children;
+  const isLoading = shouldTranslate && !hasCurrentTranslation;
 
   const Element = element as keyof React.JSX.IntrinsicElements;
 

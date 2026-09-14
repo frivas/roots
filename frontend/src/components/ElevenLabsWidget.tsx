@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useElevenLabsWidget } from '../hooks/useElevenLabsWidget';
 import TranslatedText from './TranslatedText';
+import Button from './ui/Button';
+import StatusState from './ui/StatusState';
 
 interface WidgetLabels {
   actionText: string;
@@ -35,7 +37,7 @@ const ElevenLabsWidget: React.FC<ElevenLabsWidgetProps> = ({
     'speaking-text': labels.speaking,
     style: 'display: block; margin: 0 auto;',
   }), [labels]);
-  const { containerRef, error } = useElevenLabsWidget({
+  const { containerRef, error, status, retry } = useElevenLabsWidget({
     agentId,
     language,
     attributes,
@@ -43,14 +45,18 @@ const ElevenLabsWidget: React.FC<ElevenLabsWidgetProps> = ({
   });
 
   return (
-    <>
-      <div ref={containerRef} className={className} />
-      {error && (
-        <p role="alert" aria-live="assertive" className="mt-4 text-sm text-destructive">
-          <TranslatedText>{error}</TranslatedText>
-        </p>
+    <div className="min-h-[12rem] w-full">
+      <div ref={containerRef} className={status === 'ready' ? className : 'hidden'} />
+      {status === 'loading' && <StatusState kind="loading" message="Voice Agent Loading..." />}
+      {status === 'error' && error && (
+        <div className="flex flex-col items-center">
+          <StatusState kind="error" message={error} className="min-h-[9rem]" />
+          <Button type="button" variant="outline" onClick={retry}>
+            <TranslatedText>New conversation</TranslatedText>
+          </Button>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

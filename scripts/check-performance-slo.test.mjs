@@ -36,6 +36,7 @@ const options = {
   expectedCollectorId: passingObservations.collector.id,
   expectedCollectorUrl: 'https://observability.example.com/roots',
   expectedReleaseSha: passingObservations.releaseSha,
+  expectedWorkflowAudience: passingObservations.collector.audience,
   nowMs: now,
 };
 const enforce = (observations) =>
@@ -76,6 +77,12 @@ test('fails closed when collector identity does not match', () => {
   const observations = structuredClone(passingObservations);
   observations.collector.id = 'untrusted';
   assert.throws(() => enforce(observations), /collector identity/);
+});
+
+test('fails closed when collector evidence names a different workflow audience', () => {
+  const observations = structuredClone(passingObservations);
+  observations.collector.audience = 'frivas/roots/.github/workflows/production-health.yml';
+  assert.throws(() => enforce(observations), /collector audience/);
 });
 
 test('fails closed when the measurement window is stale', () => {

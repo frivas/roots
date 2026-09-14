@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import React from 'react';
 
 vi.mock('../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: () => ({ language: 'en-US' }),

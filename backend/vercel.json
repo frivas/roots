@@ -1,8 +1,7 @@
 {
-  "ignoreCommand": "test \"$VERCEL_ENV\" != \"production\"",
   "functions": {
     "api/serverless.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "api/health.ts": {
       "maxDuration": 10
@@ -12,6 +11,10 @@
     {
       "src": "/health",
       "dest": "/api/health"
+    },
+    {
+      "src": "/ready",
+      "dest": "/api/serverless"
     },
     {
       "src": "/webhook/(.*)",

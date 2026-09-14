@@ -3,9 +3,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 vi.mock('../services/LingoTranslationService', () => ({
   lingoTranslationService: {
     translateText: vi.fn(),
-    clearCache: vi.fn(),
-    preloadCommonTranslations: vi.fn(),
-    getStats: vi.fn(() => ({ cacheSize: 0, localTranslationsCount: 0 })),
   },
 }));
 

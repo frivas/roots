@@ -12,34 +12,7 @@ import {
   Users,
   Info,
 } from 'lucide-react';
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 400,
-      damping: 25,
-    }
-  }
-};
+import { relaxedContainerVariants as containerVariants, snappyItemVariants as itemVariants } from '../lib/motion';
 
 // Mock school data based on the images provided
 const schoolData = {

@@ -23,9 +23,9 @@ Roots is a next-generation educational platform that combines traditional educat
 
 ### Advanced Localization
 
-- **Hybrid Translation System** with 900+ local translations
+- **Local Translation System** with 900+ checked-in translations
 - **Real-time Language Switching** (English/Spanish)
-- **AI-Powered Dynamic Translation** via Lingo.dev
+- **Lazy Dictionary Loading** when Spanish text is first requested
 - **Regional Customization** for Spanish users (dates, phones, timezone)
 
 ### Real-Time Communication
@@ -58,7 +58,6 @@ roots/
 │   │   ├── services/        # Business logic services
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── config/          # Configuration files
-│   ├── netlify.toml        # Netlify deployment config
 │   └── package.json
 ├── backend/                 # Node.js API with Fastify
 │   ├── src/
@@ -67,7 +66,8 @@ roots/
 │   │   └── types/           # TypeScript definitions
 │   ├── vercel.json         # Vercel deployment config
 │   └── package.json
-└── .documentation/          # Comprehensive documentation
+├── netlify.toml             # Netlify deployment config
+└── docs/deployment/         # Deployment and release contracts
 ```
 
 ## 🛠️ Technology Stack
@@ -79,7 +79,7 @@ roots/
 - **Framer Motion** for animations
 - **React Router** for navigation
 - **Clerk Authentication** for user management
-- **Lingo.dev SDK** for AI translation
+- **Checked-in Spanish dictionary** for deterministic translation
 - **Vite** for build tooling
 - **Deployed on Netlify**
 
@@ -95,8 +95,6 @@ roots/
 
 - **ElevenLabs Conversational AI** for voice agents
 - **OpenAI DALL-E 3** for image generation
-- **Lingo.dev** for dynamic translation
-- **Groq API** for language processing
 
 ## 🚀 Getting Started
 
@@ -121,13 +119,21 @@ VITE_BACKEND_URL=http://localhost:3000
 #### Backend (.env)
 
 ```bash
+ROOTS_BACKEND_MODE=demo
 CLERK_SECRET_KEY=your_clerk_secret_key
 CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 OPENAI_API_KEY=your_openai_api_key
 SUPABASE_URL=your_supabase_url
-SUPABASE_API_KEY=your_supabase_anon_key
+SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SECRET_KEY=your_supabase_secret_key
+ELEVENLABS_WEBHOOK_SECRET=your_elevenlabs_webhook_secret
+FRONTEND_URL=http://localhost:5173
 PORT=3000
 ```
+
+Demo mode needs only the server, Clerk, and frontend URL settings. Supabase,
+OpenAI, and the ElevenLabs webhook secret are required when
+`ROOTS_BACKEND_MODE=connected`.
 
 ### Installation & Development
 
@@ -225,12 +231,10 @@ ngrok http 3000
 - `GET /api/settings` - Get user settings
 - `PUT /api/settings` - Update user settings
 
-## 📚 Key Features Documentation
+## 📚 Deployment Documentation
 
-- **[Implementation Summary](.documentation/implementation-summary.md)** - Complete feature overview
-- **[Storytelling Feature](.documentation/storytelling-illustration-feature.md)** - Real-time illustration system
-- **[Localization Guide](.documentation/localization-guide.md)** - Translation system usage
-- **[Madrid Branding](.documentation/madrid-branding-guide.md)** - Design guidelines
+- **[Integration contracts](docs/deployment/integration-contracts.md)** - Clerk, Supabase, and serverless verification
+- **[Release and rollback](docs/deployment/release-and-rollback.md)** - Exact-SHA deployment verification procedure
 
 ## 🧪 Quality Assurance
 
@@ -292,15 +296,13 @@ npm run build:backend   # Creates dist/ folder with compiled TypeScript
 - Set up rate limiting and monitoring
 - Configure proper environment variables for production
 
-### Deployment Commands
+The required provider variables, alert hook, preview isolation, release
+evidence, and rollback commands are defined in
+`docs/runbooks/production-operations.md`.
 
-```bash
-# Frontend (Netlify)
-netlify deploy --prod --dir=frontend/dist
-
-# Backend (Vercel)
-vercel --prod
-```
+Production deployment is performed by the connected Netlify and Vercel Git
+integrations from the protected `main` branch. Do not deploy a local working
+tree directly; the deployed revision must remain traceable to a verified SHA.
 
 ## 🔧 Development Tools
 
@@ -314,7 +316,7 @@ vercel --prod
 ## 📱 Supported Features
 
 - **Web Browsers**: Chrome, Firefox, Safari, Edge (modern versions)
-- **Languages**: English (US), Spanish (ES) with hybrid translation system
+- **Languages**: English (US), Spanish (ES) with a lazily loaded local dictionary
 - **Voice Agents**: Real-time conversational AI in multiple languages
 - **Devices**: Fully responsive design for desktop, tablet, and mobile
 - **Real-time Features**: SSE for live story illustrations

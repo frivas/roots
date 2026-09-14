@@ -15,6 +15,7 @@ import {
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Switch from '../components/ui/Switch';
+import InlineStatus from '../components/ui/InlineStatus';
 import {
   Bell,
   Globe,
@@ -116,6 +117,8 @@ const PersonalData = () => {
   const { language: currentLanguage } = useLingoTranslation();
   const { userEmail } = useAuth();
   const { user } = useUser();
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [notificationsSaved, setNotificationsSaved] = useState(false);
 
   // Helper function to get placeholder text based on current language
   const getPlaceholderText = (text: string) => {
@@ -183,14 +186,12 @@ const PersonalData = () => {
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save profile logic would go here
-    alert('Profile settings saved');
+    setProfileSaved(true);
   };
 
   const handleSaveNotifications = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save notification settings logic would go here
-    alert('Notification settings saved');
+    setNotificationsSaved(true);
   };
 
   const fadeIn = {
@@ -271,7 +272,7 @@ const PersonalData = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <form onSubmit={handleSaveProfile} className="space-y-4">
+                  <form id="profile-settings-form" onSubmit={handleSaveProfile} className="space-y-4">
                     <div className="space-y-2">
                       <label htmlFor="email" className="block text-sm font-medium text-foreground">
                         <TranslatedText>Email Address</TranslatedText>
@@ -342,10 +343,13 @@ const PersonalData = () => {
                         <TranslatedText>Recommended size: 400x400px. Max file size: 2MB</TranslatedText>
                       </p>
                     </div>
+                    {profileSaved && (
+                      <InlineStatus kind="success" message="Profile settings updated for this demo" />
+                    )}
                   </form>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
-                  <Button type="submit" className="flex items-center gap-2">
+                  <Button type="submit" form="profile-settings-form" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
                     <TranslatedText>Save Profile</TranslatedText>
                   </Button>
@@ -461,7 +465,7 @@ const PersonalData = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <form onSubmit={handleSaveNotifications} className="space-y-6">
+                  <form id="notification-settings-form" onSubmit={handleSaveNotifications} className="space-y-6">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
@@ -511,10 +515,13 @@ const PersonalData = () => {
                         />
                       </div>
                     </div>
+                    {notificationsSaved && (
+                      <InlineStatus kind="success" message="Notification settings updated for this demo" />
+                    )}
                   </form>
                 </CardContent>
                 <div className="bg-muted/20 px-6 py-4">
-                  <Button type="submit" className="flex items-center gap-2">
+                  <Button type="submit" form="notification-settings-form" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
                     <TranslatedText>Save Notification Settings</TranslatedText>
                   </Button>

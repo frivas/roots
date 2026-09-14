@@ -7,16 +7,14 @@ import React, {
 } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Download, Image as ImageIcon } from 'lucide-react';
+import { Download, Image as ImageIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import AiAccuracyNotice from '../../components/AiAccuracyNotice';
-import ElevenLabsWidget from '../../components/ElevenLabsWidget';
+import AgentSession from '../../components/AgentSession';
 import TranslatedText from '../../components/TranslatedText';
 import Button from '../../components/ui/Button';
 import PaintingSpinner from '../../components/ui/PaintingSpinner';
-import { AGENT_IDS, WIDGET_TRANSLATIONS } from '../../config/agentConfig';
+import { AGENT_IDS } from '../../config/agentConfig';
 import { APP_ROUTES } from '../../config/routes';
-import { useLingoTranslation } from '../../contexts/LingoTranslationContext';
 import useTranslatedString from '../../hooks/useTranslatedString';
 import {
   appendRecentStoryTurn,
@@ -79,12 +77,11 @@ const analyzeStory = (
 const StorytellingSession: React.FC = () => {
   const navigate = useNavigate();
   const { getToken } = useAuth();
-  const { language } = useLingoTranslation();
   const storyIllustrationAlt = useTranslatedString('Story illustration');
   const downloadIllustrationTitle = useTranslatedString('Download Illustration');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [imageError, setImageError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
   const [hasStoryContent, setHasStoryContent] = useState(false);
   const [isWaitingForDrawingResponse, setIsWaitingForDrawingResponse] = useState(false);
   const recentTurnsRef = useRef<string[]>([]);
@@ -100,8 +97,6 @@ const StorytellingSession: React.FC = () => {
     [getToken],
   );
 
-  const widgetLanguage = language === 'en-US' ? 'en' : 'es';
-  const i18n = WIDGET_TRANSLATIONS[widgetLanguage];
 
   useEffect(() => () => abortControllerRef.current?.abort(), []);
 
@@ -123,7 +118,7 @@ const StorytellingSession: React.FC = () => {
     isGeneratingImageRef.current = true;
     setIsGeneratingImage(true);
     setGeneratedImage(null);
-    setImageError(null);
+    setImageError(false);
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
@@ -134,11 +129,9 @@ const StorytellingSession: React.FC = () => {
         controller.signal,
       );
       setGeneratedImage(imageUrl);
-    } catch (error) {
+    } catch {
       if (!controller.signal.aborted) {
-        setImageError(
-          error instanceof Error ? error.message : 'Failed to generate illustration',
-        );
+        setImageError(true);
       }
     } finally {
       if (abortControllerRef.current === controller) {
@@ -160,7 +153,7 @@ const StorytellingSession: React.FC = () => {
       manualTurnRef.current = 0;
       conversationEndGuardRef.current.noteActivity();
       setGeneratedImage(null);
-      setImageError(null);
+      setImageError(false);
       setIsGeneratingImage(false);
       setHasStoryContent(false);
       setWaitingForDrawingResponse(false);
@@ -231,33 +224,15 @@ const StorytellingSession: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
-      <motion.div
-        className="space-y-8 p-6 pb-16"
-        style={{ paddingBottom: '70px' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <TranslatedText>Back to Online Learning</TranslatedText>
-          </Button>
-
-          <h1 className="text-xl font-semibold text-foreground">
-            <TranslatedText>Storytelling Adventure</TranslatedText>
-          </h1>
-
-          <AiAccuracyNotice />
-        </div>
-
-        {hasStoryContent && (
+    <AgentSession
+      agentId={AGENT_IDS.storytelling}
+      title="Storytelling Adventure"
+      backLabel="Back to Online Learning"
+      onBack={() => navigate(`${APP_ROUTES.servicesExtraCurricular}?tab=online`)}
+      onWidgetReady={handleWidgetReady}
+      widgetClassName="widget-container max-h-[calc(100vh-200px)] overflow-hidden"
+      className="min-h-screen p-4 pb-16 sm:p-6"
+      beforeWidget={hasStoryContent ? (
           <div className="flex justify-center">
             <Button
               onClick={handleManualIllustration}
@@ -271,15 +246,8 @@ const StorytellingSession: React.FC = () => {
                 : <TranslatedText>Draw your story</TranslatedText>}
             </Button>
           </div>
-        )}
-
-        <ElevenLabsWidget
-          agentId={AGENT_IDS.storytelling}
-          language={widgetLanguage}
-          labels={i18n}
-          onWidgetReady={handleWidgetReady}
-          className="widget-container max-h-[calc(100vh-200px)] overflow-hidden"
-        />
+      ) : undefined}
+    >
 
         {isWaitingForDrawingResponse && (
           <motion.div
@@ -317,7 +285,7 @@ const StorytellingSession: React.FC = () => {
                     className="w-full h-auto rounded-lg shadow-lg"
                     onError={() => {
                       setGeneratedImage(null);
-                      setImageError('Failed to load image');
+                      setImageError(true);
                     }}
                   />
                   <button
@@ -340,9 +308,8 @@ const StorytellingSession: React.FC = () => {
                   <p className="text-destructive">
                     <TranslatedText>Sorry, we couldn't create the illustration. Please try again.</TranslatedText>
                   </p>
-                  <p className="text-destructive text-sm mt-2">Error: {imageError}</p>
                   <button
-                    onClick={() => setImageError(null)}
+                    onClick={() => setImageError(false)}
                     className="mt-3 px-4 py-2 bg-destructive text-destructive-foreground rounded hover:opacity-90 transition-opacity"
                   >
                     <TranslatedText>Dismiss</TranslatedText>
@@ -364,8 +331,7 @@ const StorytellingSession: React.FC = () => {
             )}
           </motion.div>
         )}
-      </motion.div>
-    </div>
+    </AgentSession>
   );
 };
 

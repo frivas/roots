@@ -10,32 +10,38 @@ import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 function useTranslatedString(text: string): string {
   const { language, translateText } = useLingoTranslation();
 
-  const [translated, setTranslated] = useState(text);
+  const translationKey = `${language}\u0000${text}`;
+  const [resolvedTranslation, setResolvedTranslation] = useState({
+    key: '',
+    text,
+  });
+  const shouldTranslate = language === 'es-ES';
 
   useEffect(() => {
-    let cancelled = false;
+    if (!shouldTranslate) return;
 
-    if (language === 'en-US') {
-      setTranslated(text);
-      return () => {
-        cancelled = true;
-      };
-    }
+    let cancelled = false;
 
     void translateText(text)
       .then(result => {
-        if (!cancelled) setTranslated(result || text);
+        if (!cancelled) {
+          setResolvedTranslation({ key: translationKey, text: result || text });
+        }
       })
       .catch(() => {
-        if (!cancelled) setTranslated(text);
+        if (!cancelled) {
+          setResolvedTranslation({ key: translationKey, text });
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [text, language, translateText]);
+  }, [shouldTranslate, text, translateText, translationKey]);
 
-  return translated;
+  return shouldTranslate && resolvedTranslation.key === translationKey
+    ? resolvedTranslation.text
+    : text;
 }
 
 export default useTranslatedString;

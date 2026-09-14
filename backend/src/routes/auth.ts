@@ -14,7 +14,7 @@ const authRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
       const { repository } = await getDataRepository(request, options);
       return await repository.getCurrentUser();
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   });
 
@@ -24,7 +24,7 @@ const authRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
       const user = await repository.getCurrentUser();
       return { role: user.role };
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   });
 };

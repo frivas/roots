@@ -104,3 +104,35 @@ test('fails closed for observations from a different release SHA', async () => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /match RELEASE_SHA/);
 });
+
+test('fails closed when invoked by a workflow outside the collector contract', async () => {
+  const server = createServer((_request, response) => {
+    response.setHeader('content-type', 'application/json');
+    response.end(JSON.stringify(observations()));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address();
+  const result = await new Promise((resolve) => {
+    const child = spawn(process.execPath, [script], {
+      env: {
+        ...process.env,
+        RELEASE_SHA: sha,
+        PERFORMANCE_COLLECTOR_URL: `http://127.0.0.1:${address.port}/observations`,
+        PERFORMANCE_COLLECTOR_ID: collectorId,
+        PERFORMANCE_COLLECTOR_TOKEN: 'collector-secret',
+        GITHUB_REPOSITORY: 'frivas/roots',
+        GITHUB_RUN_ID: '12345',
+        GITHUB_WORKFLOW_REF:
+          'frivas/roots/.github/workflows/production-health.yml@refs/heads/main',
+        ALLOW_INSECURE_PERFORMANCE_COLLECTOR_FOR_TESTS: '1',
+      },
+    });
+    let stderr = '';
+    child.stderr.on('data', (chunk) => { stderr += chunk; });
+    child.on('close', (status) => resolve({ status, stderr }));
+  });
+  await new Promise((resolve) => server.close(resolve));
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /workflow is not authorized/);
+});

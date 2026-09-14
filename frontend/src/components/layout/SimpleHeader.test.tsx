@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { getMenuItems } from '../../config/menuConfig';
+
+const mockUseLocation = vi.fn(() => ({ pathname: '/home' }));
 
 vi.mock('../../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
@@ -41,7 +43,7 @@ vi.mock('react-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-router')>();
   return {
     ...actual,
-    useLocation: vi.fn(() => ({ pathname: '/home' })),
+    useLocation: () => mockUseLocation(),
     Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string; className?: string; onClick?: () => void }) => (
       <a href={to} {...rest}>
         {children}
@@ -53,6 +55,9 @@ vi.mock('react-router', async (importOriginal) => {
 import SimpleHeader from './SimpleHeader';
 
 describe('SimpleHeader', () => {
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({ pathname: '/home' });
+  });
   it('renders without crashing', () => {
     render(
       <MemoryRouter>
@@ -91,6 +96,49 @@ describe('SimpleHeader', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
   });
 
+  it('keeps the language control visible in the signed-in mobile header', () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('group', { name: 'Language' })).toBeInTheDocument();
+  });
+
+  it('closes the mobile drawer with Escape and restores focus to its toggle', async () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    const toggle = screen.getByRole('button', { name: /open main menu/i });
+    fireEvent.click(toggle);
+    const firstSummary = document.querySelector('summary');
+    await waitFor(() => expect(firstSummary).toHaveFocus());
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(screen.queryByRole('link', { name: 'Tutoring' })).not.toBeInTheDocument();
+    expect(toggle).toHaveFocus();
+  });
+
+  it('wraps focus inside the open mobile drawer', async () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+    const signOut = await screen.findByRole('button', { name: /sign out/i });
+    signOut.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+
+    expect(document.querySelector('summary')).toHaveFocus();
+  });
+
   it('uses the same registered destination model as the desktop sidebar', () => {
     render(
       <MemoryRouter>
@@ -111,6 +159,18 @@ describe('SimpleHeader', () => {
     expect(renderedDestinations).not.toContain('/settings');
   });
 
+  it('highlights the canonical destination for a nested route', () => {
+    mockUseLocation.mockReturnValue({ pathname: '/communications/messages/thread-1' });
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+
+    expect(screen.getByRole('link', { name: 'Messages' })).toHaveAttribute('aria-current', 'page');
+  });
+
   it('closes mobile menu when a navigation link is clicked', () => {
     render(
       <MemoryRouter>
@@ -119,7 +179,7 @@ describe('SimpleHeader', () => {
     );
 
     // Open the menu
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
     expect(screen.getByText('Home')).toBeInTheDocument();
 
     // Click a navigation link

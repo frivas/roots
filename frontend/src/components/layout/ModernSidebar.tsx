@@ -1,21 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router';
+import { useClerk, useUser } from '@clerk/clerk-react';
+import { LogOut } from 'lucide-react';
+import { getActiveNavigationPath } from '../../config/routes';
+import {
+  getMenuDestinations,
+  getMenuItems,
+  type MenuItem,
+  type Role,
+} from '../../config/menuConfig';
 import { cn } from '../../lib/utils';
 import TranslatedText from '../TranslatedText';
-import { getMenuItems, type Role } from '../../config/menuConfig';
-import { useUser, useClerk } from '@clerk/clerk-react';
-import {
-  LogOut,
-  LucideIcon
-} from 'lucide-react';
 import MadridLogo from '../ui/MadridLogo';
-
-interface MenuItem {
-  name: string;
-  href?: string;
-  icon: LucideIcon;
-  children?: MenuItem[];
-}
 
 interface ModernSidebarProps {
   className?: string;
@@ -23,436 +19,161 @@ interface ModernSidebarProps {
   hideBottomBorder?: boolean;
 }
 
+const findActiveAncestors = (items: readonly MenuItem[], activeHref?: string): string[] =>
+  items.flatMap(item => {
+    if (!item.children) return [];
+    const descendants = getMenuDestinations(item.children);
+    return descendants.some(href => href === activeHref)
+      ? [item.name, ...findActiveAncestors(item.children, activeHref)]
+      : [];
+  });
 
-
-const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBottomBorder = false }) => {
+const ModernSidebar: React.FC<ModernSidebarProps> = ({
+  className,
+  userRoles = [],
+  hideBottomBorder = false,
+}) => {
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
-  const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const navigation = useMemo(
+    () => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress),
+    [userRoles, user?.primaryEmailAddress?.emailAddress],
+  );
+  const activeHref = getActiveNavigationPath(location.pathname, getMenuDestinations(navigation));
 
-  const navigation = useMemo(() => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress), [userRoles, user?.primaryEmailAddress?.emailAddress]);
-
-  // Auto-expand menus that contain the current page (only for specific routes, not root)
   useEffect(() => {
-    // Don't auto-expand anything on root path or empty paths
-    if (location.pathname === '/' || location.pathname === '') {
-      return;
-    }
+    const ancestors = findActiveAncestors(navigation, activeHref);
+    if (ancestors.length === 0) return;
+    setExpandedMenus(previous => new Set([...previous, ...ancestors]));
+  }, [activeHref, navigation]);
 
-    const findMenusToExpand = (items: MenuItem[], path: string): string[] => {
-      const menusToExpand: string[] = [];
-
-      items.forEach(item => {
-        if (item.children) {
-          // Check if this menu contains the current page
-          const containsCurrentPage = item.children.some(child => {
-            if (child.href === path) return true;
-            if (child.children) {
-              return child.children.some(grandchild => grandchild.href === path);
-            }
-            return false;
-          });
-
-          if (containsCurrentPage) {
-            menusToExpand.push(item.name);
-
-            // Also check for nested menus
-            item.children.forEach(child => {
-              if (child.children) {
-                const hasActiveGrandchild = child.children.some(grandchild => grandchild.href === path);
-                if (hasActiveGrandchild) {
-                  menusToExpand.push(child.name);
-                }
-              }
-            });
-          }
-        }
-      });
-
-      return menusToExpand;
-    };
-
-    // Only auto-expand on route changes, preserve manual toggles
-    const menusToExpand = findMenusToExpand(navigation, location.pathname);
-    if (menusToExpand.length > 0) {
-      setExpandedMenus(prev => {
-        const newSet = new Set(prev);
-        menusToExpand.forEach(menu => newSet.add(menu));
-        return newSet;
-      });
-    }
-  }, [location.pathname, navigation]);
-
-  const toggleMenu = (menuName: string) => {
-    setExpandedMenus(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(menuName)) {
-        newSet.delete(menuName);
+  const toggleMenu = (name: string) => {
+    setExpandedMenus(previous => {
+      const next = new Set(previous);
+      if (next.has(name)) {
+        next.delete(name);
       } else {
-        newSet.add(menuName);
+        next.add(name);
       }
-      return newSet;
+      return next;
     });
   };
 
-  const IconComponent = ({ icon: Icon, className }: { icon: LucideIcon; className?: string }) => {
-    const IconElement = Icon as unknown as React.ComponentType<{ className?: string }>;
-    return <IconElement className={cn("h-6 w-6", className)} />;
-  };
-
-  // Expandable group rows are containers only; active styling belongs to their links.
-  const isMenuItemActive = (item: MenuItem): boolean => {
-    void item;
-    return false;
-  };
-
-  const Link = RouterLink as unknown as React.ComponentType<{
-    to: string;
-    className?: string;
-    children: React.ReactNode;
-    'aria-current'?: 'page';
-  }>;
-
-  // For desktop (md and up): always expanded (w-72)
-  // For mobile: hover to expand (w-16 default, w-72 on hover)
-  const isExpanded = isHovered; // Mobile hover state
-
-  return (
-    <div
-      className={cn(
-        "relative border-r bg-background transition-all duration-300 flex flex-col flex-1",
-        // Mobile: hover effect (w-16 collapsed, w-72 expanded)
-        "w-16 md:w-72",
-        isExpanded && "w-72"
-      )}
-      // Only add hover effects on mobile (below md breakpoint)
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Header Section */}
-      <div className={cn(
-        "flex h-16 items-center border-b flex-shrink-0",
-        // Mobile: responsive padding to match menu items, Desktop: always px-4
-        "px-1 md:px-4",
-        isExpanded && "px-4"
-      )}>
-        <Link to="/home" className={cn(
-          "flex items-center gap-3 font-semibold",
-          // Always left-aligned to match menu items
-          "justify-start w-full",
-          // Add padding to match menu item alignment
-          "px-0 py-3 md:px-4 md:py-3",
-          isExpanded && "px-4 py-3"
-        )}>
-          <div className={cn(
-            "flex items-center justify-center",
-            // Match menu item icon container sizing
-            "w-6 h-6 md:w-6 md:min-w-[24px]",
-            isExpanded && "w-6 min-w-[24px]"
-          )}>
-            <MadridLogo size="sm" variant="positive" />
-          </div>
-          {/* Mobile: show text on hover, Desktop: always show */}
-          <span className={cn(
-            "text-lg font-semibold text-foreground ml-3",
-            "hidden md:block",
-            isExpanded && "block"
-          )}>
-            <TranslatedText>Raíces</TranslatedText>
-          </span>
-        </Link>
-      </div>
-
-      {/* Navigation Section - Takes available space */}
-      <div className="flex-1 overflow-auto py-4">
-        <nav className={cn(
-          "grid gap-2",
-          // Mobile: responsive padding, Desktop: always px-4
-          "px-1 md:px-4",
-          isExpanded && "px-4"
-        )}>
-          {navigation.map((item) => (
-            <div key={item.name}>
-              {item.children && !item.href ? (
-                // Item with only children - expandable button
-                <>
-                  <button
-                    type="button"
-                    onClick={() => toggleMenu(item.name)}
-                    aria-expanded={expandedMenus.has(item.name)}
-                    className={cn(
-                      "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
-                      // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
-                      "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
-                      isExpanded && "px-4 py-3 justify-start",
-                      isMenuItemActive(item)
-                        ? "bg-primary/15 text-primary font-semibold"
-                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                    )}
-                  >
-                    <div className={cn(
-                      "flex items-center justify-center",
-                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
-                      "w-6 h-6 md:w-6 md:min-w-[24px]",
-                      isExpanded && "w-6 min-w-[24px]"
-                    )}>
-                      <IconComponent icon={item.icon} />
-                    </div>
-                    {/* Mobile: show text on hover, Desktop: always show */}
-                    <span className={cn(
-                      "text-sm font-medium ml-3",
-                      "hidden md:block",
-                      isExpanded && "block"
-                    )}>
-                      <TranslatedText>{item.name}</TranslatedText>
-                    </span>
-                  </button>
-                  {/* Mobile: show submenu on hover, Desktop: always show when expanded */}
-                  <div className={cn(
-                    "ml-6 mt-2 space-y-2 relative",
-                    "hidden md:block",
-                    isExpanded && expandedMenus.has(item.name) && "block",
-                    (!isExpanded || !expandedMenus.has(item.name)) && "md:hidden",
-                    expandedMenus.has(item.name) && "md:block"
-                  )}>
-                    {/* Connector line from parent to children */}
-                    <div className="absolute left-[-12px] top-0 bottom-0 w-px bg-border"></div>
-                    {item.children.map((child) => (
-                      <div key={child.name} className="relative">
-                        {/* Horizontal connector line */}
-                        <div className="absolute left-[-12px] top-1/2 w-3 h-px bg-border"></div>
-                        {child.children && !child.href ? (
-                          // Child with only children - expandable button
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => toggleMenu(child.name)}
-                              aria-expanded={expandedMenus.has(child.name)}
-                              className={cn(
-                                "group flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                isMenuItemActive(child)
-                                  ? "bg-primary/15 text-primary font-semibold"
-                                  : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                              )}
-                            >
-                              <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                <IconComponent icon={child.icon} />
-                              </div>
-                              <span className="text-sm font-medium ml-3">
-                                <TranslatedText>{child.name}</TranslatedText>
-                              </span>
-                            </button>
-                            {expandedMenus.has(child.name) && (
-                              <div className="ml-6 mt-2 space-y-2">
-                                {child.children.map((grandchild) => (
-                                  grandchild.href ? (
-                                    <Link
-                                      key={grandchild.name}
-                                      to={grandchild.href}
-                                      aria-current={location.pathname === grandchild.href ? 'page' : undefined}
-                                      className={cn(
-                                        "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                        location.pathname === grandchild.href
-                                          ? "bg-primary/15 text-primary font-semibold"
-                                          : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                                      )}
-                                    >
-                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                        <IconComponent icon={grandchild.icon} />
-                                      </div>
-                                      <span className="text-sm font-medium ml-3">
-                                        <TranslatedText>{grandchild.name}</TranslatedText>
-                                      </span>
-                                    </Link>
-                                  ) : (
-                                    <div
-                                      key={grandchild.name}
-                                      className="group flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-default"
-                                    >
-                                      <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                        <IconComponent icon={grandchild.icon} />
-                                      </div>
-                                      <span className="text-sm font-medium ml-3">
-                                        <TranslatedText>{grandchild.name}</TranslatedText>
-                                      </span>
-                                    </div>
-                                  )
-                                ))}
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          // Child with href - simple clickable link
-                          child.href ? (
-                            <Link
-                              to={child.href}
-                              aria-current={location.pathname === child.href ? 'page' : undefined}
-                              className={cn(
-                                "group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors",
-                                location.pathname === child.href
-                                  ? "bg-primary/15 text-primary font-semibold"
-                                  : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                              )}
-                            >
-                              <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                <IconComponent icon={child.icon} />
-                              </div>
-                              <span className="text-sm font-medium ml-3">
-                                <TranslatedText>{child.name}</TranslatedText>
-                              </span>
-                            </Link>
-                          ) : (
-                            <div className="group flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-default">
-                              <div className="flex items-center justify-center w-6 min-w-[24px]">
-                                <IconComponent icon={child.icon} />
-                              </div>
-                              <span className="text-sm font-medium ml-3">
-                                <TranslatedText>{child.name}</TranslatedText>
-                              </span>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                // Item with href - simple clickable link
-                item.href ? (
-                  <Link
-                    to={item.href}
-                    aria-current={location.pathname === item.href ? 'page' : undefined}
-                    className={cn(
-                      "group flex w-full items-center rounded-md text-sm font-medium transition-colors",
-                      // Mobile: responsive padding and alignment, Desktop: always px-4 py-3 left-aligned
-                      "px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start",
-                      isExpanded && "px-4 py-3 justify-start",
-                      location.pathname === item.href
-                        ? "bg-primary/15 text-primary font-semibold"
-                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                    )}
-                  >
-                    <div className={cn(
-                      "flex items-center justify-center",
-                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
-                      "w-6 h-6 md:w-6 md:min-w-[24px]",
-                      isExpanded && "w-6 min-w-[24px]"
-                    )}>
-                      <IconComponent icon={item.icon} />
-                    </div>
-                    {/* Mobile: show text on hover, Desktop: always show */}
-                    <span className={cn(
-                      "text-sm font-medium ml-3",
-                      "hidden md:block",
-                      isExpanded && "block"
-                    )}>
-                      <TranslatedText>{item.name}</TranslatedText>
-                    </span>
-                  </Link>
-                ) : (
-                  <div className="group flex w-full items-center rounded-md text-sm font-medium text-muted-foreground cursor-default px-0 py-3 justify-center md:px-4 md:py-3 md:justify-start">
-                    <div className={cn(
-                      "flex items-center justify-center",
-                      // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
-                      "w-6 h-6 md:w-6 md:min-w-[24px]",
-                      isExpanded && "w-6 min-w-[24px]"
-                    )}>
-                      <IconComponent icon={item.icon} />
-                    </div>
-                    {/* Mobile: show text on hover, Desktop: always show */}
-                    <span className={cn(
-                      "text-sm font-medium ml-3",
-                      "hidden md:block",
-                      isExpanded && "block"
-                    )}>
-                      <TranslatedText>{item.name}</TranslatedText>
-                    </span>
-                  </div>
-                )
-              )}
-            </div>
-          ))}
-        </nav>
-      </div>
-
-      {/* User Profile and Sign Out Section - Always at bottom */}
-      <div className={cn(
-        "bg-background flex-shrink-0",
-        !hideBottomBorder && "border-t",
-        // Mobile: responsive padding, Desktop: always p-4
-        "py-4 px-2 md:p-4",
-        isExpanded && "p-4"
-      )}>
-        {/* User Info */}
-        {/* Mobile: show user info on hover, Desktop: always show */}
-        <div className={cn(
-          "mb-4 flex flex-col items-center justify-center",
-          "hidden md:flex",
-          isExpanded && user && "flex"
-        )}>
-          {user && (
-            <div className="flex flex-col items-center gap-2 w-full">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
-                {user.imageUrl ? (
-                  <img
-                    src={user.imageUrl}
-                    alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
-                    className="h-full w-full object-cover rounded-full"
-                  />
-                ) : (
-                  <span className="text-xl font-semibold text-primary">
-                    {user.firstName?.[0] || user.emailAddresses[0]?.emailAddress[0] || 'U'}
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col items-center w-full">
-                <p className="text-sm font-medium truncate w-full text-center text-foreground">
-                  {user.firstName && user.lastName
-                    ? `${user.firstName} ${user.lastName}`
-                    : user.firstName || user.lastName || <TranslatedText>User</TranslatedText>
-                  }
-                </p>
-                <p className="text-xs text-muted-foreground truncate w-full text-center">
-                  {user.emailAddresses[0]?.emailAddress}
-                </p>
-              </div>
+  const renderItem = (item: MenuItem, depth = 0): React.ReactNode => {
+    const Icon = item.icon;
+    if (item.children && !item.href) {
+      const expanded = expandedMenus.has(item.name);
+      const containsActive = getMenuDestinations(item.children).some(href => href === activeHref);
+      return (
+        <div key={item.name}>
+          <button
+            type="button"
+            onClick={() => toggleMenu(item.name)}
+            aria-expanded={expanded}
+            className={cn(
+              'group flex w-full items-center rounded-md px-4 py-3 text-sm font-medium transition-colors',
+              containsActive
+                ? 'text-primary'
+                : 'text-muted-foreground hover:bg-primary/10 hover:text-primary',
+            )}
+          >
+            <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+            <span className="ml-3"><TranslatedText>{item.name}</TranslatedText></span>
+          </button>
+          {expanded && (
+            <div className={cn('mt-2 space-y-2 border-l border-border pl-3', depth === 0 && 'ml-6')}>
+              {item.children.map(child => renderItem(child, depth + 1))}
             </div>
           )}
         </div>
+      );
+    }
 
-        {/* Sign Out Button */}
-        <div className="flex justify-center w-full">
-          <button
-            onClick={() => signOut()}
-            className={cn(
-              "flex items-center rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors",
-              // Mobile: responsive layout, Desktop: always expanded style
-              "px-0 py-3 w-full justify-center md:px-4 md:py-3 md:w-full md:max-w-[180px] md:justify-center",
-              isExpanded && "px-4 py-3 w-full max-w-[180px] justify-center"
-            )}
-          >
-            <div className={cn(
-              "flex items-center justify-center",
-              // Mobile: w-6 h-6 when collapsed, Desktop: always w-6 min-w-[24px]
-              "w-6 h-6 md:w-6 md:min-w-[24px]",
-              isExpanded && "w-6 min-w-[24px]"
-            )}>
-              <IconComponent icon={LogOut} />
-            </div>
-            {/* Mobile: show text on hover, Desktop: always show */}
-            <span className={cn(
-              "text-sm font-medium ml-3",
-              "hidden md:block",
-              isExpanded && "block"
-            )}>
-              <TranslatedText>Sign Out</TranslatedText>
-            </span>
-          </button>
-        </div>
+    if (item.href) {
+      const active = activeHref === item.href;
+      return (
+        <Link
+          key={item.name}
+          to={item.href}
+          aria-current={active ? 'page' : undefined}
+          className={cn(
+            'group flex items-center rounded-md px-4 py-2.5 text-sm font-medium transition-colors',
+            active
+              ? 'bg-primary/15 text-primary font-semibold'
+              : 'text-muted-foreground hover:bg-primary/10 hover:text-primary',
+          )}
+        >
+          <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+          <span className="ml-3"><TranslatedText>{item.name}</TranslatedText></span>
+        </Link>
+      );
+    }
+
+    return (
+      <div key={item.name} className="flex items-center rounded-md px-4 py-2.5 text-sm text-muted-foreground">
+        <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+        <span className="ml-3"><TranslatedText>{item.name}</TranslatedText></span>
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <aside className={cn('relative flex w-72 flex-1 flex-col border-r bg-background', className)}>
+      <div className="flex h-16 shrink-0 items-center border-b px-4">
+        <Link to="/home" className="flex w-full items-center gap-3 px-4 py-3 font-semibold">
+          <MadridLogo size="sm" variant="positive" />
+          <span className="text-lg font-semibold text-foreground"><TranslatedText>Raíces</TranslatedText></span>
+        </Link>
+      </div>
+
+      <span id="sidebar-navigation-label" className="sr-only">
+        <TranslatedText>Main navigation</TranslatedText>
+      </span>
+      <nav
+        className="grid flex-1 gap-2 overflow-auto px-4 py-4"
+        aria-labelledby="sidebar-navigation-label"
+      >
+        {navigation.map(item => renderItem(item))}
+      </nav>
+
+      <div className={cn('shrink-0 bg-background p-4', !hideBottomBorder && 'border-t')}>
+        {user && (
+          <div className="mb-4 flex flex-col items-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-primary/10">
+              {user.imageUrl ? (
+                <img
+                  src={user.imageUrl}
+                  alt={`${user.firstName || 'User'} ${user.lastName || ''}`.trim()}
+                  className="h-full w-full rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-xl font-semibold text-primary">
+                  {user.firstName?.[0] || user.emailAddresses[0]?.emailAddress[0] || 'U'}
+                </span>
+              )}
+            </div>
+            <p className="w-full truncate text-center text-sm font-medium text-foreground">
+              {user.firstName && user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : user.firstName || user.lastName || <TranslatedText>User</TranslatedText>}
+            </p>
+            <p className="w-full truncate text-center text-xs text-muted-foreground">
+              {user.emailAddresses[0]?.emailAddress}
+            </p>
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+        >
+          <LogOut className="h-6 w-6" aria-hidden="true" />
+          <span className="ml-3"><TranslatedText>Sign Out</TranslatedText></span>
+        </button>
+      </div>
+    </aside>
   );
 };
 

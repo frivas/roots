@@ -15,6 +15,8 @@ const frontendPackage = json('frontend/package.json');
 const backendPackage = json('backend/package.json');
 const buildConfig = json('backend/tsconfig.build.json');
 const protection = json('.github/branch-protection.json');
+const repositorySettings = json('.github/repository-settings.json');
+const vercelConfig = json('backend/vercel.json');
 const nvmVersion = read('.nvmrc').trim();
 
 if (nvmVersion !== '22.22.2') fail('.nvmrc must pin Node 22.22.2');
@@ -38,12 +40,29 @@ for (const script of [
   'test:tooling',
   'validate:ci-config',
   'validate:release-config',
+  'monitor:production',
+  'discover:deployments',
+  'rollback:deployments',
   'test:serverless',
   'test:contracts',
   'test:rls:local',
   'test:e2e:auth',
 ]) {
   if (!rootPackage.scripts[script]) fail(`missing canonical root script: ${script}`);
+}
+if (
+  repositorySettings.schemaVersion !== 1 ||
+  repositorySettings.productionBranch !== 'main' ||
+  repositorySettings.integrationBranch !== 'develop' ||
+  repositorySettings.deleteBranchOnMerge !== true
+) {
+  fail('repository settings must protect branch topology and delete merged head branches');
+}
+if ('ignoreCommand' in vercelConfig) {
+  fail('Vercel previews must not be disabled by ignoreCommand');
+}
+if (vercelConfig.functions?.['api/serverless.ts']?.maxDuration !== 60) {
+  fail('the serverless function must have a 60-second platform bound');
 }
 if (rootPackage.devDependencies.knip !== '6.29.0') fail('Knip must be exactly pinned');
 if (frontendPackage.dependencies['react-router-dom']) {
@@ -67,14 +86,59 @@ if (!excluded.some((pattern) => pattern.includes('test'))) {
   fail('production backend builds must exclude test sources');
 }
 
-const netlify = read('frontend/netlify.toml');
+const netlify = read('netlify.toml');
 for (const expected of [
   'NODE_VERSION = "22.22.2"',
   'Cache-Control = "public, max-age=31536000, immutable"',
   'command = "npm run build:frontend:release"',
   'for = "/release.json"',
+  'Content-Security-Policy =',
+  'Strict-Transport-Security',
+  'Permissions-Policy',
 ]) {
   if (!netlify.includes(expected)) fail(`Netlify contract is missing: ${expected}`);
+}
+if (netlify.includes('Content-Security-Policy-Report-Only')) {
+  fail('Netlify must enforce CSP rather than report it only');
+}
+for (const origin of [
+  'https://unpkg.com',
+  'https://*.clerk.com',
+  'https://*.elevenlabs.io',
+  'https://api.elevenlabs.io',
+  'https://api.openai.com',
+  'https://*.vercel.app',
+  'https://*.netlify.app',
+]) {
+  if (!netlify.includes(origin)) fail(`Netlify CSP is missing required origin: ${origin}`);
+}
+if (read('.husky/pre-commit').includes('arch -arm64')) {
+  fail('the pre-commit hook must be portable across supported architectures');
+}
+if (!read('.husky/pre-commit').includes('pre-commit run --hook-stage pre-commit')) {
+  fail('the Husky hook must invoke the configured secret scanners');
+}
+const gitignore = read('.gitignore');
+if (!gitignore.includes('**/.env*') || !gitignore.includes('!**/.env.example')) {
+  fail('environment files must be ignored by default while examples remain tracked');
+}
+const viteConfig = read('frontend/vite.config.ts');
+if (viteConfig.includes('localhost:3005') || viteConfig.includes('external:')) {
+  fail('the frontend build must use port 3000 and reject Node built-ins');
+}
+const frontendVitest = read('frontend/vitest.config.ts');
+const backendVitest = read('backend/vitest.config.ts');
+if (!frontendVitest.includes('thresholds:') || !backendVitest.includes('thresholds:')) {
+  fail('both workspaces must enforce coverage thresholds');
+}
+if (!frontendPackage.scripts.typecheck.includes('tsconfig.test.json')) {
+  fail('frontend typecheck must include test infrastructure');
+}
+if (!backendPackage.scripts.typecheck.includes('tsconfig.api.json')) {
+  fail('backend typecheck must include Vercel entry points');
+}
+if (!backendPackage.scripts.lint.includes('api/')) {
+  fail('backend lint must include Vercel entry points');
 }
 const playwright = read('frontend/playwright.config.ts');
 for (const project of ['desktop-chrome', 'mobile-chrome', 'mobile-safari']) {
@@ -137,13 +201,55 @@ for (const expected of [
   'Remote Clerk-issued-token contract',
   'Real Clerk browser auth contract',
   'Exact-SHA deployed canary',
+  'Verify exact-SHA production release',
+  'Reject failed production CI',
+  'Production health probe',
 ]) {
   if (!jobNames.has(expected)) fail(`missing workflow check: ${expected}`);
+}
+
+const releaseGateSource = read('.github/workflows/production-release-gate.yml');
+for (const expected of [
+  'workflow_run:',
+  "workflows: [CI]",
+  "branches: [main]",
+  "github.event.workflow_run.conclusion == 'success'",
+  'github.event.workflow_run.head_sha',
+  'node scripts/discover-provider-deployments.mjs',
+  'node scripts/run-deployed-canary.mjs',
+  'npm run rollback:deployments',
+  "steps.production-canary.outcome == 'failure' || steps.runtime-slo.outcome == 'failure'",
+  'node scripts/send-operations-alert.mjs',
+  'retention-days: 30',
+]) {
+  if (!releaseGateSource.includes(expected)) {
+    fail(`production release gate is missing: ${expected}`);
+  }
+}
+const healthSource = read('.github/workflows/production-health.yml');
+for (const expected of [
+  "cron: '7,22,37,52 * * * *'",
+  'node scripts/run-health-monitor.mjs',
+  'node scripts/send-operations-alert.mjs',
+  'retention-days: 30',
+]) {
+  if (!healthSource.includes(expected)) {
+    fail(`production health workflow is missing: ${expected}`);
+  }
+}
+if (!read('scripts/run-health-monitor.mjs').includes("new URL('/ready', backendUrl)")) {
+  fail('the production health monitor must probe dependency readiness');
+}
+if (vercelConfig.routes?.find((route) => route.src === '/ready')?.dest !== '/api/serverless') {
+  fail('Vercel must route dependency readiness through the shared serverless application');
 }
 
 const ciSource = read('.github/workflows/ci.yml');
 for (const command of ['npm run test:tooling', 'npm run validate:ci-config']) {
   if (!ciSource.includes(command)) fail(`CI tooling check must run: ${command}`);
+}
+if (!/name: build-output[\s\S]*?retention-days: 30/.test(ciSource)) {
+  fail('exact-SHA build output must be retained for 30 days');
 }
 
 const runCommands = (workflowFile, jobId) =>
@@ -186,6 +292,8 @@ for (const expected of [
   'validate-local-contract-evidence.mjs',
   'run-remote-clerk-supabase-contract.mjs',
   'npm run test:e2e:auth',
+  'supabase migration list --local',
+  'supabase db lint --local --level error --fail-on error',
 ]) {
   if (!integrationSource.includes(expected)) {
     fail(`integration contracts workflow is missing: ${expected}`);

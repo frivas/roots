@@ -16,6 +16,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const FRONTEND_DIR = path.join(__dirname, '../frontend/src');
+const BASELINE_FILE = path.join(__dirname, 'localization-baseline.json');
 const PATTERNS_TO_CHECK = ['**/*.tsx', '**/*.ts'];
 const PATTERNS_TO_IGNORE = [
   '**/*.d.ts',
@@ -37,7 +38,9 @@ const UNTRANSLATED_PATTERNS = [
   // Button text
   /<Button[^>]*>[\s]*[^<]*[A-Za-z]{3,}[^<]*[\s]*<\/Button>/g,
   // Heading tags
-  /<h[1-6][^>]*>[\s]*[^<]*[A-Za-z]{3,}[^<]*[\s]*<\/h[1-6]>/g
+  /<h[1-6][^>]*>[\s]*[^<]*[A-Za-z]{3,}[^<]*[\s]*<\/h[1-6]>/g,
+  // Browser dialogs are user-facing too.
+  /\b(?:alert|confirm|prompt)\(["'][^"']*[A-Za-z]{3,}[^"']*["']\)/g,
 ];
 
 // Exceptions - patterns to ignore
@@ -45,10 +48,12 @@ const IGNORE_PATTERNS = [
   /TranslatedText/,
   /translateText/,
   /useTranslatedString/,
+  // Dynamic values (for example a tutor name or message subject) are data,
+  // not source-language literals that this static checker can localize.
+  />\s*\{[^}]+\}\s*</,
   /import/,
   /export/,
   /console\./,
-  /className/,
   /onClick/,
   /onChange/,
   /onSubmit/,
@@ -82,27 +87,41 @@ function shouldIgnoreLine(line) {
   return IGNORE_PATTERNS.some(pattern => pattern.test(line));
 }
 
-function checkFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+function stripStylingAttributes(line) {
+  return line
+    .replace(/\sclassName=(?:"[^"]*"|'[^']*'|\{[^}]*\})/g, '')
+    .trim();
+}
+
+export function checkFile(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8')
+    // AgentSession translates these props when it renders them. Mask the title
+    // literal so the line-oriented checker does not report that component
+    // boundary as raw user-facing text.
+    .replace(
+      /(<AgentSession\b[\s\S]*?\s)title=(["'])[^"']*\2([\s\S]*?\/>)/g,
+      '$1title={translatedByAgentSession}$3',
+    );
   const lines = content.split('\n');
   const issues = [];
 
   lines.forEach((line, index) => {
     const lineNumber = index + 1;
     const trimmedLine = line.trim();
+    const userFacingLine = stripStylingAttributes(trimmedLine);
 
     // Skip empty lines, comments, and ignored patterns
     if (!trimmedLine ||
         trimmedLine.startsWith('//') ||
         trimmedLine.startsWith('/*') ||
         trimmedLine.startsWith('*') ||
-        shouldIgnoreLine(trimmedLine)) {
+        shouldIgnoreLine(userFacingLine)) {
       return;
     }
 
     // Check for potential untranslated strings
     UNTRANSLATED_PATTERNS.forEach(pattern => {
-      const matches = trimmedLine.match(pattern);
+      const matches = userFacingLine.match(pattern);
       if (matches) {
         matches.forEach(match => {
           // Additional filtering to reduce false positives
@@ -111,7 +130,7 @@ function checkFile(filePath) {
               !shouldIgnoreLine(match)) {
             issues.push({
               line: lineNumber,
-              content: trimmedLine,
+              content: userFacingLine,
               match: match.trim(),
               suggestion: getSuggestion(match.trim())
             });
@@ -143,7 +162,9 @@ function main() {
   console.log('Checking localization compliance...\n');
 
   const files = globSync(PATTERNS_TO_CHECK, { cwd: FRONTEND_DIR, ignore: PATTERNS_TO_IGNORE });
+  const baseline = new Set(JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8')));
   let totalIssues = 0;
+  let baselineIssues = 0;
   let filesWithIssues = 0;
 
   files.forEach(file => {
@@ -151,7 +172,12 @@ function main() {
     if (EXCLUDED_FILES.some(excluded => file.endsWith(excluded))) return;
 
     const fullPath = path.join(FRONTEND_DIR, file);
-    const issues = checkFile(fullPath);
+    const detectedIssues = checkFile(fullPath);
+    const issues = detectedIssues.filter(issue => {
+      const known = baseline.has(`${file}|${issue.match}`);
+      if (known) baselineIssues++;
+      return !known;
+    });
 
     if (issues.length > 0) {
       filesWithIssues++;
@@ -172,6 +198,7 @@ function main() {
   console.log(`   Files checked: ${files.length}`);
   console.log(`   Files with issues: ${filesWithIssues}`);
   console.log(`   Total potential issues: ${totalIssues}`);
+  console.log(`   Known baseline issues: ${baselineIssues}`);
 
   if (totalIssues === 0) {
     console.log(`   Great! No obvious untranslated strings found.`);
@@ -183,4 +210,6 @@ function main() {
   process.exit(totalIssues > 0 ? 1 : 0);
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  main();
+}

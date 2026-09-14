@@ -1,44 +1,80 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { WIDGET_CONFIG } from '../config/agentConfig';
 
-const WIDGET_ELEMENT_NAME = 'elevenlabs-convai';
-const SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
 const SCRIPT_SELECTOR = 'script[data-elevenlabs-widget]';
+export const WIDGET_LOAD_TIMEOUT_MS = 15_000;
 
-let widgetLoaderPromise: Promise<void> | null = null;
+interface WidgetLoader {
+  promise: Promise<void>;
+  cancel: () => void;
+}
+
+let widgetLoader: WidgetLoader | null = null;
 
 export const loadElevenLabsWidget = (): Promise<void> => {
-  if (window.customElements.get(WIDGET_ELEMENT_NAME)) {
+  if (window.customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
     return Promise.resolve();
   }
-  if (widgetLoaderPromise) return widgetLoaderPromise;
+  if (widgetLoader) return widgetLoader.promise;
 
-  widgetLoaderPromise = new Promise<void>((resolve, reject) => {
+  let cancel: () => void = () => {};
+  const promise = new Promise<void>((resolve, reject) => {
     const existingScript = document.head.querySelector<HTMLScriptElement>(SCRIPT_SELECTOR);
     const script = existingScript ?? document.createElement('script');
+    let settled = false;
+
+    const cleanup = () => {
+      script.removeEventListener('load', handleLoad);
+      script.removeEventListener('error', handleError);
+    };
+    const complete = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
 
     const handleLoad = () => {
-      void window.customElements.whenDefined(WIDGET_ELEMENT_NAME).then(() => resolve(), reject);
+      void window.customElements.whenDefined(WIDGET_CONFIG.ELEMENT_NAME).then(
+        () => complete(resolve),
+        () => complete(() => reject(new Error('Unable to load the voice assistant.'))),
+      );
     };
-    const handleError = () => reject(new Error('Unable to load the voice assistant.'));
+    const handleError = () => complete(() => {
+      if (!existingScript) script.remove();
+      reject(new Error('Unable to load the voice assistant.'));
+    });
+
+    cancel = () => complete(() => {
+      if (!window.customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) script.remove();
+      reject(new Error('Voice assistant loading was cancelled.'));
+    });
 
     script.addEventListener('load', handleLoad, { once: true });
     script.addEventListener('error', handleError, { once: true });
 
     if (existingScript) {
-      void window.customElements.whenDefined(WIDGET_ELEMENT_NAME).then(() => resolve(), reject);
+      void window.customElements.whenDefined(WIDGET_CONFIG.ELEMENT_NAME).then(
+        () => complete(resolve),
+        () => complete(() => reject(new Error('Unable to load the voice assistant.'))),
+      );
     } else {
-      script.src = SCRIPT_SRC;
+      script.src = WIDGET_CONFIG.SCRIPT_SRC;
+      script.integrity = WIDGET_CONFIG.SCRIPT_INTEGRITY;
+      script.crossOrigin = 'anonymous';
+      script.referrerPolicy = 'no-referrer';
       script.async = true;
       script.type = 'text/javascript';
       script.dataset.elevenlabsWidget = 'true';
       document.head.appendChild(script);
     }
   }).catch(error => {
-    widgetLoaderPromise = null;
+    widgetLoader = null;
     throw error;
   });
 
-  return widgetLoaderPromise;
+  widgetLoader = { promise, cancel };
+  return promise;
 };
 
 interface UseElevenLabsWidgetOptions {
@@ -56,23 +92,38 @@ export const useElevenLabsWidget = ({
 }: UseElevenLabsWidgetOptions) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [attempt, setAttempt] = useState(0);
   const attributesKey = JSON.stringify(attributes);
 
   useEffect(() => {
     let cancelled = false;
     let widget: HTMLElement | null = null;
     let cleanupWidget: void | (() => void);
+    let settled = false;
+    setStatus('loading');
+    setError(null);
+
+    const timeoutId = window.setTimeout(() => {
+      if (cancelled || settled) return;
+      settled = true;
+      widgetLoader?.cancel();
+      setError('An error occurred');
+      setStatus('error');
+    }, WIDGET_LOAD_TIMEOUT_MS);
 
     void loadElevenLabsWidget()
       .then(() => {
-        if (cancelled || !containerRef.current) return;
+        if (cancelled || settled || !containerRef.current) return;
+        settled = true;
+        window.clearTimeout(timeoutId);
 
         const elevenLabs = window.ElevenLabs;
         if (typeof elevenLabs?.init === 'function') {
           elevenLabs.init({ language, defaultLanguage: language });
         }
 
-        widget = document.createElement(WIDGET_ELEMENT_NAME);
+        widget = document.createElement(WIDGET_CONFIG.ELEMENT_NAME);
         const widgetAttributes = {
           'agent-id': agentId,
           language,
@@ -86,23 +137,32 @@ export const useElevenLabsWidget = ({
         containerRef.current.replaceChildren(widget);
         cleanupWidget = onWidgetReady?.(widget);
         setError(null);
+        setStatus('ready');
       })
       .catch(() => {
-        if (!cancelled) setError('The voice assistant is unavailable. Please try again.');
+        if (!cancelled && !settled) {
+          settled = true;
+          window.clearTimeout(timeoutId);
+          setError('An error occurred');
+          setStatus('error');
+        }
       });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timeoutId);
       cleanupWidget?.();
       widget?.remove();
     };
-  }, [agentId, language, attributesKey, onWidgetReady]);
+  }, [agentId, language, attributesKey, onWidgetReady, attempt]);
 
-  return { containerRef, error };
+  const retry = useCallback(() => setAttempt(current => current + 1), []);
+
+  return { containerRef, error, status, retry };
 };
 
 export const resetElevenLabsWidgetLoaderForTests = () => {
-  widgetLoaderPromise = null;
+  widgetLoader = null;
 };
 
 declare global {

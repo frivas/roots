@@ -12,13 +12,12 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3005',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        ws: true, // Enable WebSocket proxy for SSE
       },
       '/webhook': {
-        target: 'http://localhost:3005',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
@@ -28,23 +27,20 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('react-dom') || (id.includes('/react/') && !id.includes('react-router'))) return 'vendor';
           if (id.includes('react-router')) return 'router';
           if (id.includes('@clerk/clerk-react')) return 'clerk';
-          if (id.includes('lucide-react') || id.includes('framer-motion')) return 'ui';
+          if (id.includes('framer-motion')) return 'motion-vendor';
+          if (id.includes('lucide-react')) return 'icons';
         },
-      },
-      external: (id) => {
-        // Externalize Node.js built-in modules
-        const nodeBuiltins = [
-          'path', 'fs', 'vm', 'url', 'util', 'http', 'https',
-          'stream', 'zlib', 'net', 'tls', 'crypto', 'child_process',
-          'os', 'assert'
-        ];
-        return nodeBuiltins.includes(id) || id.startsWith('node:');
       },
     },
   },

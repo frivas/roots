@@ -71,6 +71,10 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
   }, [persistLanguage]);
 
   useEffect(() => {
+    document.documentElement.lang = language === 'es-ES' ? 'es' : 'en';
+  }, [language]);
+
+  useEffect(() => {
     const handleLanguageChange = (event: Event) => {
       const nextLanguage = (event as CustomEvent<{ language?: unknown }>).detail?.language;
       if (!isSupportedLanguage(nextLanguage)) {

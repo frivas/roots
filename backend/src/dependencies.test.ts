@@ -29,6 +29,7 @@ vi.mock('openai', () => ({
 
 import {
   createDefaultDependencies,
+  createDemoDependencies,
   createIllustrationService,
   enqueueIllustration,
 } from './dependencies.js';
@@ -102,7 +103,6 @@ describe('default backend dependencies', () => {
       getToken,
     );
     expect(supabaseMocks.createTrustedSupabase).toHaveBeenCalledOnce();
-    expect(dependencies.eventPublisher).toBe(dependencies.eventRegistry);
   });
 
   it('reports readiness from configuration and the real health-check query', async () => {
@@ -110,7 +110,11 @@ describe('default backend dependencies', () => {
 
     await expect(dependencies.readiness.check()).resolves.toEqual({
       ready: true,
-      checks: { clerk: 'ok', openai: 'ok', supabase: 'ok' },
+      checks: {
+        clerk: 'configured',
+        openai: 'configured',
+        supabase: 'available',
+      },
     });
 
     supabaseMocks.createRequestSupabase.mockReturnValueOnce(
@@ -118,7 +122,11 @@ describe('default backend dependencies', () => {
     );
     await expect(createDefaultDependencies().readiness.check()).resolves.toEqual({
       ready: false,
-      checks: { clerk: 'ok', openai: 'ok', supabase: 'unavailable' },
+      checks: {
+        clerk: 'configured',
+        openai: 'configured',
+        supabase: 'unavailable',
+      },
     });
   });
 
@@ -133,7 +141,19 @@ describe('default backend dependencies', () => {
 
     expect(scheduled).toHaveBeenCalledOnce();
     expect(openAIMocks.constructor).toHaveBeenCalledOnce();
+    expect(openAIMocks.constructor).toHaveBeenCalledWith({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 0,
+      timeout: 20_000,
+    });
     expect(openAIMocks.generate).toHaveBeenCalledTimes(2);
+    expect(openAIMocks.generate).toHaveBeenCalledWith({
+      model: 'dall-e-3',
+      prompt: 'first prompt',
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard',
+    });
   });
 
   it('extends scheduled job lifetime on Vercel', async () => {
@@ -145,6 +165,24 @@ describe('default backend dependencies', () => {
     expect(vercelMocks.waitUntil).toHaveBeenCalledOnce();
     await expect(vercelMocks.waitUntil.mock.calls[0]![0]).resolves.toBeUndefined();
     expect(scheduled).toHaveBeenCalledOnce();
+  });
+});
+
+describe('demo backend dependencies', () => {
+  it('does not construct Supabase or OpenAI clients', async () => {
+    const dependencies = createDemoDependencies();
+
+    await expect(dependencies.readiness.check()).resolves.toEqual({
+      ready: true,
+      checks: {
+        clerk: 'configured',
+        openai: 'disabled',
+        supabase: 'disabled',
+      },
+    });
+    expect(supabaseMocks.createRequestSupabase).not.toHaveBeenCalled();
+    expect(supabaseMocks.createTrustedSupabase).not.toHaveBeenCalled();
+    expect(openAIMocks.constructor).not.toHaveBeenCalled();
   });
 });
 

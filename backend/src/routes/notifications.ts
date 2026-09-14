@@ -38,7 +38,7 @@ const notificationsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
           pageRequest.limit,
         );
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -55,7 +55,7 @@ const notificationsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
         }
         return { success: true, message: 'Notification marked as read' };
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );
@@ -66,7 +66,7 @@ const notificationsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
       await repository.markAllNotificationsRead();
       return { success: true, message: 'All notifications marked as read' };
     } catch (error) {
-      return sendPublicError(reply, fastify.log, error);
+      return sendPublicError(reply, request.log, error);
     }
   });
 
@@ -107,7 +107,7 @@ const notificationsRoutes: FastifyPluginAsync<BackendRouteOptions> = async (
           data: notification,
         });
       } catch (error) {
-        return sendPublicError(reply, fastify.log, error);
+        return sendPublicError(reply, request.log, error);
       }
     },
   );

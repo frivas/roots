@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
+import { MotionConfig } from 'framer-motion';
 import { LingoTranslationProvider } from './contexts/LingoTranslationContext';
 import ClerkRuntimeBoundary from './components/ClerkRuntimeBoundary';
 import App from './App';
@@ -15,12 +16,14 @@ if (!clerkPubKey) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LingoTranslationProvider>
-      <BrowserRouter>
-        <ClerkRuntimeBoundary publishableKey={clerkPubKey}>
+    <MotionConfig reducedMotion="user">
+      <LingoTranslationProvider>
+        <BrowserRouter>
+          <ClerkRuntimeBoundary publishableKey={clerkPubKey}>
             <App />
-        </ClerkRuntimeBoundary>
-      </BrowserRouter>
-    </LingoTranslationProvider>
+          </ClerkRuntimeBoundary>
+        </BrowserRouter>
+      </LingoTranslationProvider>
+    </MotionConfig>
   </StrictMode>
 );

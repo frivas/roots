@@ -58,6 +58,34 @@ describe('DynamicTitle', () => {
     expect(document.title).toContain('Raíces');
   });
 
+  it('localizes the title and sharing description for Spanish', async () => {
+    document.head.innerHTML = '<meta name="description" content=""><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:title" content=""><meta property="og:description" content=""><meta name="twitter:title" content=""><meta name="twitter:description" content="">';
+    mockUseLingoTranslation.mockReturnValue({
+      language: 'es-ES',
+      setLanguage: vi.fn(),
+      isTranslating: false,
+      translateText: vi.fn(async (text: string) => text),
+      preloadingComplete: true,
+      isInitialized: true,
+      isProviderMounted: true,
+    });
+
+    render(<DynamicTitle />);
+
+    await waitFor(() => expect(document.title).toContain('aprendizaje con IA'));
+    expect(document.querySelector('meta[name="description"]')).toHaveAttribute(
+      'content',
+      expect.stringContaining('Tutoría bilingüe con IA'),
+    );
+    expect(document.querySelector('meta[property="og:title"]')).toHaveAttribute(
+      'content',
+      document.title,
+    );
+    expect(document.documentElement).toHaveAttribute('lang', 'es');
+    expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute('content', 'es_ES');
+    expect(document.querySelector('meta[property="og:locale:alternate"]')).toHaveAttribute('content', 'en_US');
+  });
+
   it('does not set document.title when not initialized', async () => {
     mockUseLingoTranslation.mockReturnValueOnce({
       language: 'en-US',
@@ -81,8 +109,7 @@ describe('DynamicTitle', () => {
     expect(document.title).toBe('unchanged');
   });
 
-  it('falls back to the original title when translation fails', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('uses stable local metadata when dynamic translation is unavailable', async () => {
     mockUseLingoTranslation.mockReturnValueOnce({
       language: 'es-ES',
       setLanguage: vi.fn(),
@@ -102,8 +129,7 @@ describe('DynamicTitle', () => {
     );
 
     await waitFor(() => {
-      expect(document.title).toBe('Raíces - Educational Management System for Madrid Community');
+      expect(document.title).toBe('Raíces | aprendizaje con IA para familias de Madrid');
     });
-    expect(errorSpy).toHaveBeenCalledWith('Failed to translate title:', expect.any(Error));
   });
 });

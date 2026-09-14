@@ -10,47 +10,21 @@ import {
 } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Switch from '../components/ui/Switch';
+import InlineStatus from '../components/ui/InlineStatus';
 import {
   Shield,
   AlertTriangle,
   Save
 } from 'lucide-react';
 
-// Switch component
-const Switch = ({ checked, onCheckedChange, id }: {
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-  id?: string;
-}) => {
-  return (
-    <button
-      id={id}
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onCheckedChange(!checked)}
-      className={`
-        relative inline-flex h-6 w-11 items-center rounded-full border-2 border-transparent
-        transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
-        ${checked ? 'bg-primary' : 'bg-input'}
-      `}
-    >
-      <span
-        className={`
-          inline-block h-4 w-4 transform rounded-full bg-background transition-transform
-          ${checked ? 'translate-x-6' : 'translate-x-1'}
-        `}
-      />
-    </button>
-  );
-};
-
 const PasswordChange = () => {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [saveConfirmed, setSaveConfirmed] = useState(false);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Password change logic would go here
-    alert('Password updated successfully');
+    setSaveConfirmed(true);
   };
 
   const fadeIn = {
@@ -107,7 +81,7 @@ const PasswordChange = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <form id="password-settings-form" onSubmit={handlePasswordSubmit} className="space-y-4">
               <div className="flex items-center justify-between mb-6">
                 <div className="space-y-0.5">
                   <label htmlFor="twoFactor" className="text-base font-medium">
@@ -159,10 +133,13 @@ const PasswordChange = () => {
                   placeholder="••••••••"
                 />
               </div>
+              {saveConfirmed && (
+                <InlineStatus kind="success" message="Password settings updated for this demo" />
+              )}
             </form>
           </CardContent>
           <div className="bg-muted/20 px-6 py-4">
-            <Button type="submit" className="flex items-center gap-2">
+            <Button type="submit" form="password-settings-form" className="flex items-center gap-2">
               <Save className="h-4 w-4" />
               <TranslatedText>Update Password</TranslatedText>
             </Button>

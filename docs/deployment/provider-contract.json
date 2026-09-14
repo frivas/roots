@@ -48,6 +48,14 @@
   },
   "release": {
     "shaVariable": "RELEASE_SHA",
+    "trigger": "successful-main-ci-workflow-run",
+    "workflow": ".github/workflows/production-release-gate.yml",
+    "deploymentDiscovery": "provider-api-exact-sha",
+    "automaticRollback": {
+      "workflow": ".github/workflows/production-release-gate.yml",
+      "script": "scripts/rollback-provider-deployments.mjs",
+      "requiresVerifiedImmutableTargets": true
+    },
     "requiredVariables": [
       "RELEASE_SHA",
       "NETLIFY_SITE_ID",
@@ -65,11 +73,25 @@
       "PERFORMANCE_COLLECTOR_TOKEN"
     ]
   },
+  "observability": {
+    "healthWorkflow": ".github/workflows/production-health.yml",
+    "intervalMinutes": 15,
+    "evidenceRetentionDays": 30,
+    "alertWebhookSecret": "ALERT_WEBHOOK_URL",
+    "requiredExternalControls": [
+      "provider-error-rate-alert",
+      "provider-log-retention-and-redaction",
+      "provider-spend-alert"
+    ]
+  },
   "performanceEvidence": {
     "collectorUrlVariable": "PERFORMANCE_COLLECTOR_URL",
     "collectorIdVariable": "PERFORMANCE_COLLECTOR_ID",
     "collectorTokenVariable": "PERFORMANCE_COLLECTOR_TOKEN",
-    "workflowAudience": "frivas/roots/.github/workflows/deployed-canary.yml",
+    "workflowAudiences": [
+      "frivas/roots/.github/workflows/deployed-canary.yml",
+      "frivas/roots/.github/workflows/production-release-gate.yml"
+    ],
     "minimumWindowSeconds": 300,
     "maximumAgeSeconds": 900,
     "maximumCollectionLagSeconds": 300

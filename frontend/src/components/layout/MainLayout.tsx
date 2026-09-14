@@ -8,36 +8,21 @@ import ErrorBoundary from '../ErrorBoundary';
 import RouteWrapper from '../RouteWrapper';
 import { cn } from '../../lib/utils';
 import { useUser } from '@clerk/clerk-react';
-import { type Role } from '../../config/menuConfig';
-import { APP_ROUTES } from '../../config/routes';
+import { isAiServicePath } from '../../config/routes';
+import { getClerkRoles } from '../../lib/clerkRoles';
+import LanguageSwitcher from '../LanguageSwitcher';
+import DemoModeNotice from '../DemoModeNotice';
 
 const MainLayout: React.FC = () => {
   const { user, isLoaded } = useUser();
   const location = useLocation();
 
-  // Get user roles from Clerk metadata and ensure they match our Role type
   const userRoles = React.useMemo(() => {
     if (!isLoaded || !user) return [];
-    return (user.publicMetadata?.roles as Role[] || []).filter(role =>
-      ['student', 'parent', 'teacher', 'administrator'].includes(role)
-    );
+    return getClerkRoles(user.publicMetadata);
   }, [user, isLoaded]);
 
-  // Define pages with ElevenLabs agent integrations (hide footer and AI disclaimer)
-  const elevenLabsAgentPaths = [
-    APP_ROUTES.servicesParentWellnessChat,
-    APP_ROUTES.servicesLanguageLesson,
-    APP_ROUTES.servicesMathTutoring,
-    APP_ROUTES.servicesExtraCurricularSession.replace('/:activityType', ''),
-    APP_ROUTES.servicesChessCoaching,
-    APP_ROUTES.servicesStorytelling,
-    APP_ROUTES.servicesProgressInterpretationChat,
-  ];
-
-  // Check if current page has ElevenLabs agent integration
-  const hasElevenLabsAgent = elevenLabsAgentPaths.some(path =>
-    location.pathname.startsWith(path)
-  );
+  const hasElevenLabsAgent = isAiServicePath(location.pathname);
 
   // Page transition variants
   const pageVariants = {
@@ -54,6 +39,7 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      <DemoModeNotice />
       {/* Mobile Header */}
       <div className="md:hidden flex-shrink-0">
         <SimpleHeader />
@@ -68,13 +54,16 @@ const MainLayout: React.FC = () => {
 
         {/* Main Content - Takes remaining width and matches sidebar height */}
         <div className="flex-1 flex flex-col min-h-0">
+          <div className="hidden md:flex h-12 shrink-0 items-center justify-end border-b border-border px-6">
+            <LanguageSwitcher />
+          </div>
           {/* Content Area - Takes available space */}
           <div className={cn(
             "flex-1 overflow-auto",
             "p-6 pt-0 md:pt-6", // No top padding on mobile (header handles it)
             hasElevenLabsAgent ? "pb-6" : "pb-0" // Add bottom padding when no footer
           )}>
-            <ErrorBoundary>
+            <ErrorBoundary key={location.pathname}>
               <RouteWrapper>
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -93,12 +82,9 @@ const MainLayout: React.FC = () => {
             </ErrorBoundary>
           </div>
 
-          {/* Footer - Only render when not on ElevenLabs agent pages */}
-          {!hasElevenLabsAgent && (
-            <div className="flex-shrink-0 border-t bg-background px-6 py-4">
-              <Footer />
-            </div>
-          )}
+          <div className="flex-shrink-0 border-t bg-background px-6 py-4">
+            <Footer />
+          </div>
         </div>
       </div>
     </div>

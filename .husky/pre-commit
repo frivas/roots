@@ -1,1 +1,13 @@
-arch -arm64 npm run check-localization && arch -arm64 npm run lint && arch -arm64 npm test
+#!/usr/bin/env sh
+set -eu
+
+if ! command -v pre-commit >/dev/null 2>&1; then
+  echo "pre-commit is required to run the configured secret scanners." >&2
+  echo "Install it from https://pre-commit.com and retry the commit." >&2
+  exit 1
+fi
+
+pre-commit run --hook-stage pre-commit
+npm run check-localization
+npm run lint
+npm test

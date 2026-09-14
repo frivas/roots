@@ -71,6 +71,11 @@ jobs:
           version: 2.110.0
       - run: npm run supabase:start
       - run: npm run supabase:reset
+      - name: Verify migration history and database lint
+        run: |
+          mkdir -p contract-evidence
+          supabase migration list --local | tee contract-evidence/local-migrations.txt
+          supabase db lint --local --level error --fail-on error
       - name: Exercise local RLS with injected Clerk-shaped claims
         run: |
           mkdir -p contract-evidence

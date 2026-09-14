@@ -6,7 +6,14 @@ import {
   createTrustedSupabase,
 } from './lib/supabase.js';
 import type { RepositoryFactory } from './repositories/contracts.js';
-import { ApplicationError } from './lib/application-error.js';
+import {
+  ApplicationError,
+  demoModeUnavailable,
+} from './lib/application-error.js';
+import {
+  DemoDataRepository,
+  DemoIllustrationJobRepository,
+} from './repositories/demo-repository.js';
 import {
   SupabaseDataRepository,
   SupabaseIllustrationJobRepository,
@@ -16,19 +23,17 @@ import {
   OpenAIImageProvider,
   buildIllustrationPrompt,
   deriveIdempotencyKey,
-  type IllustrationEventPublisher,
   type IllustrationProvider,
   type JobScheduler,
   type StoryIllustrationInput,
 } from './services/illustration-jobs.js';
-import { SessionEventRegistry } from './services/session-events.js';
 
 interface ReadinessResult {
   ready: boolean;
   checks: {
-    clerk: 'ok' | 'unavailable';
-    openai: 'ok' | 'unavailable';
-    supabase: 'ok' | 'unavailable';
+    clerk: 'configured' | 'unavailable';
+    openai: 'configured' | 'disabled' | 'unavailable';
+    supabase: 'available' | 'disabled' | 'unavailable';
   };
 }
 
@@ -37,10 +42,9 @@ interface ReadinessChecker {
 }
 
 export interface BackendDependencies {
+  mode: 'connected' | 'demo';
   repositories: RepositoryFactory;
   illustrationProvider: IllustrationProvider;
-  eventPublisher: IllustrationEventPublisher;
-  eventRegistry: SessionEventRegistry;
   scheduler: JobScheduler;
   readiness: ReadinessChecker;
 }
@@ -50,7 +54,11 @@ let openAIClient: OpenAI | null = null;
 const getOpenAI = async () => {
   if (!openAIClient) {
     const { default: OpenAIClass } = await import('openai');
-    openAIClient = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
+    openAIClient = new OpenAIClass({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 0,
+      timeout: 20_000,
+    });
   }
   return openAIClient;
 };
@@ -70,9 +78,9 @@ const createDefaultReadiness = (): ReadinessChecker => ({
     const checks: ReadinessResult['checks'] = {
       clerk:
         process.env.CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY
-          ? 'ok'
+          ? 'configured'
           : 'unavailable',
-      openai: process.env.OPENAI_API_KEY ? 'ok' : 'unavailable',
+      openai: process.env.OPENAI_API_KEY ? 'configured' : 'unavailable',
       supabase: 'unavailable',
     };
 
@@ -83,20 +91,22 @@ const createDefaultReadiness = (): ReadinessChecker => ({
         .select('id')
         .eq('id', 1)
         .single();
-      checks.supabase = error ? 'unavailable' : 'ok';
+      checks.supabase = error ? 'unavailable' : 'available';
     } catch {
       checks.supabase = 'unavailable';
     }
 
     return {
-      ready: Object.values(checks).every((status) => status === 'ok'),
+      ready:
+        checks.clerk === 'configured' &&
+        checks.openai === 'configured' &&
+        checks.supabase === 'available',
       checks,
     };
   },
 });
 
 export const createDefaultDependencies = (): BackendDependencies => {
-  const eventRegistry = new SessionEventRegistry();
   const repositories: RepositoryFactory = {
     async data(userId, getToken) {
       return new SupabaseDataRepository(
@@ -115,12 +125,47 @@ export const createDefaultDependencies = (): BackendDependencies => {
   };
 
   return {
+    mode: 'connected',
     repositories,
     illustrationProvider: new OpenAIImageProvider(getOpenAI),
-    eventPublisher: eventRegistry,
-    eventRegistry,
     scheduler: defaultScheduler,
     readiness: createDefaultReadiness(),
+  };
+};
+
+export const createDemoDependencies = (): BackendDependencies => {
+  const illustrationJobs = new DemoIllustrationJobRepository();
+  return {
+    mode: 'demo',
+    repositories: {
+      async data(userId) {
+        return new DemoDataRepository(userId);
+      },
+      async illustrationJobs() {
+        return illustrationJobs;
+      },
+      async trustedIllustrationJobs() {
+        return illustrationJobs;
+      },
+    },
+    illustrationProvider: {
+      async generate() {
+        throw demoModeUnavailable();
+      },
+    },
+    scheduler() {},
+    readiness: {
+      async check() {
+        return {
+          ready: true,
+          checks: {
+            clerk: 'configured',
+            openai: 'disabled',
+            supabase: 'disabled',
+          },
+        };
+      },
+    },
   };
 };
 
@@ -147,7 +192,6 @@ export const createIllustrationService = async (
   return new IllustrationJobService(
     repository,
     dependencies.illustrationProvider,
-    dependencies.eventPublisher,
     dependencies.scheduler,
     logger,
   );

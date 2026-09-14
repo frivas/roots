@@ -604,7 +604,7 @@ const Messages = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex justify-between items-start mb-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <motion.div
           className="flex flex-col gap-2"
           initial={{ y: -10, opacity: 0 }}
@@ -618,13 +618,13 @@ const Messages = () => {
             Stay connected with the school community
           </TranslatedText>
         </motion.div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
           {isSearchActive ? (
             <motion.div
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 250, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
-              className="relative"
+              className="relative min-w-0 flex-1 sm:flex-none"
             >
               <input
                 type="text"
@@ -637,6 +637,7 @@ const Messages = () => {
               <Button
                 variant="ghost"
                 className="absolute right-0 top-0 h-full aspect-square p-0"
+                aria-label={language === 'es-ES' ? 'Cerrar búsqueda' : 'Close search'}
                 onClick={() => {
                   setSearchQuery('');
                   setIsSearchActive(false);
@@ -649,6 +650,7 @@ const Messages = () => {
             <Button
               variant="outline"
               className="aspect-square p-0"
+              aria-label={language === 'es-ES' ? 'Buscar mensajes' : 'Search messages'}
               onClick={() => setIsSearchActive(true)}
             >
               <SearchIcon className="h-4 w-4" />
@@ -669,7 +671,7 @@ const Messages = () => {
       {/* Horizontal Navigation Tabs */}
       <Card className="mb-4 border-border">
         <div className="border-b border-border bg-card">
-          <nav className="flex space-x-1 p-2">
+          <nav aria-label={language === 'es-ES' ? 'Carpetas de mensajes' : 'Message folders'} className="flex gap-1 overflow-x-auto p-2">
             {folders.map((folder) => (
               <motion.button
                 key={folder.id}
@@ -684,6 +686,7 @@ const Messages = () => {
                   setSelectedMessage(null);
                   setComposeMode(false);
                 }}
+                aria-pressed={activeFolder === folder.id}
               >
                 <folder.icon className="h-4 w-4 flex-shrink-0" />
                 <span className="font-medium text-sm">
@@ -865,6 +868,7 @@ const Messages = () => {
                       variant="ghost"
                       className="mr-2 p-2"
                       onClick={() => setSelectedMessage(null)}
+                      aria-label={language === 'es-ES' ? 'Volver a mensajes' : 'Back to messages'}
                     >
                       <ChevronLeftIcon className="h-4 w-4" />
                     </Button>
@@ -875,6 +879,9 @@ const Messages = () => {
                       variant="ghost"
                       className="p-2"
                       onClick={(e) => toggleStarred(selectedMessage.id, e)}
+                      aria-label={selectedMessage.starred
+                        ? (language === 'es-ES' ? 'Quitar de destacados' : 'Remove star')
+                        : (language === 'es-ES' ? 'Destacar mensaje' : 'Star message')}
                     >
                       {selectedMessage.starred ? (
                         <StarIcon className="h-4 w-4 fill-amber-500 text-amber-500" />
@@ -882,7 +889,11 @@ const Messages = () => {
                         <StarIcon className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button variant="ghost" className="p-2">
+                    <Button
+                      variant="ghost"
+                      className="p-2"
+                      aria-label={language === 'es-ES' ? 'Más acciones' : 'More actions'}
+                    >
                       <MoreHorizontalIcon className="h-4 w-4" />
                     </Button>
                   </div>

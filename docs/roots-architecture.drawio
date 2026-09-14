@@ -117,32 +117,8 @@
           <mxGeometry x="600" y="430" width="520" height="160" as="geometry"/>
         </mxCell>
 
-        <mxCell id="tl-dict" value="Local Dictionary&#xa;(900+ strings)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
-          <mxGeometry x="20" y="50" width="140" height="50" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-cache" value="Translation&#xa;Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
-          <mxGeometry x="190" y="50" width="130" height="50" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-api" value="Lingo.dev API&#xa;(Groq Fallback)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
-          <mxGeometry x="350" y="50" width="150" height="50" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;" edge="1" source="tl-dict" target="tl-cache" parent="translation-lane">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=10;" edge="1" source="tl-cache" target="tl-api" parent="translation-lane">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-label" value="miss &#x2192;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#2E7D32;" vertex="1" parent="translation-lane">
-          <mxGeometry x="160" y="85" width="35" height="15" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="tl-label2" value="miss &#x2192;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=9;fontColor=#2E7D32;" vertex="1" parent="translation-lane">
-          <mxGeometry x="320" y="85" width="35" height="15" as="geometry"/>
+        <mxCell id="tl-dict" value="Lazy Local Dictionary&#xa;(900+ checked-in strings)&#xa;miss: English source text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;shadow=1;" vertex="1" parent="translation-lane">
+          <mxGeometry x="95" y="50" width="330" height="65" as="geometry"/>
         </mxCell>
 
         <mxCell id="data-lane" value="Data Layer" style="shape=swimlane;startSize=30;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontStyle=1;fontSize=14;rounded=1;arcSize=8;shadow=1;collapsible=0;" vertex="1" parent="1">
@@ -177,10 +153,6 @@
           <mxGeometry x="315" y="50" width="90" height="50" as="geometry"/>
         </mxCell>
 
-        <mxCell id="ext-lingo" value="Lingo.dev&#xa;/ Groq" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=11;shadow=1;" vertex="1" parent="external-lane">
-          <mxGeometry x="415" y="50" width="90" height="50" as="geometry"/>
-        </mxCell>
-
         <mxCell id="edge-fe-be" value="REST API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#455A64;strokeWidth=2;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="fe-api-services" target="be-auth-routes" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
@@ -210,10 +182,6 @@
         </mxCell>
 
         <mxCell id="edge-dl-ext-clerk" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;dashed=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dl-auth-store" target="ext-clerk" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="edge-tl-ext-lingo" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" source="tl-api" target="external-lane" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 

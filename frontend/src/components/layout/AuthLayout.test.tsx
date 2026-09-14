@@ -96,4 +96,26 @@ describe('AuthLayout', () => {
 
     expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeInTheDocument();
   });
+
+  it('does not render scaffolding attribution', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <AuthLayout><div>Child</div></AuthLayout>
+      </MemoryRouter>
+    );
+
+    expect(container.querySelector('#bolt-button')).not.toBeInTheDocument();
+  });
+
+  it('leads with the bilingual AI learning value proposition', () => {
+    render(
+      <MemoryRouter>
+        <AuthLayout><div>Child</div></AuthLayout>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('heading', { name: 'AI learning for every family' })).toBeInTheDocument();
+    expect(screen.getByText(/AI tutoring, storytelling, chess coaching, language practice/i)).toBeInTheDocument();
+    expect(screen.getByText('Bilingual AI Learning')).toBeInTheDocument();
+  });
 });

@@ -14,6 +14,8 @@ vi.mock('./pages/Notifications', () => ({ default: () => <div data-testid="page-
 vi.mock('./pages/PersonalData', () => ({ default: () => <div data-testid="page-PersonalData">PersonalData</div> }));
 vi.mock('./pages/PasswordChange', () => ({ default: () => <div data-testid="page-PasswordChange">PasswordChange</div> }));
 vi.mock('./pages/PrivacyPolicy', () => ({ default: () => <div data-testid="page-PrivacyPolicy">PrivacyPolicy</div> }));
+vi.mock('./pages/TermsOfService', () => ({ default: () => <div data-testid="page-TermsOfService">TermsOfService</div> }));
+vi.mock('./pages/CookiePolicy', () => ({ default: () => <div data-testid="page-CookiePolicy">CookiePolicy</div> }));
 vi.mock('./pages/NotFound', () => ({ default: () => <div data-testid="page-NotFound">NotFound</div> }));
 
 // Service pages
@@ -30,11 +32,9 @@ vi.mock('./pages/services/ProgressInterpretationChat', () => ({ default: () => <
 vi.mock('./pages/MorningClassroom', () => ({ default: () => <div data-testid="page-MorningClassroom">MorningClassroom</div> }));
 
 // Placeholder pages
-vi.mock('./pages/placeholders/HomePlaceholder', () => ({ default: () => <div data-testid="page-HomePlaceholder">HomePlaceholder</div> }));
-vi.mock('./pages/placeholders/CommunicationsPlaceholder', () => ({ default: () => <div data-testid="page-CommunicationsPlaceholder">CommunicationsPlaceholder</div> }));
-vi.mock('./pages/placeholders/SchoolPlaceholder', () => ({ default: () => <div data-testid="page-SchoolPlaceholder">SchoolPlaceholder</div> }));
-vi.mock('./pages/placeholders/CalendarPlaceholder', () => ({ default: () => <div data-testid="page-CalendarPlaceholder">CalendarPlaceholder</div> }));
-vi.mock('./pages/placeholders/MyDataPlaceholder', () => ({ default: () => <div data-testid="page-MyDataPlaceholder">MyDataPlaceholder</div> }));
+vi.mock('./pages/placeholders/SectionPlaceholder', () => ({
+  default: ({ title }: { title: string }) => <div data-testid="page-SectionPlaceholder">{title}</div>,
+}));
 
 // Lazy page mock
 vi.mock('./pages/TutorInfo', () => ({ default: () => <div data-testid="page-TutorInfo">TutorInfo</div> }));
@@ -52,7 +52,6 @@ vi.mock('./pages/SchoolCalendar', () => ({ default: () => <div data-testid="page
 vi.mock('./pages/SchoolElections', () => ({ default: () => <div data-testid="page-SchoolElections">SchoolElections</div> }));
 vi.mock('./pages/PersonalCalendar', () => ({ default: () => <div data-testid="page-PersonalCalendar">PersonalCalendar</div> }));
 vi.mock('./pages/Bulletin', () => ({ default: () => <div data-testid="page-Bulletin">Bulletin</div> }));
-vi.mock('./pages/ContributionDashboard', () => ({ default: () => <div data-testid="page-ContributionDashboard">ContributionDashboard</div> }));
 
 // ── Layout mocks ─────────────────────────────────────────────────────────────
 // MainLayout wraps protected child routes via <Outlet /> — must render Outlet
@@ -61,7 +60,7 @@ vi.mock('./pages/ContributionDashboard', () => ({ default: () => <div data-testi
 vi.mock('./components/layout/MainLayout', async () => {
   const { Outlet: RouterOutlet } = await import('react-router');
   return {
-    default: () => <RouterOutlet />,
+    default: () => <main data-testid="signed-in-shell"><RouterOutlet /></main>,
   };
 });
 vi.mock('./components/layout/AuthLayout', () => ({
@@ -175,9 +174,9 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-TutorInfo')).toBeInTheDocument();
   });
 
-  it('renders HomePlaceholder for unknown /home/* paths', async () => {
+  it('renders the shared section placeholder for unknown /home/* paths', async () => {
     renderAt('/home/unknown-section');
-    expect(await screen.findByTestId('page-HomePlaceholder')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('Home');
   });
 
   it('renders SchoolData at /school/data', async () => {
@@ -200,9 +199,9 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-SchoolElections')).toBeInTheDocument();
   });
 
-  it('renders SchoolPlaceholder for unknown /school/* paths', async () => {
+  it('renders the shared section placeholder for unknown /school/* paths', async () => {
     renderAt('/school/unknown');
-    expect(await screen.findByTestId('page-SchoolPlaceholder')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('Our School');
   });
 
   it('renders Services at /services', async () => {
@@ -265,9 +264,9 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-MorningClassroom')).toBeInTheDocument();
   });
 
-  it('renders CommunicationsPlaceholder at /communications', async () => {
+  it('redirects the communications index to messages', async () => {
     renderAt('/communications');
-    expect(await screen.findByTestId('page-CommunicationsPlaceholder')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-Messages')).toBeInTheDocument();
   });
 
   it('renders Messages at /communications/messages', async () => {
@@ -295,9 +294,9 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-PersonalCalendar')).toBeInTheDocument();
   });
 
-  it('renders CalendarPlaceholder for unknown /calendar/* paths', async () => {
+  it('renders the shared section placeholder for unknown /calendar/* paths', async () => {
     renderAt('/calendar/unknown');
-    expect(await screen.findByTestId('page-CalendarPlaceholder')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('Personal Calendar');
   });
 
   it('renders PersonalData at /data/personal', async () => {
@@ -310,14 +309,21 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-PasswordChange')).toBeInTheDocument();
   });
 
-  it('renders ContributionDashboard at /data/contributions', async () => {
+  it('does not expose the internal contribution dashboard route', async () => {
     renderAt('/data/contributions');
-    expect(await screen.findByTestId('page-ContributionDashboard')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('My Data');
   });
 
-  it('renders MyDataPlaceholder for unknown /data/* paths', async () => {
+  it('renders the shared section placeholder for unknown /data/* paths', async () => {
     renderAt('/data/unknown');
-    expect(await screen.findByTestId('page-MyDataPlaceholder')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-SectionPlaceholder')).toHaveTextContent('My Data');
+  });
+
+  it('renders unknown destinations without requiring the signed-in shell', async () => {
+    renderAt('/unknown-protected-destination');
+
+    expect(await screen.findByTestId('page-NotFound')).toBeInTheDocument();
+    expect(screen.queryByTestId('signed-in-shell')).not.toBeInTheDocument();
   });
 });
 
@@ -361,6 +367,18 @@ describe('App routing — public routes', () => {
     expect(await screen.findByTestId('page-PrivacyPolicy')).toBeInTheDocument();
   });
 
+  it('renders TermsOfService at /terms-of-service', async () => {
+    clerkState.signedIn = false;
+    renderAt('/terms-of-service');
+    expect(await screen.findByTestId('page-TermsOfService')).toBeInTheDocument();
+  });
+
+  it('renders CookiePolicy at /cookies-policy', async () => {
+    clerkState.signedIn = false;
+    renderAt('/cookies-policy');
+    expect(await screen.findByTestId('page-CookiePolicy')).toBeInTheDocument();
+  });
+
   it('renders NotFound for unknown path', async () => {
     renderAt('/does-not-exist-xyz');
     expect(await screen.findByTestId('page-NotFound')).toBeInTheDocument();
@@ -381,6 +399,11 @@ describe('App routing — deterministic auth states', () => {
     renderAt('/auth/register');
 
     expect(await screen.findByTestId('clerk-wrapper')).toBeInTheDocument();
+  });
+
+  it('redirects signed-in users away from auth routes', async () => {
+    renderAt('/auth/login');
+    expect(await screen.findByTestId('page-Dashboard')).toBeInTheDocument();
   });
 
   it('does not expose protected page content to a signed-out visitor', async () => {

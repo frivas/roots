@@ -13,7 +13,6 @@ import type {
 } from '../repositories/contracts.js';
 import { decodeCursor, encodeCursor } from '../repositories/pagination.js';
 import { OpenAIImageProvider } from '../services/illustration-jobs.js';
-import { SessionEventRegistry } from '../services/session-events.js';
 import type {
   IllustrationJob,
   MessageRecord,
@@ -392,7 +391,6 @@ export const createInMemoryBackendDependencies = (
 ) => {
   const state = createState(options);
   const pendingTasks: Array<() => Promise<void>> = [];
-  const eventRegistry = new SessionEventRegistry();
   const jobs = new InMemoryIllustrationJobRepository(state);
   const repositories: RepositoryFactory = {
     async data(userId) {
@@ -406,10 +404,9 @@ export const createInMemoryBackendDependencies = (
     },
   };
   const dependencies: BackendDependencies = {
+    mode: 'connected',
     repositories,
     illustrationProvider: new OpenAIImageProvider(async () => new OpenAI()),
-    eventPublisher: eventRegistry,
-    eventRegistry,
     scheduler(task) {
       pendingTasks.push(task);
     },
@@ -418,9 +415,9 @@ export const createInMemoryBackendDependencies = (
         return {
           ready: true,
           checks: {
-            clerk: 'ok',
-            openai: 'ok',
-            supabase: 'ok',
+            clerk: 'configured',
+            openai: 'configured',
+            supabase: 'available',
           },
         };
       },

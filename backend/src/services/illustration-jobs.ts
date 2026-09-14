@@ -13,19 +13,6 @@ export interface StoryIllustrationInput {
   current_scene?: string;
 }
 
-export interface IllustrationEventPublisher {
-  publish(
-    ownerId: string,
-    sessionId: string,
-    event: {
-      type: 'illustration-completed' | 'illustration-failed';
-      jobId: string;
-      imageUrl?: string;
-      errorCode?: string;
-    },
-  ): void;
-}
-
 export interface IllustrationProvider {
   generate(prompt: string): Promise<string>;
 }
@@ -90,7 +77,6 @@ export class OpenAIImageProvider implements IllustrationProvider {
       n: 1,
       size: '1024x1024',
       quality: 'standard',
-      style: 'vivid',
     });
     const imageUrl = response.data?.[0]?.url;
     if (!imageUrl) {
@@ -104,7 +90,6 @@ export class IllustrationJobService {
   constructor(
     private readonly repository: IllustrationJobRepository,
     private readonly provider: IllustrationProvider,
-    private readonly publisher: IllustrationEventPublisher,
     private readonly scheduler: JobScheduler,
     private readonly logger: FastifyBaseLogger,
   ) {}
@@ -154,11 +139,6 @@ export class IllustrationJobService {
     try {
       const imageUrl = await this.provider.generate(job.prompt);
       await this.repository.markCompleted(job.id, ownerId, imageUrl);
-      this.publisher.publish(ownerId, job.sessionId, {
-        type: 'illustration-completed',
-        jobId: job.id,
-        imageUrl,
-      });
     } catch {
       this.logger.error(
         { jobId: job.id, provider: 'openai' },
@@ -169,11 +149,6 @@ export class IllustrationJobService {
         ownerId,
         'IMAGE_GENERATION_FAILED',
       );
-      this.publisher.publish(ownerId, job.sessionId, {
-        type: 'illustration-failed',
-        jobId: job.id,
-        errorCode: 'IMAGE_GENERATION_FAILED',
-      });
     }
   }
 }

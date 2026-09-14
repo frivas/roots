@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "deleteBranchOnMerge": true,
+  "productionBranch": "main",
+  "integrationBranch": "develop"
+}

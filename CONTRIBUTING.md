@@ -35,7 +35,7 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 
 - Node.js 20+
 - npm or yarn
-- API Keys: OpenAI, ElevenLabs, Lingo.dev/Groq, Clerk
+- API keys for connected mode: OpenAI, ElevenLabs, Supabase, and Clerk
 
 ### Installation
 

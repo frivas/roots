@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
 import Button from './Button';
 
 type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link';
@@ -38,8 +37,11 @@ describe('Button', () => {
   });
 
   it('shows loading state when isLoading is true', () => {
-    render(<Button isLoading>btn</Button>);
+    const { container } = render(<Button isLoading>btn</Button>);
     expect(screen.getByRole('button')).toBeDisabled();
+    const spinner = container.querySelector('svg');
+    expect(spinner).toHaveAttribute('fill', 'none');
+    expect(spinner?.querySelector('circle')).toHaveAttribute('stroke', 'currentColor');
   });
 
   it('does not call onClick when disabled', () => {

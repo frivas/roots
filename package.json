@@ -36,6 +36,9 @@
     "check:performance-slo:config": "node scripts/check-performance-slo.mjs --config-only",
     "validate:release-config": "node scripts/validate-release-config.mjs",
     "validate:ci-config": "node scripts/validate-ci-config.mjs",
+    "monitor:production": "node scripts/run-health-monitor.mjs",
+    "discover:deployments": "node scripts/discover-provider-deployments.mjs",
+    "rollback:deployments": "node scripts/rollback-provider-deployments.mjs",
     "lint": "concurrently \"cd frontend && npm run lint\" \"cd backend && npm run lint\"",
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "cd frontend && npm run test",
@@ -83,7 +86,7 @@
     "@rollup/rollup-darwin-x64": "^4.62.5"
   },
   "overrides": {
-    "fast-uri": "3.1.5",
+    "fast-uri": "3.1.6",
     "undici": ">=7.29.0 <8",
     "esbuild": "0.28.1",
     "fast-xml-parser": "5.5.9",
@@ -108,15 +111,6 @@
     },
     "@clerk/clerk-react": {
       "@clerk/shared": "3.47.7"
-    },
-    "@lingo.dev/_react": {
-      "next": "15.5.15",
-      "lodash": "4.18.1"
-    },
-    "lingo.dev": {
-      "@modelcontextprotocol/sdk": "1.29.0",
-      "diff": "8.0.4",
-      "yaml": "2.9.0"
     },
     "tar": ">=7.5.22",
     "postcss": ">=8.5.23",

@@ -1,11 +1,3 @@
-export type Json =
-  | boolean
-  | null
-  | number
-  | string
-  | Json[]
-  | { [key: string]: Json | undefined };
-
 type UserRow = {
   id: string;
   email: string | null;

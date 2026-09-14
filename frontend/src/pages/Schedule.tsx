@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import TranslatedText from '../components/TranslatedText';
 import { Clock, BookOpen, Users, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { snappyItemVariants as itemVariants, tightContainerVariants as containerVariants } from '../lib/motion';
 import { useLingoTranslation } from '../contexts/LingoTranslationContext';
 
 // Type definitions
@@ -32,34 +33,6 @@ interface ScheduleData {
   weekDays: DayName[];
   schedule: Record<TimeSlot, Record<DayName, SubjectCode | ''>>;
 }
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.1,
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 400,
-      damping: 25,
-    }
-  }
-};
 
 // Mock schedule data
 const scheduleData: ScheduleData = {

@@ -22,12 +22,8 @@
 **/*.tsbuildinfo
 
 # --- Environment Files ---
-.env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
+**/.env*
+!**/.env.example
 
 # --- Clerk ---
 **/.clerk/
@@ -74,7 +70,6 @@ vercel-dev.log
 
 # Local Netlify folder
 .netlify
-/frontend/.env.backup
 /gitleaks-report.json
 
 # Worktrees (parallel development)

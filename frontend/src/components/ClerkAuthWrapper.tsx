@@ -1,6 +1,5 @@
 import React from 'react';
 import { SignIn, SignUp } from '@clerk/clerk-react';
-import useClerkLocalization from '../hooks/useClerkLocalization';
 import ErrorBoundary from './ErrorBoundary';
 import TranslatedText from './TranslatedText';
 
@@ -17,9 +16,6 @@ const ClerkAuthWrapper: React.FC<ClerkAuthWrapperProps> = ({
   path,
   forceRedirectUrl
 }) => {
-  // Use the improved localization hook that doesn't interfere with Google sign-in
-  useClerkLocalization();
-
   // Madrid styling with improved form behavior
   const appearance = {
     elements: {

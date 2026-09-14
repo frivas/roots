@@ -1,0 +1,94 @@
+name: Production release gate
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-release-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify-release:
+    name: Verify exact-SHA production release
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_PRODUCTION_URL: ${{ vars.NETLIFY_PRODUCTION_URL }}
+      VERCEL_PROJECT_ID: prj_GSAg55JO0lYdjI7tCQqwC6u7qp4C
+      VERCEL_ORG_ID: team_eJRc3uJPBTvXknc9WbVr4nlh
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PRODUCTION_URL: ${{ vars.VERCEL_PRODUCTION_URL }}
+      PERFORMANCE_COLLECTOR_URL: ${{ vars.PERFORMANCE_COLLECTOR_URL }}
+      PERFORMANCE_COLLECTOR_ID: ${{ vars.PERFORMANCE_COLLECTOR_ID }}
+      PERFORMANCE_COLLECTOR_TOKEN: ${{ secrets.PERFORMANCE_COLLECTOR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Verify the green CI SHA is checked out
+        run: test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+      - name: Discover exact-SHA deploys and rollback targets
+        id: deployment-discovery
+        env:
+          DEPLOYMENT_DISCOVERY_FILE: deployment-discovery.json
+        run: node scripts/discover-provider-deployments.mjs
+      - name: Validate immutable release identity
+        run: npm run validate:release-config -- --release
+      - name: Run the read-only production canary
+        id: production-canary
+        env:
+          RELEASE_EVIDENCE_FILE: release-evidence.json
+        run: node scripts/run-deployed-canary.mjs
+      - name: Collect authorized runtime observations
+        env:
+          PERFORMANCE_OBSERVATIONS_FILE: performance-observations.json
+        run: node scripts/collect-performance-observations.mjs
+      - name: Enforce runtime SLOs
+        id: runtime-slo
+        run: npm run check:performance-slo -- --observations performance-observations.json
+      - name: Roll back both providers after a failed release check
+        if: ${{ steps.deployment-discovery.outcome == 'success' && (steps.production-canary.outcome == 'failure' || steps.runtime-slo.outcome == 'failure') }}
+        env:
+          ROLLBACK_EVIDENCE_FILE: rollback-evidence.json
+        run: npm run rollback:deployments
+      - name: Upload immutable release evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-release-${{ github.event.workflow_run.head_sha }}
+          path: |
+            deployment-discovery.json
+            release-evidence.json
+            performance-observations.json
+            rollback-evidence.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Notify operations on release failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+          ALERT_EVENT: roots_release_gate_failed
+        run: node scripts/send-operations-alert.mjs
+
+  reject-failed-ci:
+    name: Reject failed production CI
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record causal gate rejection
+        run: |
+          echo "::error::Production release gate rejected CI conclusion '${{ github.event.workflow_run.conclusion }}' for ${{ github.event.workflow_run.head_sha }}."
+          exit 1

@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import React from 'react';
 
 vi.mock('./TranslatedText', () => ({
   default: ({ children }: { children: string }) => <>{children}</>,
