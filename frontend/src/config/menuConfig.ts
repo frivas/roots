@@ -19,7 +19,9 @@ import {
     MessageSquare,
     Newspaper,
     CreditCard,
-    Key
+    Key,
+    Bot,
+    HeartHandshake
 } from 'lucide-react';
 
 import { APP_ROUTES, type AppRoute } from './routes';
@@ -37,6 +39,47 @@ export interface MenuItem {
 
 // Common menu items visible to all roles
 const commonMenuItems: MenuItem[] = [
+    {
+        name: 'AI Learning',
+        icon: Bot,
+        children: [
+            {
+                name: 'AI services overview',
+                href: APP_ROUTES.services,
+                icon: BookOpen
+            },
+            {
+                name: 'Math tutoring',
+                href: APP_ROUTES.servicesMathTutoring,
+                icon: Award
+            },
+            {
+                name: 'Language lesson',
+                href: APP_ROUTES.servicesLanguageLesson,
+                icon: MessageSquare
+            },
+            {
+                name: 'Storytelling',
+                href: APP_ROUTES.servicesStorytelling,
+                icon: BookOpen
+            },
+            {
+                name: 'Chess coaching',
+                href: APP_ROUTES.servicesChessCoaching,
+                icon: UserCheck
+            },
+            {
+                name: 'Parent wellness',
+                href: APP_ROUTES.servicesParentWellness,
+                icon: HeartHandshake
+            },
+            {
+                name: 'Progress interpretation',
+                href: APP_ROUTES.servicesProgressInterpretation,
+                icon: FileText
+            }
+        ]
+    },
     {
         name: 'Home',
         icon: Home,
@@ -96,11 +139,6 @@ const commonMenuItems: MenuItem[] = [
                 name: 'School calendar',
                 href: APP_ROUTES.schoolCalendar,
                 icon: CalendarDays
-            },
-            {
-                name: 'Services',
-                href: APP_ROUTES.schoolServices,
-                icon: BookOpen
             },
             {
                 name: 'School elections',
@@ -170,3 +208,9 @@ export const getMenuItems = (userRoles: Role[] = [], userEmail?: string): MenuIt
 
     return menuItems;
 };
+
+export const getMenuDestinations = (items: readonly MenuItem[]): AppRoute[] =>
+    items.flatMap(item => [
+        ...(item.href ? [item.href] : []),
+        ...(item.children ? getMenuDestinations(item.children) : [])
+    ]);

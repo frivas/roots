@@ -4,6 +4,8 @@ import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { getMenuItems } from '../../config/menuConfig';
 
+const mockUseLocation = vi.fn(() => ({ pathname: '/home' }));
+
 vi.mock('../../contexts/LingoTranslationContext', () => ({
   useLingoTranslation: vi.fn(() => ({
     language: 'en-US',
@@ -41,7 +43,7 @@ vi.mock('react-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-router')>();
   return {
     ...actual,
-    useLocation: vi.fn(() => ({ pathname: '/home' })),
+    useLocation: () => mockUseLocation(),
     Link: ({ children, to, ...rest }: { children: React.ReactNode; to: string; className?: string; onClick?: () => void }) => (
       <a href={to} {...rest}>
         {children}
@@ -53,6 +55,9 @@ vi.mock('react-router', async (importOriginal) => {
 import SimpleHeader from './SimpleHeader';
 
 describe('SimpleHeader', () => {
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({ pathname: '/home' });
+  });
   it('renders without crashing', () => {
     render(
       <MemoryRouter>
@@ -109,6 +114,18 @@ describe('SimpleHeader', () => {
     expect(renderedDestinations).toEqual(expect.arrayContaining(expectedDestinations));
     expect(renderedDestinations).not.toContain('/messages');
     expect(renderedDestinations).not.toContain('/settings');
+  });
+
+  it('highlights the canonical destination for a nested route', () => {
+    mockUseLocation.mockReturnValue({ pathname: '/communications/messages/thread-1' });
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+
+    expect(screen.getByRole('link', { name: 'Messages' })).toHaveAttribute('aria-current', 'page');
   });
 
   it('closes mobile menu when a navigation link is clicked', () => {

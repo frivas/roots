@@ -16,9 +16,13 @@ vi.mock('../ui/MadridLogo', () => ({
   default: () => <div data-testid="madrid-logo" />,
 }));
 
-vi.mock('../../config/menuConfig', () => ({
-  getMenuItems: (...args: unknown[]) => mockGetMenuItems(...args),
-}));
+vi.mock('../../config/menuConfig', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../config/menuConfig')>();
+  return {
+    ...actual,
+    getMenuItems: (...args: unknown[]) => mockGetMenuItems(...args),
+  };
+});
 
 vi.mock('@clerk/clerk-react', () => ({
   useUser: () => mockUseUser(),
@@ -129,17 +133,13 @@ describe('ModernSidebar', () => {
     expect(mockSignOut).toHaveBeenCalled();
   });
 
-  it('toggles nested child menus and responds to hover expansion', () => {
+  it('toggles nested child menus without mobile-only hover state', () => {
     mockUseLocation.mockReturnValue({ pathname: '/nested/leaf' });
 
-    const { container } = renderSidebar();
-    const root = container.firstElementChild as HTMLElement;
-
-    fireEvent.mouseEnter(root);
+    renderSidebar();
     const nested = screen.getByRole('button', { name: /nested/i });
     expect(nested).toHaveAttribute('aria-expanded', 'true');
     fireEvent.click(nested);
-    fireEvent.mouseLeave(root);
 
     expect(nested).toHaveAttribute('aria-expanded', 'false');
   });

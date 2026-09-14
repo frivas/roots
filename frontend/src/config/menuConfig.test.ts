@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getMenuItems } from './menuConfig';
-import { isRegisteredRoute } from './routes';
+import { getProtectedRoutePaths, isRegisteredRoute } from './routes';
 
 describe('getMenuItems', () => {
   it('does not expose role-only destinations until those pages are implemented', () => {
@@ -19,6 +19,7 @@ describe('getMenuItems', () => {
     expect(names).toContain('Home');
     expect(names).toContain('Our School');
     expect(names).toContain('Communications');
+    expect(names[0]).toBe('AI Learning');
   });
 
   it('does not expose the internal contribution dashboard to any client user', () => {
@@ -43,5 +44,19 @@ describe('getMenuItems', () => {
 
     expect(destinations.length).toBeGreaterThan(0);
     expect(destinations.every(isRegisteredRoute)).toBe(true);
+    expect(destinations.every(destination => getProtectedRoutePaths().has(destination))).toBe(true);
+  });
+
+  it('promotes the main AI tutoring destinations into navigation', () => {
+    const aiLearning = getMenuItems([]).find(item => item.name === 'AI Learning');
+    const destinations = aiLearning?.children?.map(item => item.href);
+
+    expect(destinations).toEqual(expect.arrayContaining([
+      '/services',
+      '/services/math-tutoring-session',
+      '/services/language-lesson-session',
+      '/services/storytelling-session',
+      '/services/chess-coaching-session',
+    ]));
   });
 });

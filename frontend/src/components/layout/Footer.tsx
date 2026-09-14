@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { cn } from '../../lib/utils';
 import TranslatedText from '../TranslatedText';
 import { ExternalLink, Bot } from 'lucide-react';
-import { APP_ROUTES } from '../../config/routes';
+import { APP_ROUTES, isAiServicePath } from '../../config/routes';
 
 interface FooterProps {
   className?: string;
@@ -12,20 +12,7 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ className }) => {
   const location = useLocation();
   
-  // Define AI-enabled pages that should show the disclaimer
-  const aiEnabledPaths = [
-    APP_ROUTES.servicesStorytelling,
-    APP_ROUTES.servicesChessCoaching,
-    APP_ROUTES.servicesMathTutoring,
-    APP_ROUTES.servicesLanguageLesson,
-    APP_ROUTES.servicesParentWellnessChat,
-    APP_ROUTES.servicesExtraCurricularSession.replace('/:activityType', ''),
-  ];
-  
-  // Check if current page uses AI
-  const showAiDisclaimer = aiEnabledPaths.some(path => 
-    location.pathname.startsWith(path)
-  );
+  const showAiDisclaimer = isAiServicePath(location.pathname);
 
   return (
     <footer className={cn(
@@ -59,19 +46,19 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             {/* Privacy Links */}
             <nav className="flex flex-wrap gap-4 text-xs text-muted-foreground">
               <Link 
-                to="/privacy-policy" 
+                to={APP_ROUTES.privacyPolicy}
                 className="hover:text-primary transition-colors"
               >
                 <TranslatedText>Privacy Policy</TranslatedText>
               </Link>
               <Link 
-                to="/terms-of-service" 
+                to={APP_ROUTES.termsOfService}
                 className="hover:text-primary transition-colors"
               >
                 <TranslatedText>Terms of Service</TranslatedText>
               </Link>
               <Link 
-                to="/cookies-policy" 
+                to={APP_ROUTES.cookiesPolicy}
                 className="hover:text-primary transition-colors"
               >
                 <TranslatedText>Cookie Policy</TranslatedText>

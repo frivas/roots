@@ -6,7 +6,8 @@ import { Menu, X, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
-import { getMenuItems, type Role } from '../../config/menuConfig';
+import { getMenuDestinations, getMenuItems, type Role } from '../../config/menuConfig';
+import { APP_ROUTES, getActiveNavigationPath } from '../../config/routes';
 
 const SimpleHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,6 +26,10 @@ const SimpleHeader: React.FC = () => {
     () => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress),
     [userRoles, user?.primaryEmailAddress?.emailAddress],
   );
+  const activeHref = getActiveNavigationPath(
+    location.pathname,
+    getMenuDestinations(navigation),
+  );
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -39,7 +44,7 @@ const SimpleHeader: React.FC = () => {
       <div className="px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Madrid Logo for mobile */}
-          <Link to="/home" className="flex items-center gap-3">
+          <Link to={APP_ROUTES.home} className="flex items-center gap-3">
             <MadridLogo size="sm" />
             <span className="text-xl font-bold text-foreground">Raíces</span>
           </Link>
@@ -52,7 +57,7 @@ const SimpleHeader: React.FC = () => {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
           >
-            <span className="sr-only">Open main menu</span>
+            <span className="sr-only"><TranslatedText>Open main menu</TranslatedText></span>
             {mobileMenuOpen ? (
               <X className="h-6 w-6" aria-hidden="true" />
             ) : (
@@ -64,22 +69,33 @@ const SimpleHeader: React.FC = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div id="mobile-navigation" className="animate-fade-in bg-background border-t border-border">
+        <nav
+          id="mobile-navigation"
+          aria-labelledby="mobile-navigation-label"
+          className="animate-fade-in border-t border-border bg-background"
+        >
+          <span id="mobile-navigation-label" className="sr-only">
+            <TranslatedText>Main navigation</TranslatedText>
+          </span>
           <div className="space-y-1 px-4 pb-3 pt-2">
             {/* Navigation Links */}
-            {navigation.map((group) => (
-              <div key={group.name} className="py-1">
-                <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {navigation.map((group, index) => (
+              <details
+                key={group.name}
+                className="py-1"
+                open={index === 0 || getMenuDestinations([group]).some(href => href === activeHref)}
+              >
+                <summary className="cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:bg-muted hover:text-foreground">
                   <TranslatedText>{group.name}</TranslatedText>
-                </p>
+                </summary>
                 {group.children?.map(item => item.href && (
                   <Link
                     key={item.name}
                     to={item.href}
-                    aria-current={location.pathname === item.href ? 'page' : undefined}
+                    aria-current={activeHref === item.href ? 'page' : undefined}
                     className={cn(
                       "flex items-center py-3 text-base font-medium transition-colors rounded-lg px-3",
-                      location.pathname === item.href
+                      activeHref === item.href
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
@@ -89,7 +105,7 @@ const SimpleHeader: React.FC = () => {
                     <TranslatedText>{item.name}</TranslatedText>
                   </Link>
                 ))}
-              </div>
+              </details>
             ))}
 
 
@@ -115,19 +131,20 @@ const SimpleHeader: React.FC = () => {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => {
                     handleSignOut();
                     setMobileMenuOpen(false);
                   }}
                   className="flex w-full items-center py-3 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg px-3"
                 >
-                  <LogOut className="mr-3 h-5 w-5" />
+                  <LogOut className="mr-3 h-5 w-5" aria-hidden="true" />
                   <TranslatedText>Sign out</TranslatedText>
                 </button>
               </div>
             )}
           </div>
-        </div>
+        </nav>
       )}
     </header>
   );

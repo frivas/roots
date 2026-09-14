@@ -9,7 +9,7 @@ import RouteWrapper from '../RouteWrapper';
 import { cn } from '../../lib/utils';
 import { useUser } from '@clerk/clerk-react';
 import { type Role } from '../../config/menuConfig';
-import { APP_ROUTES } from '../../config/routes';
+import { isAiServicePath } from '../../config/routes';
 import LanguageSwitcher from '../LanguageSwitcher';
 import DemoModeNotice from '../DemoModeNotice';
 
@@ -25,21 +25,7 @@ const MainLayout: React.FC = () => {
     );
   }, [user, isLoaded]);
 
-  // Define pages with ElevenLabs agent integrations (hide footer and AI disclaimer)
-  const elevenLabsAgentPaths = [
-    APP_ROUTES.servicesParentWellnessChat,
-    APP_ROUTES.servicesLanguageLesson,
-    APP_ROUTES.servicesMathTutoring,
-    APP_ROUTES.servicesExtraCurricularSession.replace('/:activityType', ''),
-    APP_ROUTES.servicesChessCoaching,
-    APP_ROUTES.servicesStorytelling,
-    APP_ROUTES.servicesProgressInterpretationChat,
-  ];
-
-  // Check if current page has ElevenLabs agent integration
-  const hasElevenLabsAgent = elevenLabsAgentPaths.some(path =>
-    location.pathname.startsWith(path)
-  );
+  const hasElevenLabsAgent = isAiServicePath(location.pathname);
 
   // Page transition variants
   const pageVariants = {
