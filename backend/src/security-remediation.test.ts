@@ -154,9 +154,7 @@ describe('security remediation contracts', () => {
     expect(generate).toHaveBeenCalledOnce();
   });
 
-  it('requires an authenticated session for the event stream', async () => {
-    authState.userId = null;
-    authState.sessionId = null;
+  it('does not expose the removed event stream', async () => {
     const harness = createInMemoryBackendDependencies();
     const app = await buildServer({ dependencies: harness.dependencies });
 
@@ -165,8 +163,33 @@ describe('security remediation contracts', () => {
       url: '/events/story-illustrations',
     });
 
-    expect(response.statusCode).toBe(401);
-    expect(response.json()).toEqual({ error: 'UNAUTHORIZED' });
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toEqual({ error: 'NOT_FOUND' });
+  });
+
+  it('rate limits the public webhook before signature verification', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
+    const request = {
+      method: 'POST' as const,
+      url: '/webhook/elevenlabs/story-illustration',
+      headers: { 'content-type': 'application/json' },
+      payload: JSON.stringify({
+        user_id: 'user_1',
+        session_id: 'session_1',
+        event_id: 'event_1',
+        prompt: 'A safe woodland scene',
+      }),
+    };
+
+    const responses = [];
+    for (let attempt = 0; attempt < 31; attempt += 1) {
+      responses.push(await app.inject(request));
+    }
+
+    expect(responses.at(-1)?.statusCode).toBe(429);
+    expect(responses.at(-1)?.json()).toEqual({ error: 'RATE_LIMITED' });
+    expect(harness.state.jobs.size).toBe(0);
   });
 
   it('allows only the configured browser origin', async () => {
@@ -224,7 +247,6 @@ describe('security remediation contracts', () => {
           throw new Error('vendor-secret-detail private story prompt');
         },
       },
-      { publish: vi.fn() },
       (task) => scheduled.push(task),
       logger,
     );

@@ -102,7 +102,6 @@ describe('default backend dependencies', () => {
       getToken,
     );
     expect(supabaseMocks.createTrustedSupabase).toHaveBeenCalledOnce();
-    expect(dependencies.eventPublisher).toBe(dependencies.eventRegistry);
   });
 
   it('reports readiness from configuration and the real health-check query', async () => {
@@ -133,7 +132,19 @@ describe('default backend dependencies', () => {
 
     expect(scheduled).toHaveBeenCalledOnce();
     expect(openAIMocks.constructor).toHaveBeenCalledOnce();
+    expect(openAIMocks.constructor).toHaveBeenCalledWith({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 0,
+      timeout: 20_000,
+    });
     expect(openAIMocks.generate).toHaveBeenCalledTimes(2);
+    expect(openAIMocks.generate).toHaveBeenCalledWith({
+      model: 'dall-e-3',
+      prompt: 'first prompt',
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard',
+    });
   });
 
   it('extends scheduled job lifetime on Vercel', async () => {

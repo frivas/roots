@@ -16,12 +16,10 @@ import {
   OpenAIImageProvider,
   buildIllustrationPrompt,
   deriveIdempotencyKey,
-  type IllustrationEventPublisher,
   type IllustrationProvider,
   type JobScheduler,
   type StoryIllustrationInput,
 } from './services/illustration-jobs.js';
-import { SessionEventRegistry } from './services/session-events.js';
 
 interface ReadinessResult {
   ready: boolean;
@@ -39,8 +37,6 @@ interface ReadinessChecker {
 export interface BackendDependencies {
   repositories: RepositoryFactory;
   illustrationProvider: IllustrationProvider;
-  eventPublisher: IllustrationEventPublisher;
-  eventRegistry: SessionEventRegistry;
   scheduler: JobScheduler;
   readiness: ReadinessChecker;
 }
@@ -50,7 +46,11 @@ let openAIClient: OpenAI | null = null;
 const getOpenAI = async () => {
   if (!openAIClient) {
     const { default: OpenAIClass } = await import('openai');
-    openAIClient = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
+    openAIClient = new OpenAIClass({
+      apiKey: process.env.OPENAI_API_KEY,
+      maxRetries: 0,
+      timeout: 20_000,
+    });
   }
   return openAIClient;
 };
@@ -96,7 +96,6 @@ const createDefaultReadiness = (): ReadinessChecker => ({
 });
 
 export const createDefaultDependencies = (): BackendDependencies => {
-  const eventRegistry = new SessionEventRegistry();
   const repositories: RepositoryFactory = {
     async data(userId, getToken) {
       return new SupabaseDataRepository(
@@ -117,8 +116,6 @@ export const createDefaultDependencies = (): BackendDependencies => {
   return {
     repositories,
     illustrationProvider: new OpenAIImageProvider(getOpenAI),
-    eventPublisher: eventRegistry,
-    eventRegistry,
     scheduler: defaultScheduler,
     readiness: createDefaultReadiness(),
   };
@@ -147,7 +144,6 @@ export const createIllustrationService = async (
   return new IllustrationJobService(
     repository,
     dependencies.illustrationProvider,
-    dependencies.eventPublisher,
     dependencies.scheduler,
     logger,
   );

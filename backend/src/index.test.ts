@@ -43,6 +43,16 @@ describe('buildServer', () => {
     ).toBe(404);
   });
 
+  it('returns a stable error contract for unknown routes', async () => {
+    const harness = createInMemoryBackendDependencies();
+    const app = await buildServer({ dependencies: harness.dependencies });
+
+    const response = await app.inject({ method: 'GET', url: '/missing' });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toEqual({ error: 'NOT_FOUND' });
+  });
+
   it('requires PORT only for the standalone listener', () => {
     const env = {
       NODE_ENV: 'test',

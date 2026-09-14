@@ -7,7 +7,6 @@ import {
   enqueueIllustration,
   type BackendDependencies,
 } from './dependencies.js';
-import { getRequestIdentity } from './lib/auth.js';
 import { verifyElevenLabsWebhook } from './lib/elevenlabs-webhook.js';
 import { safeErrorMetadata, sendPublicError } from './lib/http.js';
 import { getReleaseSha } from './lib/release-identity.js';
@@ -129,6 +128,9 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
     server.log.error(safeErrorMetadata(error), 'unhandled request failure');
     return reply.code(500).send({ error: 'INTERNAL_ERROR' });
   });
+  server.setNotFoundHandler((_request, reply) =>
+    reply.code(404).send({ error: 'NOT_FOUND' }),
+  );
 
   server.get('/health', async (_request, reply) =>
     reply
@@ -141,41 +143,6 @@ export const buildServer = async (options: BuildServerOptions = {}) => {
       status: result.ready ? 'ready' : 'not_ready',
       checks: result.checks,
     });
-  });
-
-  server.get('/events/story-illustrations', async (request, reply) => {
-    try {
-      const identity = getRequestIdentity(request);
-      reply.raw.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache, no-transform',
-        Connection: 'keep-alive',
-        Vary: 'Origin',
-      });
-      dependencies.eventRegistry.subscribe(
-        identity.userId,
-        identity.sessionId,
-        reply.raw,
-      );
-      reply.raw.write(
-        `data: ${JSON.stringify({ type: 'connected' })}\n\n`,
-      );
-
-      const heartbeat = setInterval(() => {
-        reply.raw.write(': heartbeat\n\n');
-      }, 30_000);
-      reply.raw.on('close', () => {
-        clearInterval(heartbeat);
-        dependencies.eventRegistry.unsubscribe(
-          identity.userId,
-          identity.sessionId,
-          reply.raw,
-        );
-      });
-      return reply;
-    } catch (error) {
-      return sendPublicError(reply, server.log, error);
-    }
   });
 
   server.post(
