@@ -2,12 +2,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, waitFor, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-const mockServiceTranslateText = vi.fn(async (t: string) => `[es]${t}`);
+const mockServiceTranslateText = vi.fn(async (text: string, language: string) => {
+  expect(language).toBe('es-ES');
+  return `[es]${text}`;
+});
 
 // Mock the service BEFORE importing the context
 vi.mock('../services/LingoTranslationService', () => ({
   lingoTranslationService: {
-    translateText: (...args: unknown[]) => mockServiceTranslateText(...args),
+    translateText: (text: string, language: string) => mockServiceTranslateText(text, language),
     clearCache: vi.fn(),
     preloadCommonTranslations: vi.fn(async () => {}),
     getStats: vi.fn(() => ({ cacheSize: 0, localTranslationsCount: 0 })),

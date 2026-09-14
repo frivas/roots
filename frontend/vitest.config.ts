@@ -14,6 +14,12 @@ export default defineConfig({
       provider: 'istanbul',
       reporter: ['text', 'lcov', 'html', 'json-summary'],
       include: ['src/**/*.{ts,tsx}'],
+      thresholds: {
+        statements: 85,
+        branches: 80,
+        functions: 85,
+        lines: 85,
+      },
       exclude: [
         'src/test/**',
         'src/**/*.d.ts',

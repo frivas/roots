@@ -58,7 +58,6 @@ roots/
 │   │   ├── services/        # Business logic services
 │   │   ├── hooks/           # Custom React hooks
 │   │   └── config/          # Configuration files
-│   ├── netlify.toml        # Netlify deployment config
 │   └── package.json
 ├── backend/                 # Node.js API with Fastify
 │   ├── src/
@@ -67,7 +66,8 @@ roots/
 │   │   └── types/           # TypeScript definitions
 │   ├── vercel.json         # Vercel deployment config
 │   └── package.json
-└── .documentation/          # Comprehensive documentation
+├── netlify.toml             # Netlify deployment config
+└── docs/deployment/         # Deployment and release contracts
 ```
 
 ## 🛠️ Technology Stack
@@ -225,12 +225,10 @@ ngrok http 3000
 - `GET /api/settings` - Get user settings
 - `PUT /api/settings` - Update user settings
 
-## 📚 Key Features Documentation
+## 📚 Deployment Documentation
 
-- **[Implementation Summary](.documentation/implementation-summary.md)** - Complete feature overview
-- **[Storytelling Feature](.documentation/storytelling-illustration-feature.md)** - Real-time illustration system
-- **[Localization Guide](.documentation/localization-guide.md)** - Translation system usage
-- **[Madrid Branding](.documentation/madrid-branding-guide.md)** - Design guidelines
+- **[Integration contracts](docs/deployment/integration-contracts.md)** - Clerk, Supabase, and serverless verification
+- **[Release and rollback](docs/deployment/release-and-rollback.md)** - Exact-SHA deployment verification procedure
 
 ## 🧪 Quality Assurance
 
@@ -292,15 +290,9 @@ npm run build:backend   # Creates dist/ folder with compiled TypeScript
 - Set up rate limiting and monitoring
 - Configure proper environment variables for production
 
-### Deployment Commands
-
-```bash
-# Frontend (Netlify)
-netlify deploy --prod --dir=frontend/dist
-
-# Backend (Vercel)
-vercel --prod
-```
+Production deployment is performed by the connected Netlify and Vercel Git
+integrations from the protected `main` branch. Do not deploy a local working
+tree directly; the deployed revision must remain traceable to a verified SHA.
 
 ## 🔧 Development Tools
 

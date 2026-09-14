@@ -12,13 +12,12 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3005',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        ws: true, // Enable WebSocket proxy for SSE
       },
       '/webhook': {
-        target: 'http://localhost:3005',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
@@ -41,15 +40,6 @@ export default defineConfig({
           if (id.includes('@clerk/clerk-react')) return 'clerk';
           if (id.includes('lucide-react') || id.includes('framer-motion')) return 'ui';
         },
-      },
-      external: (id) => {
-        // Externalize Node.js built-in modules
-        const nodeBuiltins = [
-          'path', 'fs', 'vm', 'url', 'util', 'http', 'https',
-          'stream', 'zlib', 'net', 'tls', 'crypto', 'child_process',
-          'os', 'assert'
-        ];
-        return nodeBuiltins.includes(id) || id.startsWith('node:');
       },
     },
   },

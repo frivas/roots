@@ -1,0 +1,49 @@
+# Netlify configuration for the Roots SPA. Netlify's base directory is the
+# repository root, so paths and commands are expressed from that directory.
+[build]
+command = "npm run build:frontend:release"
+functions = "netlify/functions"
+publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "22.22.2"
+
+[[headers]]
+for = "/assets/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/index.html"
+
+  [headers.values]
+  Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+for = "/site.webmanifest"
+
+  [headers.values]
+  Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+for = "/release.json"
+
+  [headers.values]
+  Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  Content-Security-Policy-Report-Only = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io https://api.elevenlabs.io https://*.vercel.app wss://*.elevenlabs.io; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://*.clerk.accounts.dev https://*.clerk.com https://*.elevenlabs.io; worker-src 'self' blob:"
+  Permissions-Policy = "camera=(), geolocation=(), microphone=(self), payment=(), usb=()"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+  Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+  X-Content-Type-Options = "nosniff"
+  X-Frame-Options = "DENY"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200

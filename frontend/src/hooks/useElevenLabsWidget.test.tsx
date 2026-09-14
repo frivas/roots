@@ -14,8 +14,12 @@ describe('ElevenLabs widget lifecycle', () => {
     document.head.querySelectorAll('script[data-elevenlabs-widget]').forEach(script => script.remove());
     document.body.replaceChildren();
     resetElevenLabsWidgetLoaderForTests();
-    vi.spyOn(window.customElements, 'get').mockReturnValue(undefined);
-    vi.spyOn(window.customElements, 'whenDefined').mockResolvedValue(undefined);
+    vi.spyOn(window.customElements, 'get').mockImplementation(
+      () => undefined as unknown as CustomElementConstructor,
+    );
+    vi.spyOn(window.customElements, 'whenDefined').mockResolvedValue(
+      class extends HTMLElement {},
+    );
   });
 
   it('deduplicates concurrent script requests', async () => {

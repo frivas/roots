@@ -38,7 +38,6 @@ roots/
 │   │   ├── contexts/       # React contexts (Auth, LingoTranslation)
 │   │   ├── services/       # Business logic & data services
 │   │   ├── hooks/          # Custom React hooks
-│   │   ├── types/          # TypeScript type definitions
 │   │   └── main.tsx        # App entry point (Clerk + Router + i18n providers)
 │   ├── vite.config.ts      # Vite config with dev proxy to backend
 │   └── package.json
@@ -147,7 +146,9 @@ Public endpoints:
 
 ## Pre-commit Hooks
 
-Three-layer secret scanning is configured:
+The Husky pre-commit hook runs the configured three-layer secret scan before
+localization, lint, and unit tests. Install `pre-commit`, `gitleaks`, and
+`git-secrets` before committing:
 1. **gitleaks** - Scans for secrets in git history
 2. **detect-secrets** - Baseline secret detection
 3. **git-secrets** - AWS-specific and custom secret patterns
@@ -164,14 +165,14 @@ Three-layer secret scanning is configured:
 ## Testing
 
 ### Framework
-- **Unit tests**: Vitest v8 (both frontend and backend)
+- **Unit tests**: Vitest v4 (both frontend and backend)
 - **Component tests**: React Testing Library (`@testing-library/react`)
-- **E2E tests**: Playwright (Chromium only) — page-level verification
+- **E2E tests**: Playwright (desktop Chromium, Pixel 7, and iPhone 15 profiles)
 
 ### Setup Files
 - Frontend: `frontend/src/test/setup.ts` — stubs `VITE_*` env vars via `vi.stubEnv`
 - Backend: `backend/src/test/setup.ts` — stubs `process.env.*` before any module loads
-- Frontend `vitest.config.ts` has `define` block to resolve `import.meta.env.VITE_*` at transform time
+- Frontend test environment types are checked through `frontend/tsconfig.test.json`
 
 ### Conventions
 - Test files live alongside source: `Component.test.tsx` next to `Component.tsx`
@@ -215,19 +216,21 @@ Use prefixes: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `ci:`
 ## CI/CD Pipeline
 
 ### On push / PR to develop or main:
-1. **CI** (`ci.yml`): Lint -> Typecheck -> Unit Tests -> Build
+1. **CI** (`ci.yml`): parallel lint/typecheck, tooling, unit-test, and build jobs, followed by Playwright smoke tests
 2. **Security** (`security.yml`): npm audit + license check
 3. **Gitleaks** (`gitleaks.yml`): Secret scanning (full history)
+4. **GitHub code scanning**: repository-managed CodeQL analysis
+5. **Integration contracts** (`integration-contracts.yml`): serverless adapter and local Clerk-shaped Supabase RLS checks; real Clerk and remote Supabase checks are manually dispatched
 
 ### On PRs only:
-4. **Knip** (`knip.yml`): Dead code detection
-5. **Bundle Size** (`bundle-size.yml`): Reports JS/CSS bundle sizes as PR comment
-6. **Claude Review** (`claude-review.yml`): AI code review (requires `ANTHROPIC_API_KEY` secret)
+6. **Knip** (`knip.yml`): Dead code detection
+7. **Bundle Size** (`bundle-size.yml`): Enforces gzip budgets and reports sizes as a PR comment
 
 ### Scheduled:
 - Security audit: Weekly (Monday 9am UTC)
 - Gitleaks: Daily (3am UTC)
 - Dependabot: Weekly updates with grouped PRs
+- Deployed canary: manually dispatched exact-SHA production and performance verification
 
 ## Agent Behavior
 
@@ -246,4 +249,4 @@ Go directly to these paths -- never search for them.
 | Research | `docs/research/YYYY-MM-DD-*.md` | |
 | Plans | `docs/plans/YYYY-MM-DD-*.md` | `-phases/` subdirs |
 | ADRs | `docs/decisions/` | |
-| Feature docs | `.documentation/` | Legacy location |
+| Deployment contracts | `docs/deployment/` | Provider, release, and performance contracts |

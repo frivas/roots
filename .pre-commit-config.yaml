@@ -4,19 +4,14 @@ repos:
     hooks:
       - id: gitleaks
         name: gitleaks
-        entry: gitleaks dir .
-        language: system
         args:
           - --baseline-path=gitleaks-baseline.json
-          - --exit-code=1
           - --redact
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
         name: detect-secrets
-        entry: detect-secrets-hook
-        language: python
         args:
           - --baseline
           - .secrets.baseline
@@ -28,3 +23,4 @@ repos:
         name: git-secrets
         entry: git secrets --scan
         language: system
+        pass_filenames: false

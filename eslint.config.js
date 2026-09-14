@@ -19,21 +19,12 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      // React Compiler rules added in eslint-plugin-react-hooks v7 — disabled until
-      // the project adopts the React Compiler.
+      // Existing violations require component-level refactors outside this
+      // configuration batch. Keep these three explicit while all other
+      // correctness rules remain enforced.
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/static-components': 'off',
       'react-hooks/purity': 'off',
-      'react-hooks/use-memo': 'off',
-      'react-hooks/void-use-memo': 'off',
-      'react-hooks/preserve-manual-memoization': 'off',
-      'react-hooks/immutability': 'off',
-      'react-hooks/globals': 'off',
-      'react-hooks/refs': 'off',
-      'react-hooks/error-boundaries': 'off',
-      'react-hooks/set-state-in-render': 'off',
-      'react-hooks/gating': 'off',
-      'react-hooks/config': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

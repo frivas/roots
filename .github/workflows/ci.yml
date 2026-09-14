@@ -103,7 +103,7 @@ jobs:
           path: |
             frontend/dist/
             backend/dist/
-          retention-days: 3
+          retention-days: 30
 
   e2e:
     name: Playwright smoke

@@ -67,14 +67,45 @@ if (!excluded.some((pattern) => pattern.includes('test'))) {
   fail('production backend builds must exclude test sources');
 }
 
-const netlify = read('frontend/netlify.toml');
+const netlify = read('netlify.toml');
 for (const expected of [
   'NODE_VERSION = "22.22.2"',
   'Cache-Control = "public, max-age=31536000, immutable"',
   'command = "npm run build:frontend:release"',
   'for = "/release.json"',
+  'Content-Security-Policy-Report-Only',
+  'Strict-Transport-Security',
+  'Permissions-Policy',
 ]) {
   if (!netlify.includes(expected)) fail(`Netlify contract is missing: ${expected}`);
+}
+if (read('.husky/pre-commit').includes('arch -arm64')) {
+  fail('the pre-commit hook must be portable across supported architectures');
+}
+if (!read('.husky/pre-commit').includes('pre-commit run --hook-stage pre-commit')) {
+  fail('the Husky hook must invoke the configured secret scanners');
+}
+const gitignore = read('.gitignore');
+if (!gitignore.includes('**/.env*') || !gitignore.includes('!**/.env.example')) {
+  fail('environment files must be ignored by default while examples remain tracked');
+}
+const viteConfig = read('frontend/vite.config.ts');
+if (viteConfig.includes('localhost:3005') || viteConfig.includes('external:')) {
+  fail('the frontend build must use port 3000 and reject Node built-ins');
+}
+const frontendVitest = read('frontend/vitest.config.ts');
+const backendVitest = read('backend/vitest.config.ts');
+if (!frontendVitest.includes('thresholds:') || !backendVitest.includes('thresholds:')) {
+  fail('both workspaces must enforce coverage thresholds');
+}
+if (!frontendPackage.scripts.typecheck.includes('tsconfig.test.json')) {
+  fail('frontend typecheck must include test infrastructure');
+}
+if (!backendPackage.scripts.typecheck.includes('tsconfig.api.json')) {
+  fail('backend typecheck must include Vercel entry points');
+}
+if (!backendPackage.scripts.lint.includes('api/')) {
+  fail('backend lint must include Vercel entry points');
 }
 const playwright = read('frontend/playwright.config.ts');
 for (const project of ['desktop-chrome', 'mobile-chrome', 'mobile-safari']) {
@@ -145,6 +176,9 @@ const ciSource = read('.github/workflows/ci.yml');
 for (const command of ['npm run test:tooling', 'npm run validate:ci-config']) {
   if (!ciSource.includes(command)) fail(`CI tooling check must run: ${command}`);
 }
+if (!/name: build-output[\s\S]*?retention-days: 30/.test(ciSource)) {
+  fail('exact-SHA build output must be retained for 30 days');
+}
 
 const runCommands = (workflowFile, jobId) =>
   (workflows.get(workflowFile)?.jobs?.[jobId]?.steps ?? [])
@@ -186,6 +220,8 @@ for (const expected of [
   'validate-local-contract-evidence.mjs',
   'run-remote-clerk-supabase-contract.mjs',
   'npm run test:e2e:auth',
+  'supabase migration list --local',
+  'supabase db lint --local --level error --fail-on error',
 ]) {
   if (!integrationSource.includes(expected)) {
     fail(`integration contracts workflow is missing: ${expected}`);
