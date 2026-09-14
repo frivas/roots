@@ -40,10 +40,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
           <div className="space-y-6">
             <div>
               <h2 className="text-4xl font-arial-black text-foreground leading-tight">
-                <TranslatedText>Integral System</TranslatedText>
+                <TranslatedText>AI learning for every family</TranslatedText>
               </h2>
               <h3 className="text-3xl font-arial-black text-foreground leading-tight mt-1">
-                <TranslatedText>for Educational Management</TranslatedText>
+                <TranslatedText>Bilingual support that grows with your child</TranslatedText>
               </h3>
               <h4 className="text-2xl font-bold text-primary mt-2">
                 <TranslatedText>Madrid Community</TranslatedText>
@@ -52,7 +52,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
 
             <p className="text-lg text-foreground leading-relaxed">
               <TranslatedText>
-                Access your space to manage communication with the school and perform educational procedures electronically.
+                Explore AI tutoring, storytelling, chess coaching, language practice, and parent wellness support in English or Spanish.
               </TranslatedText>
             </p>
           </div>
@@ -62,19 +62,19 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <p className="text-foreground">
-                <TranslatedText>Academic and Administrative Management of Centers</TranslatedText>
+                <TranslatedText>Personalized AI tutoring and progress guidance</TranslatedText>
               </p>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <p className="text-foreground">
-                <TranslatedText>Educational Monitoring</TranslatedText>
+                <TranslatedText>Interactive storytelling, chess, and language practice</TranslatedText>
               </p>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <p className="text-foreground">
-                <TranslatedText>Virtual Secretary</TranslatedText>
+                <TranslatedText>Parent wellness support for the whole family</TranslatedText>
               </p>
             </div>
           </div>
@@ -104,7 +104,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, className }) => {
             </div>
             <div className="text-center">
               <h2 className="text-xl font-bold text-foreground">
-                <TranslatedText>Educational Platform</TranslatedText>
+                <TranslatedText>Bilingual AI Learning</TranslatedText>
               </h2>
             </div>
           </div>

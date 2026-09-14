@@ -18,10 +18,19 @@ const DynamicTitle: React.FC = () => {
           description: 'Bilingual AI tutoring, storytelling, family wellbeing, and school information for Madrid families.',
         };
 
+    document.documentElement.lang = language === 'es-ES' ? 'es' : 'en';
     document.title = metadata.title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', metadata.description);
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', metadata.title);
     document.querySelector('meta[property="og:description"]')?.setAttribute('content', metadata.description);
+    document.querySelector('meta[property="og:locale"]')?.setAttribute(
+      'content',
+      language === 'es-ES' ? 'es_ES' : 'en_US',
+    );
+    document.querySelector('meta[property="og:locale:alternate"]')?.setAttribute(
+      'content',
+      language === 'es-ES' ? 'en_US' : 'es_ES',
+    );
     document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', metadata.title);
     document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', metadata.description);
   }, [language, preloadingComplete, isInitialized]);

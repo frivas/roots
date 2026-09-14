@@ -1387,6 +1387,13 @@ export const spanishTranslations: Record<string, string> = {
   "Educational Monitoring": "Seguimiento Educativo",
   "Virtual Secretary": "Secretaría Virtual",
   "Educational Platform": "Plataforma Educativa",
+  "AI learning for every family": "Aprendizaje con IA para cada familia",
+  "Bilingual support that grows with your child": "Apoyo bilingüe que crece con tu hijo",
+  "Explore AI tutoring, storytelling, chess coaching, language practice, and parent wellness support in English or Spanish.": "Explora tutoría con IA, narración de historias, ajedrez, práctica de idiomas y apoyo al bienestar familiar en inglés o español.",
+  "Personalized AI tutoring and progress guidance": "Tutoría personalizada con IA y orientación sobre el progreso",
+  "Interactive storytelling, chess, and language practice": "Narración interactiva, ajedrez y práctica de idiomas",
+  "Parent wellness support for the whole family": "Apoyo al bienestar familiar para toda la familia",
+  "Bilingual AI Learning": "Aprendizaje bilingüe con IA",
   "Privacy Policy": "Política de Privacidad",
   "Data Protection": "Protección de Datos",
 

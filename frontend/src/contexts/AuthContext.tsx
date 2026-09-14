@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo } fro
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { useLocation, useNavigate } from 'react-router';
 import { APP_ROUTES } from '../config/routes';
+import { getClerkRoles } from '../lib/clerkRoles';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -25,8 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the user role from public metadata
-  const userRole = user?.publicMetadata?.role as string | undefined;
+  const userRole = getClerkRoles(user?.publicMetadata)[0];
   
   // Handle authentication state changes
   useEffect(() => {

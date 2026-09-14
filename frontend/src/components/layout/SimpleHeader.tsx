@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { useClerk } from '@clerk/clerk-react';
@@ -6,22 +6,22 @@ import { Menu, X, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import MadridLogo from '../ui/MadridLogo';
 import TranslatedText from '../TranslatedText';
-import { getMenuDestinations, getMenuItems, type Role } from '../../config/menuConfig';
+import { getMenuDestinations, getMenuItems } from '../../config/menuConfig';
 import { APP_ROUTES, getActiveNavigationPath } from '../../config/routes';
+import { getClerkRoles } from '../../lib/clerkRoles';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const SimpleHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const location = useLocation();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileNavigationRef = useRef<HTMLElement>(null);
 
   const userRoles = useMemo(() => {
-    const roles = user?.publicMetadata?.roles;
-    if (!Array.isArray(roles)) return [];
-    return roles.filter((role): role is Role =>
-      ['student', 'parent', 'teacher', 'administrator'].includes(String(role)),
-    );
-  }, [user?.publicMetadata?.roles]);
+    return getClerkRoles(user?.publicMetadata);
+  }, [user?.publicMetadata]);
   const navigation = useMemo(
     () => getMenuItems(userRoles, user?.primaryEmailAddress?.emailAddress),
     [userRoles, user?.primaryEmailAddress?.emailAddress],
@@ -31,8 +31,49 @@ const SimpleHeader: React.FC = () => {
     getMenuDestinations(navigation),
   );
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const navigation = mobileNavigationRef.current;
+    const focusableSelector = 'a[href], button:not([disabled])';
+    const focusableItems = () =>
+      Array.from(navigation?.querySelectorAll<HTMLElement>(focusableSelector) ?? [])
+        .filter(item => !item.closest('details:not([open])'));
+
+    focusableItems()[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+      const items = focusableItems();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+    setMobileMenuOpen(open => !open);
   };
 
   const handleSignOut = () => {
@@ -49,27 +90,32 @@ const SimpleHeader: React.FC = () => {
             <span className="text-xl font-bold text-foreground">Raíces</span>
           </Link>
 
-          {/* Mobile menu button */}
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
-            onClick={toggleMobileMenu}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-navigation"
-          >
-            <span className="sr-only"><TranslatedText>Open main menu</TranslatedText></span>
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Menu className="h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            {/* Mobile menu button */}
+            <button
+              ref={menuButtonRef}
+              type="button"
+              className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+              onClick={toggleMobileMenu}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
+            >
+              <span className="sr-only"><TranslatedText>Open main menu</TranslatedText></span>
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <nav
+          ref={mobileNavigationRef}
           id="mobile-navigation"
           aria-labelledby="mobile-navigation-label"
           className="animate-fade-in border-t border-border bg-background"

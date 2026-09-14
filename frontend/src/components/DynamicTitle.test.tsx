@@ -59,7 +59,7 @@ describe('DynamicTitle', () => {
   });
 
   it('localizes the title and sharing description for Spanish', async () => {
-    document.head.innerHTML = '<meta name="description" content=""><meta property="og:title" content=""><meta property="og:description" content=""><meta name="twitter:title" content=""><meta name="twitter:description" content="">';
+    document.head.innerHTML = '<meta name="description" content=""><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:title" content=""><meta property="og:description" content=""><meta name="twitter:title" content=""><meta name="twitter:description" content="">';
     mockUseLingoTranslation.mockReturnValue({
       language: 'es-ES',
       setLanguage: vi.fn(),
@@ -81,6 +81,9 @@ describe('DynamicTitle', () => {
       'content',
       document.title,
     );
+    expect(document.documentElement).toHaveAttribute('lang', 'es');
+    expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute('content', 'es_ES');
+    expect(document.querySelector('meta[property="og:locale:alternate"]')).toHaveAttribute('content', 'en_US');
   });
 
   it('does not set document.title when not initialized', async () => {

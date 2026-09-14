@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { getMenuItems } from '../../config/menuConfig';
@@ -96,6 +96,48 @@ describe('SimpleHeader', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
   });
 
+  it('keeps the language control visible in the signed-in mobile header', () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('group', { name: 'Language' })).toBeInTheDocument();
+  });
+
+  it('closes the mobile drawer with Escape and restores focus to its toggle', async () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    const toggle = screen.getByRole('button', { name: /open main menu/i });
+    fireEvent.click(toggle);
+    await waitFor(() => expect(screen.getByRole('link', { name: 'AI services overview' })).toHaveFocus());
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(screen.queryByRole('link', { name: 'Tutoring' })).not.toBeInTheDocument();
+    expect(toggle).toHaveFocus();
+  });
+
+  it('wraps focus inside the open mobile drawer', async () => {
+    render(
+      <MemoryRouter>
+        <SimpleHeader />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
+    const signOut = await screen.findByRole('button', { name: /sign out/i });
+    signOut.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+
+    expect(screen.getByRole('link', { name: 'AI services overview' })).toHaveFocus();
+  });
+
   it('uses the same registered destination model as the desktop sidebar', () => {
     render(
       <MemoryRouter>
@@ -136,7 +178,7 @@ describe('SimpleHeader', () => {
     );
 
     // Open the menu
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /open main menu/i }));
     expect(screen.getByText('Home')).toBeInTheDocument();
 
     // Click a navigation link

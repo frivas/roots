@@ -13,4 +13,9 @@ describe('StorytellingSession privacy boundary', () => {
     expect(source).not.toContain('actualImageUrl');
     expect(source).not.toContain('Debug:</strong>');
   });
+
+  it('never renders raw illustration failures to children', () => {
+    expect(source).not.toContain('Error: {imageError}');
+    expect(source).not.toMatch(/<[^>]+>\s*Error:\s*\{imageError\}/);
+  });
 });

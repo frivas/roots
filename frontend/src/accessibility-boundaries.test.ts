@@ -40,6 +40,17 @@ describe('frontend accessibility boundaries', () => {
   });
 
   it.each([
+    './pages/Dashboard.tsx',
+    './pages/Messages.tsx',
+    './pages/Services.tsx',
+    './pages/Notifications.tsx',
+  ])('provides one semantic page heading in %s', sourcePath => {
+    const page = readSource(sourcePath);
+
+    expect(page).toMatch(/(?:element="h1"|<motion\.h1|<h1)/);
+  });
+
+  it.each([
     './pages/Absences.tsx',
     './pages/AcademicHistory.tsx',
     './pages/Activities.tsx',

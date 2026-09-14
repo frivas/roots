@@ -8,8 +8,8 @@ import ErrorBoundary from '../ErrorBoundary';
 import RouteWrapper from '../RouteWrapper';
 import { cn } from '../../lib/utils';
 import { useUser } from '@clerk/clerk-react';
-import { type Role } from '../../config/menuConfig';
 import { isAiServicePath } from '../../config/routes';
+import { getClerkRoles } from '../../lib/clerkRoles';
 import LanguageSwitcher from '../LanguageSwitcher';
 import DemoModeNotice from '../DemoModeNotice';
 
@@ -17,12 +17,9 @@ const MainLayout: React.FC = () => {
   const { user, isLoaded } = useUser();
   const location = useLocation();
 
-  // Get user roles from Clerk metadata and ensure they match our Role type
   const userRoles = React.useMemo(() => {
     if (!isLoaded || !user) return [];
-    return (user.publicMetadata?.roles as Role[] || []).filter(role =>
-      ['student', 'parent', 'teacher', 'administrator'].includes(role)
-    );
+    return getClerkRoles(user.publicMetadata);
   }, [user, isLoaded]);
 
   const hasElevenLabsAgent = isAiServicePath(location.pathname);

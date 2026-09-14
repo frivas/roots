@@ -46,6 +46,16 @@ describe('RouteWrapper', () => {
     expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
 
+  it('moves focus to the page heading when route content becomes ready', () => {
+    render(
+      <RouteWrapper>
+        <h1>Page heading</h1>
+      </RouteWrapper>
+    );
+
+    expect(screen.getByRole('heading', { name: 'Page heading' })).toHaveFocus();
+  });
+
   it('shows spinner when lingo is not yet initialized', () => {
     mockUseLingoTranslation.mockReturnValueOnce({
       language: 'en-US',
