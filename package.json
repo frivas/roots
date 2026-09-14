@@ -59,12 +59,17 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "concurrently": "^10.0.4",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.6",
     "glob": "^13.0.6",
+    "globals": "17.12.0",
     "husky": "^9.1.7",
     "knip": "6.29.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript-eslint": "8.70.0",
     "yaml": "2.9.0"
   },
   "type": "module",
@@ -83,7 +88,7 @@
     ]
   },
   "optionalDependencies": {
-    "@rollup/rollup-darwin-x64": "^4.62.5"
+    "@rollup/rollup-darwin-x64": "^4.63.1"
   },
   "overrides": {
     "fast-uri": "3.1.6",
