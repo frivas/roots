@@ -30,5 +30,17 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
+  },
+  {
+    files: [
+      'frontend/src/components/{ClerkRuntimeBoundary,DynamicTitle,LanguageSwitcher,TranslatedText}.tsx',
+      'frontend/src/contexts/{AuthContext,LingoTranslationContext}.tsx',
+      'frontend/src/hooks/useTranslatedString.ts',
+    ],
+    rules: {
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/purity': 'error',
+    },
   }
 );
