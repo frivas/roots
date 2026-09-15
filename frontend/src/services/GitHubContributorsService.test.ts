@@ -3,7 +3,7 @@ import { GitHubContributorsService } from './GitHubContributorsService';
 
 describe('GitHubContributorsService', () => {
   it('isValidContributor returns true for a known contributor email', () => {
-    expect(GitHubContributorsService.isValidContributor('juan294@gmail.com')).toBe(true);
+    expect(GitHubContributorsService.isValidContributor('contributor-a@example.com')).toBe(true);
   });
 
   it('isValidContributor returns false for an unknown email', () => {
@@ -11,7 +11,7 @@ describe('GitHubContributorsService', () => {
   });
 
   it('getContributorStats returns stats object for known contributor', () => {
-    const stats = GitHubContributorsService.getContributorStats('juan294@gmail.com');
+    const stats = GitHubContributorsService.getContributorStats('contributor-a@example.com');
     expect(stats).not.toBeNull();
     expect(typeof stats!.totalCommits).toBe('number');
     expect(stats!.totalCommits).toBeGreaterThan(0);
@@ -22,13 +22,18 @@ describe('GitHubContributorsService', () => {
     expect(stats).toBeNull();
   });
 
-  it('getAllContributorEmails returns a non-empty array of strings', () => {
+  it('getAllContributorEmails returns only fixture addresses, never personal gmail', () => {
     const emails = GitHubContributorsService.getAllContributorEmails();
     expect(Array.isArray(emails)).toBe(true);
     expect(emails.length).toBeGreaterThan(0);
     emails.forEach(email => {
       expect(typeof email).toBe('string');
+      expect(email).not.toMatch(/gmail\.com$/i);
     });
+  });
+
+  it('getContributorDisplayName uses generic labels for fixture contributors', () => {
+    expect(GitHubContributorsService.getContributorDisplayName('contributor-a@example.com')).toBe('Contributor A');
   });
 
   it('getContributorDisplayName falls back to email prefix for unknown email', () => {

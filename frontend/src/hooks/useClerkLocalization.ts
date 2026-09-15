@@ -59,8 +59,7 @@ const useClerkLocalization = () => {
 
         // Don't translate during active authentication or complex flows
         if (hasActiveAuth) {
-          console.log('🔒 Skipping translation during active auth or complex flow');
-          return;
+                    return;
         }
 
         const targetTranslations = language === 'es-ES' ? translations : reverseTranslations;
@@ -122,8 +121,7 @@ const useClerkLocalization = () => {
       );
 
       if (shouldUpdate) {
-        console.log('🔄 Clerk content changed, re-translating');
-        replaceText();
+                replaceText();
       }
     });
 

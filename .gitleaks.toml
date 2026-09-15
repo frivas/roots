@@ -10,8 +10,10 @@
   ]
 
   # Historical commits where App.tsx contained real secrets. Those secrets
-  # were removed in subsequent commits and have been rotated. Allowlisting
-  # the commits so full-history scans don't keep re-reporting them.
+  # were removed in subsequent commits and have been rotated. The leaked
+  # project refs (dibpkzebpchkdqujxnwd, wsrqjlidqufazrbndztt) are gone from
+  # the current Supabase org — do not rewrite public git history. Allowlist
+  # these commits so full-history scans don't keep re-reporting them.
   commits = [
     "122af92daf123aee07dbaf277107e5d793c5e2ac",
     "36e108be85166b4dcf3d6a50c0c2987c118f6f8d",

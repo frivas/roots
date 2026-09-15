@@ -13,8 +13,7 @@ const LanguageSwitcher: React.FC = () => {
     if (isAuthPage) {
       // Store auth language selection for post-login use
       localStorage.setItem('authSelectedLanguage', newLanguage);
-      console.log(`🔐 Auth page language selection stored: ${newLanguage}`);
-      
+            
       // Also update the regular language storage as backup
       localStorage.setItem('selectedLanguage', newLanguage);
     }

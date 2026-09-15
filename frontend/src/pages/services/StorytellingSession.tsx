@@ -47,18 +47,11 @@ const StorytellingSession: React.FC = () => {
   });
   const [isWaitingForDrawingResponse, setIsWaitingForDrawingResponse] = useState(false);
   const { language } = useLingoTranslation();
-  const [sseConnection, setSseConnection] = useState<EventSource | null>(null);
-  const [sseStatus, setSseStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
 
   // Configuration for SSE - disable in production/serverless environments
   const SSE_ENABLED = process.env.NODE_ENV === 'development' && !window.location.hostname.includes('vercel.app') && !window.location.hostname.includes('netlify.app');
 
-  console.log('🔧 SSE Configuration:', {
-    NODE_ENV: process.env.NODE_ENV,
-    hostname: window.location.hostname,
-    SSE_ENABLED
-  });
-
+  
   // Refs for accessing current values in event listeners
   const storyContentRef = useRef(storyContent);
   const isWaitingForDrawingResponseRef = useRef(isWaitingForDrawingResponse);
@@ -83,30 +76,11 @@ const StorytellingSession: React.FC = () => {
 
   // Clear story content on mount to ensure fresh start
   useEffect(() => {
-    console.log('🧹 Clearing story state on component mount');
-    setStoryContent('');
+        setStoryContent('');
     setIsGeneratingImage(false);
     setGeneratedImage(null);
     setImageError(null);
   }, []); // Empty dependency array = run once on mount
-
-  // Track image state changes
-  useEffect(() => {
-    console.log('🖼️ Image state changed:', {
-      hasImage: !!generatedImage,
-      imageUrl: generatedImage,
-      isGenerating: isGeneratingImage,
-      error: imageError
-    });
-  }, [generatedImage, isGeneratingImage, imageError]);
-
-  // Track generatedImage specifically for debugging
-  useEffect(() => {
-    if (generatedImage) {
-      console.log('🎯 Generated image set successfully:', generatedImage);
-      console.log('🔗 Full image URL:', generatedImage);
-    }
-  }, [generatedImage]);
 
   // Convert our app's language code to ElevenLabs format and force lowercase
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
@@ -229,38 +203,28 @@ const StorytellingSession: React.FC = () => {
 
   // Function to generate illustration
   const handleGenerateIllustration = useCallback(async (customPrompt?: string, storyContentParam?: string) => {
-    console.log('🎨 Starting image generation...', { customPrompt, storyContentParam, storyContent: storyContentRef.current });
-    setIsGeneratingImage(true);
+        setIsGeneratingImage(true);
     setImageError(null);
 
     try {
       const token = await getToken();
-      console.log('🔑 Token obtained:', !!token);
-
+      
       // Use the provided story content or fall back to the ref
       const contentForAnalysis = storyContentParam || storyContentRef.current;
-      console.log('📖 Current story content for analysis:', contentForAnalysis);
-
+      
       let contextualPrompt: string;
 
       if (customPrompt) {
         contextualPrompt = customPrompt;
-        console.log('📝 Using custom prompt:', contextualPrompt);
-      } else {
+              } else {
         // Analyze the story content to extract context
         const analyzedContext = analyzeStoryContent(contentForAnalysis);
-        console.log('🔍 Analyzed story context:', analyzedContext);
-
+        
         // Generate contextual prompt based on the analyzed content
         contextualPrompt = generateContextualPrompt(analyzedContext);
-        console.log('📝 Generated contextual prompt:', contextualPrompt);
-      }
+              }
 
-      console.log('🌐 Making API call to /api/images/generate...');
-      console.log('🔗 API URL:', '/api/images/generate');
-      console.log('🔑 Has Token:', !!token);
-      console.log('📝 Prompt length:', contextualPrompt.length);
-
+                        
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/images/generate-for-story`, {
         method: 'POST',
         headers: {
@@ -270,13 +234,10 @@ const StorytellingSession: React.FC = () => {
         body: JSON.stringify({ prompt: contextualPrompt }),
       });
 
-      console.log('📡 API Response status:', response.status, response.statusText);
-      console.log('📡 API Response headers:', Object.fromEntries(response.headers.entries()));
-
+            
       if (!response.ok) {
         const errorText = await response.text();
-        console.log('❌ API Error response:', errorText);
-        let errorData;
+                let errorData;
         try {
           errorData = JSON.parse(errorText);
         } catch {
@@ -286,9 +247,7 @@ const StorytellingSession: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log('✅ API Success response:', data);
-      console.log('🔍 Full response structure:', JSON.stringify(data, null, 2));
-
+            
       // Handle multiple possible response formats:
       // 1. Direct API response: { imageUrl: "..." }
       // 2. SSE-style response: { data: { imageUrl: "..." } }
@@ -298,39 +257,31 @@ const StorytellingSession: React.FC = () => {
       if (data.type === 'story-illustration' && data.data?.imageUrl) {
         // Full SSE event format
         imageUrl = data.data.imageUrl;
-        console.log('🎯 Found image URL in SSE event format');
-      } else if (data.data?.imageUrl) {
+              } else if (data.data?.imageUrl) {
         // SSE-style response format
         imageUrl = data.data.imageUrl;
-        console.log('🎯 Found image URL in SSE-style format');
-      } else if (data.imageUrl) {
+              } else if (data.imageUrl) {
         // Direct API response format (camelCase)
         imageUrl = data.imageUrl;
-        console.log('🎯 Found image URL in direct API format (camelCase)');
-      } else if (data.image_url) {
+              } else if (data.image_url) {
         // Direct API response format (snake_case)
         imageUrl = data.image_url;
-        console.log('🎯 Found image URL in direct API format (snake_case)');
-      }
+              }
 
-      console.log('🖼️ Final image URL:', imageUrl);
-
+      
       if (!imageUrl) {
-        console.error('❌ No image URL found in response structure');
-        console.error('🔍 Available keys in response:', Object.keys(data));
+        console.error('No image URL found in illustration response');
         throw new Error('No image URL received from the API');
       }
 
       setGeneratedImage(imageUrl);
       setStoryImages(prev => [...prev, imageUrl]);
-      console.log('🎯 Image state updated successfully');
-    } catch (error) {
-      console.error('💥 Image generation error:', error);
+          } catch (error) {
+      console.error('Image generation failed');
       setImageError(error instanceof Error ? error.message : 'Failed to generate illustration');
     } finally {
       setIsGeneratingImage(false);
-      console.log('🏁 Image generation process completed');
-    }
+          }
   }, [getToken, generateContextualPrompt]);
 
   // Ref for handleGenerateIllustration to use in event listeners
@@ -343,17 +294,11 @@ const StorytellingSession: React.FC = () => {
 
   // Setup SSE connection for webhook-generated illustrations
   useEffect(() => {
-    // Skip SSE setup if disabled
     if (!SSE_ENABLED) {
-      console.log('🚫 SSE disabled for serverless/production environment');
-      setSseStatus('error'); // Set to error so UI shows fallback message
       return;
     }
 
-    console.log('🔗 Setting up SSE connection to /api/events/story-illustrations');
-
     let eventSource: EventSource | null = null;
-    let statusTimeout: NodeJS.Timeout;
     let reconnectTimeout: NodeJS.Timeout;
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 3;
@@ -361,47 +306,25 @@ const StorytellingSession: React.FC = () => {
     const connectSSE = () => {
       try {
         eventSource = new EventSource('/events/story-illustrations');
-        setSseConnection(eventSource);
 
         eventSource.onopen = () => {
-          console.log('✅ SSE connection opened successfully');
-          setSseStatus('connected');
-          reconnectAttempts = 0; // Reset on successful connection
+          reconnectAttempts = 0;
         };
 
-        // Force connection status after a short delay if onopen doesn't fire
-        statusTimeout = setTimeout(() => {
-          console.log('⏰ Force setting SSE status to connected after 2s timeout');
-          setSseStatus('connected');
-        }, 2000);
-
         eventSource.onmessage = (event) => {
-          console.log('📨 SSE message received:', event.data);
           try {
             const data = JSON.parse(event.data);
-            console.log('📊 Parsed SSE data:', data);
 
             if (data.type === 'generation-started') {
-              console.log('🚀 Generation started event received');
               setIsGeneratingImage(true);
               setImageError(null);
-              setSseStatus('connected');
             } else if (data.type === 'story-illustration') {
-              console.log('🖼️ Story illustration event received:', data.data);
-              console.log('🔗 Image URL from SSE:', data.data.imageUrl);
-
-              // Set the generated image and stop loading
               setGeneratedImage(data.data.imageUrl);
               setStoryImages(prev => [...prev, data.data.imageUrl]);
               setIsGeneratingImage(false);
-              setSseStatus('connected');
 
-              console.log('✅ Image state updated from SSE');
-
-              // Update story context from webhook data
               if (data.data.context) {
                 const context = data.data.context;
-                console.log('📝 Updating story context from SSE:', context);
                 setStoryContext({
                   characters: context.characters ? [context.characters] : [],
                   setting: context.setting || 'a magical storybook world',
@@ -409,65 +332,45 @@ const StorytellingSession: React.FC = () => {
                   mood: context.mood || 'cheerful'
                 });
               }
-            } else if (data.type === 'connected') {
-              console.log('🔌 SSE connected event received');
-              setSseStatus('connected');
-            } else {
-              console.log('❓ Unknown SSE event type:', data.type);
             }
           } catch (error) {
-            console.error('❌ Error parsing SSE data:', error, 'Raw data:', event.data);
+            console.error('Error parsing SSE data:', error);
           }
         };
 
         eventSource.onerror = (error) => {
-          console.error('💥 SSE connection error:', error);
+          console.error('SSE connection error');
 
-          // Check if this is a MIME type error
           if (error && error.target && (error.target as EventSource).readyState === EventSource.CLOSED) {
-            console.error('🚨 SSE connection closed - likely MIME type error (text/html instead of text/event-stream)');
-            console.log('🔍 This usually means the endpoint is not properly configured or is returning an error page');
+            console.error('SSE connection closed');
           }
 
-          setSseStatus('error');
-
-          // Only try to reconnect if we haven't exceeded max attempts
           if (reconnectAttempts < maxReconnectAttempts) {
             reconnectAttempts++;
-            console.log(`🔄 Attempting SSE reconnection ${reconnectAttempts}/${maxReconnectAttempts}...`);
 
-            // Clean up current connection
             if (eventSource) {
               eventSource.close();
-              setSseConnection(null);
             }
 
-            // Attempt reconnection after delay
             reconnectTimeout = setTimeout(() => {
               connectSSE();
-            }, 2000 * reconnectAttempts); // Exponential backoff
+            }, 2000 * reconnectAttempts);
           } else {
-            console.error('❌ Max SSE reconnection attempts reached');
-            console.log('💡 SSE connection failed - falling back to direct API calls only');
+            console.error('Max SSE reconnection attempts reached');
           }
         };
 
-      } catch (error) {
-        console.error('❌ Failed to create SSE connection:', error);
-        setSseStatus('error');
+      } catch {
+        console.error('Failed to create SSE connection');
       }
     };
 
-    // Initial connection
     connectSSE();
 
     return () => {
-      console.log('🔚 Cleaning up SSE connection');
-      clearTimeout(statusTimeout);
       clearTimeout(reconnectTimeout);
       if (eventSource) {
         eventSource.close();
-        setSseConnection(null);
       }
     };
   }, [SSE_ENABLED]);
@@ -480,25 +383,21 @@ const StorytellingSession: React.FC = () => {
       script.async = true;
 
       script.onload = () => {
-        console.log('✅ ElevenLabs script loaded successfully');
-        const checkInterval = setInterval(() => {
+                const checkInterval = setInterval(() => {
           if (customElements.get(WIDGET_CONFIG.ELEMENT_NAME)) {
             clearInterval(checkInterval);
-            console.log('✅ ElevenLabs widget element registered');
-            setIsElevenLabsLoaded(true);
+                        setIsElevenLabsLoaded(true);
           }
         }, 100);
       };
 
-      script.onerror = (error) => {
-        console.error('❌ Failed to load ElevenLabs script:', error);
-        console.error('Script src:', WIDGET_CONFIG.SCRIPT_SRC);
+      script.onerror = () => {
+        console.error('Failed to load ElevenLabs script');
       };
 
       document.head.appendChild(script);
     } else {
-      console.log('✅ ElevenLabs script already loaded');
-      setIsElevenLabsLoaded(true);
+            setIsElevenLabsLoaded(true);
     }
 
     return () => {
@@ -557,21 +456,17 @@ const StorytellingSession: React.FC = () => {
 
       // Add event listeners for conversation events
       widget.addEventListener('conversation-start', () => {
-        console.log('🎬 Conversation started');
-      });
+              });
 
       widget.addEventListener('conversation-end', () => {
-        console.log('🎬 Conversation ended, story length:', currentStoryContentRef.current.length);
-        // Analyze the complete story and generate a final illustration
+                // Analyze the complete story and generate a final illustration
         if (currentStoryContentRef.current.length > 50) {
           const finalContext = analyzeStoryContent(currentStoryContentRef.current);
-          console.log('📖 Final story context:', finalContext);
-          setStoryContext(finalContext);
+                    setStoryContext(finalContext);
 
           // Auto-generate final illustration
           setTimeout(() => {
-            console.log('🎨 Auto-generating final illustration after conversation end');
-            handleGenerateIllustrationRef.current(undefined, currentStoryContentRef.current);
+                        handleGenerateIllustrationRef.current(undefined, currentStoryContentRef.current);
           }, 1000);
         }
       });
@@ -579,8 +474,7 @@ const StorytellingSession: React.FC = () => {
       widget.addEventListener('agent-response', (event: Event) => {
         const customEvent = event as CustomEvent;
         const response = customEvent.detail?.text || '';
-        console.log('🤖 Agent response received:', response.substring(0, 100) + '...');
-
+        
         // Accumulate story content
         const newStoryContent = currentStoryContentRef.current + ' ' + response;
         currentStoryContentRef.current = newStoryContent; // Update local variable immediately
@@ -589,8 +483,7 @@ const StorytellingSession: React.FC = () => {
         // Continuously analyze story context
         if (newStoryContent.length > 100) {
           const newContext = analyzeStoryContent(newStoryContent);
-          console.log('📊 Updated story context:', newContext);
-          setStoryContext(newContext);
+                    setStoryContext(newContext);
         }
 
         // Check if agent mentions creating an illustration
@@ -606,14 +499,10 @@ const StorytellingSession: React.FC = () => {
         );
 
         if (mentionsIllustration && !isGeneratingImageRef.current) {
-          console.log('🎨 Agent mentioned creating illustration, triggering DIRECT API call');
-          console.log('🤖 Agent response that triggered illustration:', response);
-          console.log('📖 Current story content for illustration:', newStoryContent);
-
+                              
           // Trigger direct API call after a short delay with the current story content
           setTimeout(() => {
-            console.log('🚀 Executing delayed illustration generation...');
-            handleGenerateIllustrationRef.current(undefined, newStoryContent);
+                        handleGenerateIllustrationRef.current(undefined, newStoryContent);
           }, 1000);
         }
       });
@@ -621,8 +510,7 @@ const StorytellingSession: React.FC = () => {
       widget.addEventListener('user-response', (event: Event) => {
         const customEvent = event as CustomEvent;
         const userText = customEvent.detail?.text || '';
-        console.log('👤 User response received:', userText.substring(0, 100) + '...');
-
+        
         // Accumulate story content from user as well
         const newStoryContent = currentStoryContentRef.current + ' ' + userText;
         currentStoryContentRef.current = newStoryContent; // Update local variable immediately
@@ -632,8 +520,7 @@ const StorytellingSession: React.FC = () => {
 
         // Priority 1: Check if agent asked about drawing and user said yes
         if (isWaitingForDrawingResponseRef.current) {
-          console.log('⏳ Waiting for drawing response, analyzing user text:', lowerUserText);
-
+          
           const positiveResponses = [
             // English
             'yes', 'yeah', 'yep', 'sure', 'okay', 'ok', 'please',
@@ -680,14 +567,12 @@ const StorytellingSession: React.FC = () => {
           ];
 
           if (positiveResponses.some(response => lowerUserText.includes(response))) {
-            console.log('✅ User said YES to drawing request, triggering DIRECT illustration API call');
-            setIsWaitingForDrawingResponse(false);
+                        setIsWaitingForDrawingResponse(false);
             // Force direct API call instead of relying on webhook
             setTimeout(() => handleGenerateIllustrationRef.current(undefined, newStoryContent), 500);
             return; // Don't process other patterns
           } else if (negativeResponses.some(response => lowerUserText.includes(response))) {
-            console.log('❌ User said NO to drawing request');
-            setIsWaitingForDrawingResponse(false);
+                        setIsWaitingForDrawingResponse(false);
             return;
           }
         }
@@ -698,8 +583,7 @@ const StorytellingSession: React.FC = () => {
             lowerUserText.includes('picture') ||
             lowerUserText.includes('draw') ||
             lowerUserText.includes('show me'))) {
-          console.log('🎯 User explicitly requested illustration (yes/please + keyword)');
-          handleGenerateIllustrationRef.current(undefined, newStoryContent);
+                    handleGenerateIllustrationRef.current(undefined, newStoryContent);
           return;
         }
 
@@ -728,8 +612,7 @@ const StorytellingSession: React.FC = () => {
 
         const matchedRequest = drawingRequests.find(request => lowerUserText.includes(request));
         if (matchedRequest) {
-          console.log('🎨 Direct drawing request detected, calling DIRECT API:', matchedRequest);
-          // Force direct API call instead of relying on webhook
+                    // Force direct API call instead of relying on webhook
           setTimeout(() => handleGenerateIllustrationRef.current(undefined, newStoryContent), 500);
         }
       });
@@ -750,8 +633,6 @@ const StorytellingSession: React.FC = () => {
       return () => clearTimeout(timeout);
     }
   }, [isGeneratingImage]);
-
-
 
   return (
     <div className="min-h-screen relative">
@@ -841,25 +722,10 @@ const StorytellingSession: React.FC = () => {
         {/* Story Illustration - Full Screen Display */}
         {(() => {
           const shouldShowSection = !!(generatedImage || isGeneratingImage || imageError);
-          const debugInfo = {
-            shouldShowSection,
-            generatedImage: !!generatedImage,
-            isGeneratingImage,
-            imageError: !!imageError,
-            sseStatus,
-            sseConnection: !!sseConnection,
-            imageUrl: generatedImage ? 'present' : 'null',
-            actualImageUrl: generatedImage
-          };
-
-          console.log('🔍 Image section render check:', debugInfo);
 
           if (!shouldShowSection) {
-            console.log('❌ Not showing image section - conditions not met:', debugInfo);
             return null;
           }
-
-          console.log('✅ Showing image section with conditions:', debugInfo);
 
           return (
             <motion.div
@@ -880,8 +746,7 @@ const StorytellingSession: React.FC = () => {
               {(() => {
                 // Priority 1: Show the image if we have one (regardless of loading state)
                 if (generatedImage) {
-                  console.log('🖼️ Rendering image:', generatedImage);
-                  return (
+                                    return (
                     <div className="w-full space-y-4">
                       {/* Full-width image without frame */}
                       <div className="relative w-full">
@@ -889,12 +754,8 @@ const StorytellingSession: React.FC = () => {
                           src={generatedImage}
                           alt={storyIllustrationAlt}
                           className="w-full h-auto rounded-lg shadow-lg"
-                          onLoad={() => {
-                            console.log('✅ Image loaded successfully:', generatedImage);
-                          }}
-                          onError={(e) => {
-                            console.log('❌ Image failed to load:', generatedImage);
-                            console.error('Image error details:', e);
+                          onError={() => {
+                            console.error('Failed to load generated illustration');
                             setImageError('Failed to load image');
                             setIsGeneratingImage(false);
                           }}
@@ -903,8 +764,7 @@ const StorytellingSession: React.FC = () => {
                         {/* Minimal download button - just icon */}
                         <button
                           onClick={() => {
-                            console.log('💾 Downloading image:', generatedImage);
-                            const link = document.createElement('a');
+                                                        const link = document.createElement('a');
                             link.href = generatedImage;
                             link.download = 'story-illustration.png';
                             link.click();
@@ -921,8 +781,7 @@ const StorytellingSession: React.FC = () => {
 
                 // Priority 2: Show error if there's an error
                 if (imageError) {
-                  console.log('❌ Showing error message:', imageError);
-                  return (
+                                    return (
                     <div className="text-center py-8">
                       <div className="bg-red-100 border border-red-200 rounded-lg p-4">
                         <p className="text-red-700">
@@ -945,8 +804,7 @@ const StorytellingSession: React.FC = () => {
 
                 // Priority 3: Show loading indicator only if we don't have an image yet
                 if (isGeneratingImage) {
-                  console.log('⏳ Showing loading spinner');
-                  return (
+                                    return (
                     <div className="flex flex-col items-center justify-center py-8">
                       <PaintingSpinner size="lg" />
                       <div className="mt-4 text-center">
@@ -961,14 +819,12 @@ const StorytellingSession: React.FC = () => {
                   );
                 }
 
-                console.log('❓ No condition met in image rendering logic');
-                return null;
+                                return null;
               })()}
             </motion.div>
           );
         })()}
       </motion.div>
-
 
     </div>
   );

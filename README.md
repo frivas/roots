@@ -105,7 +105,7 @@ roots/
 - **Node.js 18+**
 - **npm or yarn**
 - **PostgreSQL database** (via Supabase)
-- **API Keys**: OpenAI, ElevenLabs, Lingo.dev/Groq, Clerk
+- **API Keys**: OpenAI, ElevenLabs, Clerk (Groq/OpenAI belong in backend `.env`, never `VITE_*`)
 
 ### Environment Setup
 
@@ -115,7 +115,8 @@ Create `.env` files in both frontend and backend directories:
 
 ```bash
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-VITE_GROQ_API_KEY=your_groq_api_key
+VITE_BACKEND_URL=http://localhost:3000
+# Never prefix secrets with VITE_ — Vite inlines them into the public bundle.
 ```
 
 #### Backend (.env)

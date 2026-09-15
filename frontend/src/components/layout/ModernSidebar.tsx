@@ -23,8 +23,6 @@ interface ModernSidebarProps {
   hideBottomBorder?: boolean;
 }
 
-
-
 const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBottomBorder = false }) => {
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [isHovered, setIsHovered] = useState(false);
@@ -86,18 +84,14 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({ userRoles = [], hideBotto
   }, [location.pathname, navigation]);
 
   const toggleMenu = (menuName: string) => {
-    console.log('Toggling menu:', menuName); // Debug log
-    setExpandedMenus(prev => {
+        setExpandedMenus(prev => {
       const newSet = new Set(prev);
       if (newSet.has(menuName)) {
         newSet.delete(menuName);
-        console.log('Collapsed:', menuName); // Debug log
-      } else {
+              } else {
         newSet.add(menuName);
-        console.log('Expanded:', menuName); // Debug log
-      }
-      console.log('Current expanded menus:', Array.from(newSet)); // Debug log
-      return newSet;
+              }
+            return newSet;
     });
   };
 

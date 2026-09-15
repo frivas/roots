@@ -252,15 +252,12 @@ const Documents: React.FC = () => {
   const currentDocuments = filteredDocuments.slice(startIndex, endIndex);
 
   // Handle download (mock function)
-  const handleDownload = (document: { name: string }) => {
-    console.log(`Downloading ${document.name}`);
-    // In a real application, this would trigger a file download
+  const handleDownload = (doc: { name: string }) => {
+    void doc;
   };
 
-  // Handle view (mock function)
-  const handleView = (document: { name: string }) => {
-    console.log(`Viewing ${document.name}`);
-    // In a real application, this would open the document in a viewer
+  const handleView = (doc: { name: string }) => {
+    void doc;
   };
 
   return (

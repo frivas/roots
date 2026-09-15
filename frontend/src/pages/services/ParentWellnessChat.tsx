@@ -46,8 +46,7 @@ const ParentWellnessChat: React.FC = () => {
   const widgetLanguage = (language === 'en-US' ? 'en' : 'es').toLowerCase();
   const i18n = widgetTranslations[widgetLanguage as keyof typeof widgetTranslations];
 
-  console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
-
+  
   // Load widget script
   useEffect(() => {
     if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
@@ -123,8 +122,7 @@ const ParentWellnessChat: React.FC = () => {
 
       // Add to DOM
       container.appendChild(widget);
-      console.log('🔄 Widget initialized with language:', widgetLanguage, 'and config:', config);
-    }, 100);
+          }, 100);
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 

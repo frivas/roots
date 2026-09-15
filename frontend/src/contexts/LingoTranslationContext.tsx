@@ -19,21 +19,16 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
     const authLanguage = localStorage.getItem('authSelectedLanguage');
     const savedLanguage = localStorage.getItem('selectedLanguage');
 
-    console.log(`🔍 Language initialization - Auth: ${authLanguage}, Saved: ${savedLanguage}`);
-
+    
     let initialLang = 'en-US'; // default
 
     if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
       initialLang = authLanguage;
-      console.log(`🚀 Context initializing with AUTH language: ${initialLang}`);
-      // Clear auth language after using it and set it as the user's preference
+            // Clear auth language after using it and set it as the user's preference
       localStorage.removeItem('authSelectedLanguage');
       localStorage.setItem('selectedLanguage', initialLang);
     } else if (savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
       initialLang = savedLanguage;
-      console.log(`🚀 Context initializing with SAVED language: ${initialLang}`);
-    } else {
-      console.log(`🚀 Context initializing with DEFAULT language: ${initialLang}`);
     }
 
     return initialLang;
@@ -67,27 +62,23 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
         if (!mounted || !isProviderMounted) return;
 
         setIsLoading(true);
-        console.log('🔄 Starting translation context initialization...');
-
+        
         // Check for auth language one more time after context initialization
         const authLanguage = localStorage.getItem('authSelectedLanguage');
         if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
-          console.log(`🔄 Found auth language during initialization: ${authLanguage}`);
-          setLanguage(authLanguage);
+                    setLanguage(authLanguage);
           localStorage.removeItem('authSelectedLanguage');
           localStorage.setItem('selectedLanguage', authLanguage);
         } else {
           // Language is already set from localStorage in useState initializer
           // Just ensure localStorage has the current value
           localStorage.setItem('selectedLanguage', language);
-          console.log(`🔄 Initialized with language: ${language}`);
-        }
+                  }
 
         // Small delay to ensure all initialization is complete
         await new Promise(resolve => setTimeout(resolve, 200));
         if (mounted && isProviderMounted) {
-          console.log('✅ Translation context initialization complete');
-          setIsInitialized(true);
+                    setIsInitialized(true);
           setIsLoading(false);
         }
       } catch (error) {
@@ -108,8 +99,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
       const newLanguage = customEvent.detail.language;
 
       if (newLanguage && (newLanguage === 'en-US' || newLanguage === 'es-ES')) {
-        console.log(`🌍 Language change event received: ${newLanguage}`);
-        setLanguage(newLanguage);
+                setLanguage(newLanguage);
         localStorage.setItem('selectedLanguage', newLanguage);
       } else {
         console.warn('Invalid language code received:', newLanguage);
@@ -155,8 +145,7 @@ export const LingoTranslationProvider: React.FC<{ children: React.ReactNode }> =
   // Provide setLanguage function that also dispatches events for consistency
   const setLanguageWithEvent = (lang: string) => {
     if (lang && (lang === 'en-US' || lang === 'es-ES')) {
-      console.log(`🌍 Manual language change: ${lang}`);
-      setLanguage(lang);
+            setLanguage(lang);
       localStorage.setItem('selectedLanguage', lang);
 
       // Dispatch event for any components that might be listening

@@ -28,8 +28,6 @@ const widgetTranslations = {
   }
 };
 
-
-
 const ProgressInterpretationChat: React.FC = () => {
   const navigate = useNavigate();
   const [isElevenLabsLoaded, setIsElevenLabsLoaded] = useState(false);
@@ -39,8 +37,7 @@ const ProgressInterpretationChat: React.FC = () => {
   const widgetLanguage = language === 'en-US' ? 'en' : 'es';
   const i18n = widgetTranslations[widgetLanguage];
 
-  console.log('🌐 Current language configuration:', { widgetLanguage, translations: i18n });
-
+  
   // Load widget script
   useEffect(() => {
     if (!document.querySelector(`script[src="${SCRIPT_SRC}"]`)) {
@@ -116,8 +113,7 @@ const ProgressInterpretationChat: React.FC = () => {
 
       // Add to DOM
       container.appendChild(widget);
-      console.log('🔄 Progress Interpretation widget initialized with language:', widgetLanguage, 'and config:', config);
-    }, 100);
+          }, 100);
 
   }, [isElevenLabsLoaded, widgetLanguage, i18n]);
 

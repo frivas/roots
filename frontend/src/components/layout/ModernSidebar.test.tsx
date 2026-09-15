@@ -116,31 +116,36 @@ describe('ModernSidebar', () => {
   });
 
   it('toggles expandable menus and signs the user out', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
     renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: /section/i }));
-    fireEvent.click(screen.getByRole('button', { name: /section/i }));
-    fireEvent.click(screen.getByText('Sign Out'));
+    const sectionButton = screen.getByRole('button', { name: /section/i });
+    const submenu = sectionButton.nextElementSibling as HTMLElement;
 
-    expect(logSpy).toHaveBeenCalledWith('Expanded:', 'Section');
-    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Section');
+    expect(submenu.className).toContain('md:hidden');
+
+    fireEvent.click(sectionButton);
+    expect(submenu.className).toContain('md:block');
+
+    fireEvent.click(sectionButton);
+    expect(submenu.className).toContain('md:hidden');
+
+    fireEvent.click(screen.getByText('Sign Out'));
     expect(mockSignOut).toHaveBeenCalled();
   });
 
   it('toggles nested child menus and responds to hover expansion', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     mockUseLocation.mockReturnValue({ pathname: '/nested/leaf' });
 
     const { container } = renderSidebar();
     const root = container.firstElementChild as HTMLElement;
 
     fireEvent.mouseEnter(root);
-    fireEvent.click(screen.getByRole('button', { name: /nested/i }));
-    fireEvent.mouseLeave(root);
+    expect(screen.getByText('Leaf Link')).toBeInTheDocument();
 
-    expect(logSpy).toHaveBeenCalledWith('Collapsed:', 'Nested');
+    fireEvent.click(screen.getByRole('button', { name: /nested/i }));
+    expect(screen.queryByText('Leaf Link')).not.toBeInTheDocument();
+
+    fireEvent.mouseLeave(root);
   });
 
   it('renders user image avatars and respects the hideBottomBorder variant', () => {

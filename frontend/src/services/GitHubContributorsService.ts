@@ -23,7 +23,7 @@ interface TimelineItem {
 
 // GitHub contributor mapping - maps emails to GitHub usernames and their stats
 const GITHUB_CONTRIBUTORS: Record<string, ContributorStats> = {
-  'juan294@gmail.com': {
+  'contributor-a@example.com': {
     totalCommits: 73,
     linesAdded: 37560,
     netLines: 30118,
@@ -91,8 +91,7 @@ const GITHUB_CONTRIBUTORS: Record<string, ContributorStats> = {
       }
     ]
   },
-  // Francisco Rivas - Second developer
-  'franciscojrivash@gmail.com': {
+  'contributor-b@example.com': {
     totalCommits: 45,
     linesAdded: 28000,
     netLines: 25400,
@@ -137,8 +136,7 @@ const GITHUB_CONTRIBUTORS: Record<string, ContributorStats> = {
       }
     ]
   },
-  // Francisco Rivas - Alternative Roots email mapping
-  'fran@roots.com': {
+  'contributor-c@example.com': {
     totalCommits: 45,
     linesAdded: 28000,
     netLines: 25400,
@@ -213,9 +211,9 @@ export class GitHubContributorsService {
   static getContributorDisplayName(email: string): string {
     // You can customize this mapping if needed
     const nameMap: Record<string, string> = {
-      'juan294@gmail.com': 'Juan González',
-      'franciscojrivash@gmail.com': 'Francisco Rivas',
-      'fran@roots.com': 'Francisco Rivas'
+      'contributor-a@example.com': 'Contributor A',
+      'contributor-b@example.com': 'Contributor B',
+      'contributor-c@example.com': 'Contributor C',
     };
     return nameMap[email] || email.split('@')[0];
   }
