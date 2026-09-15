@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { getMenuItems } from './menuConfig';
 
@@ -49,10 +51,17 @@ describe('getMenuItems', () => {
   });
 
   it('keeps Contribution Dashboard item for an allowlisted contributor email', () => {
-    const items = getMenuItems([], 'juan294@gmail.com');
+    const items = getMenuItems([], 'contributor-a@example.com');
     const myDataItem = items.find(i => i.name === 'My Data');
     const children = myDataItem?.children ?? [];
     const contributionItem = children.find(c => c.name === 'Developer Contribution');
     expect(contributionItem).toBeDefined();
+  });
+
+  it('gates the Developer Contribution item behind import.meta.env.DEV in source', () => {
+    const src = readFileSync(path.join(process.cwd(), 'src/config/menuConfig.ts'), 'utf8');
+    expect(src).toContain('import.meta.env.DEV');
+    expect(src).not.toContain('GitHubContributorsService');
+    expect(src).not.toMatch(/gmail\.com/);
   });
 });

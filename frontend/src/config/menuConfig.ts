@@ -27,8 +27,6 @@ import {
     BarChart3
 } from 'lucide-react';
 
-import { GitHubContributorsService } from '../services/GitHubContributorsService';
-
 export type Role = 'student' | 'parent' | 'teacher' | 'administrator';
 
 interface MenuItem {
@@ -161,12 +159,18 @@ const commonMenuItems: MenuItem[] = [
                 href: '/data/password',
                 icon: Key
             },
-            {
-                name: 'Developer Contribution',
-                href: '/data/contributions',
-                icon: BarChart3,
-                restrictedEmails: GitHubContributorsService.getAllContributorEmails()
-            }
+            ...(import.meta.env.DEV
+                ? [{
+                    name: 'Developer Contribution',
+                    href: '/data/contributions',
+                    icon: BarChart3,
+                    restrictedEmails: [
+                        'contributor-a@example.com',
+                        'contributor-b@example.com',
+                        'contributor-c@example.com',
+                    ],
+                }]
+                : [])
         ]
     }
 ];

@@ -28,8 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setTimeout(() => {
         const authLanguage = localStorage.getItem('authSelectedLanguage');
         if (authLanguage === 'en-US' || authLanguage === 'es-ES') {
-          console.log(`🔐 User authenticated with auth language: ${authLanguage}`);
-          localStorage.setItem('selectedLanguage', authLanguage);
+                    localStorage.setItem('selectedLanguage', authLanguage);
           localStorage.removeItem('authSelectedLanguage');
           
           // Dispatch language change event to update the context

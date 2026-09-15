@@ -72,9 +72,9 @@ npm run check-localization  # Check for untranslated strings
 
 ### Frontend (`frontend/.env`)
 ```
-VITE_CLERK_PUBLISHABLE_KEY=...    # Clerk publishable key
+VITE_CLERK_PUBLISHABLE_KEY=...    # Clerk publishable key (public by design)
 VITE_BACKEND_URL=http://localhost:3000
-VITE_GROQ_API_KEY=...             # Required for Lingo.dev translations
+# Never prefix secrets with VITE_ — they would ship in the public bundle.
 ```
 
 ### Backend (`backend/.env`)
@@ -95,7 +95,7 @@ Every user-facing string MUST be wrapped for translation. The project uses a hyb
 
 1. **Local dictionary first** (`frontend/src/services/SpanishTranslations.ts`) - 900+ Spanish translations
 2. **Cache layer** - Previously translated strings are cached
-3. **Lingo.dev SDK** - Dynamic/unknown strings translated via API (uses Groq)
+3. **Lingo.dev SDK** - Dynamic/unknown strings translated via API (backend-only if re-enabled; never `VITE_` keys)
 4. **Fallback** - English original if all else fails
 
 ### Rules

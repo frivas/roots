@@ -298,7 +298,8 @@ describe('App routing — protected routes (signed in)', () => {
     expect(await screen.findByTestId('page-PasswordChange')).toBeInTheDocument();
   });
 
-  it('renders ContributionDashboard at /data/contributions', async () => {
+  it('renders ContributionDashboard at /data/contributions in development', async () => {
+    expect(import.meta.env.DEV).toBe(true);
     renderAt('/data/contributions');
     expect(await screen.findByTestId('page-ContributionDashboard')).toBeInTheDocument();
   });

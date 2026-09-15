@@ -58,7 +58,9 @@ const SchoolCalendar = lazy(() => import('./pages/SchoolCalendar'));
 const SchoolElections = lazy(() => import('./pages/SchoolElections'));
 const PersonalCalendar = lazy(() => import('./pages/PersonalCalendar'));
 const Bulletin = lazy(() => import('./pages/Bulletin'));
-const ContributionDashboard = lazy(() => import('./pages/ContributionDashboard'));
+const ContributionDashboard = import.meta.env.DEV
+  ? lazy(() => import('./pages/ContributionDashboard'))
+  : null;
 
 // Loading component with better UX
 const Loading = () => (
@@ -340,11 +342,13 @@ function App() {
                 <PasswordChange />
               </Suspense>
             } />
-            <Route path="/data/contributions" element={
-              <Suspense fallback={<PageLoader />}>
-                <ContributionDashboard />
-              </Suspense>
-            } />
+            {import.meta.env.DEV && ContributionDashboard ? (
+              <Route path="/data/contributions" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ContributionDashboard />
+                </Suspense>
+              } />
+            ) : null}
             <Route path="/data/*" element={
               <Suspense fallback={<PageLoader />}>
                 <MyDataPlaceholder />
