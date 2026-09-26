@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { getMenuItems } from './menuConfig';
 import { getProtectedRoutePaths, isRegisteredRoute } from './routes';
@@ -58,5 +60,11 @@ describe('getMenuItems', () => {
       '/services/storytelling-session',
       '/services/chess-coaching-session',
     ]));
+  });
+
+  it('never references the removed contributor dashboard or personal emails in source', () => {
+    const src = readFileSync(path.join(process.cwd(), 'src/config/menuConfig.ts'), 'utf8');
+    expect(src).not.toContain('GitHubContributorsService');
+    expect(src).not.toMatch(/gmail\.com/);
   });
 });

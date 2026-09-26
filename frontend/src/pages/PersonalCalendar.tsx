@@ -75,8 +75,6 @@ const createEvent = (eventData: Omit<CalendarEvent, 'id' | 'createdAt'>): Calend
     };
 
     // In a real app, this would make an API call
-    console.log('Creating event:', newEvent);
-
     return newEvent;
 };
 
@@ -370,8 +368,6 @@ const PersonalCalendar: React.FC = () => {
             [field]: value
         }));
     };
-
-
 
     const calendar = generateCalendarGrid();
 
