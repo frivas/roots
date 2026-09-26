@@ -19,17 +19,16 @@ and is kept in sync with the compatibility conventions below.
 
 ## Command Dispatch
 
-When the user invokes a slash-style workflow such as `/research`,
-`/plan`, `/implement`, `/validate`, `/pre-launch`, `/update-docs`,
-`/release`, `/fix-ci`, `/describe-pr`, or `/status`:
+RPI workflows use the installed native skills. For Claude Code, read
+`.claude/skills/rpi-<workflow>/SKILL.md`; for Codex, read the matching
+`.agents/skills/rpi-<workflow>/SKILL.md`. Read the selected skill and its
+references completely before acting. Use `/rpi-plan` in Claude Code or
+`$rpi-plan` in Codex for RPI planning; the other RPI workflows follow the
+same naming pattern. Native `/plan` and `/status` do not invoke RPI workflows.
 
-1. Check for the matching file in `.claude/commands/`.
-2. Read that command file completely before acting.
-3. Follow it as the workflow spec for this task.
-4. Keep all outputs in the repo locations required by that command.
-
-If the command file references a plan path or research path, read that
-document fully before doing anything else.
+Retained project-specific commands in `.claude/commands/` apply only when
+explicitly invoked. Their presence does not replace the native RPI skills.
+If a workflow references a plan or research artifact, read it completely.
 
 ## Claude-to-Codex Translation
 
