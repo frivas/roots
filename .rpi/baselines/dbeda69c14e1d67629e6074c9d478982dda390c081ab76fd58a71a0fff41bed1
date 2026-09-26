@@ -1,0 +1,17 @@
+{
+  "id": "post-edit-quality",
+  "mode": "entry",
+  "pointer": [
+    "hooks",
+    "PostToolUse"
+  ],
+  "value": {
+    "hooks": [
+      {
+        "command": "bash .claude/hooks/verify-edit.sh",
+        "type": "command"
+      }
+    ],
+    "matcher": "Write|Edit"
+  }
+}

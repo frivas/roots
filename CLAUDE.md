@@ -259,3 +259,6 @@ Go directly to these paths -- never search for them.
 | Plans | `docs/plans/YYYY-MM-DD-*.md` | `-phases/` subdirs |
 | ADRs | `docs/decisions/` | |
 | Deployment contracts | `docs/deployment/` | Provider, release, and performance contracts |
+<!-- rpi:claude-import:start -->
+@AGENTS.md
+<!-- rpi:claude-import:end -->
