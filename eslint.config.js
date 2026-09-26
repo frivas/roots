@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'frontend/coverage/**', 'frontend/playwright-report/**', 'backend/coverage/**'] },
+  { ignores: ['dist', 'frontend/dist/**', 'frontend/coverage/**', 'frontend/playwright-report/**', 'backend/coverage/**', 'backend/dist/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -41,6 +41,18 @@ export default tseslint.config(
       'react-hooks/set-state-in-effect': 'error',
       'react-hooks/static-components': 'error',
       'react-hooks/purity': 'error',
+    },
+  },
+  {
+    files: ['frontend/src/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
+    ignores: [
+      'frontend/src/**/*.{test,spec}.{ts,tsx}',
+      'frontend/src/test/**',
+      'src/**/*.{test,spec}.{ts,tsx}',
+      'src/test/**',
+    ],
+    rules: {
+      'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   }
 );

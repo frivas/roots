@@ -71,8 +71,9 @@ npm run check-localization  # Check for untranslated strings
 
 ### Frontend (`frontend/.env`)
 ```
-VITE_CLERK_PUBLISHABLE_KEY=...    # Clerk publishable key
+VITE_CLERK_PUBLISHABLE_KEY=...    # Clerk publishable key (public by design)
 VITE_BACKEND_URL=http://localhost:3000
+# Never prefix secrets with VITE_ — they would ship in the public bundle.
 ```
 
 ### Backend (`backend/.env`)
