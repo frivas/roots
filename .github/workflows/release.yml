@@ -1,0 +1,19 @@
+name: Release
+
+# Push a v* tag to publish it. The shared release gates on the security report,
+# writes the notes and attaches the SBOM and every scan report.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    uses: frivas/.github/.github/workflows/release.yml@v1
+    with:
+      tag: ${{ github.ref_name }}
+      codeql-languages: '["javascript-typescript", "actions"]'
