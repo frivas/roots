@@ -14,4 +14,4 @@ jobs:
   security:
     uses: frivas/.github/.github/workflows/security.yml@v1
     with:
-      codeql-languages: '["javascript-typescript", "actions"]'
+      codeql-languages: '["javascript-typescript", "python", "actions"]'

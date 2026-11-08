@@ -16,4 +16,4 @@ jobs:
     uses: frivas/.github/.github/workflows/release.yml@v1
     with:
       tag: ${{ github.ref_name }}
-      codeql-languages: '["javascript-typescript", "actions"]'
+      codeql-languages: '["javascript-typescript", "python", "actions"]'
