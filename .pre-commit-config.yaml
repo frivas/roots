@@ -12,6 +12,8 @@ repos:
     hooks:
       - id: detect-secrets
         name: detect-secrets
+        # Content hashes and static triage examples are reviewed by gitleaks.
+        exclude: ^(?:\.rpi/(?:manifest\.json|baselines/.*)|(?:\.agents|\.claude)/skills/rpi-triage/references/triage-state\.md)$
         args:
           - --baseline
           - .secrets.baseline
