@@ -74,7 +74,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=22.22.2 <23"
+    "node": "24.x"
   },
   "supportedArchitectures": {
     "os": [

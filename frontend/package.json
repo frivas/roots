@@ -22,7 +22,7 @@
     "test:e2e:auth": "playwright test --config playwright.auth.config.ts"
   },
   "engines": {
-    "node": ">=22.22.2 <23"
+    "node": "24.x"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.9",

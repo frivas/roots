@@ -19,14 +19,14 @@ const repositorySettings = json('.github/repository-settings.json');
 const vercelConfig = json('backend/vercel.json');
 const nvmVersion = read('.nvmrc').trim();
 
-if (nvmVersion !== '22.22.2') fail('.nvmrc must pin Node 22.22.2');
+if (nvmVersion !== '24') fail('.nvmrc must hold the bare major 24');
 for (const [name, packageJson] of Object.entries({
   root: rootPackage,
   frontend: frontendPackage,
   backend: backendPackage,
 })) {
-  if (packageJson.engines?.node !== '>=22.22.2 <23') {
-    fail(`${name} package must enforce the Node 22 runtime contract`);
+  if (packageJson.engines?.node !== '24.x') {
+    fail(`${name} package must enforce the Node 24 runtime contract`);
   }
 }
 
@@ -88,7 +88,6 @@ if (!excluded.some((pattern) => pattern.includes('test'))) {
 
 const netlify = read('netlify.toml');
 for (const expected of [
-  'NODE_VERSION = "22.22.2"',
   'Cache-Control = "public, max-age=31536000, immutable"',
   'command = "npm run build:frontend:release"',
   'for = "/release.json"',
@@ -97,6 +96,9 @@ for (const expected of [
   'Permissions-Policy',
 ]) {
   if (!netlify.includes(expected)) fail(`Netlify contract is missing: ${expected}`);
+}
+if (/^\s*NODE_VERSION\b/m.test(netlify)) {
+  fail('netlify.toml must not set NODE_VERSION; Netlify reads the Node version from .nvmrc');
 }
 if (netlify.includes('Content-Security-Policy-Report-Only')) {
   fail('Netlify must enforce CSP rather than report it only');
