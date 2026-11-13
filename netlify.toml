@@ -5,9 +5,6 @@ command = "npm run build:frontend:release"
 functions = "netlify/functions"
 publish = "frontend/dist"
 
-[build.environment]
-  NODE_VERSION = "22.22.2"
-
 [[headers]]
 for = "/assets/*"
 

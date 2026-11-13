@@ -23,7 +23,7 @@
     "typecheck": "tsc --project tsconfig.json --noEmit && tsc --project tsconfig.api.json --noEmit"
   },
   "engines": {
-    "node": ">=22.22.2 <23"
+    "node": "24.x"
   },
   "dependencies": {
     "@clerk/fastify": "^3.1.77",
