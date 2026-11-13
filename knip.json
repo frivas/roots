@@ -1,7 +1,7 @@
 {
   "ignore": ["eslint.config.js"],
   "ignoreBinaries": ["playwright", "supabase"],
-  "ignoreDependencies": ["react", "react-dom"],
+  "ignoreDependencies": ["react", "react-dom", "@types/react", "@types/react-dom"],
   "workspaces": {
     "frontend": {
       "project": ["src/**/*.{ts,tsx}"],
