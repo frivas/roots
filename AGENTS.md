@@ -8,9 +8,9 @@ with both Claude Code and Codex / GPT-5.x.
 When operating in Codex, treat these files as the source of truth:
 
 - `CLAUDE.md` -- project overview, workflow, commands, git/deploy context
-- `.claude/commands/*.md` -- workflow definitions for `/research`, `/plan`,
-  `/implement`, `/validate`, `/pre-launch`, `/update-docs`, `/release`,
-  and related commands
+- `.claude/skills/rpi-*/SKILL.md` -- workflow definitions for `/rpi-research`,
+  `/rpi-plan`, `/rpi-implement`, `/rpi-validate`, `/rpi-pre-launch`,
+  `/rpi-update-docs`, `/rpi-release`, and related `rpi-` workflows
 - `.claude/rules/*.md` -- reusable rules and path-scoped constraints
 - `.claude/skills/*/SKILL.md` -- on-demand skills and domain procedures
 
