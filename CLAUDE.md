@@ -8,10 +8,10 @@ Roots is a bilingual (English/Spanish) AI-powered educational platform for paren
 
 This project follows Research-Plan-Implement (RPI).
 
-1. /research -- Understand the codebase as-is
-2. /plan -- Create a phased implementation spec
-3. /implement -- Execute one phase at a time with review gates
-4. /validate -- Verify implementation against the plan
+1. /rpi-research -- Understand the codebase as-is
+2. /rpi-plan -- Create a phased implementation spec
+3. /rpi-implement -- Execute one phase at a time with review gates
+4. /rpi-validate -- Verify implementation against the plan
 
 Each phase is its own conversation. STOP after each phase.
 Use /clear between tasks, /compact when context is heavy.
