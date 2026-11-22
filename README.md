@@ -9,6 +9,8 @@
 
 # Roots - AI-Powered Educational Platform
 
+🏆 **[Regional winner (EMEA) at the World's Largest Hackathon presented by Bolt](https://devpost.com/software/roots-wpsx9u)**, 2025.
+
 Roots is a next-generation educational platform that combines traditional educational services with cutting-edge AI technology. The platform features AI-powered tutoring, real-time illustration generation, multilingual support, and comprehensive family services.
 
 ## 🚀 Key Features
@@ -333,7 +335,15 @@ vercel --prod
 
 ## Team
 
-![Chapa Badge](https://chapa.thecreativetoken.com/u/juan294/badge.svg)
+Built by two Madrid parents, free for the community.
+
+**Francisco Rivas** · [Portfolio](https://portfolio.probablysmart.com) · [LinkedIn](https://www.linkedin.com/in/franciscojrivash/) · [GitHub](https://github.com/frivas)
+
+<a href="https://chapa.thecreativetoken.com/u/frivas"><img src="https://chapa.thecreativetoken.com/u/frivas/badge.svg" alt="Chapa developer impact badge for Francisco Rivas" width="420"></a>
+
+**Juan González** · [Portfolio](https://portfolio.thecreativetoken.com) · [LinkedIn](https://www.linkedin.com/in/juanagonzalezp/) · [GitHub](https://github.com/juan294)
+
+<a href="https://chapa.thecreativetoken.com/u/juan294"><img src="https://chapa.thecreativetoken.com/u/juan294/badge.svg" alt="Chapa developer impact badge for Juan González" width="420"></a>
 
 ## 📄 License
 
